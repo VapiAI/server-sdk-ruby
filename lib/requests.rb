@@ -45,7 +45,7 @@ module Vapi
 
     # @return [Hash{String => String}]
     def get_headers
-      headers = { "X-Fern-Language": "Ruby", "X-Fern-SDK-Name": "vapi", "X-Fern-SDK-Version": "0.0.13" }
+      headers = { "X-Fern-Language": "Ruby", "X-Fern-SDK-Name": "vapi", "X-Fern-SDK-Version": "0.0.16" }
       headers["Authorization"] = ((@token.is_a? Method) ? @token.call : @token) unless @token.nil?
       headers
     end
@@ -90,7 +90,7 @@ module Vapi
 
     # @return [Hash{String => String}]
     def get_headers
-      headers = { "X-Fern-Language": "Ruby", "X-Fern-SDK-Name": "vapi", "X-Fern-SDK-Version": "0.0.13" }
+      headers = { "X-Fern-Language": "Ruby", "X-Fern-SDK-Name": "vapi", "X-Fern-SDK-Version": "0.0.16" }
       headers["Authorization"] = ((@token.is_a? Method) ? @token.call : @token) unless @token.nil?
       headers
     end
