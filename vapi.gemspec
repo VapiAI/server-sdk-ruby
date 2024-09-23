@@ -4,7 +4,7 @@ require_relative "lib/gemconfig"
 
 Gem::Specification.new do |spec|
   spec.name = "vapi"
-  spec.version = "0.0.0"
+  spec.version = "0.0.13"
   spec.authors = Vapi::Gemconfig::AUTHORS
   spec.email = Vapi::Gemconfig::EMAIL
   spec.summary = Vapi::Gemconfig::SUMMARY
