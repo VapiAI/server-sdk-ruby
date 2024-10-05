@@ -15,84 +15,93 @@ require_relative "vapi_model"
 module Vapi
   # These are the options for the assistant's LLM.
   class AssistantOverridesModel
-    # @return [Object]
-    attr_reader :member
-    # @return [String]
-    attr_reader :discriminant
-
-    private_class_method :new
-    alias kind_of? is_a?
-
-    # @param member [Object]
-    # @param discriminant [String]
-    # @return [Vapi::AssistantOverridesModel]
-    def initialize(member:, discriminant:)
-      @member = member
-      @discriminant = discriminant
-    end
-
     # Deserialize a JSON object to an instance of AssistantOverridesModel
     #
     # @param json_object [String]
     # @return [Vapi::AssistantOverridesModel]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      member = case struct.provider
-               when "anyscale"
-                 Vapi::AnyscaleModel.from_json(json_object: json_object)
-               when "anthropic"
-                 Vapi::AnthropicModel.from_json(json_object: json_object)
-               when "custom-llm"
-                 Vapi::CustomLlmModel.from_json(json_object: json_object)
-               when "deepinfra"
-                 Vapi::DeepInfraModel.from_json(json_object: json_object)
-               when "groq"
-                 Vapi::GroqModel.from_json(json_object: json_object)
-               when "openai"
-                 Vapi::OpenAiModel.from_json(json_object: json_object)
-               when "openrouter"
-                 Vapi::OpenRouterModel.from_json(json_object: json_object)
-               when "perplexity-ai"
-                 Vapi::PerplexityAiModel.from_json(json_object: json_object)
-               when "together-ai"
-                 Vapi::TogetherAiModel.from_json(json_object: json_object)
-               when "vapi"
-                 Vapi::VapiModel.from_json(json_object: json_object)
-               else
-                 Vapi::AnyscaleModel.from_json(json_object: json_object)
-               end
-      new(member: member, discriminant: struct.provider)
-    end
+      begin
+        Vapi::AnyscaleModel.validate_raw(obj: struct)
+        return Vapi::AnyscaleModel.from_json(json_object: struct) unless struct.nil?
 
-    # For Union Types, to_json functionality is delegated to the wrapped member.
-    #
-    # @return [String]
-    def to_json(*_args)
-      case @discriminant
-      when "anyscale"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "anthropic"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "custom-llm"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "deepinfra"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "groq"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "openai"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "openrouter"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "perplexity-ai"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "together-ai"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "vapi"
-        { **@member.to_json, provider: @discriminant }.to_json
-      else
-        { "provider": @discriminant, value: @member }.to_json
+        return nil
+      rescue StandardError
+        # noop
       end
-      @member.to_json
+      begin
+        Vapi::AnthropicModel.validate_raw(obj: struct)
+        return Vapi::AnthropicModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::CustomLlmModel.validate_raw(obj: struct)
+        return Vapi::CustomLlmModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::DeepInfraModel.validate_raw(obj: struct)
+        return Vapi::DeepInfraModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::GroqModel.validate_raw(obj: struct)
+        return Vapi::GroqModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::OpenAiModel.validate_raw(obj: struct)
+        return Vapi::OpenAiModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::OpenRouterModel.validate_raw(obj: struct)
+        return Vapi::OpenRouterModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::PerplexityAiModel.validate_raw(obj: struct)
+        return Vapi::PerplexityAiModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::TogetherAiModel.validate_raw(obj: struct)
+        return Vapi::TogetherAiModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::VapiModel.validate_raw(obj: struct)
+        return Vapi::VapiModel.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      struct
     end
 
     # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -102,98 +111,57 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      case obj.provider
-      when "anyscale"
-        Vapi::AnyscaleModel.validate_raw(obj: obj)
-      when "anthropic"
-        Vapi::AnthropicModel.validate_raw(obj: obj)
-      when "custom-llm"
-        Vapi::CustomLlmModel.validate_raw(obj: obj)
-      when "deepinfra"
-        Vapi::DeepInfraModel.validate_raw(obj: obj)
-      when "groq"
-        Vapi::GroqModel.validate_raw(obj: obj)
-      when "openai"
-        Vapi::OpenAiModel.validate_raw(obj: obj)
-      when "openrouter"
-        Vapi::OpenRouterModel.validate_raw(obj: obj)
-      when "perplexity-ai"
-        Vapi::PerplexityAiModel.validate_raw(obj: obj)
-      when "together-ai"
-        Vapi::TogetherAiModel.validate_raw(obj: obj)
-      when "vapi"
-        Vapi::VapiModel.validate_raw(obj: obj)
-      else
-        raise("Passed value matched no type within the union, validation failed.")
+      begin
+        return Vapi::AnyscaleModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
       end
-    end
-
-    # For Union Types, is_a? functionality is delegated to the wrapped member.
-    #
-    # @param obj [Object]
-    # @return [Boolean]
-    def is_a?(obj)
-      @member.is_a?(obj)
-    end
-
-    # @param member [Vapi::AnyscaleModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.anyscale(member:)
-      new(member: member, discriminant: "anyscale")
-    end
-
-    # @param member [Vapi::AnthropicModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.anthropic(member:)
-      new(member: member, discriminant: "anthropic")
-    end
-
-    # @param member [Vapi::CustomLlmModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.custom_llm(member:)
-      new(member: member, discriminant: "custom-llm")
-    end
-
-    # @param member [Vapi::DeepInfraModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.deepinfra(member:)
-      new(member: member, discriminant: "deepinfra")
-    end
-
-    # @param member [Vapi::GroqModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.groq(member:)
-      new(member: member, discriminant: "groq")
-    end
-
-    # @param member [Vapi::OpenAiModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.openai(member:)
-      new(member: member, discriminant: "openai")
-    end
-
-    # @param member [Vapi::OpenRouterModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.openrouter(member:)
-      new(member: member, discriminant: "openrouter")
-    end
-
-    # @param member [Vapi::PerplexityAiModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.perplexity_ai(member:)
-      new(member: member, discriminant: "perplexity-ai")
-    end
-
-    # @param member [Vapi::TogetherAiModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.together_ai(member:)
-      new(member: member, discriminant: "together-ai")
-    end
-
-    # @param member [Vapi::VapiModel]
-    # @return [Vapi::AssistantOverridesModel]
-    def self.vapi(member:)
-      new(member: member, discriminant: "vapi")
+      begin
+        return Vapi::AnthropicModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::CustomLlmModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::DeepInfraModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::GroqModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::OpenAiModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::OpenRouterModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::PerplexityAiModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::TogetherAiModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::VapiModel.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      raise("Passed value matched no type within the union, validation failed.")
     end
   end
 end

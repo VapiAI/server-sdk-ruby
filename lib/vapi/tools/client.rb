@@ -81,16 +81,16 @@ module Vapi
       end
     end
 
-    # @param request [Vapi::Tools::ToolsCreateRequest]
+    # @param request [Vapi::CreateDtmfToolDto, Vapi::CreateEndCallToolDto, Vapi::CreateFunctionToolDto, Vapi::CreateGhlToolDto, Vapi::CreateMakeToolDto, Vapi::CreateTransferCallToolDto, Vapi::CreateOutputToolDto]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsCreateResponse]
+    # @return [Vapi::DtmfTool, Vapi::EndCallTool, Vapi::FunctionTool, Vapi::GhlTool, Vapi::MakeTool, Vapi::TransferCallTool, Vapi::OutputTool]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
     #    environment: Vapi::Environment::DEFAULT,
     #    token: "YOUR_AUTH_TOKEN"
     #  )
-    #  api.tools.create
+    #  api.tools.create(request: { type: "dtmf" })
     def create(request:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -111,7 +111,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsGetResponse]
+    # @return [Vapi::DtmfTool, Vapi::EndCallTool, Vapi::FunctionTool, Vapi::GhlTool, Vapi::MakeTool, Vapi::TransferCallTool, Vapi::OutputTool]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -141,7 +141,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsDeleteResponse]
+    # @return [Vapi::DtmfTool, Vapi::EndCallTool, Vapi::FunctionTool, Vapi::GhlTool, Vapi::MakeTool, Vapi::TransferCallTool, Vapi::OutputTool]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -205,7 +205,7 @@ module Vapi
     #   * :url (String)
     #   * :secret (String)
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsUpdateResponse]
+    # @return [Vapi::DtmfTool, Vapi::EndCallTool, Vapi::FunctionTool, Vapi::GhlTool, Vapi::MakeTool, Vapi::TransferCallTool, Vapi::OutputTool]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -306,16 +306,16 @@ module Vapi
       end
     end
 
-    # @param request [Vapi::Tools::ToolsCreateRequest]
+    # @param request [Vapi::CreateDtmfToolDto, Vapi::CreateEndCallToolDto, Vapi::CreateFunctionToolDto, Vapi::CreateGhlToolDto, Vapi::CreateMakeToolDto, Vapi::CreateTransferCallToolDto, Vapi::CreateOutputToolDto]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsCreateResponse]
+    # @return [Vapi::DtmfTool, Vapi::EndCallTool, Vapi::FunctionTool, Vapi::GhlTool, Vapi::MakeTool, Vapi::TransferCallTool, Vapi::OutputTool]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
     #    environment: Vapi::Environment::DEFAULT,
     #    token: "YOUR_AUTH_TOKEN"
     #  )
-    #  api.tools.create
+    #  api.tools.create(request: { type: "dtmf" })
     def create(request:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -338,7 +338,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsGetResponse]
+    # @return [Vapi::DtmfTool, Vapi::EndCallTool, Vapi::FunctionTool, Vapi::GhlTool, Vapi::MakeTool, Vapi::TransferCallTool, Vapi::OutputTool]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -370,7 +370,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsDeleteResponse]
+    # @return [Vapi::DtmfTool, Vapi::EndCallTool, Vapi::FunctionTool, Vapi::GhlTool, Vapi::MakeTool, Vapi::TransferCallTool, Vapi::OutputTool]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -436,7 +436,7 @@ module Vapi
     #   * :url (String)
     #   * :secret (String)
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsUpdateResponse]
+    # @return [Vapi::DtmfTool, Vapi::EndCallTool, Vapi::FunctionTool, Vapi::GhlTool, Vapi::MakeTool, Vapi::TransferCallTool, Vapi::OutputTool]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",

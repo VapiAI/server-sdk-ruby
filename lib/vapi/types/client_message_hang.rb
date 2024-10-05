@@ -5,6 +5,13 @@ require "json"
 
 module Vapi
   class ClientMessageHang
+    # @return [String] This is the type of the message. "hang" is sent when the assistant is hanging
+    #  due to a delay. The delay can be caused by many factors, such as:
+    #  - the model is too slow to respond
+    #  - the voice is too slow to respond
+    #  - the tool call is still waiting for a response from your server
+    #  - etc.
+    attr_reader :type
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -13,11 +20,18 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param type [String] This is the type of the message. "hang" is sent when the assistant is hanging
+    #  due to a delay. The delay can be caused by many factors, such as:
+    #  - the model is too slow to respond
+    #  - the voice is too slow to respond
+    #  - the tool call is still waiting for a response from your server
+    #  - etc.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageHang]
-    def initialize(additional_properties: nil)
+    def initialize(type:, additional_properties: nil)
+      @type = type
       @additional_properties = additional_properties
-      @_field_set = {}
+      @_field_set = { "type": type }
     end
 
     # Deserialize a JSON object to an instance of ClientMessageHang
@@ -26,7 +40,9 @@ module Vapi
     # @return [Vapi::ClientMessageHang]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      new(additional_properties: struct)
+      parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
+      new(type: type, additional_properties: struct)
     end
 
     # Serialize an instance of ClientMessageHang to a JSON object
@@ -42,6 +58,8 @@ module Vapi
     #
     # @param obj [Object]
     # @return [Void]
-    def self.validate_raw(obj:); end
+    def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+    end
   end
 end

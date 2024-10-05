@@ -19,6 +19,9 @@ module Vapi
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
     attr_reader :tool_ids
+    # @return [String] This is the provider that will be used for the model. Any service, including
+    #  your own server, that is compatible with the OpenAI API can be used.
+    attr_reader :provider
     # @return [Vapi::CustomLlmModelMetadataSendMode] This determines whether metadata is sent in requests to the custom provider.
     #  - `off` will not send any metadata. payload will look like `{ messages }`
     #  - `variable` will send `assistant.metadata` as a variable on the payload.
@@ -69,6 +72,8 @@ module Vapi
     # @param tool_ids [Array<String>] These are the tools that the assistant can use during the call. To use transient
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
+    # @param provider [String] This is the provider that will be used for the model. Any service, including
+    #  your own server, that is compatible with the OpenAI API can be used.
     # @param metadata_send_mode [Vapi::CustomLlmModelMetadataSendMode] This determines whether metadata is sent in requests to the custom provider.
     #  - `off` will not send any metadata. payload will look like `{ messages }`
     #  - `variable` will send `assistant.metadata` as a variable on the payload.
@@ -98,11 +103,12 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CustomLlmModel]
-    def initialize(url:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, metadata_send_mode: OMIT,
+    def initialize(provider:, url:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, metadata_send_mode: OMIT,
                    temperature: OMIT, knowledge_base: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
+      @provider = provider
       @metadata_send_mode = metadata_send_mode if metadata_send_mode != OMIT
       @url = url
       @model = model
@@ -116,6 +122,7 @@ module Vapi
         "messages": messages,
         "tools": tools,
         "toolIds": tool_ids,
+        "provider": provider,
         "metadataSendMode": metadata_send_mode,
         "url": url,
         "model": model,
@@ -145,6 +152,7 @@ module Vapi
         Vapi::CustomLlmModelToolsItem.from_json(json_object: item)
       end
       tool_ids = parsed_json["toolIds"]
+      provider = parsed_json["provider"]
       metadata_send_mode = parsed_json["metadataSendMode"]
       url = parsed_json["url"]
       model = parsed_json["model"]
@@ -162,6 +170,7 @@ module Vapi
         messages: messages,
         tools: tools,
         tool_ids: tool_ids,
+        provider: provider,
         metadata_send_mode: metadata_send_mode,
         url: url,
         model: model,
@@ -191,6 +200,7 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.metadata_send_mode&.is_a?(Vapi::CustomLlmModelMetadataSendMode) != false || raise("Passed value for field obj.metadata_send_mode is not the expected type, validation failed.")
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")

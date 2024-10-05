@@ -19,6 +19,9 @@ module Vapi
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
     attr_reader :phone_number
+    # @return [String] This is the type of the message. "end-of-call-report" is sent when the call ends
+    #  and post-processing is complete.
+    attr_reader :type
     # @return [Vapi::ServerMessageEndOfCallReportEndedReason] This is the reason the call ended. This can also be found at `call.endedReason`
     #  on GET /call/:id.
     attr_reader :ended_reason
@@ -74,6 +77,8 @@ module Vapi
     #  This matches one of the following:
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
+    # @param type [String] This is the type of the message. "end-of-call-report" is sent when the call ends
+    #  and post-processing is complete.
     # @param ended_reason [Vapi::ServerMessageEndOfCallReportEndedReason] This is the reason the call ended. This can also be found at `call.endedReason`
     #  on GET /call/:id.
     # @param cost [Float] This is the cost of the call in USD. This can also be found at `call.cost` on
@@ -108,9 +113,10 @@ module Vapi
     #  found at `call.endedAt` on GET /call/:id.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageEndOfCallReport]
-    def initialize(ended_reason:, artifact:, analysis:, phone_number: OMIT, cost: OMIT, costs: OMIT, timestamp: OMIT,
+    def initialize(type:, ended_reason:, artifact:, analysis:, phone_number: OMIT, cost: OMIT, costs: OMIT, timestamp: OMIT,
                    assistant: OMIT, customer: OMIT, call: OMIT, started_at: OMIT, ended_at: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @ended_reason = ended_reason
       @cost = cost if cost != OMIT
       @costs = costs if costs != OMIT
@@ -125,6 +131,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "endedReason": ended_reason,
         "cost": cost,
         "costs": costs,
@@ -154,6 +161,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageEndOfCallReportPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       ended_reason = parsed_json["endedReason"]
       cost = parsed_json["cost"]
       costs = parsed_json["costs"]&.map do |item|
@@ -195,6 +203,7 @@ module Vapi
       ended_at = (DateTime.parse(parsed_json["endedAt"]) unless parsed_json["endedAt"].nil?)
       new(
         phone_number: phone_number,
+        type: type,
         ended_reason: ended_reason,
         cost: cost,
         costs: costs,
@@ -225,6 +234,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageEndOfCallReportPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.ended_reason.is_a?(Vapi::ServerMessageEndOfCallReportEndedReason) != false || raise("Passed value for field obj.ended_reason is not the expected type, validation failed.")
       obj.cost&.is_a?(Float) != false || raise("Passed value for field obj.cost is not the expected type, validation failed.")
       obj.costs&.is_a?(Array) != false || raise("Passed value for field obj.costs is not the expected type, validation failed.")

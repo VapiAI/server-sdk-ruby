@@ -12,6 +12,8 @@ module Vapi
     #  inputting it into the voice provider.
     #  Default `false` because you can achieve better results with prompting the model.
     attr_reader :filler_injection_enabled
+    # @return [String] This is the voice provider that will be used.
+    attr_reader :provider
     # @return [Vapi::CartesiaVoiceModel] This is the model that will be used. This is optional and will default to the
     #  correct model for the voiceId.
     attr_reader :model
@@ -34,6 +36,7 @@ module Vapi
     # @param filler_injection_enabled [Boolean] This determines whether fillers are injected into the model output before
     #  inputting it into the voice provider.
     #  Default `false` because you can achieve better results with prompting the model.
+    # @param provider [String] This is the voice provider that will be used.
     # @param model [Vapi::CartesiaVoiceModel] This is the model that will be used. This is optional and will default to the
     #  correct model for the voiceId.
     # @param language [Vapi::CartesiaVoiceLanguage] This is the language that will be used. This is optional and will default to the
@@ -43,9 +46,10 @@ module Vapi
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CartesiaVoice]
-    def initialize(voice_id:, filler_injection_enabled: OMIT, model: OMIT, language: OMIT, chunk_plan: OMIT,
+    def initialize(provider:, voice_id:, filler_injection_enabled: OMIT, model: OMIT, language: OMIT, chunk_plan: OMIT,
                    additional_properties: nil)
       @filler_injection_enabled = filler_injection_enabled if filler_injection_enabled != OMIT
+      @provider = provider
       @model = model if model != OMIT
       @language = language if language != OMIT
       @voice_id = voice_id
@@ -53,6 +57,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fillerInjectionEnabled": filler_injection_enabled,
+        "provider": provider,
         "model": model,
         "language": language,
         "voiceId": voice_id,
@@ -70,6 +75,7 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       filler_injection_enabled = parsed_json["fillerInjectionEnabled"]
+      provider = parsed_json["provider"]
       model = parsed_json["model"]
       language = parsed_json["language"]
       voice_id = parsed_json["voiceId"]
@@ -81,6 +87,7 @@ module Vapi
       end
       new(
         filler_injection_enabled: filler_injection_enabled,
+        provider: provider,
         model: model,
         language: language,
         voice_id: voice_id,
@@ -104,6 +111,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.filler_injection_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.filler_injection_enabled is not the expected type, validation failed.")
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.model&.is_a?(Vapi::CartesiaVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::CartesiaVoiceLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.voice_id.is_a?(String) != false || raise("Passed value for field obj.voice_id is not the expected type, validation failed.")

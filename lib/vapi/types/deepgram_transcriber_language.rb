@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 module Vapi
-  # This is the language that will be set for the transcription. The list of
-  #  languages Deepgram supports can be found here:
-  #  https://developers.deepgram.com/docs/models-languages-overview
   class DeepgramTranscriberLanguage
     BG = "bg"
     CA = "ca"

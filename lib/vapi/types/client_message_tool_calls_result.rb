@@ -5,6 +5,9 @@ require "json"
 
 module Vapi
   class ClientMessageToolCallsResult
+    # @return [String] This is the type of the message. "tool-calls-result" is sent to forward the
+    #  result of a tool call to the client.
+    attr_reader :type
     # @return [Hash{String => Object}] This is the result of the tool call.
     attr_reader :tool_call_result
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -15,13 +18,16 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param type [String] This is the type of the message. "tool-calls-result" is sent to forward the
+    #  result of a tool call to the client.
     # @param tool_call_result [Hash{String => Object}] This is the result of the tool call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageToolCallsResult]
-    def initialize(tool_call_result:, additional_properties: nil)
+    def initialize(type:, tool_call_result:, additional_properties: nil)
+      @type = type
       @tool_call_result = tool_call_result
       @additional_properties = additional_properties
-      @_field_set = { "toolCallResult": tool_call_result }
+      @_field_set = { "type": type, "toolCallResult": tool_call_result }
     end
 
     # Deserialize a JSON object to an instance of ClientMessageToolCallsResult
@@ -31,8 +37,13 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
       tool_call_result = parsed_json["toolCallResult"]
-      new(tool_call_result: tool_call_result, additional_properties: struct)
+      new(
+        type: type,
+        tool_call_result: tool_call_result,
+        additional_properties: struct
+      )
     end
 
     # Serialize an instance of ClientMessageToolCallsResult to a JSON object
@@ -49,6 +60,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.tool_call_result.is_a?(Hash) != false || raise("Passed value for field obj.tool_call_result is not the expected type, validation failed.")
     end
   end

@@ -18,6 +18,8 @@ module Vapi
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
     attr_reader :tool_ids
+    # @return [String]
+    attr_reader :provider
     # @return [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     attr_reader :model
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
@@ -55,6 +57,7 @@ module Vapi
     # @param tool_ids [Array<String>] These are the tools that the assistant can use during the call. To use transient
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
+    # @param provider [String]
     # @param model [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
@@ -73,11 +76,12 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TogetherAiModel]
-    def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, temperature: OMIT, knowledge_base: OMIT,
-                   max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+    def initialize(provider:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, temperature: OMIT,
+                   knowledge_base: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
+      @provider = provider
       @model = model
       @temperature = temperature if temperature != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
@@ -89,6 +93,7 @@ module Vapi
         "messages": messages,
         "tools": tools,
         "toolIds": tool_ids,
+        "provider": provider,
         "model": model,
         "temperature": temperature,
         "knowledgeBase": knowledge_base,
@@ -116,6 +121,7 @@ module Vapi
         Vapi::TogetherAiModelToolsItem.from_json(json_object: item)
       end
       tool_ids = parsed_json["toolIds"]
+      provider = parsed_json["provider"]
       model = parsed_json["model"]
       temperature = parsed_json["temperature"]
       if parsed_json["knowledgeBase"].nil?
@@ -131,6 +137,7 @@ module Vapi
         messages: messages,
         tools: tools,
         tool_ids: tool_ids,
+        provider: provider,
         model: model,
         temperature: temperature,
         knowledge_base: knowledge_base,
@@ -158,6 +165,7 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.knowledge_base.nil? || Vapi::KnowledgeBase.validate_raw(obj: obj.knowledge_base)

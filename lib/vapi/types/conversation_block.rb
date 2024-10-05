@@ -34,6 +34,8 @@ module Vapi
     #  this liquid variable is just provided for convenience when creating blocks
     #  outside of a workflow with steps.
     attr_reader :output_schema
+    # @return [String]
+    attr_reader :type
     # @return [String] This is the unique identifier for the block.
     attr_reader :id
     # @return [String] This is the unique identifier for the organization that this block belongs to.
@@ -105,6 +107,7 @@ module Vapi
     #  {{blockName.output.propertyName}} will reference the latest usage of the block.
     #  this liquid variable is just provided for convenience when creating blocks
     #  outside of a workflow with steps.
+    # @param type [String]
     # @param id [String] This is the unique identifier for the block.
     # @param org_id [String] This is the unique identifier for the organization that this block belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the block was created.
@@ -141,11 +144,12 @@ module Vapi
     #  blocks outside of a workflow with steps.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ConversationBlock]
-    def initialize(id:, org_id:, created_at:, updated_at:, instruction:, messages: OMIT, input_schema: OMIT, output_schema: OMIT,
-                   name: OMIT, additional_properties: nil)
+    def initialize(type:, id:, org_id:, created_at:, updated_at:, instruction:, messages: OMIT, input_schema: OMIT,
+                   output_schema: OMIT, name: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @input_schema = input_schema if input_schema != OMIT
       @output_schema = output_schema if output_schema != OMIT
+      @type = type
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -157,6 +161,7 @@ module Vapi
         "messages": messages,
         "inputSchema": input_schema,
         "outputSchema": output_schema,
+        "type": type,
         "id": id,
         "orgId": org_id,
         "createdAt": created_at,
@@ -191,6 +196,7 @@ module Vapi
         output_schema = parsed_json["outputSchema"].to_json
         output_schema = Vapi::JsonSchema.from_json(json_object: output_schema)
       end
+      type = parsed_json["type"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
@@ -201,6 +207,7 @@ module Vapi
         messages: messages,
         input_schema: input_schema,
         output_schema: output_schema,
+        type: type,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -228,6 +235,7 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.input_schema.nil? || Vapi::JsonSchema.validate_raw(obj: obj.input_schema)
       obj.output_schema.nil? || Vapi::JsonSchema.validate_raw(obj: obj.output_schema)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

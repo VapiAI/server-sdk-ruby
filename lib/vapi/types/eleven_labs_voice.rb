@@ -12,6 +12,8 @@ module Vapi
     #  inputting it into the voice provider.
     #  Default `false` because you can achieve better results with prompting the model.
     attr_reader :filler_injection_enabled
+    # @return [String] This is the voice provider that will be used.
+    attr_reader :provider
     # @return [Vapi::ElevenLabsVoiceVoiceId] This is the provider-specific ID that will be used. Ensure the Voice is present
     #  in your 11Labs Voice Library.
     attr_reader :voice_id
@@ -51,6 +53,7 @@ module Vapi
     # @param filler_injection_enabled [Boolean] This determines whether fillers are injected into the model output before
     #  inputting it into the voice provider.
     #  Default `false` because you can achieve better results with prompting the model.
+    # @param provider [String] This is the voice provider that will be used.
     # @param voice_id [Vapi::ElevenLabsVoiceVoiceId] This is the provider-specific ID that will be used. Ensure the Voice is present
     #  in your 11Labs Voice Library.
     # @param stability [Float] Defines the stability for voice settings.
@@ -71,9 +74,10 @@ module Vapi
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ElevenLabsVoice]
-    def initialize(voice_id:, filler_injection_enabled: OMIT, stability: OMIT, similarity_boost: OMIT, style: OMIT,
-                   use_speaker_boost: OMIT, optimize_streaming_latency: OMIT, enable_ssml_parsing: OMIT, model: OMIT, language: OMIT, chunk_plan: OMIT, additional_properties: nil)
+    def initialize(provider:, voice_id:, filler_injection_enabled: OMIT, stability: OMIT, similarity_boost: OMIT,
+                   style: OMIT, use_speaker_boost: OMIT, optimize_streaming_latency: OMIT, enable_ssml_parsing: OMIT, model: OMIT, language: OMIT, chunk_plan: OMIT, additional_properties: nil)
       @filler_injection_enabled = filler_injection_enabled if filler_injection_enabled != OMIT
+      @provider = provider
       @voice_id = voice_id
       @stability = stability if stability != OMIT
       @similarity_boost = similarity_boost if similarity_boost != OMIT
@@ -87,6 +91,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fillerInjectionEnabled": filler_injection_enabled,
+        "provider": provider,
         "voiceId": voice_id,
         "stability": stability,
         "similarityBoost": similarity_boost,
@@ -110,6 +115,7 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       filler_injection_enabled = parsed_json["fillerInjectionEnabled"]
+      provider = parsed_json["provider"]
       if parsed_json["voiceId"].nil?
         voice_id = nil
       else
@@ -132,6 +138,7 @@ module Vapi
       end
       new(
         filler_injection_enabled: filler_injection_enabled,
+        provider: provider,
         voice_id: voice_id,
         stability: stability,
         similarity_boost: similarity_boost,
@@ -161,6 +168,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.filler_injection_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.filler_injection_enabled is not the expected type, validation failed.")
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       Vapi::ElevenLabsVoiceVoiceId.validate_raw(obj: obj.voice_id)
       obj.stability&.is_a?(Float) != false || raise("Passed value for field obj.stability is not the expected type, validation failed.")
       obj.similarity_boost&.is_a?(Float) != false || raise("Passed value for field obj.similarity_boost is not the expected type, validation failed.")

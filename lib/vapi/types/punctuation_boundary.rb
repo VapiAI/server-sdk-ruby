@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Vapi
-  class ChunkPlanPunctuationBoundariesItem
+  class PunctuationBoundary
     CIRCLE = "。"
-    COMMA = "，"
+    FULL_WIDTH_COMMA = "，"
     DOT = "."
     EXCLAMATION = "!"
     QUESTION = "?"

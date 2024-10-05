@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "chunk_plan_punctuation_boundaries_item"
+require_relative "punctuation_boundary"
 require_relative "format_plan"
 require "ostruct"
 require "json"
@@ -21,7 +21,7 @@ module Vapi
     #  - To decrease latency, set this to a lower value.
     #  @default 30
     attr_reader :min_characters
-    # @return [Array<Vapi::ChunkPlanPunctuationBoundariesItem>] These are the punctuations that are considered valid boundaries for a chunk to
+    # @return [Array<Vapi::PunctuationBoundary>] These are the punctuations that are considered valid boundaries for a chunk to
     #  be created.
     #  Usage:
     #  - To increase quality, constrain to fewer boundaries.
@@ -52,7 +52,7 @@ module Vapi
     #  - To increase quality, set this to a higher value.
     #  - To decrease latency, set this to a lower value.
     #  @default 30
-    # @param punctuation_boundaries [Array<Vapi::ChunkPlanPunctuationBoundariesItem>] These are the punctuations that are considered valid boundaries for a chunk to
+    # @param punctuation_boundaries [Array<Vapi::PunctuationBoundary>] These are the punctuations that are considered valid boundaries for a chunk to
     #  be created.
     #  Usage:
     #  - To increase quality, constrain to fewer boundaries.

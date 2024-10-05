@@ -12,6 +12,8 @@ module Vapi
     #  inputting it into the voice provider.
     #  Default `false` because you can achieve better results with prompting the model.
     attr_reader :filler_injection_enabled
+    # @return [String] This is the voice provider that will be used.
+    attr_reader :provider
     # @return [Vapi::PlayHtVoiceVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
     # @return [Float] This is the speed multiplier that will be used.
@@ -50,6 +52,7 @@ module Vapi
     # @param filler_injection_enabled [Boolean] This determines whether fillers are injected into the model output before
     #  inputting it into the voice provider.
     #  Default `false` because you can achieve better results with prompting the model.
+    # @param provider [String] This is the voice provider that will be used.
     # @param voice_id [Vapi::PlayHtVoiceVoiceId] This is the provider-specific ID that will be used.
     # @param speed [Float] This is the speed multiplier that will be used.
     # @param temperature [Float] A floating point number between 0, exclusive, and 2, inclusive. If equal to null
@@ -71,9 +74,10 @@ module Vapi
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::PlayHtVoice]
-    def initialize(voice_id:, filler_injection_enabled: OMIT, speed: OMIT, temperature: OMIT, emotion: OMIT,
+    def initialize(provider:, voice_id:, filler_injection_enabled: OMIT, speed: OMIT, temperature: OMIT, emotion: OMIT,
                    voice_guidance: OMIT, style_guidance: OMIT, text_guidance: OMIT, chunk_plan: OMIT, additional_properties: nil)
       @filler_injection_enabled = filler_injection_enabled if filler_injection_enabled != OMIT
+      @provider = provider
       @voice_id = voice_id
       @speed = speed if speed != OMIT
       @temperature = temperature if temperature != OMIT
@@ -85,6 +89,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fillerInjectionEnabled": filler_injection_enabled,
+        "provider": provider,
         "voiceId": voice_id,
         "speed": speed,
         "temperature": temperature,
@@ -106,6 +111,7 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       filler_injection_enabled = parsed_json["fillerInjectionEnabled"]
+      provider = parsed_json["provider"]
       if parsed_json["voiceId"].nil?
         voice_id = nil
       else
@@ -126,6 +132,7 @@ module Vapi
       end
       new(
         filler_injection_enabled: filler_injection_enabled,
+        provider: provider,
         voice_id: voice_id,
         speed: speed,
         temperature: temperature,
@@ -153,6 +160,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.filler_injection_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.filler_injection_enabled is not the expected type, validation failed.")
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       Vapi::PlayHtVoiceVoiceId.validate_raw(obj: obj.voice_id)
       obj.speed&.is_a?(Float) != false || raise("Passed value for field obj.speed is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")

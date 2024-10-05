@@ -9,60 +9,45 @@ require_relative "../../types/vapi_phone_number"
 module Vapi
   class PhoneNumbers
     class PhoneNumbersDeleteResponse
-      # @return [Object]
-      attr_reader :member
-      # @return [String]
-      attr_reader :discriminant
-
-      private_class_method :new
-      alias kind_of? is_a?
-
-      # @param member [Object]
-      # @param discriminant [String]
-      # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
-      def initialize(member:, discriminant:)
-        @member = member
-        @discriminant = discriminant
-      end
-
       # Deserialize a JSON object to an instance of PhoneNumbersDeleteResponse
       #
       # @param json_object [String]
       # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
       def self.from_json(json_object:)
         struct = JSON.parse(json_object, object_class: OpenStruct)
-        member = case struct.provider
-                 when "byo-phone-number"
-                   Vapi::ByoPhoneNumber.from_json(json_object: json_object)
-                 when "twilio"
-                   Vapi::TwilioPhoneNumber.from_json(json_object: json_object)
-                 when "vonage"
-                   Vapi::VonagePhoneNumber.from_json(json_object: json_object)
-                 when "vapi"
-                   Vapi::VapiPhoneNumber.from_json(json_object: json_object)
-                 else
-                   Vapi::ByoPhoneNumber.from_json(json_object: json_object)
-                 end
-        new(member: member, discriminant: struct.provider)
-      end
+        begin
+          Vapi::ByoPhoneNumber.validate_raw(obj: struct)
+          return Vapi::ByoPhoneNumber.from_json(json_object: struct) unless struct.nil?
 
-      # For Union Types, to_json functionality is delegated to the wrapped member.
-      #
-      # @return [String]
-      def to_json(*_args)
-        case @discriminant
-        when "byo-phone-number"
-          { **@member.to_json, provider: @discriminant }.to_json
-        when "twilio"
-          { **@member.to_json, provider: @discriminant }.to_json
-        when "vonage"
-          { **@member.to_json, provider: @discriminant }.to_json
-        when "vapi"
-          { **@member.to_json, provider: @discriminant }.to_json
-        else
-          { "provider": @discriminant, value: @member }.to_json
+          return nil
+        rescue StandardError
+          # noop
         end
-        @member.to_json
+        begin
+          Vapi::TwilioPhoneNumber.validate_raw(obj: struct)
+          return Vapi::TwilioPhoneNumber.from_json(json_object: struct) unless struct.nil?
+
+          return nil
+        rescue StandardError
+          # noop
+        end
+        begin
+          Vapi::VonagePhoneNumber.validate_raw(obj: struct)
+          return Vapi::VonagePhoneNumber.from_json(json_object: struct) unless struct.nil?
+
+          return nil
+        rescue StandardError
+          # noop
+        end
+        begin
+          Vapi::VapiPhoneNumber.validate_raw(obj: struct)
+          return Vapi::VapiPhoneNumber.from_json(json_object: struct) unless struct.nil?
+
+          return nil
+        rescue StandardError
+          # noop
+        end
+        struct
       end
 
       # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -72,50 +57,27 @@ module Vapi
       # @param obj [Object]
       # @return [Void]
       def self.validate_raw(obj:)
-        case obj.provider
-        when "byo-phone-number"
-          Vapi::ByoPhoneNumber.validate_raw(obj: obj)
-        when "twilio"
-          Vapi::TwilioPhoneNumber.validate_raw(obj: obj)
-        when "vonage"
-          Vapi::VonagePhoneNumber.validate_raw(obj: obj)
-        when "vapi"
-          Vapi::VapiPhoneNumber.validate_raw(obj: obj)
-        else
-          raise("Passed value matched no type within the union, validation failed.")
+        begin
+          return Vapi::ByoPhoneNumber.validate_raw(obj: obj)
+        rescue StandardError
+          # noop
         end
-      end
-
-      # For Union Types, is_a? functionality is delegated to the wrapped member.
-      #
-      # @param obj [Object]
-      # @return [Boolean]
-      def is_a?(obj)
-        @member.is_a?(obj)
-      end
-
-      # @param member [Vapi::ByoPhoneNumber]
-      # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
-      def self.byo_phone_number(member:)
-        new(member: member, discriminant: "byo-phone-number")
-      end
-
-      # @param member [Vapi::TwilioPhoneNumber]
-      # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
-      def self.twilio(member:)
-        new(member: member, discriminant: "twilio")
-      end
-
-      # @param member [Vapi::VonagePhoneNumber]
-      # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
-      def self.vonage(member:)
-        new(member: member, discriminant: "vonage")
-      end
-
-      # @param member [Vapi::VapiPhoneNumber]
-      # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
-      def self.vapi(member:)
-        new(member: member, discriminant: "vapi")
+        begin
+          return Vapi::TwilioPhoneNumber.validate_raw(obj: obj)
+        rescue StandardError
+          # noop
+        end
+        begin
+          return Vapi::VonagePhoneNumber.validate_raw(obj: obj)
+        rescue StandardError
+          # noop
+        end
+        begin
+          return Vapi::VapiPhoneNumber.validate_raw(obj: obj)
+        rescue StandardError
+          # noop
+        end
+        raise("Passed value matched no type within the union, validation failed.")
       end
     end
   end

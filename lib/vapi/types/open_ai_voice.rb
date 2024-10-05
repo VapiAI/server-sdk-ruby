@@ -11,6 +11,8 @@ module Vapi
     #  inputting it into the voice provider.
     #  Default `false` because you can achieve better results with prompting the model.
     attr_reader :filler_injection_enabled
+    # @return [String] This is the voice provider that will be used.
+    attr_reader :provider
     # @return [Vapi::OpenAiVoiceVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
     # @return [Float] This is the speed multiplier that will be used.
@@ -29,20 +31,24 @@ module Vapi
     # @param filler_injection_enabled [Boolean] This determines whether fillers are injected into the model output before
     #  inputting it into the voice provider.
     #  Default `false` because you can achieve better results with prompting the model.
+    # @param provider [String] This is the voice provider that will be used.
     # @param voice_id [Vapi::OpenAiVoiceVoiceId] This is the provider-specific ID that will be used.
     # @param speed [Float] This is the speed multiplier that will be used.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::OpenAiVoice]
-    def initialize(voice_id:, filler_injection_enabled: OMIT, speed: OMIT, chunk_plan: OMIT, additional_properties: nil)
+    def initialize(provider:, voice_id:, filler_injection_enabled: OMIT, speed: OMIT, chunk_plan: OMIT,
+                   additional_properties: nil)
       @filler_injection_enabled = filler_injection_enabled if filler_injection_enabled != OMIT
+      @provider = provider
       @voice_id = voice_id
       @speed = speed if speed != OMIT
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "fillerInjectionEnabled": filler_injection_enabled,
+        "provider": provider,
         "voiceId": voice_id,
         "speed": speed,
         "chunkPlan": chunk_plan
@@ -59,6 +65,7 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       filler_injection_enabled = parsed_json["fillerInjectionEnabled"]
+      provider = parsed_json["provider"]
       voice_id = parsed_json["voiceId"]
       speed = parsed_json["speed"]
       if parsed_json["chunkPlan"].nil?
@@ -69,6 +76,7 @@ module Vapi
       end
       new(
         filler_injection_enabled: filler_injection_enabled,
+        provider: provider,
         voice_id: voice_id,
         speed: speed,
         chunk_plan: chunk_plan,
@@ -91,6 +99,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.filler_injection_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.filler_injection_enabled is not the expected type, validation failed.")
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.voice_id.is_a?(Vapi::OpenAiVoiceVoiceId) != false || raise("Passed value for field obj.voice_id is not the expected type, validation failed.")
       obj.speed&.is_a?(Float) != false || raise("Passed value for field obj.speed is not the expected type, validation failed.")
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)

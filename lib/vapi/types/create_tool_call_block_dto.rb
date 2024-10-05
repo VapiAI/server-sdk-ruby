@@ -34,6 +34,8 @@ module Vapi
     #  this liquid variable is just provided for convenience when creating blocks
     #  outside of a workflow with steps.
     attr_reader :output_schema
+    # @return [String]
+    attr_reader :type
     # @return [Vapi::CreateToolCallBlockDtoTool] This is the tool that the block will call. To use an existing tool, use
     #  `toolId`.
     attr_reader :tool
@@ -73,6 +75,7 @@ module Vapi
     #  {{blockName.output.propertyName}} will reference the latest usage of the block.
     #  this liquid variable is just provided for convenience when creating blocks
     #  outside of a workflow with steps.
+    # @param type [String]
     # @param tool [Vapi::CreateToolCallBlockDtoTool] This is the tool that the block will call. To use an existing tool, use
     #  `toolId`.
     # @param tool_id [String] This is the id of the tool that the block will call. To use a transient tool,
@@ -80,11 +83,12 @@ module Vapi
     # @param name [String] This is the name of the block. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateToolCallBlockDto]
-    def initialize(messages: OMIT, input_schema: OMIT, output_schema: OMIT, tool: OMIT, tool_id: OMIT, name: OMIT,
-                   additional_properties: nil)
+    def initialize(type:, messages: OMIT, input_schema: OMIT, output_schema: OMIT, tool: OMIT, tool_id: OMIT,
+                   name: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @input_schema = input_schema if input_schema != OMIT
       @output_schema = output_schema if output_schema != OMIT
+      @type = type
       @tool = tool if tool != OMIT
       @tool_id = tool_id if tool_id != OMIT
       @name = name if name != OMIT
@@ -93,6 +97,7 @@ module Vapi
         "messages": messages,
         "inputSchema": input_schema,
         "outputSchema": output_schema,
+        "type": type,
         "tool": tool,
         "toolId": tool_id,
         "name": name
@@ -124,6 +129,7 @@ module Vapi
         output_schema = parsed_json["outputSchema"].to_json
         output_schema = Vapi::JsonSchema.from_json(json_object: output_schema)
       end
+      type = parsed_json["type"]
       if parsed_json["tool"].nil?
         tool = nil
       else
@@ -136,6 +142,7 @@ module Vapi
         messages: messages,
         input_schema: input_schema,
         output_schema: output_schema,
+        type: type,
         tool: tool,
         tool_id: tool_id,
         name: name,
@@ -160,6 +167,7 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.input_schema.nil? || Vapi::JsonSchema.validate_raw(obj: obj.input_schema)
       obj.output_schema.nil? || Vapi::JsonSchema.validate_raw(obj: obj.output_schema)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.tool.nil? || Vapi::CreateToolCallBlockDtoTool.validate_raw(obj: obj.tool)
       obj.tool_id&.is_a?(String) != false || raise("Passed value for field obj.tool_id is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")

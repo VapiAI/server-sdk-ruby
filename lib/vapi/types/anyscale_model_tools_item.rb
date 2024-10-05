@@ -11,72 +11,69 @@ require_relative "create_transfer_call_tool_dto"
 
 module Vapi
   class AnyscaleModelToolsItem
-    # @return [Object]
-    attr_reader :member
-    # @return [String]
-    attr_reader :discriminant
-
-    private_class_method :new
-    alias kind_of? is_a?
-
-    # @param member [Object]
-    # @param discriminant [String]
-    # @return [Vapi::AnyscaleModelToolsItem]
-    def initialize(member:, discriminant:)
-      @member = member
-      @discriminant = discriminant
-    end
-
     # Deserialize a JSON object to an instance of AnyscaleModelToolsItem
     #
     # @param json_object [String]
     # @return [Vapi::AnyscaleModelToolsItem]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      member = case struct.type
-               when "dtmf"
-                 Vapi::CreateDtmfToolDto.from_json(json_object: json_object)
-               when "endCall"
-                 Vapi::CreateEndCallToolDto.from_json(json_object: json_object)
-               when "voicemail"
-                 Vapi::CreateVoicemailToolDto.from_json(json_object: json_object)
-               when "function"
-                 Vapi::CreateFunctionToolDto.from_json(json_object: json_object)
-               when "ghl"
-                 Vapi::CreateGhlToolDto.from_json(json_object: json_object)
-               when "make"
-                 Vapi::CreateMakeToolDto.from_json(json_object: json_object)
-               when "transferCall"
-                 Vapi::CreateTransferCallToolDto.from_json(json_object: json_object)
-               else
-                 Vapi::CreateDtmfToolDto.from_json(json_object: json_object)
-               end
-      new(member: member, discriminant: struct.type)
-    end
+      begin
+        Vapi::CreateDtmfToolDto.validate_raw(obj: struct)
+        return Vapi::CreateDtmfToolDto.from_json(json_object: struct) unless struct.nil?
 
-    # For Union Types, to_json functionality is delegated to the wrapped member.
-    #
-    # @return [String]
-    def to_json(*_args)
-      case @discriminant
-      when "dtmf"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "endCall"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "voicemail"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "function"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "ghl"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "make"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "transferCall"
-        { **@member.to_json, type: @discriminant }.to_json
-      else
-        { "type": @discriminant, value: @member }.to_json
+        return nil
+      rescue StandardError
+        # noop
       end
-      @member.to_json
+      begin
+        Vapi::CreateEndCallToolDto.validate_raw(obj: struct)
+        return Vapi::CreateEndCallToolDto.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::CreateVoicemailToolDto.validate_raw(obj: struct)
+        return Vapi::CreateVoicemailToolDto.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::CreateFunctionToolDto.validate_raw(obj: struct)
+        return Vapi::CreateFunctionToolDto.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::CreateGhlToolDto.validate_raw(obj: struct)
+        return Vapi::CreateGhlToolDto.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::CreateMakeToolDto.validate_raw(obj: struct)
+        return Vapi::CreateMakeToolDto.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::CreateTransferCallToolDto.validate_raw(obj: struct)
+        return Vapi::CreateTransferCallToolDto.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      struct
     end
 
     # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -86,74 +83,42 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      case obj.type
-      when "dtmf"
-        Vapi::CreateDtmfToolDto.validate_raw(obj: obj)
-      when "endCall"
-        Vapi::CreateEndCallToolDto.validate_raw(obj: obj)
-      when "voicemail"
-        Vapi::CreateVoicemailToolDto.validate_raw(obj: obj)
-      when "function"
-        Vapi::CreateFunctionToolDto.validate_raw(obj: obj)
-      when "ghl"
-        Vapi::CreateGhlToolDto.validate_raw(obj: obj)
-      when "make"
-        Vapi::CreateMakeToolDto.validate_raw(obj: obj)
-      when "transferCall"
-        Vapi::CreateTransferCallToolDto.validate_raw(obj: obj)
-      else
-        raise("Passed value matched no type within the union, validation failed.")
+      begin
+        return Vapi::CreateDtmfToolDto.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
       end
-    end
-
-    # For Union Types, is_a? functionality is delegated to the wrapped member.
-    #
-    # @param obj [Object]
-    # @return [Boolean]
-    def is_a?(obj)
-      @member.is_a?(obj)
-    end
-
-    # @param member [Vapi::CreateDtmfToolDto]
-    # @return [Vapi::AnyscaleModelToolsItem]
-    def self.dtmf(member:)
-      new(member: member, discriminant: "dtmf")
-    end
-
-    # @param member [Vapi::CreateEndCallToolDto]
-    # @return [Vapi::AnyscaleModelToolsItem]
-    def self.end_call(member:)
-      new(member: member, discriminant: "endCall")
-    end
-
-    # @param member [Vapi::CreateVoicemailToolDto]
-    # @return [Vapi::AnyscaleModelToolsItem]
-    def self.voicemail(member:)
-      new(member: member, discriminant: "voicemail")
-    end
-
-    # @param member [Vapi::CreateFunctionToolDto]
-    # @return [Vapi::AnyscaleModelToolsItem]
-    def self.function(member:)
-      new(member: member, discriminant: "function")
-    end
-
-    # @param member [Vapi::CreateGhlToolDto]
-    # @return [Vapi::AnyscaleModelToolsItem]
-    def self.ghl(member:)
-      new(member: member, discriminant: "ghl")
-    end
-
-    # @param member [Vapi::CreateMakeToolDto]
-    # @return [Vapi::AnyscaleModelToolsItem]
-    def self.make(member:)
-      new(member: member, discriminant: "make")
-    end
-
-    # @param member [Vapi::CreateTransferCallToolDto]
-    # @return [Vapi::AnyscaleModelToolsItem]
-    def self.transfer_call(member:)
-      new(member: member, discriminant: "transferCall")
+      begin
+        return Vapi::CreateEndCallToolDto.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::CreateVoicemailToolDto.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::CreateFunctionToolDto.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::CreateGhlToolDto.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::CreateMakeToolDto.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::CreateTransferCallToolDto.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      raise("Passed value matched no type within the union, validation failed.")
     end
   end
 end

@@ -7,6 +7,13 @@ require "json"
 
 module Vapi
   class ToolMessageComplete
+    # @return [String] This message is triggered when the tool call is complete.
+    #  This message is triggered immediately without waiting for your server to respond
+    #  for async tool calls.
+    #  If this message is not provided, the model will be requested to respond.
+    #  If this message is provided, only this message will be spoken and the model will
+    #  not be requested to come up with a response. It's an exclusive OR.
+    attr_reader :type
     # @return [Vapi::ToolMessageCompleteRole] This is optional and defaults to "assistant".
     #  When role=assistant, `content` is said out loud.
     #  When role=system, `content` is passed to the model in a system message. Example:
@@ -42,6 +49,12 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param type [String] This message is triggered when the tool call is complete.
+    #  This message is triggered immediately without waiting for your server to respond
+    #  for async tool calls.
+    #  If this message is not provided, the model will be requested to respond.
+    #  If this message is provided, only this message will be spoken and the model will
+    #  not be requested to come up with a response. It's an exclusive OR.
     # @param role [Vapi::ToolMessageCompleteRole] This is optional and defaults to "assistant".
     #  When role=assistant, `content` is said out loud.
     #  When role=system, `content` is passed to the model in a system message. Example:
@@ -67,14 +80,16 @@ module Vapi
     #  in order for this message to be triggered.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ToolMessageComplete]
-    def initialize(content:, role: OMIT, end_call_after_spoken_enabled: OMIT, conditions: OMIT,
+    def initialize(type:, content:, role: OMIT, end_call_after_spoken_enabled: OMIT, conditions: OMIT,
                    additional_properties: nil)
+      @type = type
       @role = role if role != OMIT
       @end_call_after_spoken_enabled = end_call_after_spoken_enabled if end_call_after_spoken_enabled != OMIT
       @content = content
       @conditions = conditions if conditions != OMIT
       @additional_properties = additional_properties
       @_field_set = {
+        "type": type,
         "role": role,
         "endCallAfterSpokenEnabled": end_call_after_spoken_enabled,
         "content": content,
@@ -91,6 +106,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
       role = parsed_json["role"]
       end_call_after_spoken_enabled = parsed_json["endCallAfterSpokenEnabled"]
       content = parsed_json["content"]
@@ -99,6 +115,7 @@ module Vapi
         Vapi::Condition.from_json(json_object: item)
       end
       new(
+        type: type,
         role: role,
         end_call_after_spoken_enabled: end_call_after_spoken_enabled,
         content: content,
@@ -121,6 +138,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.role&.is_a?(Vapi::ToolMessageCompleteRole) != false || raise("Passed value for field obj.role is not the expected type, validation failed.")
       obj.end_call_after_spoken_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.end_call_after_spoken_enabled is not the expected type, validation failed.")
       obj.content.is_a?(String) != false || raise("Passed value for field obj.content is not the expected type, validation failed.")

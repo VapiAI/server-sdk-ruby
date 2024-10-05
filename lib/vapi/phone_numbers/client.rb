@@ -79,16 +79,16 @@ module Vapi
       end
     end
 
-    # @param request [Vapi::PhoneNumbers::PhoneNumbersCreateRequest]
+    # @param request [Vapi::CreateByoPhoneNumberDto, Vapi::CreateTwilioPhoneNumberDto, Vapi::CreateVonagePhoneNumberDto, Vapi::CreateVapiPhoneNumberDto]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::PhoneNumbers::PhoneNumbersCreateResponse]
+    # @return [Vapi::ByoPhoneNumber, Vapi::TwilioPhoneNumber, Vapi::VonagePhoneNumber, Vapi::VapiPhoneNumber]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
     #    environment: Vapi::Environment::DEFAULT,
     #    token: "YOUR_AUTH_TOKEN"
     #  )
-    #  api.phone_numbers.create
+    #  api.phone_numbers.create(request: { provider: "byo-phone-number", credential_id: "credentialId" })
     def create(request:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -109,7 +109,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::PhoneNumbers::PhoneNumbersGetResponse]
+    # @return [Vapi::ByoPhoneNumber, Vapi::TwilioPhoneNumber, Vapi::VonagePhoneNumber, Vapi::VapiPhoneNumber]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -139,7 +139,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
+    # @return [Vapi::ByoPhoneNumber, Vapi::TwilioPhoneNumber, Vapi::VonagePhoneNumber, Vapi::VapiPhoneNumber]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -168,7 +168,7 @@ module Vapi
     end
 
     # @param id [String]
-    # @param fallback_destination [Vapi::PhoneNumbers::UpdatePhoneNumberDtoFallbackDestination] This is the fallback destination an inbound call will be transferred to if:
+    # @param fallback_destination [Vapi::TransferDestinationNumber, Vapi::TransferDestinationSip] This is the fallback destination an inbound call will be transferred to if:
     #  1. `assistantId` is not set
     #  2. `squadId` is not set
     #  3. and, `assistant-request` message to the `serverUrl` fails
@@ -192,7 +192,7 @@ module Vapi
     #  as a header called x-vapi-secret.
     #  Same precedence logic as serverUrl.
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::PhoneNumbers::PhoneNumbersUpdateResponse]
+    # @return [Vapi::ByoPhoneNumber, Vapi::TwilioPhoneNumber, Vapi::VonagePhoneNumber, Vapi::VapiPhoneNumber]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -296,16 +296,16 @@ module Vapi
       end
     end
 
-    # @param request [Vapi::PhoneNumbers::PhoneNumbersCreateRequest]
+    # @param request [Vapi::CreateByoPhoneNumberDto, Vapi::CreateTwilioPhoneNumberDto, Vapi::CreateVonagePhoneNumberDto, Vapi::CreateVapiPhoneNumberDto]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::PhoneNumbers::PhoneNumbersCreateResponse]
+    # @return [Vapi::ByoPhoneNumber, Vapi::TwilioPhoneNumber, Vapi::VonagePhoneNumber, Vapi::VapiPhoneNumber]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
     #    environment: Vapi::Environment::DEFAULT,
     #    token: "YOUR_AUTH_TOKEN"
     #  )
-    #  api.phone_numbers.create
+    #  api.phone_numbers.create(request: { provider: "byo-phone-number", credential_id: "credentialId" })
     def create(request:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -328,7 +328,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::PhoneNumbers::PhoneNumbersGetResponse]
+    # @return [Vapi::ByoPhoneNumber, Vapi::TwilioPhoneNumber, Vapi::VonagePhoneNumber, Vapi::VapiPhoneNumber]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -360,7 +360,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
+    # @return [Vapi::ByoPhoneNumber, Vapi::TwilioPhoneNumber, Vapi::VonagePhoneNumber, Vapi::VapiPhoneNumber]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -391,7 +391,7 @@ module Vapi
     end
 
     # @param id [String]
-    # @param fallback_destination [Vapi::PhoneNumbers::UpdatePhoneNumberDtoFallbackDestination] This is the fallback destination an inbound call will be transferred to if:
+    # @param fallback_destination [Vapi::TransferDestinationNumber, Vapi::TransferDestinationSip] This is the fallback destination an inbound call will be transferred to if:
     #  1. `assistantId` is not set
     #  2. `squadId` is not set
     #  3. and, `assistant-request` message to the `serverUrl` fails
@@ -415,7 +415,7 @@ module Vapi
     #  as a header called x-vapi-secret.
     #  Same precedence logic as serverUrl.
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::PhoneNumbers::PhoneNumbersUpdateResponse]
+    # @return [Vapi::ByoPhoneNumber, Vapi::TwilioPhoneNumber, Vapi::VonagePhoneNumber, Vapi::VapiPhoneNumber]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",

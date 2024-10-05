@@ -21,6 +21,8 @@ module Vapi
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
     attr_reader :messages
+    # @return [String]
+    attr_reader :type
     # @return [Array<Vapi::CreateTransferCallToolDtoDestinationsItem>] These are the destinations that the call can be transferred to. If no
     #  destinations are provided, server.url will be used to get the transfer
     #  destination once the tool is called.
@@ -60,6 +62,7 @@ module Vapi
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
+    # @param type [String]
     # @param destinations [Array<Vapi::CreateTransferCallToolDtoDestinationsItem>] These are the destinations that the call can be transferred to. If no
     #  destinations are provided, server.url will be used to get the transfer
     #  destination once the tool is called.
@@ -80,10 +83,11 @@ module Vapi
     #  phoneNumber.serverUrl, then org.serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateTransferCallToolDto]
-    def initialize(async: OMIT, messages: OMIT, destinations: OMIT, function: OMIT, server: OMIT,
+    def initialize(type:, async: OMIT, messages: OMIT, destinations: OMIT, function: OMIT, server: OMIT,
                    additional_properties: nil)
       @async = async if async != OMIT
       @messages = messages if messages != OMIT
+      @type = type
       @destinations = destinations if destinations != OMIT
       @function = function if function != OMIT
       @server = server if server != OMIT
@@ -91,6 +95,7 @@ module Vapi
       @_field_set = {
         "async": async,
         "messages": messages,
+        "type": type,
         "destinations": destinations,
         "function": function,
         "server": server
@@ -111,6 +116,7 @@ module Vapi
         item = item.to_json
         Vapi::CreateTransferCallToolDtoMessagesItem.from_json(json_object: item)
       end
+      type = parsed_json["type"]
       destinations = parsed_json["destinations"]&.map do |item|
         item = item.to_json
         Vapi::CreateTransferCallToolDtoDestinationsItem.from_json(json_object: item)
@@ -130,6 +136,7 @@ module Vapi
       new(
         async: async,
         messages: messages,
+        type: type,
         destinations: destinations,
         function: function,
         server: server,
@@ -153,6 +160,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.async&.is_a?(Boolean) != false || raise("Passed value for field obj.async is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.destinations&.is_a?(Array) != false || raise("Passed value for field obj.destinations is not the expected type, validation failed.")
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)

@@ -13,6 +13,8 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
+    # @return [String]
+    attr_reader :provider
     # @return [String] This is the SIP URI of the phone number. You can SIP INVITE this. The assistant
     #  attached to this number will answer.
     #  This is case-insensitive.
@@ -53,6 +55,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
+    # @param provider [String]
     # @param sip_uri [String] This is the SIP URI of the phone number. You can SIP INVITE this. The assistant
     #  attached to this number will answer.
     #  This is case-insensitive.
@@ -75,9 +78,10 @@ module Vapi
     #  Same precedence logic as serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateVapiPhoneNumberDto]
-    def initialize(sip_uri:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT, squad_id: OMIT,
+    def initialize(provider:, sip_uri:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT, squad_id: OMIT,
                    server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
+      @provider = provider
       @sip_uri = sip_uri
       @name = name if name != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
@@ -87,6 +91,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fallbackDestination": fallback_destination,
+        "provider": provider,
         "sipUri": sip_uri,
         "name": name,
         "assistantId": assistant_id,
@@ -111,6 +116,7 @@ module Vapi
         fallback_destination = parsed_json["fallbackDestination"].to_json
         fallback_destination = Vapi::CreateVapiPhoneNumberDtoFallbackDestination.from_json(json_object: fallback_destination)
       end
+      provider = parsed_json["provider"]
       sip_uri = parsed_json["sipUri"]
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]
@@ -119,6 +125,7 @@ module Vapi
       server_url_secret = parsed_json["serverUrlSecret"]
       new(
         fallback_destination: fallback_destination,
+        provider: provider,
         sip_uri: sip_uri,
         name: name,
         assistant_id: assistant_id,
@@ -144,6 +151,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::CreateVapiPhoneNumberDtoFallbackDestination.validate_raw(obj: obj.fallback_destination)
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.sip_uri.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")

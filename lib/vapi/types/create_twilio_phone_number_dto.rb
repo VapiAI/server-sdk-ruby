@@ -13,6 +13,8 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
+    # @return [String]
+    attr_reader :provider
     # @return [String] These are the digits of the phone number you own on your Twilio.
     attr_reader :number
     # @return [String] This is the Twilio Account SID for the phone number.
@@ -55,6 +57,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
+    # @param provider [String]
     # @param number [String] These are the digits of the phone number you own on your Twilio.
     # @param twilio_account_sid [String] This is the Twilio Account SID for the phone number.
     # @param twilio_auth_token [String] This is the Twilio Auth Token for the phone number.
@@ -77,9 +80,10 @@ module Vapi
     #  Same precedence logic as serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateTwilioPhoneNumberDto]
-    def initialize(number:, twilio_account_sid:, twilio_auth_token:, fallback_destination: OMIT, name: OMIT,
+    def initialize(provider:, number:, twilio_account_sid:, twilio_auth_token:, fallback_destination: OMIT, name: OMIT,
                    assistant_id: OMIT, squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
+      @provider = provider
       @number = number
       @twilio_account_sid = twilio_account_sid
       @twilio_auth_token = twilio_auth_token
@@ -91,6 +95,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fallbackDestination": fallback_destination,
+        "provider": provider,
         "number": number,
         "twilioAccountSid": twilio_account_sid,
         "twilioAuthToken": twilio_auth_token,
@@ -117,6 +122,7 @@ module Vapi
         fallback_destination = parsed_json["fallbackDestination"].to_json
         fallback_destination = Vapi::CreateTwilioPhoneNumberDtoFallbackDestination.from_json(json_object: fallback_destination)
       end
+      provider = parsed_json["provider"]
       number = parsed_json["number"]
       twilio_account_sid = parsed_json["twilioAccountSid"]
       twilio_auth_token = parsed_json["twilioAuthToken"]
@@ -127,6 +133,7 @@ module Vapi
       server_url_secret = parsed_json["serverUrlSecret"]
       new(
         fallback_destination: fallback_destination,
+        provider: provider,
         number: number,
         twilio_account_sid: twilio_account_sid,
         twilio_auth_token: twilio_auth_token,
@@ -154,6 +161,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::CreateTwilioPhoneNumberDtoFallbackDestination.validate_raw(obj: obj.fallback_destination)
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.number.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")
       obj.twilio_account_sid.is_a?(String) != false || raise("Passed value for field obj.twilio_account_sid is not the expected type, validation failed.")
       obj.twilio_auth_token.is_a?(String) != false || raise("Passed value for field obj.twilio_auth_token is not the expected type, validation failed.")

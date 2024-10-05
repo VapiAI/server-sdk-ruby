@@ -6,6 +6,12 @@ require "json"
 
 module Vapi
   class ToolMessageStart
+    # @return [String] This message is triggered when the tool call starts.
+    #  This message is never triggered for async tools.
+    #  If this message is not provided, one of the default filler messages "Hold on a
+    #  sec", "One moment", "Just a sec", "Give me a moment" or "This'll just take a
+    #  sec" will be used.
+    attr_reader :type
     # @return [String] This is the content that the assistant says when this message is triggered.
     attr_reader :content
     # @return [Array<Vapi::Condition>] This is an optional array of conditions that the tool call arguments must meet
@@ -19,16 +25,22 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param type [String] This message is triggered when the tool call starts.
+    #  This message is never triggered for async tools.
+    #  If this message is not provided, one of the default filler messages "Hold on a
+    #  sec", "One moment", "Just a sec", "Give me a moment" or "This'll just take a
+    #  sec" will be used.
     # @param content [String] This is the content that the assistant says when this message is triggered.
     # @param conditions [Array<Vapi::Condition>] This is an optional array of conditions that the tool call arguments must meet
     #  in order for this message to be triggered.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ToolMessageStart]
-    def initialize(content:, conditions: OMIT, additional_properties: nil)
+    def initialize(type:, content:, conditions: OMIT, additional_properties: nil)
+      @type = type
       @content = content
       @conditions = conditions if conditions != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "content": content, "conditions": conditions }.reject do |_k, v|
+      @_field_set = { "type": type, "content": content, "conditions": conditions }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -40,12 +52,14 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
       content = parsed_json["content"]
       conditions = parsed_json["conditions"]&.map do |item|
         item = item.to_json
         Vapi::Condition.from_json(json_object: item)
       end
       new(
+        type: type,
         content: content,
         conditions: conditions,
         additional_properties: struct
@@ -66,6 +80,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.content.is_a?(String) != false || raise("Passed value for field obj.content is not the expected type, validation failed.")
       obj.conditions&.is_a?(Array) != false || raise("Passed value for field obj.conditions is not the expected type, validation failed.")
     end

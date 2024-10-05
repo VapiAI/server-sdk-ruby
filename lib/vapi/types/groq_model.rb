@@ -21,6 +21,8 @@ module Vapi
     attr_reader :tool_ids
     # @return [Vapi::GroqModelModel] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     attr_reader :model
+    # @return [String]
+    attr_reader :provider
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     attr_reader :temperature
@@ -57,6 +59,7 @@ module Vapi
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
     # @param model [Vapi::GroqModelModel] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
+    # @param provider [String]
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     # @param knowledge_base [Vapi::KnowledgeBase] These are the options for the knowledge base.
@@ -74,12 +77,13 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::GroqModel]
-    def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, temperature: OMIT, knowledge_base: OMIT,
-                   max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+    def initialize(model:, provider:, messages: OMIT, tools: OMIT, tool_ids: OMIT, temperature: OMIT,
+                   knowledge_base: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
       @model = model
+      @provider = provider
       @temperature = temperature if temperature != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
       @max_tokens = max_tokens if max_tokens != OMIT
@@ -91,6 +95,7 @@ module Vapi
         "tools": tools,
         "toolIds": tool_ids,
         "model": model,
+        "provider": provider,
         "temperature": temperature,
         "knowledgeBase": knowledge_base,
         "maxTokens": max_tokens,
@@ -118,6 +123,7 @@ module Vapi
       end
       tool_ids = parsed_json["toolIds"]
       model = parsed_json["model"]
+      provider = parsed_json["provider"]
       temperature = parsed_json["temperature"]
       if parsed_json["knowledgeBase"].nil?
         knowledge_base = nil
@@ -133,6 +139,7 @@ module Vapi
         tools: tools,
         tool_ids: tool_ids,
         model: model,
+        provider: provider,
         temperature: temperature,
         knowledge_base: knowledge_base,
         max_tokens: max_tokens,
@@ -160,6 +167,7 @@ module Vapi
       obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
       obj.model.is_a?(Vapi::GroqModelModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.knowledge_base.nil? || Vapi::KnowledgeBase.validate_raw(obj: obj.knowledge_base)
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")

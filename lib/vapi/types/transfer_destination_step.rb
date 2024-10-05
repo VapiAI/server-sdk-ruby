@@ -5,6 +5,8 @@ require "json"
 
 module Vapi
   class TransferDestinationStep
+    # @return [String]
+    attr_reader :type
     # @return [String] This is the step to transfer to.
     attr_reader :step_name
     # @return [String] This is the message to say before transferring the call to the destination.
@@ -27,6 +29,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param type [String]
     # @param step_name [String] This is the step to transfer to.
     # @param message [String] This is the message to say before transferring the call to the destination.
     #  If this is not provided and transfer tool messages is not provided, default is
@@ -40,12 +43,18 @@ module Vapi
     #  how to transfer the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferDestinationStep]
-    def initialize(step_name:, message: OMIT, description: OMIT, additional_properties: nil)
+    def initialize(type:, step_name:, message: OMIT, description: OMIT, additional_properties: nil)
+      @type = type
       @step_name = step_name
       @message = message if message != OMIT
       @description = description if description != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "stepName": step_name, "message": message, "description": description }.reject do |_k, v|
+      @_field_set = {
+        "type": type,
+        "stepName": step_name,
+        "message": message,
+        "description": description
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -57,10 +66,12 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
       step_name = parsed_json["stepName"]
       message = parsed_json["message"]
       description = parsed_json["description"]
       new(
+        type: type,
         step_name: step_name,
         message: message,
         description: description,
@@ -82,6 +93,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.step_name.is_a?(String) != false || raise("Passed value for field obj.step_name is not the expected type, validation failed.")
       obj.message&.is_a?(String) != false || raise("Passed value for field obj.message is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")

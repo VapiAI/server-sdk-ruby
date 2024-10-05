@@ -14,6 +14,8 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
+    # @return [String]
+    attr_reader :provider
     # @return [String] This is the unique identifier for the phone number.
     attr_reader :id
     # @return [String] This is the unique identifier for the org that this phone number belongs to.
@@ -63,6 +65,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
+    # @param provider [String]
     # @param id [String] This is the unique identifier for the phone number.
     # @param org_id [String] This is the unique identifier for the org that this phone number belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the phone number was created.
@@ -89,9 +92,10 @@ module Vapi
     #  like call transfer and hang up.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VonagePhoneNumber]
-    def initialize(id:, org_id:, created_at:, updated_at:, number:, credential_id:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT,
-                   squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
+    def initialize(provider:, id:, org_id:, created_at:, updated_at:, number:, credential_id:, fallback_destination: OMIT, name: OMIT,
+                   assistant_id: OMIT, squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
+      @provider = provider
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -106,6 +110,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fallbackDestination": fallback_destination,
+        "provider": provider,
         "id": id,
         "orgId": org_id,
         "createdAt": created_at,
@@ -135,6 +140,7 @@ module Vapi
         fallback_destination = parsed_json["fallbackDestination"].to_json
         fallback_destination = Vapi::VonagePhoneNumberFallbackDestination.from_json(json_object: fallback_destination)
       end
+      provider = parsed_json["provider"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
@@ -148,6 +154,7 @@ module Vapi
       credential_id = parsed_json["credentialId"]
       new(
         fallback_destination: fallback_destination,
+        provider: provider,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -178,6 +185,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::VonagePhoneNumberFallbackDestination.validate_raw(obj: obj.fallback_destination)
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

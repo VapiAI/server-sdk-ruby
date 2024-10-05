@@ -6,6 +6,8 @@ require "json"
 
 module Vapi
   class RuleBasedCondition
+    # @return [String] This condition is based on a strict rule.
+    attr_reader :type
     # @return [Vapi::RuleBasedConditionOperator] This is the operator you want to use to compare the left side and right side.
     #  The operation becomes `(leftSide) operator (rightSide)`.
     attr_reader :operator
@@ -81,6 +83,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param type [String] This condition is based on a strict rule.
     # @param operator [Vapi::RuleBasedConditionOperator] This is the operator you want to use to compare the left side and right side.
     #  The operation becomes `(leftSide) operator (rightSide)`.
     # @param left_side [String] This is the left side of the operation.
@@ -147,12 +150,13 @@ module Vapi
     #  blocks outside of a workflow with steps.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::RuleBasedCondition]
-    def initialize(operator:, left_side:, right_side:, additional_properties: nil)
+    def initialize(type:, operator:, left_side:, right_side:, additional_properties: nil)
+      @type = type
       @operator = operator
       @left_side = left_side
       @right_side = right_side
       @additional_properties = additional_properties
-      @_field_set = { "operator": operator, "leftSide": left_side, "rightSide": right_side }
+      @_field_set = { "type": type, "operator": operator, "leftSide": left_side, "rightSide": right_side }
     end
 
     # Deserialize a JSON object to an instance of RuleBasedCondition
@@ -162,10 +166,12 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
       operator = parsed_json["operator"]
       left_side = parsed_json["leftSide"]
       right_side = parsed_json["rightSide"]
       new(
+        type: type,
         operator: operator,
         left_side: left_side,
         right_side: right_side,
@@ -187,6 +193,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.operator.is_a?(Vapi::RuleBasedConditionOperator) != false || raise("Passed value for field obj.operator is not the expected type, validation failed.")
       obj.left_side.is_a?(String) != false || raise("Passed value for field obj.left_side is not the expected type, validation failed.")
       obj.right_side.is_a?(String) != false || raise("Passed value for field obj.right_side is not the expected type, validation failed.")

@@ -7,6 +7,8 @@ require "json"
 
 module Vapi
   class DeepgramTranscriber
+    # @return [String] This is the transcription provider that will be used.
+    attr_reader :provider
     # @return [Vapi::DeepgramTranscriberModel] This is the Deepgram model that will be used. A list of models can be found
     #  here: https://developers.deepgram.com/docs/models-languages-overview
     attr_reader :model
@@ -46,6 +48,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param provider [String] This is the transcription provider that will be used.
     # @param model [Vapi::DeepgramTranscriberModel] This is the Deepgram model that will be used. A list of models can be found
     #  here: https://developers.deepgram.com/docs/models-languages-overview
     # @param language [Vapi::DeepgramTranscriberLanguage] This is the language that will be set for the transcription. The list of
@@ -73,8 +76,9 @@ module Vapi
     #  @default 10
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::DeepgramTranscriber]
-    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, language_detection_enabled: OMIT, keywords: OMIT,
-                   endpointing: OMIT, additional_properties: nil)
+    def initialize(provider:, model: OMIT, language: OMIT, smart_format: OMIT, language_detection_enabled: OMIT,
+                   keywords: OMIT, endpointing: OMIT, additional_properties: nil)
+      @provider = provider
       @model = model if model != OMIT
       @language = language if language != OMIT
       @smart_format = smart_format if smart_format != OMIT
@@ -83,6 +87,7 @@ module Vapi
       @endpointing = endpointing if endpointing != OMIT
       @additional_properties = additional_properties
       @_field_set = {
+        "provider": provider,
         "model": model,
         "language": language,
         "smartFormat": smart_format,
@@ -101,18 +106,15 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      if parsed_json["model"].nil?
-        model = nil
-      else
-        model = parsed_json["model"].to_json
-        model = Vapi::DeepgramTranscriberModel.from_json(json_object: model)
-      end
+      provider = parsed_json["provider"]
+      model = parsed_json["model"]
       language = parsed_json["language"]
       smart_format = parsed_json["smartFormat"]
       language_detection_enabled = parsed_json["languageDetectionEnabled"]
       keywords = parsed_json["keywords"]
       endpointing = parsed_json["endpointing"]
       new(
+        provider: provider,
         model: model,
         language: language,
         smart_format: smart_format,
@@ -137,7 +139,8 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.model.nil? || Vapi::DeepgramTranscriberModel.validate_raw(obj: obj.model)
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::DeepgramTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::DeepgramTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.smart_format&.is_a?(Boolean) != false || raise("Passed value for field obj.smart_format is not the expected type, validation failed.")
       obj.language_detection_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.language_detection_enabled is not the expected type, validation failed.")

@@ -14,6 +14,8 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
+    # @return [String]
+    attr_reader :provider
     # @return [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -76,6 +78,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
+    # @param provider [String]
     # @param number_e_164_check_enabled [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -114,9 +117,10 @@ module Vapi
     #  on the Dashboard to get the credentialId.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ByoPhoneNumber]
-    def initialize(id:, org_id:, created_at:, updated_at:, credential_id:, fallback_destination: OMIT,
+    def initialize(provider:, id:, org_id:, created_at:, updated_at:, credential_id:, fallback_destination: OMIT,
                    number_e_164_check_enabled: OMIT, name: OMIT, assistant_id: OMIT, squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, number: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
+      @provider = provider
       @number_e_164_check_enabled = number_e_164_check_enabled if number_e_164_check_enabled != OMIT
       @id = id
       @org_id = org_id
@@ -132,6 +136,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fallbackDestination": fallback_destination,
+        "provider": provider,
         "numberE164CheckEnabled": number_e_164_check_enabled,
         "id": id,
         "orgId": org_id,
@@ -162,6 +167,7 @@ module Vapi
         fallback_destination = parsed_json["fallbackDestination"].to_json
         fallback_destination = Vapi::ByoPhoneNumberFallbackDestination.from_json(json_object: fallback_destination)
       end
+      provider = parsed_json["provider"]
       number_e_164_check_enabled = parsed_json["numberE164CheckEnabled"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
@@ -176,6 +182,7 @@ module Vapi
       credential_id = parsed_json["credentialId"]
       new(
         fallback_destination: fallback_destination,
+        provider: provider,
         number_e_164_check_enabled: number_e_164_check_enabled,
         id: id,
         org_id: org_id,
@@ -207,6 +214,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::ByoPhoneNumberFallbackDestination.validate_raw(obj: obj.fallback_destination)
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.number_e_164_check_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.number_e_164_check_enabled is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

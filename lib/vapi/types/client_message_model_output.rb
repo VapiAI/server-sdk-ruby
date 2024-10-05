@@ -5,6 +5,9 @@ require "json"
 
 module Vapi
   class ClientMessageModelOutput
+    # @return [String] This is the type of the message. "model-output" is sent as the model outputs
+    #  tokens.
+    attr_reader :type
     # @return [Hash{String => Object}] This is the output of the model. It can be a token or tool call.
     attr_reader :output
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -15,13 +18,16 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param type [String] This is the type of the message. "model-output" is sent as the model outputs
+    #  tokens.
     # @param output [Hash{String => Object}] This is the output of the model. It can be a token or tool call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageModelOutput]
-    def initialize(output:, additional_properties: nil)
+    def initialize(type:, output:, additional_properties: nil)
+      @type = type
       @output = output
       @additional_properties = additional_properties
-      @_field_set = { "output": output }
+      @_field_set = { "type": type, "output": output }
     end
 
     # Deserialize a JSON object to an instance of ClientMessageModelOutput
@@ -31,8 +37,13 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
       output = parsed_json["output"]
-      new(output: output, additional_properties: struct)
+      new(
+        type: type,
+        output: output,
+        additional_properties: struct
+      )
     end
 
     # Serialize an instance of ClientMessageModelOutput to a JSON object
@@ -49,6 +60,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.output.is_a?(Hash) != false || raise("Passed value for field obj.output is not the expected type, validation failed.")
     end
   end

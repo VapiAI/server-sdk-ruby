@@ -255,9 +255,9 @@ module Vapi
     end
 
     # @param id [String]
-    # @param transcriber [Vapi::Assistants::UpdateAssistantDtoTranscriber] These are the options for the assistant's transcriber.
-    # @param model [Vapi::Assistants::UpdateAssistantDtoModel] These are the options for the assistant's LLM.
-    # @param voice [Vapi::Assistants::UpdateAssistantDtoVoice] These are the options for the assistant's voice.
+    # @param transcriber [Vapi::DeepgramTranscriber, Vapi::GladiaTranscriber, Vapi::TalkscriberTranscriber] These are the options for the assistant's transcriber.
+    # @param model [Vapi::AnyscaleModel, Vapi::AnthropicModel, Vapi::CustomLlmModel, Vapi::DeepInfraModel, Vapi::GroqModel, Vapi::OpenAiModel, Vapi::OpenRouterModel, Vapi::PerplexityAiModel, Vapi::TogetherAiModel, Vapi::VapiModel] These are the options for the assistant's LLM.
+    # @param voice [Vapi::AzureVoice, Vapi::CartesiaVoice, Vapi::DeepgramVoice, Vapi::ElevenLabsVoice, Vapi::LmntVoice, Vapi::NeetsVoice, Vapi::OpenAiVoice, Vapi::PlayHtVoice, Vapi::RimeAiVoice] These are the options for the assistant's voice.
     # @param first_message_mode [Vapi::Assistants::UpdateAssistantDtoFirstMessageMode] This is the mode for the first message. Default is 'assistant-speaks-first'.
     #  Use:
     #  - 'assistant-speaks-first' to have the assistant speak first.
@@ -720,9 +720,9 @@ module Vapi
     end
 
     # @param id [String]
-    # @param transcriber [Vapi::Assistants::UpdateAssistantDtoTranscriber] These are the options for the assistant's transcriber.
-    # @param model [Vapi::Assistants::UpdateAssistantDtoModel] These are the options for the assistant's LLM.
-    # @param voice [Vapi::Assistants::UpdateAssistantDtoVoice] These are the options for the assistant's voice.
+    # @param transcriber [Vapi::DeepgramTranscriber, Vapi::GladiaTranscriber, Vapi::TalkscriberTranscriber] These are the options for the assistant's transcriber.
+    # @param model [Vapi::AnyscaleModel, Vapi::AnthropicModel, Vapi::CustomLlmModel, Vapi::DeepInfraModel, Vapi::GroqModel, Vapi::OpenAiModel, Vapi::OpenRouterModel, Vapi::PerplexityAiModel, Vapi::TogetherAiModel, Vapi::VapiModel] These are the options for the assistant's LLM.
+    # @param voice [Vapi::AzureVoice, Vapi::CartesiaVoice, Vapi::DeepgramVoice, Vapi::ElevenLabsVoice, Vapi::LmntVoice, Vapi::NeetsVoice, Vapi::OpenAiVoice, Vapi::PlayHtVoice, Vapi::RimeAiVoice] These are the options for the assistant's voice.
     # @param first_message_mode [Vapi::Assistants::UpdateAssistantDtoFirstMessageMode] This is the mode for the first message. Default is 'assistant-speaks-first'.
     #  Use:
     #  - 'assistant-speaks-first' to have the assistant speak first.

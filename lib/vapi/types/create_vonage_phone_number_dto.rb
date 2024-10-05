@@ -13,6 +13,8 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
+    # @return [String]
+    attr_reader :provider
     # @return [String] These are the digits of the phone number you own on your Vonage.
     attr_reader :number
     # @return [String] This is the credential that is used to make outgoing calls, and do operations
@@ -54,6 +56,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
+    # @param provider [String]
     # @param number [String] These are the digits of the phone number you own on your Vonage.
     # @param credential_id [String] This is the credential that is used to make outgoing calls, and do operations
     #  like call transfer and hang up.
@@ -76,9 +79,10 @@ module Vapi
     #  Same precedence logic as serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateVonagePhoneNumberDto]
-    def initialize(number:, credential_id:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT, squad_id: OMIT,
-                   server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
+    def initialize(provider:, number:, credential_id:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT,
+                   squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
+      @provider = provider
       @number = number
       @credential_id = credential_id
       @name = name if name != OMIT
@@ -89,6 +93,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fallbackDestination": fallback_destination,
+        "provider": provider,
         "number": number,
         "credentialId": credential_id,
         "name": name,
@@ -114,6 +119,7 @@ module Vapi
         fallback_destination = parsed_json["fallbackDestination"].to_json
         fallback_destination = Vapi::CreateVonagePhoneNumberDtoFallbackDestination.from_json(json_object: fallback_destination)
       end
+      provider = parsed_json["provider"]
       number = parsed_json["number"]
       credential_id = parsed_json["credentialId"]
       name = parsed_json["name"]
@@ -123,6 +129,7 @@ module Vapi
       server_url_secret = parsed_json["serverUrlSecret"]
       new(
         fallback_destination: fallback_destination,
+        provider: provider,
         number: number,
         credential_id: credential_id,
         name: name,
@@ -149,6 +156,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::CreateVonagePhoneNumberDtoFallbackDestination.validate_raw(obj: obj.fallback_destination)
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.number.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")
       obj.credential_id.is_a?(String) != false || raise("Passed value for field obj.credential_id is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")

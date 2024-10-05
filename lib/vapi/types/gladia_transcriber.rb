@@ -8,6 +8,8 @@ require "json"
 
 module Vapi
   class GladiaTranscriber
+    # @return [String] This is the transcription provider that will be used.
+    attr_reader :provider
     # @return [Vapi::GladiaTranscriberModel]
     attr_reader :model
     # @return [Vapi::GladiaTranscriberLanguageBehaviour]
@@ -36,6 +38,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param provider [String] This is the transcription provider that will be used.
     # @param model [Vapi::GladiaTranscriberModel]
     # @param language_behaviour [Vapi::GladiaTranscriberLanguageBehaviour]
     # @param language [Vapi::GladiaTranscriberLanguage] Defines the language to use for the transcription. Required when
@@ -52,8 +55,9 @@ module Vapi
     #  increase. Default value is false.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::GladiaTranscriber]
-    def initialize(model: OMIT, language_behaviour: OMIT, language: OMIT, transcription_hint: OMIT, prosody: OMIT,
-                   audio_enhancer: OMIT, additional_properties: nil)
+    def initialize(provider:, model: OMIT, language_behaviour: OMIT, language: OMIT, transcription_hint: OMIT,
+                   prosody: OMIT, audio_enhancer: OMIT, additional_properties: nil)
+      @provider = provider
       @model = model if model != OMIT
       @language_behaviour = language_behaviour if language_behaviour != OMIT
       @language = language if language != OMIT
@@ -62,6 +66,7 @@ module Vapi
       @audio_enhancer = audio_enhancer if audio_enhancer != OMIT
       @additional_properties = additional_properties
       @_field_set = {
+        "provider": provider,
         "model": model,
         "languageBehaviour": language_behaviour,
         "language": language,
@@ -80,6 +85,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      provider = parsed_json["provider"]
       model = parsed_json["model"]
       language_behaviour = parsed_json["languageBehaviour"]
       language = parsed_json["language"]
@@ -87,6 +93,7 @@ module Vapi
       prosody = parsed_json["prosody"]
       audio_enhancer = parsed_json["audioEnhancer"]
       new(
+        provider: provider,
         model: model,
         language_behaviour: language_behaviour,
         language: language,
@@ -111,6 +118,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.model&.is_a?(Vapi::GladiaTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language_behaviour&.is_a?(Vapi::GladiaTranscriberLanguageBehaviour) != false || raise("Passed value for field obj.language_behaviour is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::GladiaTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")

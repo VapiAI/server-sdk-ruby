@@ -9,6 +9,8 @@ module Vapi
     # @return [Array<Vapi::BlockStartMessageConditionsItem>] This is an optional array of conditions that must be met for this message to be
     #  triggered.
     attr_reader :conditions
+    # @return [String] This is the message type that is triggered when the block starts.
+    attr_reader :type
     # @return [String] This is the content that the assistant will say when this message is triggered.
     attr_reader :content
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -21,14 +23,16 @@ module Vapi
 
     # @param conditions [Array<Vapi::BlockStartMessageConditionsItem>] This is an optional array of conditions that must be met for this message to be
     #  triggered.
+    # @param type [String] This is the message type that is triggered when the block starts.
     # @param content [String] This is the content that the assistant will say when this message is triggered.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::BlockStartMessage]
-    def initialize(content:, conditions: OMIT, additional_properties: nil)
+    def initialize(type:, content:, conditions: OMIT, additional_properties: nil)
       @conditions = conditions if conditions != OMIT
+      @type = type
       @content = content
       @additional_properties = additional_properties
-      @_field_set = { "conditions": conditions, "content": content }.reject do |_k, v|
+      @_field_set = { "conditions": conditions, "type": type, "content": content }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -44,9 +48,11 @@ module Vapi
         item = item.to_json
         Vapi::BlockStartMessageConditionsItem.from_json(json_object: item)
       end
+      type = parsed_json["type"]
       content = parsed_json["content"]
       new(
         conditions: conditions,
+        type: type,
         content: content,
         additional_properties: struct
       )
@@ -67,6 +73,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.conditions&.is_a?(Array) != false || raise("Passed value for field obj.conditions is not the expected type, validation failed.")
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.content.is_a?(String) != false || raise("Passed value for field obj.content is not the expected type, validation failed.")
     end
   end
