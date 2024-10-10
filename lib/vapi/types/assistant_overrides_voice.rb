@@ -14,85 +14,80 @@ require_relative "rime_ai_voice"
 module Vapi
   # These are the options for the assistant's voice.
   class AssistantOverridesVoice
+    # @return [Object]
+    attr_reader :member
+    # @return [String]
+    attr_reader :discriminant
+
+    private_class_method :new
+    alias kind_of? is_a?
+
+    # @param member [Object]
+    # @param discriminant [String]
+    # @return [Vapi::AssistantOverridesVoice]
+    def initialize(member:, discriminant:)
+      @member = member
+      @discriminant = discriminant
+    end
+
     # Deserialize a JSON object to an instance of AssistantOverridesVoice
     #
     # @param json_object [String]
     # @return [Vapi::AssistantOverridesVoice]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      begin
-        Vapi::AzureVoice.validate_raw(obj: struct)
-        return Vapi::AzureVoice.from_json(json_object: struct) unless struct.nil?
+      member = case struct.provider
+               when "azure"
+                 Vapi::AzureVoice.from_json(json_object: json_object)
+               when "cartesia"
+                 Vapi::CartesiaVoice.from_json(json_object: json_object)
+               when "deepgram"
+                 Vapi::DeepgramVoice.from_json(json_object: json_object)
+               when "11labs"
+                 Vapi::ElevenLabsVoice.from_json(json_object: json_object)
+               when "lmnt"
+                 Vapi::LmntVoice.from_json(json_object: json_object)
+               when "neets"
+                 Vapi::NeetsVoice.from_json(json_object: json_object)
+               when "openai"
+                 Vapi::OpenAiVoice.from_json(json_object: json_object)
+               when "playht"
+                 Vapi::PlayHtVoice.from_json(json_object: json_object)
+               when "rime-ai"
+                 Vapi::RimeAiVoice.from_json(json_object: json_object)
+               else
+                 Vapi::AzureVoice.from_json(json_object: json_object)
+               end
+      new(member: member, discriminant: struct.provider)
+    end
 
-        return nil
-      rescue StandardError
-        # noop
+    # For Union Types, to_json functionality is delegated to the wrapped member.
+    #
+    # @return [String]
+    def to_json(*_args)
+      case @discriminant
+      when "azure"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "cartesia"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "deepgram"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "11labs"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "lmnt"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "neets"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "openai"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "playht"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "rime-ai"
+        { **@member.to_json, provider: @discriminant }.to_json
+      else
+        { "provider": @discriminant, value: @member }.to_json
       end
-      begin
-        Vapi::CartesiaVoice.validate_raw(obj: struct)
-        return Vapi::CartesiaVoice.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::DeepgramVoice.validate_raw(obj: struct)
-        return Vapi::DeepgramVoice.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::ElevenLabsVoice.validate_raw(obj: struct)
-        return Vapi::ElevenLabsVoice.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::LmntVoice.validate_raw(obj: struct)
-        return Vapi::LmntVoice.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::NeetsVoice.validate_raw(obj: struct)
-        return Vapi::NeetsVoice.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::OpenAiVoice.validate_raw(obj: struct)
-        return Vapi::OpenAiVoice.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::PlayHtVoice.validate_raw(obj: struct)
-        return Vapi::PlayHtVoice.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::RimeAiVoice.validate_raw(obj: struct)
-        return Vapi::RimeAiVoice.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      struct
+      @member.to_json
     end
 
     # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -102,52 +97,90 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      begin
-        return Vapi::AzureVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
+      case obj.provider
+      when "azure"
+        Vapi::AzureVoice.validate_raw(obj: obj)
+      when "cartesia"
+        Vapi::CartesiaVoice.validate_raw(obj: obj)
+      when "deepgram"
+        Vapi::DeepgramVoice.validate_raw(obj: obj)
+      when "11labs"
+        Vapi::ElevenLabsVoice.validate_raw(obj: obj)
+      when "lmnt"
+        Vapi::LmntVoice.validate_raw(obj: obj)
+      when "neets"
+        Vapi::NeetsVoice.validate_raw(obj: obj)
+      when "openai"
+        Vapi::OpenAiVoice.validate_raw(obj: obj)
+      when "playht"
+        Vapi::PlayHtVoice.validate_raw(obj: obj)
+      when "rime-ai"
+        Vapi::RimeAiVoice.validate_raw(obj: obj)
+      else
+        raise("Passed value matched no type within the union, validation failed.")
       end
-      begin
-        return Vapi::CartesiaVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::DeepgramVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::ElevenLabsVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::LmntVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::NeetsVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::OpenAiVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::PlayHtVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::RimeAiVoice.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      raise("Passed value matched no type within the union, validation failed.")
+    end
+
+    # For Union Types, is_a? functionality is delegated to the wrapped member.
+    #
+    # @param obj [Object]
+    # @return [Boolean]
+    def is_a?(obj)
+      @member.is_a?(obj)
+    end
+
+    # @param member [Vapi::AzureVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self.azure(member:)
+      new(member: member, discriminant: "azure")
+    end
+
+    # @param member [Vapi::CartesiaVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self.cartesia(member:)
+      new(member: member, discriminant: "cartesia")
+    end
+
+    # @param member [Vapi::DeepgramVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self.deepgram(member:)
+      new(member: member, discriminant: "deepgram")
+    end
+
+    # @param member [Vapi::ElevenLabsVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self._11_labs(member:)
+      new(member: member, discriminant: "11labs")
+    end
+
+    # @param member [Vapi::LmntVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self.lmnt(member:)
+      new(member: member, discriminant: "lmnt")
+    end
+
+    # @param member [Vapi::NeetsVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self.neets(member:)
+      new(member: member, discriminant: "neets")
+    end
+
+    # @param member [Vapi::OpenAiVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self.openai(member:)
+      new(member: member, discriminant: "openai")
+    end
+
+    # @param member [Vapi::PlayHtVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self.playht(member:)
+      new(member: member, discriminant: "playht")
+    end
+
+    # @param member [Vapi::RimeAiVoice]
+    # @return [Vapi::AssistantOverridesVoice]
+    def self.rime_ai(member:)
+      new(member: member, discriminant: "rime-ai")
     end
   end
 end

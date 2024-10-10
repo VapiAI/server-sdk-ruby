@@ -8,45 +8,60 @@ require_relative "tool_message_delayed"
 
 module Vapi
   class FunctionToolMessagesItem
+    # @return [Object]
+    attr_reader :member
+    # @return [String]
+    attr_reader :discriminant
+
+    private_class_method :new
+    alias kind_of? is_a?
+
+    # @param member [Object]
+    # @param discriminant [String]
+    # @return [Vapi::FunctionToolMessagesItem]
+    def initialize(member:, discriminant:)
+      @member = member
+      @discriminant = discriminant
+    end
+
     # Deserialize a JSON object to an instance of FunctionToolMessagesItem
     #
     # @param json_object [String]
     # @return [Vapi::FunctionToolMessagesItem]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      begin
-        Vapi::ToolMessageStart.validate_raw(obj: struct)
-        return Vapi::ToolMessageStart.from_json(json_object: struct) unless struct.nil?
+      member = case struct.type
+               when "request-start"
+                 Vapi::ToolMessageStart.from_json(json_object: json_object)
+               when "request-complete"
+                 Vapi::ToolMessageComplete.from_json(json_object: json_object)
+               when "request-failed"
+                 Vapi::ToolMessageFailed.from_json(json_object: json_object)
+               when "request-response-delayed"
+                 Vapi::ToolMessageDelayed.from_json(json_object: json_object)
+               else
+                 Vapi::ToolMessageStart.from_json(json_object: json_object)
+               end
+      new(member: member, discriminant: struct.type)
+    end
 
-        return nil
-      rescue StandardError
-        # noop
+    # For Union Types, to_json functionality is delegated to the wrapped member.
+    #
+    # @return [String]
+    def to_json(*_args)
+      case @discriminant
+      when "request-start"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "request-complete"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "request-failed"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "request-response-delayed"
+        { **@member.to_json, type: @discriminant }.to_json
+      else
+        { "type": @discriminant, value: @member }.to_json
       end
-      begin
-        Vapi::ToolMessageComplete.validate_raw(obj: struct)
-        return Vapi::ToolMessageComplete.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::ToolMessageFailed.validate_raw(obj: struct)
-        return Vapi::ToolMessageFailed.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::ToolMessageDelayed.validate_raw(obj: struct)
-        return Vapi::ToolMessageDelayed.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      struct
+      @member.to_json
     end
 
     # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -56,27 +71,50 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      begin
-        return Vapi::ToolMessageStart.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
+      case obj.type
+      when "request-start"
+        Vapi::ToolMessageStart.validate_raw(obj: obj)
+      when "request-complete"
+        Vapi::ToolMessageComplete.validate_raw(obj: obj)
+      when "request-failed"
+        Vapi::ToolMessageFailed.validate_raw(obj: obj)
+      when "request-response-delayed"
+        Vapi::ToolMessageDelayed.validate_raw(obj: obj)
+      else
+        raise("Passed value matched no type within the union, validation failed.")
       end
-      begin
-        return Vapi::ToolMessageComplete.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::ToolMessageFailed.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::ToolMessageDelayed.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      raise("Passed value matched no type within the union, validation failed.")
+    end
+
+    # For Union Types, is_a? functionality is delegated to the wrapped member.
+    #
+    # @param obj [Object]
+    # @return [Boolean]
+    def is_a?(obj)
+      @member.is_a?(obj)
+    end
+
+    # @param member [Vapi::ToolMessageStart]
+    # @return [Vapi::FunctionToolMessagesItem]
+    def self.request_start(member:)
+      new(member: member, discriminant: "request-start")
+    end
+
+    # @param member [Vapi::ToolMessageComplete]
+    # @return [Vapi::FunctionToolMessagesItem]
+    def self.request_complete(member:)
+      new(member: member, discriminant: "request-complete")
+    end
+
+    # @param member [Vapi::ToolMessageFailed]
+    # @return [Vapi::FunctionToolMessagesItem]
+    def self.request_failed(member:)
+      new(member: member, discriminant: "request-failed")
+    end
+
+    # @param member [Vapi::ToolMessageDelayed]
+    # @return [Vapi::FunctionToolMessagesItem]
+    def self.request_response_delayed(member:)
+      new(member: member, discriminant: "request-response-delayed")
     end
   end
 end

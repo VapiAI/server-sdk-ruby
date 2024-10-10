@@ -6,20 +6,6 @@ require "json"
 
 module Vapi
   class RegexReplacement
-    # @return [String] This is the regex replacement type. You can use this to replace a word or phrase
-    #  that matches a pattern.
-    #  Usage:
-    #  - Replace all numbers with "some number": { type: 'regex', regex: '\\d+', value:
-    #  'some number' }
-    #  - Replace email addresses with "[EMAIL]": { type: 'regex', regex:
-    #  '\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b', value: '[EMAIL]' }
-    #  - Replace phone numbers with a formatted version: { type: 'regex', regex:
-    #  '(\\d{3})(\\d{3})(\\d{4})', value: '($1) $2-$3' }
-    #  - Replace all instances of "color" or "colour" with "hue": { type: 'regex',
-    #  regex: 'colou?r', value: 'hue' }
-    #  - Capitalize the first letter of every sentence: { type: 'regex', regex:
-    #  '(?<=\\. |^)[a-z]', value: (match) => match.toUpperCase() }
-    attr_reader :type
     # @return [String] This is the regex pattern to replace.
     attr_reader :regex
     # @return [Array<Vapi::RegexOption>] These are the options for the regex replacement. Default all options are
@@ -36,19 +22,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the regex replacement type. You can use this to replace a word or phrase
-    #  that matches a pattern.
-    #  Usage:
-    #  - Replace all numbers with "some number": { type: 'regex', regex: '\\d+', value:
-    #  'some number' }
-    #  - Replace email addresses with "[EMAIL]": { type: 'regex', regex:
-    #  '\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b', value: '[EMAIL]' }
-    #  - Replace phone numbers with a formatted version: { type: 'regex', regex:
-    #  '(\\d{3})(\\d{3})(\\d{4})', value: '($1) $2-$3' }
-    #  - Replace all instances of "color" or "colour" with "hue": { type: 'regex',
-    #  regex: 'colou?r', value: 'hue' }
-    #  - Capitalize the first letter of every sentence: { type: 'regex', regex:
-    #  '(?<=\\. |^)[a-z]', value: (match) => match.toUpperCase() }
     # @param regex [String] This is the regex pattern to replace.
     # @param options [Array<Vapi::RegexOption>] These are the options for the regex replacement. Default all options are
     #  disabled.
@@ -56,13 +29,12 @@ module Vapi
     # @param value [String] This is the value that will replace the match.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::RegexReplacement]
-    def initialize(type:, regex:, value:, options: OMIT, additional_properties: nil)
-      @type = type
+    def initialize(regex:, value:, options: OMIT, additional_properties: nil)
       @regex = regex
       @options = options if options != OMIT
       @value = value
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "regex": regex, "options": options, "value": value }.reject do |_k, v|
+      @_field_set = { "regex": regex, "options": options, "value": value }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -74,7 +46,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       regex = parsed_json["regex"]
       options = parsed_json["options"]&.map do |item|
         item = item.to_json
@@ -82,7 +53,6 @@ module Vapi
       end
       value = parsed_json["value"]
       new(
-        type: type,
         regex: regex,
         options: options,
         value: value,
@@ -104,7 +74,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.regex.is_a?(String) != false || raise("Passed value for field obj.regex is not the expected type, validation failed.")
       obj.options&.is_a?(Array) != false || raise("Passed value for field obj.options is not the expected type, validation failed.")
       obj.value.is_a?(String) != false || raise("Passed value for field obj.value is not the expected type, validation failed.")

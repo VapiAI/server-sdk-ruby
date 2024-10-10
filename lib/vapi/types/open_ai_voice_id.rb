@@ -2,7 +2,7 @@
 
 module Vapi
   # This is the provider-specific ID that will be used.
-  class OpenAiVoiceVoiceId
+  class OpenAiVoiceId
     ALLOY = "alloy"
     ECHO = "echo"
     FABLE = "fable"

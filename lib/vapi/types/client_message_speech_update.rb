@@ -7,9 +7,6 @@ require "json"
 
 module Vapi
   class ClientMessageSpeechUpdate
-    # @return [String] This is the type of the message. "speech-update" is sent whenever assistant or
-    #  user start or stop speaking.
-    attr_reader :type
     # @return [Vapi::ClientMessageSpeechUpdateStatus] This is the status of the speech update.
     attr_reader :status
     # @return [Vapi::ClientMessageSpeechUpdateRole] This is the role which the speech update is for.
@@ -22,18 +19,15 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of the message. "speech-update" is sent whenever assistant or
-    #  user start or stop speaking.
     # @param status [Vapi::ClientMessageSpeechUpdateStatus] This is the status of the speech update.
     # @param role [Vapi::ClientMessageSpeechUpdateRole] This is the role which the speech update is for.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageSpeechUpdate]
-    def initialize(type:, status:, role:, additional_properties: nil)
-      @type = type
+    def initialize(status:, role:, additional_properties: nil)
       @status = status
       @role = role
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "status": status, "role": role }
+      @_field_set = { "status": status, "role": role }
     end
 
     # Deserialize a JSON object to an instance of ClientMessageSpeechUpdate
@@ -43,11 +37,9 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       status = parsed_json["status"]
       role = parsed_json["role"]
       new(
-        type: type,
         status: status,
         role: role,
         additional_properties: struct
@@ -68,7 +60,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.status.is_a?(Vapi::ClientMessageSpeechUpdateStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.role.is_a?(Vapi::ClientMessageSpeechUpdateRole) != false || raise("Passed value for field obj.role is not the expected type, validation failed.")
     end

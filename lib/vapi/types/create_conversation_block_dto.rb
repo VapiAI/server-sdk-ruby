@@ -33,8 +33,6 @@ module Vapi
     #  this liquid variable is just provided for convenience when creating blocks
     #  outside of a workflow with steps.
     attr_reader :output_schema
-    # @return [String]
-    attr_reader :type
     # @return [String] This is the instruction to the model.
     #  You can reference any variable in the context of the current block execution
     #  (step):
@@ -98,7 +96,6 @@ module Vapi
     #  {{blockName.output.propertyName}} will reference the latest usage of the block.
     #  this liquid variable is just provided for convenience when creating blocks
     #  outside of a workflow with steps.
-    # @param type [String]
     # @param instruction [String] This is the instruction to the model.
     #  You can reference any variable in the context of the current block execution
     #  (step):
@@ -131,12 +128,11 @@ module Vapi
     # @param name [String] This is the name of the block. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateConversationBlockDto]
-    def initialize(type:, instruction:, messages: OMIT, input_schema: OMIT, output_schema: OMIT, name: OMIT,
+    def initialize(instruction:, messages: OMIT, input_schema: OMIT, output_schema: OMIT, name: OMIT,
                    additional_properties: nil)
       @messages = messages if messages != OMIT
       @input_schema = input_schema if input_schema != OMIT
       @output_schema = output_schema if output_schema != OMIT
-      @type = type
       @instruction = instruction
       @name = name if name != OMIT
       @additional_properties = additional_properties
@@ -144,7 +140,6 @@ module Vapi
         "messages": messages,
         "inputSchema": input_schema,
         "outputSchema": output_schema,
-        "type": type,
         "instruction": instruction,
         "name": name
       }.reject do |_k, v|
@@ -175,14 +170,12 @@ module Vapi
         output_schema = parsed_json["outputSchema"].to_json
         output_schema = Vapi::JsonSchema.from_json(json_object: output_schema)
       end
-      type = parsed_json["type"]
       instruction = parsed_json["instruction"]
       name = parsed_json["name"]
       new(
         messages: messages,
         input_schema: input_schema,
         output_schema: output_schema,
-        type: type,
         instruction: instruction,
         name: name,
         additional_properties: struct
@@ -206,7 +199,6 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.input_schema.nil? || Vapi::JsonSchema.validate_raw(obj: obj.input_schema)
       obj.output_schema.nil? || Vapi::JsonSchema.validate_raw(obj: obj.output_schema)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.instruction.is_a?(String) != false || raise("Passed value for field obj.instruction is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end

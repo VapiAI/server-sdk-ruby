@@ -9,12 +9,6 @@ module Vapi
   class HandoffStep
     # @return [Vapi::HandoffStepBlock] This is the block to use. To use an existing block, use `blockId`.
     attr_reader :block
-    # @return [String] This is a step that takes a handoff from the previous step. This means it won't
-    #  return to the calling step. The workflow execution will continue linearly.
-    #  Use case:
-    #  - You want to collect information linearly (e.g. a form, provide information,
-    #  etc).
-    attr_reader :type
     # @return [Array<Vapi::StepDestination>] These are the destinations that the step can go to after it's done.
     attr_reader :destinations
     # @return [String] This is the name of the step.
@@ -82,11 +76,6 @@ module Vapi
     OMIT = Object.new
 
     # @param block [Vapi::HandoffStepBlock] This is the block to use. To use an existing block, use `blockId`.
-    # @param type [String] This is a step that takes a handoff from the previous step. This means it won't
-    #  return to the calling step. The workflow execution will continue linearly.
-    #  Use case:
-    #  - You want to collect information linearly (e.g. a form, provide information,
-    #  etc).
     # @param destinations [Array<Vapi::StepDestination>] These are the destinations that the step can go to after it's done.
     # @param name [String] This is the name of the step.
     # @param block_id [String] This is the id of the block to use. To use a transient block, use `block`.
@@ -143,10 +132,8 @@ module Vapi
     #  blocks outside of a workflow.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::HandoffStep]
-    def initialize(type:, name:, block: OMIT, destinations: OMIT, block_id: OMIT, input: OMIT,
-                   additional_properties: nil)
+    def initialize(name:, block: OMIT, destinations: OMIT, block_id: OMIT, input: OMIT, additional_properties: nil)
       @block = block if block != OMIT
-      @type = type
       @destinations = destinations if destinations != OMIT
       @name = name
       @block_id = block_id if block_id != OMIT
@@ -154,7 +141,6 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "block": block,
-        "type": type,
         "destinations": destinations,
         "name": name,
         "blockId": block_id,
@@ -177,7 +163,6 @@ module Vapi
         block = parsed_json["block"].to_json
         block = Vapi::HandoffStepBlock.from_json(json_object: block)
       end
-      type = parsed_json["type"]
       destinations = parsed_json["destinations"]&.map do |item|
         item = item.to_json
         Vapi::StepDestination.from_json(json_object: item)
@@ -187,7 +172,6 @@ module Vapi
       input = parsed_json["input"]
       new(
         block: block,
-        type: type,
         destinations: destinations,
         name: name,
         block_id: block_id,
@@ -211,7 +195,6 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.block.nil? || Vapi::HandoffStepBlock.validate_raw(obj: obj.block)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.destinations&.is_a?(Array) != false || raise("Passed value for field obj.destinations is not the expected type, validation failed.")
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.block_id&.is_a?(String) != false || raise("Passed value for field obj.block_id is not the expected type, validation failed.")

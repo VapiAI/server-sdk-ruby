@@ -5,8 +5,6 @@ require "json"
 
 module Vapi
   class VoiceCost
-    # @return [String] This is the type of cost, always 'voice' for this class.
-    attr_reader :type
     # @return [Hash{String => Object}] This is the voice that was used during the call.
     #  This matches one of the following:
     #  - `call.assistant.voice`,
@@ -30,7 +28,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of cost, always 'voice' for this class.
     # @param voice [Hash{String => Object}] This is the voice that was used during the call.
     #  This matches one of the following:
     #  - `call.assistant.voice`,
@@ -45,13 +42,12 @@ module Vapi
     # @param cost [Float] This is the cost of the component in USD.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VoiceCost]
-    def initialize(type:, voice:, characters:, cost:, additional_properties: nil)
-      @type = type
+    def initialize(voice:, characters:, cost:, additional_properties: nil)
       @voice = voice
       @characters = characters
       @cost = cost
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "voice": voice, "characters": characters, "cost": cost }
+      @_field_set = { "voice": voice, "characters": characters, "cost": cost }
     end
 
     # Deserialize a JSON object to an instance of VoiceCost
@@ -61,12 +57,10 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       voice = parsed_json["voice"]
       characters = parsed_json["characters"]
       cost = parsed_json["cost"]
       new(
-        type: type,
         voice: voice,
         characters: characters,
         cost: cost,
@@ -88,7 +82,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.voice.is_a?(Hash) != false || raise("Passed value for field obj.voice is not the expected type, validation failed.")
       obj.characters.is_a?(Float) != false || raise("Passed value for field obj.characters is not the expected type, validation failed.")
       obj.cost.is_a?(Float) != false || raise("Passed value for field obj.cost is not the expected type, validation failed.")

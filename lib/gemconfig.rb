@@ -7,8 +7,8 @@ module Vapi
     EMAIL = ""
     SUMMARY = ""
     DESCRIPTION = ""
-    HOMEPAGE = "https://github.com/fern-demo/vapi-ruby-sdk"
-    SOURCE_CODE_URI = "https://github.com/fern-demo/vapi-ruby-sdk"
-    CHANGELOG_URI = "https://github.com/fern-demo/vapi-ruby-sdk/blob/master/CHANGELOG.md"
+    HOMEPAGE = "https://github.com/VapiAI/server-sdk-ruby"
+    SOURCE_CODE_URI = "https://github.com/VapiAI/server-sdk-ruby"
+    CHANGELOG_URI = "https://github.com/VapiAI/server-sdk-ruby/blob/master/CHANGELOG.md"
   end
 end

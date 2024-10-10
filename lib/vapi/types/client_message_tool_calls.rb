@@ -7,8 +7,6 @@ require "json"
 
 module Vapi
   class ClientMessageToolCalls
-    # @return [String] This is the type of the message. "tool-calls" is sent to call a tool.
-    attr_reader :type
     # @return [Array<Vapi::ClientMessageToolCallsToolWithToolCallListItem>] This is the list of tools calls that the model is requesting along with the
     #  original tool configuration.
     attr_reader :tool_with_tool_call_list
@@ -22,24 +20,16 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of the message. "tool-calls" is sent to call a tool.
     # @param tool_with_tool_call_list [Array<Vapi::ClientMessageToolCallsToolWithToolCallListItem>] This is the list of tools calls that the model is requesting along with the
     #  original tool configuration.
     # @param tool_call_list [Array<Vapi::ToolCall>] This is the list of tool calls that the model is requesting.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageToolCalls]
-    def initialize(tool_with_tool_call_list:, tool_call_list:, type: OMIT, additional_properties: nil)
-      @type = type if type != OMIT
+    def initialize(tool_with_tool_call_list:, tool_call_list:, additional_properties: nil)
       @tool_with_tool_call_list = tool_with_tool_call_list
       @tool_call_list = tool_call_list
       @additional_properties = additional_properties
-      @_field_set = {
-        "type": type,
-        "toolWithToolCallList": tool_with_tool_call_list,
-        "toolCallList": tool_call_list
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "toolWithToolCallList": tool_with_tool_call_list, "toolCallList": tool_call_list }
     end
 
     # Deserialize a JSON object to an instance of ClientMessageToolCalls
@@ -49,7 +39,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       tool_with_tool_call_list = parsed_json["toolWithToolCallList"]&.map do |item|
         item = item.to_json
         Vapi::ClientMessageToolCallsToolWithToolCallListItem.from_json(json_object: item)
@@ -59,7 +48,6 @@ module Vapi
         Vapi::ToolCall.from_json(json_object: item)
       end
       new(
-        type: type,
         tool_with_tool_call_list: tool_with_tool_call_list,
         tool_call_list: tool_call_list,
         additional_properties: struct
@@ -80,7 +68,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type&.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.tool_with_tool_call_list.is_a?(Array) != false || raise("Passed value for field obj.tool_with_tool_call_list is not the expected type, validation failed.")
       obj.tool_call_list.is_a?(Array) != false || raise("Passed value for field obj.tool_call_list is not the expected type, validation failed.")
     end

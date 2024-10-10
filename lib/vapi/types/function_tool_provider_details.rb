@@ -10,8 +10,6 @@ module Vapi
     attr_reader :template_url
     # @return [Array<Vapi::ToolTemplateSetup>]
     attr_reader :setup_instructions
-    # @return [String] The type of tool. "function" for Function tool.
-    attr_reader :type
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -22,19 +20,13 @@ module Vapi
 
     # @param template_url [String] This is the Template URL or the Snapshot URL corresponding to the Template.
     # @param setup_instructions [Array<Vapi::ToolTemplateSetup>]
-    # @param type [String] The type of tool. "function" for Function tool.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FunctionToolProviderDetails]
-    def initialize(type:, template_url: OMIT, setup_instructions: OMIT, additional_properties: nil)
+    def initialize(template_url: OMIT, setup_instructions: OMIT, additional_properties: nil)
       @template_url = template_url if template_url != OMIT
       @setup_instructions = setup_instructions if setup_instructions != OMIT
-      @type = type
       @additional_properties = additional_properties
-      @_field_set = {
-        "templateUrl": template_url,
-        "setupInstructions": setup_instructions,
-        "type": type
-      }.reject do |_k, v|
+      @_field_set = { "templateUrl": template_url, "setupInstructions": setup_instructions }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -51,11 +43,9 @@ module Vapi
         item = item.to_json
         Vapi::ToolTemplateSetup.from_json(json_object: item)
       end
-      type = parsed_json["type"]
       new(
         template_url: template_url,
         setup_instructions: setup_instructions,
-        type: type,
         additional_properties: struct
       )
     end
@@ -76,7 +66,6 @@ module Vapi
     def self.validate_raw(obj:)
       obj.template_url&.is_a?(String) != false || raise("Passed value for field obj.template_url is not the expected type, validation failed.")
       obj.setup_instructions&.is_a?(Array) != false || raise("Passed value for field obj.setup_instructions is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
     end
   end
 end

@@ -20,8 +20,6 @@ module Vapi
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
     attr_reader :tool_ids
-    # @return [String] This is the provider that will be used for the model.
-    attr_reader :provider
     # @return [Vapi::OpenAiModelModel] This is the OpenAI model that will be used.
     attr_reader :model
     # @return [Array<Vapi::OpenAiModelFallbackModelsItem>] These are the fallback models that will be used if the primary model fails. This
@@ -65,7 +63,6 @@ module Vapi
     # @param tool_ids [Array<String>] These are the tools that the assistant can use during the call. To use transient
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
-    # @param provider [String] This is the provider that will be used for the model.
     # @param model [Vapi::OpenAiModelModel] This is the OpenAI model that will be used.
     # @param fallback_models [Array<Vapi::OpenAiModelFallbackModelsItem>] These are the fallback models that will be used if the primary model fails. This
     #  shouldn't be specified unless you have a specific reason to do so. Vapi will
@@ -88,12 +85,11 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::OpenAiModel]
-    def initialize(provider:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, fallback_models: OMIT,
+    def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, fallback_models: OMIT,
                    semantic_caching_enabled: OMIT, temperature: OMIT, knowledge_base: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
-      @provider = provider
       @model = model
       @fallback_models = fallback_models if fallback_models != OMIT
       @semantic_caching_enabled = semantic_caching_enabled if semantic_caching_enabled != OMIT
@@ -107,7 +103,6 @@ module Vapi
         "messages": messages,
         "tools": tools,
         "toolIds": tool_ids,
-        "provider": provider,
         "model": model,
         "fallbackModels": fallback_models,
         "semanticCachingEnabled": semantic_caching_enabled,
@@ -137,7 +132,6 @@ module Vapi
         Vapi::OpenAiModelToolsItem.from_json(json_object: item)
       end
       tool_ids = parsed_json["toolIds"]
-      provider = parsed_json["provider"]
       model = parsed_json["model"]
       fallback_models = parsed_json["fallbackModels"]
       semantic_caching_enabled = parsed_json["semanticCachingEnabled"]
@@ -155,7 +149,6 @@ module Vapi
         messages: messages,
         tools: tools,
         tool_ids: tool_ids,
-        provider: provider,
         model: model,
         fallback_models: fallback_models,
         semantic_caching_enabled: semantic_caching_enabled,
@@ -185,7 +178,6 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.model.is_a?(Vapi::OpenAiModelModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.fallback_models&.is_a?(Array) != false || raise("Passed value for field obj.fallback_models is not the expected type, validation failed.")
       obj.semantic_caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.semantic_caching_enabled is not the expected type, validation failed.")

@@ -82,16 +82,16 @@ module Vapi
       end
     end
 
-    # @param request [Vapi::CreateConversationBlockDto, Vapi::CreateToolCallBlockDto, Vapi::CreateWorkflowBlockDto]
+    # @param request [Vapi::Blocks::BlocksCreateRequest]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::ConversationBlock, Vapi::ToolCallBlock, Vapi::WorkflowBlock]
+    # @return [Vapi::Blocks::BlocksCreateResponse]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
     #    environment: Vapi::Environment::DEFAULT,
     #    token: "YOUR_AUTH_TOKEN"
     #  )
-    #  api.blocks.create(request: { type: "conversation", instruction: "instruction" })
+    #  api.blocks.create
     def create(request:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -112,7 +112,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::ConversationBlock, Vapi::ToolCallBlock, Vapi::WorkflowBlock]
+    # @return [Vapi::Blocks::BlocksGetResponse]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -142,7 +142,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::ConversationBlock, Vapi::ToolCallBlock, Vapi::WorkflowBlock]
+    # @return [Vapi::Blocks::BlocksDeleteResponse]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -204,7 +204,7 @@ module Vapi
     #   * :properties (Hash{String => Object})
     #   * :description (String)
     #   * :required (Array<String>)
-    # @param tool [Vapi::CreateDtmfToolDto, Vapi::CreateEndCallToolDto, Vapi::CreateVoicemailToolDto, Vapi::CreateFunctionToolDto, Vapi::CreateGhlToolDto, Vapi::CreateMakeToolDto, Vapi::CreateTransferCallToolDto] This is the tool that the block will call. To use an existing tool, use
+    # @param tool [Vapi::Blocks::UpdateBlockDtoTool] This is the tool that the block will call. To use an existing tool, use
     #  `toolId`.
     # @param steps [Array<Hash>] These are the steps in the workflow.Request of type Array<Vapi::Blocks::UpdateBlockDtoStepsItem>, as a Hash
     # @param name [String] This is the name of the block. This is just for your reference.
@@ -240,7 +240,7 @@ module Vapi
     # @param tool_id [String] This is the id of the tool that the block will call. To use a transient tool,
     #  use `tool`.
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::ConversationBlock, Vapi::ToolCallBlock, Vapi::WorkflowBlock]
+    # @return [Vapi::Blocks::BlocksUpdateResponse]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -346,16 +346,16 @@ module Vapi
       end
     end
 
-    # @param request [Vapi::CreateConversationBlockDto, Vapi::CreateToolCallBlockDto, Vapi::CreateWorkflowBlockDto]
+    # @param request [Vapi::Blocks::BlocksCreateRequest]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::ConversationBlock, Vapi::ToolCallBlock, Vapi::WorkflowBlock]
+    # @return [Vapi::Blocks::BlocksCreateResponse]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
     #    environment: Vapi::Environment::DEFAULT,
     #    token: "YOUR_AUTH_TOKEN"
     #  )
-    #  api.blocks.create(request: { type: "conversation", instruction: "instruction" })
+    #  api.blocks.create
     def create(request:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -378,7 +378,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::ConversationBlock, Vapi::ToolCallBlock, Vapi::WorkflowBlock]
+    # @return [Vapi::Blocks::BlocksGetResponse]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -410,7 +410,7 @@ module Vapi
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::ConversationBlock, Vapi::ToolCallBlock, Vapi::WorkflowBlock]
+    # @return [Vapi::Blocks::BlocksDeleteResponse]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
@@ -474,7 +474,7 @@ module Vapi
     #   * :properties (Hash{String => Object})
     #   * :description (String)
     #   * :required (Array<String>)
-    # @param tool [Vapi::CreateDtmfToolDto, Vapi::CreateEndCallToolDto, Vapi::CreateVoicemailToolDto, Vapi::CreateFunctionToolDto, Vapi::CreateGhlToolDto, Vapi::CreateMakeToolDto, Vapi::CreateTransferCallToolDto] This is the tool that the block will call. To use an existing tool, use
+    # @param tool [Vapi::Blocks::UpdateBlockDtoTool] This is the tool that the block will call. To use an existing tool, use
     #  `toolId`.
     # @param steps [Array<Hash>] These are the steps in the workflow.Request of type Array<Vapi::Blocks::UpdateBlockDtoStepsItem>, as a Hash
     # @param name [String] This is the name of the block. This is just for your reference.
@@ -510,7 +510,7 @@ module Vapi
     # @param tool_id [String] This is the id of the tool that the block will call. To use a transient tool,
     #  use `tool`.
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::ConversationBlock, Vapi::ToolCallBlock, Vapi::WorkflowBlock]
+    # @return [Vapi::Blocks::BlocksUpdateResponse]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",

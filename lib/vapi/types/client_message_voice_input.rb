@@ -5,9 +5,6 @@ require "json"
 
 module Vapi
   class ClientMessageVoiceInput
-    # @return [String] This is the type of the message. "voice-input" is sent when a generation is
-    #  requested from voice provider.
-    attr_reader :type
     # @return [String] This is the voice input content
     attr_reader :input
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -18,16 +15,13 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of the message. "voice-input" is sent when a generation is
-    #  requested from voice provider.
     # @param input [String] This is the voice input content
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageVoiceInput]
-    def initialize(type:, input:, additional_properties: nil)
-      @type = type
+    def initialize(input:, additional_properties: nil)
       @input = input
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "input": input }
+      @_field_set = { "input": input }
     end
 
     # Deserialize a JSON object to an instance of ClientMessageVoiceInput
@@ -37,13 +31,8 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       input = parsed_json["input"]
-      new(
-        type: type,
-        input: input,
-        additional_properties: struct
-      )
+      new(input: input, additional_properties: struct)
     end
 
     # Serialize an instance of ClientMessageVoiceInput to a JSON object
@@ -60,7 +49,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.input.is_a?(String) != false || raise("Passed value for field obj.input is not the expected type, validation failed.")
     end
   end

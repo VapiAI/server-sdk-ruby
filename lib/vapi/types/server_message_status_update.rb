@@ -20,9 +20,6 @@ module Vapi
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
     attr_reader :phone_number
-    # @return [String] This is the type of the message. "status-update" is sent whenever the
-    #  `call.status` changes.
-    attr_reader :type
     # @return [Vapi::ServerMessageStatusUpdateStatus] This is the status of the call.
     attr_reader :status
     # @return [Vapi::ServerMessageStatusUpdateEndedReason] This is the reason the call ended. This is only sent if the status is "ended".
@@ -80,8 +77,6 @@ module Vapi
     #  This matches one of the following:
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
-    # @param type [String] This is the type of the message. "status-update" is sent whenever the
-    #  `call.status` changes.
     # @param status [Vapi::ServerMessageStatusUpdateStatus] This is the status of the call.
     # @param ended_reason [Vapi::ServerMessageStatusUpdateEndedReason] This is the reason the call ended. This is only sent if the status is "ended".
     # @param messages [Array<Vapi::ServerMessageStatusUpdateMessagesItem>] These are the conversation messages of the call. This is only sent if the status
@@ -117,10 +112,9 @@ module Vapi
     #  This will include any errors related to the "assistant-request" if one was made.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageStatusUpdate]
-    def initialize(type:, status:, phone_number: OMIT, ended_reason: OMIT, messages: OMIT,
-                   messages_open_ai_formatted: OMIT, destination: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, transcript: OMIT, inbound_phone_call_debugging_artifacts: OMIT, additional_properties: nil)
+    def initialize(status:, phone_number: OMIT, ended_reason: OMIT, messages: OMIT, messages_open_ai_formatted: OMIT,
+                   destination: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, transcript: OMIT, inbound_phone_call_debugging_artifacts: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
-      @type = type
       @status = status
       @ended_reason = ended_reason if ended_reason != OMIT
       @messages = messages if messages != OMIT
@@ -138,7 +132,6 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
-        "type": type,
         "status": status,
         "endedReason": ended_reason,
         "messages": messages,
@@ -169,7 +162,6 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageStatusUpdatePhoneNumber.from_json(json_object: phone_number)
       end
-      type = parsed_json["type"]
       status = parsed_json["status"]
       ended_reason = parsed_json["endedReason"]
       messages = parsed_json["messages"]&.map do |item|
@@ -215,7 +207,6 @@ module Vapi
       inbound_phone_call_debugging_artifacts = parsed_json["inboundPhoneCallDebuggingArtifacts"]
       new(
         phone_number: phone_number,
-        type: type,
         status: status,
         ended_reason: ended_reason,
         messages: messages,
@@ -247,7 +238,6 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageStatusUpdatePhoneNumber.validate_raw(obj: obj.phone_number)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.status.is_a?(Vapi::ServerMessageStatusUpdateStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.ended_reason&.is_a?(Vapi::ServerMessageStatusUpdateEndedReason) != false || raise("Passed value for field obj.ended_reason is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")

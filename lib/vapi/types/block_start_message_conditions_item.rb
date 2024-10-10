@@ -6,29 +6,52 @@ require_relative "rule_based_condition"
 
 module Vapi
   class BlockStartMessageConditionsItem
+    # @return [Object]
+    attr_reader :member
+    # @return [String]
+    attr_reader :discriminant
+
+    private_class_method :new
+    alias kind_of? is_a?
+
+    # @param member [Object]
+    # @param discriminant [String]
+    # @return [Vapi::BlockStartMessageConditionsItem]
+    def initialize(member:, discriminant:)
+      @member = member
+      @discriminant = discriminant
+    end
+
     # Deserialize a JSON object to an instance of BlockStartMessageConditionsItem
     #
     # @param json_object [String]
     # @return [Vapi::BlockStartMessageConditionsItem]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      begin
-        Vapi::ModelBasedCondition.validate_raw(obj: struct)
-        return Vapi::ModelBasedCondition.from_json(json_object: struct) unless struct.nil?
+      member = case struct.type
+               when "model-based"
+                 Vapi::ModelBasedCondition.from_json(json_object: json_object)
+               when "rule-based"
+                 Vapi::RuleBasedCondition.from_json(json_object: json_object)
+               else
+                 Vapi::ModelBasedCondition.from_json(json_object: json_object)
+               end
+      new(member: member, discriminant: struct.type)
+    end
 
-        return nil
-      rescue StandardError
-        # noop
+    # For Union Types, to_json functionality is delegated to the wrapped member.
+    #
+    # @return [String]
+    def to_json(*_args)
+      case @discriminant
+      when "model-based"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "rule-based"
+        { **@member.to_json, type: @discriminant }.to_json
+      else
+        { "type": @discriminant, value: @member }.to_json
       end
-      begin
-        Vapi::RuleBasedCondition.validate_raw(obj: struct)
-        return Vapi::RuleBasedCondition.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      struct
+      @member.to_json
     end
 
     # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -38,17 +61,34 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      begin
-        return Vapi::ModelBasedCondition.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
+      case obj.type
+      when "model-based"
+        Vapi::ModelBasedCondition.validate_raw(obj: obj)
+      when "rule-based"
+        Vapi::RuleBasedCondition.validate_raw(obj: obj)
+      else
+        raise("Passed value matched no type within the union, validation failed.")
       end
-      begin
-        return Vapi::RuleBasedCondition.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      raise("Passed value matched no type within the union, validation failed.")
+    end
+
+    # For Union Types, is_a? functionality is delegated to the wrapped member.
+    #
+    # @param obj [Object]
+    # @return [Boolean]
+    def is_a?(obj)
+      @member.is_a?(obj)
+    end
+
+    # @param member [Vapi::ModelBasedCondition]
+    # @return [Vapi::BlockStartMessageConditionsItem]
+    def self.model_based(member:)
+      new(member: member, discriminant: "model-based")
+    end
+
+    # @param member [Vapi::RuleBasedCondition]
+    # @return [Vapi::BlockStartMessageConditionsItem]
+    def self.rule_based(member:)
+      new(member: member, discriminant: "rule-based")
     end
   end
 end

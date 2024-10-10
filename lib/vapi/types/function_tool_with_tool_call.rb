@@ -21,8 +21,6 @@ module Vapi
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
     attr_reader :messages
-    # @return [String] The type of tool. "function" for Function tool.
-    attr_reader :type
     # @return [Vapi::ToolCall]
     attr_reader :tool_call
     # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
@@ -60,7 +58,6 @@ module Vapi
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
-    # @param type [String] The type of tool. "function" for Function tool.
     # @param tool_call [Vapi::ToolCall]
     # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
     #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
@@ -79,11 +76,9 @@ module Vapi
     #  phoneNumber.serverUrl, then org.serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FunctionToolWithToolCall]
-    def initialize(type:, tool_call:, async: OMIT, messages: OMIT, function: OMIT, server: OMIT,
-                   additional_properties: nil)
+    def initialize(tool_call:, async: OMIT, messages: OMIT, function: OMIT, server: OMIT, additional_properties: nil)
       @async = async if async != OMIT
       @messages = messages if messages != OMIT
-      @type = type
       @tool_call = tool_call
       @function = function if function != OMIT
       @server = server if server != OMIT
@@ -91,7 +86,6 @@ module Vapi
       @_field_set = {
         "async": async,
         "messages": messages,
-        "type": type,
         "toolCall": tool_call,
         "function": function,
         "server": server
@@ -112,7 +106,6 @@ module Vapi
         item = item.to_json
         Vapi::FunctionToolWithToolCallMessagesItem.from_json(json_object: item)
       end
-      type = parsed_json["type"]
       if parsed_json["toolCall"].nil?
         tool_call = nil
       else
@@ -134,7 +127,6 @@ module Vapi
       new(
         async: async,
         messages: messages,
-        type: type,
         tool_call: tool_call,
         function: function,
         server: server,
@@ -158,7 +150,6 @@ module Vapi
     def self.validate_raw(obj:)
       obj.async&.is_a?(Boolean) != false || raise("Passed value for field obj.async is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       Vapi::ToolCall.validate_raw(obj: obj.tool_call)
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)

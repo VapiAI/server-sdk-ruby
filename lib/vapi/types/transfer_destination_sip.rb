@@ -5,8 +5,6 @@ require "json"
 
 module Vapi
   class TransferDestinationSip
-    # @return [String]
-    attr_reader :type
     # @return [String] This is the SIP URI to transfer the call to.
     attr_reader :sip_uri
     # @return [String] This is the message to say before transferring the call to the destination.
@@ -29,7 +27,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
     # @param sip_uri [String] This is the SIP URI to transfer the call to.
     # @param message [String] This is the message to say before transferring the call to the destination.
     #  If this is not provided and transfer tool messages is not provided, default is
@@ -43,18 +40,12 @@ module Vapi
     #  how to transfer the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferDestinationSip]
-    def initialize(type:, sip_uri:, message: OMIT, description: OMIT, additional_properties: nil)
-      @type = type
+    def initialize(sip_uri:, message: OMIT, description: OMIT, additional_properties: nil)
       @sip_uri = sip_uri
       @message = message if message != OMIT
       @description = description if description != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "type": type,
-        "sipUri": sip_uri,
-        "message": message,
-        "description": description
-      }.reject do |_k, v|
+      @_field_set = { "sipUri": sip_uri, "message": message, "description": description }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -66,12 +57,10 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       sip_uri = parsed_json["sipUri"]
       message = parsed_json["message"]
       description = parsed_json["description"]
       new(
-        type: type,
         sip_uri: sip_uri,
         message: message,
         description: description,
@@ -93,7 +82,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.sip_uri.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
       obj.message&.is_a?(String) != false || raise("Passed value for field obj.message is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")

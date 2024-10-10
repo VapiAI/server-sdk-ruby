@@ -5,9 +5,6 @@ require "json"
 
 module Vapi
   class ClientMessageUserInterrupted
-    # @return [String] This is the type of the message. "user-interrupted" is sent when the user
-    #  interrupts the assistant.
-    attr_reader :type
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -16,14 +13,11 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of the message. "user-interrupted" is sent when the user
-    #  interrupts the assistant.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageUserInterrupted]
-    def initialize(type:, additional_properties: nil)
-      @type = type
+    def initialize(additional_properties: nil)
       @additional_properties = additional_properties
-      @_field_set = { "type": type }
+      @_field_set = {}
     end
 
     # Deserialize a JSON object to an instance of ClientMessageUserInterrupted
@@ -32,9 +26,7 @@ module Vapi
     # @return [Vapi::ClientMessageUserInterrupted]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
-      new(type: type, additional_properties: struct)
+      new(additional_properties: struct)
     end
 
     # Serialize an instance of ClientMessageUserInterrupted to a JSON object
@@ -50,8 +42,6 @@ module Vapi
     #
     # @param obj [Object]
     # @return [Void]
-    def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
-    end
+    def self.validate_raw(obj:); end
   end
 end

@@ -4,31 +4,15 @@ require "json"
 
 module Vapi
   # This is the provider-specific ID that will be used.
-  class AzureVoiceVoiceId
-    # Deserialize a JSON object to an instance of AzureVoiceVoiceId
+  class DeepgramVoiceId
+    # Deserialize a JSON object to an instance of DeepgramVoiceId
     #
     # @param json_object [String]
-    # @return [Vapi::AzureVoiceVoiceId]
+    # @return [Vapi::DeepgramVoiceId]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       begin
-        struct.is_a?(String) != false || raise("Passed value for field struct is not the expected type, validation failed.")
-        return struct unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        struct.is_a?(String) != false || raise("Passed value for field struct is not the expected type, validation failed.")
-        return struct unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        struct.is_a?(String) != false || raise("Passed value for field struct is not the expected type, validation failed.")
+        struct.is_a?(Vapi::DeepgramVoiceIdEnum) != false || raise("Passed value for field struct is not the expected type, validation failed.")
         return struct unless struct.nil?
 
         return nil
@@ -54,17 +38,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       begin
-        return obj.is_a?(String) != false || raise("Passed value for field obj is not the expected type, validation failed.")
-      rescue StandardError
-        # noop
-      end
-      begin
-        return obj.is_a?(String) != false || raise("Passed value for field obj is not the expected type, validation failed.")
-      rescue StandardError
-        # noop
-      end
-      begin
-        return obj.is_a?(String) != false || raise("Passed value for field obj is not the expected type, validation failed.")
+        return obj.is_a?(Vapi::DeepgramVoiceIdEnum) != false || raise("Passed value for field obj is not the expected type, validation failed.")
       rescue StandardError
         # noop
       end

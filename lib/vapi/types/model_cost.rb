@@ -5,8 +5,6 @@ require "json"
 
 module Vapi
   class ModelCost
-    # @return [String] This is the type of cost, always 'model' for this class.
-    attr_reader :type
     # @return [Hash{String => Object}] This is the model that was used during the call.
     #  This matches one of the following:
     #  - `call.assistant.model`,
@@ -34,7 +32,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of cost, always 'model' for this class.
     # @param model [Hash{String => Object}] This is the model that was used during the call.
     #  This matches one of the following:
     #  - `call.assistant.model`,
@@ -52,15 +49,13 @@ module Vapi
     # @param cost [Float] This is the cost of the component in USD.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ModelCost]
-    def initialize(type:, model:, prompt_tokens:, completion_tokens:, cost:, additional_properties: nil)
-      @type = type
+    def initialize(model:, prompt_tokens:, completion_tokens:, cost:, additional_properties: nil)
       @model = model
       @prompt_tokens = prompt_tokens
       @completion_tokens = completion_tokens
       @cost = cost
       @additional_properties = additional_properties
       @_field_set = {
-        "type": type,
         "model": model,
         "promptTokens": prompt_tokens,
         "completionTokens": completion_tokens,
@@ -75,13 +70,11 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       model = parsed_json["model"]
       prompt_tokens = parsed_json["promptTokens"]
       completion_tokens = parsed_json["completionTokens"]
       cost = parsed_json["cost"]
       new(
-        type: type,
         model: model,
         prompt_tokens: prompt_tokens,
         completion_tokens: completion_tokens,
@@ -104,7 +97,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.model.is_a?(Hash) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.prompt_tokens.is_a?(Float) != false || raise("Passed value for field obj.prompt_tokens is not the expected type, validation failed.")
       obj.completion_tokens.is_a?(Float) != false || raise("Passed value for field obj.completion_tokens is not the expected type, validation failed.")

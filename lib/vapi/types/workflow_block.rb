@@ -35,8 +35,6 @@ module Vapi
     #  this liquid variable is just provided for convenience when creating blocks
     #  outside of a workflow with steps.
     attr_reader :output_schema
-    # @return [String]
-    attr_reader :type
     # @return [Array<Vapi::WorkflowBlockStepsItem>] These are the steps in the workflow.
     attr_reader :steps
     # @return [String] This is the unique identifier for the block.
@@ -80,7 +78,6 @@ module Vapi
     #  {{blockName.output.propertyName}} will reference the latest usage of the block.
     #  this liquid variable is just provided for convenience when creating blocks
     #  outside of a workflow with steps.
-    # @param type [String]
     # @param steps [Array<Vapi::WorkflowBlockStepsItem>] These are the steps in the workflow.
     # @param id [String] This is the unique identifier for the block.
     # @param org_id [String] This is the unique identifier for the organization that this block belongs to.
@@ -89,12 +86,11 @@ module Vapi
     # @param name [String] This is the name of the block. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::WorkflowBlock]
-    def initialize(type:, id:, org_id:, created_at:, updated_at:, messages: OMIT, input_schema: OMIT,
-                   output_schema: OMIT, steps: OMIT, name: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, created_at:, updated_at:, messages: OMIT, input_schema: OMIT, output_schema: OMIT,
+                   steps: OMIT, name: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @input_schema = input_schema if input_schema != OMIT
       @output_schema = output_schema if output_schema != OMIT
-      @type = type
       @steps = steps if steps != OMIT
       @id = id
       @org_id = org_id
@@ -106,7 +102,6 @@ module Vapi
         "messages": messages,
         "inputSchema": input_schema,
         "outputSchema": output_schema,
-        "type": type,
         "steps": steps,
         "id": id,
         "orgId": org_id,
@@ -141,7 +136,6 @@ module Vapi
         output_schema = parsed_json["outputSchema"].to_json
         output_schema = Vapi::JsonSchema.from_json(json_object: output_schema)
       end
-      type = parsed_json["type"]
       steps = parsed_json["steps"]&.map do |item|
         item = item.to_json
         Vapi::WorkflowBlockStepsItem.from_json(json_object: item)
@@ -155,7 +149,6 @@ module Vapi
         messages: messages,
         input_schema: input_schema,
         output_schema: output_schema,
-        type: type,
         steps: steps,
         id: id,
         org_id: org_id,
@@ -183,7 +176,6 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.input_schema.nil? || Vapi::JsonSchema.validate_raw(obj: obj.input_schema)
       obj.output_schema.nil? || Vapi::JsonSchema.validate_raw(obj: obj.output_schema)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.steps&.is_a?(Array) != false || raise("Passed value for field obj.steps is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

@@ -21,8 +21,6 @@ module Vapi
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
     attr_reader :messages
-    # @return [String]
-    attr_reader :type
     # @return [String] This is the unique identifier for the tool.
     attr_reader :id
     # @return [String] This is the unique identifier for the organization that this tool belongs to.
@@ -66,7 +64,6 @@ module Vapi
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
-    # @param type [String]
     # @param id [String] This is the unique identifier for the tool.
     # @param org_id [String] This is the unique identifier for the organization that this tool belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the tool was created.
@@ -88,11 +85,10 @@ module Vapi
     #  phoneNumber.serverUrl, then org.serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::DtmfTool]
-    def initialize(type:, id:, org_id:, created_at:, updated_at:, async: OMIT, messages: OMIT, function: OMIT,
-                   server: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, created_at:, updated_at:, async: OMIT, messages: OMIT, function: OMIT, server: OMIT,
+                   additional_properties: nil)
       @async = async if async != OMIT
       @messages = messages if messages != OMIT
-      @type = type
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -103,7 +99,6 @@ module Vapi
       @_field_set = {
         "async": async,
         "messages": messages,
-        "type": type,
         "id": id,
         "orgId": org_id,
         "createdAt": created_at,
@@ -127,7 +122,6 @@ module Vapi
         item = item.to_json
         Vapi::DtmfToolMessagesItem.from_json(json_object: item)
       end
-      type = parsed_json["type"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
@@ -147,7 +141,6 @@ module Vapi
       new(
         async: async,
         messages: messages,
-        type: type,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -174,7 +167,6 @@ module Vapi
     def self.validate_raw(obj:)
       obj.async&.is_a?(Boolean) != false || raise("Passed value for field obj.async is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

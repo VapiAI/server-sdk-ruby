@@ -5,8 +5,6 @@ require "json"
 
 module Vapi
   class ModelBasedCondition
-    # @return [String] This condition is based on a model.
-    attr_reader :type
     # @return [String] This is the instruction which should output a boolean value when passed to a
     #  model.
     #  You can reference any variable in the context of the current block execution
@@ -48,7 +46,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This condition is based on a model.
     # @param instruction [String] This is the instruction which should output a boolean value when passed to a
     #  model.
     #  You can reference any variable in the context of the current block execution
@@ -83,11 +80,10 @@ module Vapi
     #  blocks outside of a workflow with steps.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ModelBasedCondition]
-    def initialize(type:, instruction:, additional_properties: nil)
-      @type = type
+    def initialize(instruction:, additional_properties: nil)
       @instruction = instruction
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "instruction": instruction }
+      @_field_set = { "instruction": instruction }
     end
 
     # Deserialize a JSON object to an instance of ModelBasedCondition
@@ -97,13 +93,8 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       instruction = parsed_json["instruction"]
-      new(
-        type: type,
-        instruction: instruction,
-        additional_properties: struct
-      )
+      new(instruction: instruction, additional_properties: struct)
     end
 
     # Serialize an instance of ModelBasedCondition to a JSON object
@@ -120,7 +111,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.instruction.is_a?(String) != false || raise("Passed value for field obj.instruction is not the expected type, validation failed.")
     end
   end

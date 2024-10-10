@@ -5,8 +5,6 @@ require "json"
 
 module Vapi
   class TransferDestinationNumber
-    # @return [String]
-    attr_reader :type
     # @return [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -57,7 +55,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
     # @param number_e_164_check_enabled [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -96,9 +93,8 @@ module Vapi
     #  how to transfer the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferDestinationNumber]
-    def initialize(type:, number:, number_e_164_check_enabled: OMIT, extension: OMIT, caller_id: OMIT, message: OMIT,
+    def initialize(number:, number_e_164_check_enabled: OMIT, extension: OMIT, caller_id: OMIT, message: OMIT,
                    description: OMIT, additional_properties: nil)
-      @type = type
       @number_e_164_check_enabled = number_e_164_check_enabled if number_e_164_check_enabled != OMIT
       @number = number
       @extension = extension if extension != OMIT
@@ -107,7 +103,6 @@ module Vapi
       @description = description if description != OMIT
       @additional_properties = additional_properties
       @_field_set = {
-        "type": type,
         "numberE164CheckEnabled": number_e_164_check_enabled,
         "number": number,
         "extension": extension,
@@ -126,7 +121,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       number_e_164_check_enabled = parsed_json["numberE164CheckEnabled"]
       number = parsed_json["number"]
       extension = parsed_json["extension"]
@@ -134,7 +128,6 @@ module Vapi
       message = parsed_json["message"]
       description = parsed_json["description"]
       new(
-        type: type,
         number_e_164_check_enabled: number_e_164_check_enabled,
         number: number,
         extension: extension,
@@ -159,7 +152,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.number_e_164_check_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.number_e_164_check_enabled is not the expected type, validation failed.")
       obj.number.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")
       obj.extension&.is_a?(String) != false || raise("Passed value for field obj.extension is not the expected type, validation failed.")

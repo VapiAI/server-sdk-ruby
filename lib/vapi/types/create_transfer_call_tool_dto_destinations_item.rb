@@ -8,6 +8,22 @@ require_relative "transfer_destination_sip"
 
 module Vapi
   class CreateTransferCallToolDtoDestinationsItem
+    # @return [Object]
+    attr_reader :member
+    # @return [String]
+    attr_reader :discriminant
+
+    private_class_method :new
+    alias kind_of? is_a?
+
+    # @param member [Object]
+    # @param discriminant [String]
+    # @return [Vapi::CreateTransferCallToolDtoDestinationsItem]
+    def initialize(member:, discriminant:)
+      @member = member
+      @discriminant = discriminant
+    end
+
     # Deserialize a JSON object to an instance of
     #  CreateTransferCallToolDtoDestinationsItem
     #
@@ -15,39 +31,38 @@ module Vapi
     # @return [Vapi::CreateTransferCallToolDtoDestinationsItem]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      begin
-        Vapi::TransferDestinationAssistant.validate_raw(obj: struct)
-        return Vapi::TransferDestinationAssistant.from_json(json_object: struct) unless struct.nil?
+      member = case struct.type
+               when "assistant"
+                 Vapi::TransferDestinationAssistant.from_json(json_object: json_object)
+               when "step"
+                 Vapi::TransferDestinationStep.from_json(json_object: json_object)
+               when "number"
+                 Vapi::TransferDestinationNumber.from_json(json_object: json_object)
+               when "sip"
+                 Vapi::TransferDestinationSip.from_json(json_object: json_object)
+               else
+                 Vapi::TransferDestinationAssistant.from_json(json_object: json_object)
+               end
+      new(member: member, discriminant: struct.type)
+    end
 
-        return nil
-      rescue StandardError
-        # noop
+    # For Union Types, to_json functionality is delegated to the wrapped member.
+    #
+    # @return [String]
+    def to_json(*_args)
+      case @discriminant
+      when "assistant"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "step"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "number"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "sip"
+        { **@member.to_json, type: @discriminant }.to_json
+      else
+        { "type": @discriminant, value: @member }.to_json
       end
-      begin
-        Vapi::TransferDestinationStep.validate_raw(obj: struct)
-        return Vapi::TransferDestinationStep.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::TransferDestinationNumber.validate_raw(obj: struct)
-        return Vapi::TransferDestinationNumber.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      begin
-        Vapi::TransferDestinationSip.validate_raw(obj: struct)
-        return Vapi::TransferDestinationSip.from_json(json_object: struct) unless struct.nil?
-
-        return nil
-      rescue StandardError
-        # noop
-      end
-      struct
+      @member.to_json
     end
 
     # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -57,27 +72,50 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      begin
-        return Vapi::TransferDestinationAssistant.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
+      case obj.type
+      when "assistant"
+        Vapi::TransferDestinationAssistant.validate_raw(obj: obj)
+      when "step"
+        Vapi::TransferDestinationStep.validate_raw(obj: obj)
+      when "number"
+        Vapi::TransferDestinationNumber.validate_raw(obj: obj)
+      when "sip"
+        Vapi::TransferDestinationSip.validate_raw(obj: obj)
+      else
+        raise("Passed value matched no type within the union, validation failed.")
       end
-      begin
-        return Vapi::TransferDestinationStep.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::TransferDestinationNumber.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      begin
-        return Vapi::TransferDestinationSip.validate_raw(obj: obj)
-      rescue StandardError
-        # noop
-      end
-      raise("Passed value matched no type within the union, validation failed.")
+    end
+
+    # For Union Types, is_a? functionality is delegated to the wrapped member.
+    #
+    # @param obj [Object]
+    # @return [Boolean]
+    def is_a?(obj)
+      @member.is_a?(obj)
+    end
+
+    # @param member [Vapi::TransferDestinationAssistant]
+    # @return [Vapi::CreateTransferCallToolDtoDestinationsItem]
+    def self.assistant(member:)
+      new(member: member, discriminant: "assistant")
+    end
+
+    # @param member [Vapi::TransferDestinationStep]
+    # @return [Vapi::CreateTransferCallToolDtoDestinationsItem]
+    def self.step(member:)
+      new(member: member, discriminant: "step")
+    end
+
+    # @param member [Vapi::TransferDestinationNumber]
+    # @return [Vapi::CreateTransferCallToolDtoDestinationsItem]
+    def self.number(member:)
+      new(member: member, discriminant: "number")
+    end
+
+    # @param member [Vapi::TransferDestinationSip]
+    # @return [Vapi::CreateTransferCallToolDtoDestinationsItem]
+    def self.sip(member:)
+      new(member: member, discriminant: "sip")
     end
   end
 end

@@ -17,8 +17,6 @@ module Vapi
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
     attr_reader :phone_number
-    # @return [String] This is the type of the message. "tool-calls" is sent to call a tool.
-    attr_reader :type
     # @return [Array<Vapi::ServerMessageToolCallsToolWithToolCallListItem>] This is the list of tools calls that the model is requesting along with the
     #  original tool configuration.
     attr_reader :tool_with_tool_call_list
@@ -61,7 +59,6 @@ module Vapi
     #  This matches one of the following:
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
-    # @param type [String] This is the type of the message. "tool-calls" is sent to call a tool.
     # @param tool_with_tool_call_list [Array<Vapi::ServerMessageToolCallsToolWithToolCallListItem>] This is the list of tools calls that the model is requesting along with the
     #  original tool configuration.
     # @param timestamp [String] This is the ISO-8601 formatted timestamp of when the message was sent.
@@ -87,10 +84,9 @@ module Vapi
     # @param tool_call_list [Array<Vapi::ToolCall>] This is the list of tool calls that the model is requesting.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageToolCalls]
-    def initialize(tool_with_tool_call_list:, tool_call_list:, phone_number: OMIT, type: OMIT, timestamp: OMIT, artifact: OMIT,
-                   assistant: OMIT, customer: OMIT, call: OMIT, additional_properties: nil)
+    def initialize(tool_with_tool_call_list:, tool_call_list:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT,
+                   customer: OMIT, call: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
-      @type = type if type != OMIT
       @tool_with_tool_call_list = tool_with_tool_call_list
       @timestamp = timestamp if timestamp != OMIT
       @artifact = artifact if artifact != OMIT
@@ -101,7 +97,6 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
-        "type": type,
         "toolWithToolCallList": tool_with_tool_call_list,
         "timestamp": timestamp,
         "artifact": artifact,
@@ -127,7 +122,6 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageToolCallsPhoneNumber.from_json(json_object: phone_number)
       end
-      type = parsed_json["type"]
       tool_with_tool_call_list = parsed_json["toolWithToolCallList"]&.map do |item|
         item = item.to_json
         Vapi::ServerMessageToolCallsToolWithToolCallListItem.from_json(json_object: item)
@@ -163,7 +157,6 @@ module Vapi
       end
       new(
         phone_number: phone_number,
-        type: type,
         tool_with_tool_call_list: tool_with_tool_call_list,
         timestamp: timestamp,
         artifact: artifact,
@@ -190,7 +183,6 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageToolCallsPhoneNumber.validate_raw(obj: obj.phone_number)
-      obj.type&.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.tool_with_tool_call_list.is_a?(Array) != false || raise("Passed value for field obj.tool_with_tool_call_list is not the expected type, validation failed.")
       obj.timestamp&.is_a?(String) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)

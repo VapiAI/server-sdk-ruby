@@ -17,9 +17,6 @@ module Vapi
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
     attr_reader :phone_number
-    # @return [String] This is the type of the message. "speech-update" is sent whenever assistant or
-    #  user start or stop speaking.
-    attr_reader :type
     # @return [Vapi::ServerMessageSpeechUpdateStatus] This is the status of the speech update.
     attr_reader :status
     # @return [Vapi::ServerMessageSpeechUpdateRole] This is the role which the speech update is for.
@@ -61,8 +58,6 @@ module Vapi
     #  This matches one of the following:
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
-    # @param type [String] This is the type of the message. "speech-update" is sent whenever assistant or
-    #  user start or stop speaking.
     # @param status [Vapi::ServerMessageSpeechUpdateStatus] This is the status of the speech update.
     # @param role [Vapi::ServerMessageSpeechUpdateRole] This is the role which the speech update is for.
     # @param timestamp [String] This is the ISO-8601 formatted timestamp of when the message was sent.
@@ -87,10 +82,9 @@ module Vapi
     #  especially after the call is ended, use GET /call/:id.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageSpeechUpdate]
-    def initialize(type:, status:, role:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT,
+    def initialize(status:, role:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT,
                    customer: OMIT, call: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
-      @type = type
       @status = status
       @role = role
       @timestamp = timestamp if timestamp != OMIT
@@ -101,7 +95,6 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
-        "type": type,
         "status": status,
         "role": role,
         "timestamp": timestamp,
@@ -127,7 +120,6 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageSpeechUpdatePhoneNumber.from_json(json_object: phone_number)
       end
-      type = parsed_json["type"]
       status = parsed_json["status"]
       role = parsed_json["role"]
       timestamp = parsed_json["timestamp"]
@@ -157,7 +149,6 @@ module Vapi
       end
       new(
         phone_number: phone_number,
-        type: type,
         status: status,
         role: role,
         timestamp: timestamp,
@@ -184,7 +175,6 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageSpeechUpdatePhoneNumber.validate_raw(obj: obj.phone_number)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.status.is_a?(Vapi::ServerMessageSpeechUpdateStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.role.is_a?(Vapi::ServerMessageSpeechUpdateRole) != false || raise("Passed value for field obj.role is not the expected type, validation failed.")
       obj.timestamp&.is_a?(String) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")

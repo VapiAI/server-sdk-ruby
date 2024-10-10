@@ -7,9 +7,6 @@ require "json"
 
 module Vapi
   class ClientMessageConversationUpdate
-    # @return [String] This is the type of the message. "conversation-update" is sent when an update is
-    #  committed to the conversation history.
-    attr_reader :type
     # @return [Array<Vapi::ClientMessageConversationUpdateMessagesItem>] This is the most up-to-date conversation history at the time the message is
     #  sent.
     attr_reader :messages
@@ -24,24 +21,17 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of the message. "conversation-update" is sent when an update is
-    #  committed to the conversation history.
     # @param messages [Array<Vapi::ClientMessageConversationUpdateMessagesItem>] This is the most up-to-date conversation history at the time the message is
     #  sent.
     # @param messages_open_ai_formatted [Array<Vapi::OpenAiMessage>] This is the most up-to-date conversation history at the time the message is
     #  sent, formatted for OpenAI.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageConversationUpdate]
-    def initialize(type:, messages_open_ai_formatted:, messages: OMIT, additional_properties: nil)
-      @type = type
+    def initialize(messages_open_ai_formatted:, messages: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @messages_open_ai_formatted = messages_open_ai_formatted
       @additional_properties = additional_properties
-      @_field_set = {
-        "type": type,
-        "messages": messages,
-        "messagesOpenAIFormatted": messages_open_ai_formatted
-      }.reject do |_k, v|
+      @_field_set = { "messages": messages, "messagesOpenAIFormatted": messages_open_ai_formatted }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -53,7 +43,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       messages = parsed_json["messages"]&.map do |item|
         item = item.to_json
         Vapi::ClientMessageConversationUpdateMessagesItem.from_json(json_object: item)
@@ -63,7 +52,6 @@ module Vapi
         Vapi::OpenAiMessage.from_json(json_object: item)
       end
       new(
-        type: type,
         messages: messages,
         messages_open_ai_formatted: messages_open_ai_formatted,
         additional_properties: struct
@@ -84,7 +72,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.messages_open_ai_formatted.is_a?(Array) != false || raise("Passed value for field obj.messages_open_ai_formatted is not the expected type, validation failed.")
     end

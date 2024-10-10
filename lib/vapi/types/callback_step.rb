@@ -9,14 +9,6 @@ module Vapi
   class CallbackStep
     # @return [Vapi::CallbackStepBlock] This is the block to use. To use an existing block, use `blockId`.
     attr_reader :block
-    # @return [String] This is a step that calls back to the previous step after it's done. This
-    #  effectively means we're spawning a new conversation thread. The previous
-    #  conversation thread will resume where it left off once this step is done.
-    #  Use case:
-    #  - You are collecting a customer's order and while they were on one item, they
-    #  start a new item or try to modify a previous one. You would make a OrderUpdate
-    #  block which calls the same block repeatedly when a new update starts.
-    attr_reader :type
     # @return [Array<Vapi::AssignmentMutation>] This is the mutations to apply to the context after the step is done.
     attr_reader :mutations
     # @return [String] This is the name of the step.
@@ -84,13 +76,6 @@ module Vapi
     OMIT = Object.new
 
     # @param block [Vapi::CallbackStepBlock] This is the block to use. To use an existing block, use `blockId`.
-    # @param type [String] This is a step that calls back to the previous step after it's done. This
-    #  effectively means we're spawning a new conversation thread. The previous
-    #  conversation thread will resume where it left off once this step is done.
-    #  Use case:
-    #  - You are collecting a customer's order and while they were on one item, they
-    #  start a new item or try to modify a previous one. You would make a OrderUpdate
-    #  block which calls the same block repeatedly when a new update starts.
     # @param mutations [Array<Vapi::AssignmentMutation>] This is the mutations to apply to the context after the step is done.
     # @param name [String] This is the name of the step.
     # @param block_id [String] This is the id of the block to use. To use a transient block, use `block`.
@@ -147,9 +132,8 @@ module Vapi
     #  blocks outside of a workflow.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CallbackStep]
-    def initialize(type:, name:, block: OMIT, mutations: OMIT, block_id: OMIT, input: OMIT, additional_properties: nil)
+    def initialize(name:, block: OMIT, mutations: OMIT, block_id: OMIT, input: OMIT, additional_properties: nil)
       @block = block if block != OMIT
-      @type = type
       @mutations = mutations if mutations != OMIT
       @name = name
       @block_id = block_id if block_id != OMIT
@@ -157,7 +141,6 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "block": block,
-        "type": type,
         "mutations": mutations,
         "name": name,
         "blockId": block_id,
@@ -180,7 +163,6 @@ module Vapi
         block = parsed_json["block"].to_json
         block = Vapi::CallbackStepBlock.from_json(json_object: block)
       end
-      type = parsed_json["type"]
       mutations = parsed_json["mutations"]&.map do |item|
         item = item.to_json
         Vapi::AssignmentMutation.from_json(json_object: item)
@@ -190,7 +172,6 @@ module Vapi
       input = parsed_json["input"]
       new(
         block: block,
-        type: type,
         mutations: mutations,
         name: name,
         block_id: block_id,
@@ -214,7 +195,6 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.block.nil? || Vapi::CallbackStepBlock.validate_raw(obj: obj.block)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.mutations&.is_a?(Array) != false || raise("Passed value for field obj.mutations is not the expected type, validation failed.")
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.block_id&.is_a?(String) != false || raise("Passed value for field obj.block_id is not the expected type, validation failed.")
