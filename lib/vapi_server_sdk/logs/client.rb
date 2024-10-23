@@ -25,7 +25,7 @@ module Vapi
     # @param customer_id [String] This is the ID of the customer.
     # @param squad_id [String] This is the ID of the squad.
     # @param call_id [String] This is the ID of the call.
-    # @param page [Float] This is the page number to return. Defaults to 1.
+    # @param page [Integer] This is the page number to return. Defaults to 1.
     # @param sort_order [Vapi::Logs::LogsGetRequestSortOrder] This is the sort order for pagination. Defaults to 'ASC'.
     # @param limit [Float] This is the maximum number of items to return. Defaults to 100.
     # @param created_at_gt [DateTime] This will return items where the createdAt is greater than the specified value.
@@ -106,7 +106,7 @@ module Vapi
     # @param customer_id [String] This is the ID of the customer.
     # @param squad_id [String] This is the ID of the squad.
     # @param call_id [String] This is the ID of the call.
-    # @param page [Float] This is the page number to return. Defaults to 1.
+    # @param page [Integer] This is the page number to return. Defaults to 1.
     # @param sort_order [Vapi::Logs::LogsGetRequestSortOrder] This is the sort order for pagination. Defaults to 'ASC'.
     # @param limit [Float] This is the maximum number of items to return. Defaults to 100.
     # @param created_at_gt [DateTime] This will return items where the createdAt is greater than the specified value.
