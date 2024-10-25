@@ -1,4 +1,5 @@
 # Vapi Ruby Library
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern)
 
 [![Gem Version](https://img.shields.io/badge/vapi_server_sdk-red?logo=ruby)](https://rubygems.org/gems/vapi-server-sdk)
 
