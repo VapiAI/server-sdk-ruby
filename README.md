@@ -1,6 +1,6 @@
 # Vapi Ruby Library
 
-[![Gem Version](https://img.shields.io/badge/vapi-server-sdk-v0.0.3-red?logo=ruby)](https://rubygems.org/gems/vapi-server-sdk)
+[![Gem Version](https://img.shields.io/badge/vapi_server_sdk-red?logo=ruby)](https://rubygems.org/gems/vapi-server-sdk)
 
 The Vapi Ruby library provides access to the Vapi API from Ruby.
 
