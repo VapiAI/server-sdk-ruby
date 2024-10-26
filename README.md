@@ -1,5 +1,5 @@
 # Vapi Ruby Library
-[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern) [![Gem Version](https://img.shields.io/badge/vapi_server_sdk-red?logo=ruby)](https://rubygems.org/gems/vapi-server-sdk)
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern) [![Gem Version](https://img.shields.io/badge/vapi_server_sdk-red?logo=ruby)](https://rubygems.org/gems/vapi_server_sdk)
 
 The Vapi Ruby library provides access to the Vapi API from Ruby.
 
@@ -12,19 +12,19 @@ API reference documentation is available [here](https://docs.vapi.ai/).
 Install the gem and add to the application's Gemfile by executing:
 
 ```sh
-bundle add vapi-server-sdk
+bundle add vapi_server_sdk
 ```
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
 ```sh
-gem install vapi-server-sdk
+gem install vapi_server_sdk
 ```
 
 ## Usage
 
 ```ruby
-require "vapi-server-sdk"
+require "vapi_server_sdk"
 
 client = Vapi::Client.new(
   token: 'YOUR_TOKEN'
@@ -37,7 +37,7 @@ result = client.calls.create()
 The SDK exposes an async client that you can use to make non-blocking requests. 
 
 ```ruby
-require "vapi-server-sdk"
+require "vapi_server_sdk"
 
 client = Vapi::AsyncClient.new(
   token: 'YOUR_TOKEN'
