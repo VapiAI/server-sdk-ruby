@@ -9,8 +9,9 @@ require_relative "client_message_speech_update"
 require_relative "client_message_transcript"
 require_relative "client_message_tool_calls"
 require_relative "client_message_tool_calls_result"
+require_relative "client_message_transfer_update"
 require_relative "client_message_user_interrupted"
-require_relative "client_message_language_changed"
+require_relative "client_message_language_change_detected"
 require_relative "client_message_voice_input"
 
 module Vapi
@@ -57,10 +58,12 @@ module Vapi
                  Vapi::ClientMessageToolCalls.from_json(json_object: json_object)
                when "tool-calls-result"
                  Vapi::ClientMessageToolCallsResult.from_json(json_object: json_object)
+               when "transfer-update"
+                 Vapi::ClientMessageTransferUpdate.from_json(json_object: json_object)
                when "user-interrupted"
                  Vapi::ClientMessageUserInterrupted.from_json(json_object: json_object)
-               when "language-changed"
-                 Vapi::ClientMessageLanguageChanged.from_json(json_object: json_object)
+               when "language-change-detected"
+                 Vapi::ClientMessageLanguageChangeDetected.from_json(json_object: json_object)
                when "voice-input"
                  Vapi::ClientMessageVoiceInput.from_json(json_object: json_object)
                else
@@ -90,9 +93,11 @@ module Vapi
         { **@member.to_json, type: @discriminant }.to_json
       when "tool-calls-result"
         { **@member.to_json, type: @discriminant }.to_json
+      when "transfer-update"
+        { **@member.to_json, type: @discriminant }.to_json
       when "user-interrupted"
         { **@member.to_json, type: @discriminant }.to_json
-      when "language-changed"
+      when "language-change-detected"
         { **@member.to_json, type: @discriminant }.to_json
       when "voice-input"
         { **@member.to_json, type: @discriminant }.to_json
@@ -126,10 +131,12 @@ module Vapi
         Vapi::ClientMessageToolCalls.validate_raw(obj: obj)
       when "tool-calls-result"
         Vapi::ClientMessageToolCallsResult.validate_raw(obj: obj)
+      when "transfer-update"
+        Vapi::ClientMessageTransferUpdate.validate_raw(obj: obj)
       when "user-interrupted"
         Vapi::ClientMessageUserInterrupted.validate_raw(obj: obj)
-      when "language-changed"
-        Vapi::ClientMessageLanguageChanged.validate_raw(obj: obj)
+      when "language-change-detected"
+        Vapi::ClientMessageLanguageChangeDetected.validate_raw(obj: obj)
       when "voice-input"
         Vapi::ClientMessageVoiceInput.validate_raw(obj: obj)
       else
@@ -193,16 +200,22 @@ module Vapi
       new(member: member, discriminant: "tool-calls-result")
     end
 
+    # @param member [Vapi::ClientMessageTransferUpdate]
+    # @return [Vapi::ClientMessageMessage]
+    def self.transfer_update(member:)
+      new(member: member, discriminant: "transfer-update")
+    end
+
     # @param member [Vapi::ClientMessageUserInterrupted]
     # @return [Vapi::ClientMessageMessage]
     def self.user_interrupted(member:)
       new(member: member, discriminant: "user-interrupted")
     end
 
-    # @param member [Vapi::ClientMessageLanguageChanged]
+    # @param member [Vapi::ClientMessageLanguageChangeDetected]
     # @return [Vapi::ClientMessageMessage]
-    def self.language_changed(member:)
-      new(member: member, discriminant: "language-changed")
+    def self.language_change_detected(member:)
+      new(member: member, discriminant: "language-change-detected")
     end
 
     # @param member [Vapi::ClientMessageVoiceInput]

@@ -2,6 +2,7 @@
 
 require_relative "vapi_phone_number_fallback_destination"
 require "date"
+require_relative "sip_authentication"
 require "ostruct"
 require "json"
 
@@ -48,6 +49,10 @@ module Vapi
     #  attached to this number will answer.
     #  This is case-insensitive.
     attr_reader :sip_uri
+    # @return [Vapi::SipAuthentication] This enables authentication for incoming SIP INVITE requests to the `sipUri`.
+    #  If not set, any username/password to the 401 challenge of the SIP INVITE will be
+    #  accepted.
+    attr_reader :authentication
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -86,10 +91,13 @@ module Vapi
     # @param sip_uri [String] This is the SIP URI of the phone number. You can SIP INVITE this. The assistant
     #  attached to this number will answer.
     #  This is case-insensitive.
+    # @param authentication [Vapi::SipAuthentication] This enables authentication for incoming SIP INVITE requests to the `sipUri`.
+    #  If not set, any username/password to the 401 challenge of the SIP INVITE will be
+    #  accepted.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VapiPhoneNumber]
     def initialize(id:, org_id:, created_at:, updated_at:, sip_uri:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT,
-                   squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
+                   squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, authentication: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
       @id = id
       @org_id = org_id
@@ -101,6 +109,7 @@ module Vapi
       @server_url = server_url if server_url != OMIT
       @server_url_secret = server_url_secret if server_url_secret != OMIT
       @sip_uri = sip_uri
+      @authentication = authentication if authentication != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "fallbackDestination": fallback_destination,
@@ -113,7 +122,8 @@ module Vapi
         "squadId": squad_id,
         "serverUrl": server_url,
         "serverUrlSecret": server_url_secret,
-        "sipUri": sip_uri
+        "sipUri": sip_uri,
+        "authentication": authentication
       }.reject do |_k, v|
         v == OMIT
       end
@@ -142,6 +152,12 @@ module Vapi
       server_url = parsed_json["serverUrl"]
       server_url_secret = parsed_json["serverUrlSecret"]
       sip_uri = parsed_json["sipUri"]
+      if parsed_json["authentication"].nil?
+        authentication = nil
+      else
+        authentication = parsed_json["authentication"].to_json
+        authentication = Vapi::SipAuthentication.from_json(json_object: authentication)
+      end
       new(
         fallback_destination: fallback_destination,
         id: id,
@@ -154,6 +170,7 @@ module Vapi
         server_url: server_url,
         server_url_secret: server_url_secret,
         sip_uri: sip_uri,
+        authentication: authentication,
         additional_properties: struct
       )
     end
@@ -183,6 +200,7 @@ module Vapi
       obj.server_url&.is_a?(String) != false || raise("Passed value for field obj.server_url is not the expected type, validation failed.")
       obj.server_url_secret&.is_a?(String) != false || raise("Passed value for field obj.server_url_secret is not the expected type, validation failed.")
       obj.sip_uri.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
+      obj.authentication.nil? || Vapi::SipAuthentication.validate_raw(obj: obj.authentication)
     end
   end
 end

@@ -4,6 +4,7 @@ require "json"
 require_relative "client_inbound_message_add_message"
 require_relative "client_inbound_message_control"
 require_relative "client_inbound_message_say"
+require_relative "client_inbound_message_transfer"
 
 module Vapi
   # These are the messages that can be sent from client-side SDKs to control the
@@ -38,6 +39,8 @@ module Vapi
                  Vapi::ClientInboundMessageControl.from_json(json_object: json_object)
                when "say"
                  Vapi::ClientInboundMessageSay.from_json(json_object: json_object)
+               when "transfer"
+                 Vapi::ClientInboundMessageTransfer.from_json(json_object: json_object)
                else
                  Vapi::ClientInboundMessageAddMessage.from_json(json_object: json_object)
                end
@@ -54,6 +57,8 @@ module Vapi
       when "control"
         { **@member.to_json, type: @discriminant }.to_json
       when "say"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "transfer"
         { **@member.to_json, type: @discriminant }.to_json
       else
         { "type": @discriminant, value: @member }.to_json
@@ -75,6 +80,8 @@ module Vapi
         Vapi::ClientInboundMessageControl.validate_raw(obj: obj)
       when "say"
         Vapi::ClientInboundMessageSay.validate_raw(obj: obj)
+      when "transfer"
+        Vapi::ClientInboundMessageTransfer.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -104,6 +111,12 @@ module Vapi
     # @return [Vapi::ClientInboundMessageMessage]
     def self.say(member:)
       new(member: member, discriminant: "say")
+    end
+
+    # @param member [Vapi::ClientInboundMessageTransfer]
+    # @return [Vapi::ClientInboundMessageMessage]
+    def self.transfer(member:)
+      new(member: member, discriminant: "transfer")
     end
   end
 end

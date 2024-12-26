@@ -23,14 +23,25 @@ module Vapi
     #  Default is 'PassFail'.
     attr_reader :rubric
     # @return [Array<Hash{String => Object}>] These are the messages used to generate the success evaluation.
-    #  @default: ` [ { "role": "system", "content": "You are an expert call evaluator.
-    #  You will be given a transcript of a call and the system prompt of the AI
-    #  participant. Determine if the call was successful based on the objectives
-    #  inferred from the system prompt. DO NOT return anything except the
-    #  result.\n\nRubric:\\n{{rubric}}\n\nOnly respond with the result." }, { "role":
-    #  "user", "content": "Here is the transcript:\n\n{{transcript}}\n\n" }, { "role":
-    #  "user", "content": "Here was the system prompt of the
-    #  call:\n\n{{systemPrompt}}\n\n" } ]`
+    #  @default: ```
+    #  [
+    #  {
+    #  "role": "system",
+    #  "content": "You are an expert call evaluator. You will be given a transcript
+    #  of a call and the system prompt of the AI participant. Determine if the call was
+    #  successful based on the objectives inferred from the system prompt. DO NOT
+    #  return anything except the result.\n\nRubric:\\n{{rubric}}\n\nOnly respond with
+    #  the result."
+    #  },
+    #  {
+    #  "role": "user",
+    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n"
+    #  },
+    #  {
+    #  "role": "user",
+    #  "content": "Here was the system prompt of the call:\n\n{{systemPrompt}}\n\n"
+    #  }
+    #  ]```
     #  You can customize by providing any messages you want.
     #  Here are the template variables available:
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-
@@ -75,14 +86,25 @@ module Vapi
     #  - 'PassFail': A simple 'true' if call passed, 'false' if not.
     #  Default is 'PassFail'.
     # @param messages [Array<Hash{String => Object}>] These are the messages used to generate the success evaluation.
-    #  @default: ` [ { "role": "system", "content": "You are an expert call evaluator.
-    #  You will be given a transcript of a call and the system prompt of the AI
-    #  participant. Determine if the call was successful based on the objectives
-    #  inferred from the system prompt. DO NOT return anything except the
-    #  result.\n\nRubric:\\n{{rubric}}\n\nOnly respond with the result." }, { "role":
-    #  "user", "content": "Here is the transcript:\n\n{{transcript}}\n\n" }, { "role":
-    #  "user", "content": "Here was the system prompt of the
-    #  call:\n\n{{systemPrompt}}\n\n" } ]`
+    #  @default: ```
+    #  [
+    #  {
+    #  "role": "system",
+    #  "content": "You are an expert call evaluator. You will be given a transcript
+    #  of a call and the system prompt of the AI participant. Determine if the call was
+    #  successful based on the objectives inferred from the system prompt. DO NOT
+    #  return anything except the result.\n\nRubric:\\n{{rubric}}\n\nOnly respond with
+    #  the result."
+    #  },
+    #  {
+    #  "role": "user",
+    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n"
+    #  },
+    #  {
+    #  "role": "user",
+    #  "content": "Here was the system prompt of the call:\n\n{{systemPrompt}}\n\n"
+    #  }
+    #  ]```
     #  You can customize by providing any messages you want.
     #  Here are the template variables available:
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-

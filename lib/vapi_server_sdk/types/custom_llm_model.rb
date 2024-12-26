@@ -2,8 +2,8 @@
 
 require_relative "open_ai_message"
 require_relative "custom_llm_model_tools_item"
+require_relative "create_custom_knowledge_base_dto"
 require_relative "custom_llm_model_metadata_send_mode"
-require_relative "knowledge_base"
 require "ostruct"
 require "json"
 
@@ -19,6 +19,10 @@ module Vapi
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
     attr_reader :tool_ids
+    # @return [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
+    attr_reader :knowledge_base
+    # @return [String] This is the ID of the knowledge base the model will use.
+    attr_reader :knowledge_base_id
     # @return [Vapi::CustomLlmModelMetadataSendMode] This determines whether metadata is sent in requests to the custom provider.
     #  - `off` will not send any metadata. payload will look like `{ messages }`
     #  - `variable` will send `assistant.metadata` as a variable on the payload.
@@ -37,8 +41,6 @@ module Vapi
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     attr_reader :temperature
-    # @return [Vapi::KnowledgeBase] These are the options for the knowledge base.
-    attr_reader :knowledge_base
     # @return [Float] This is the max number of tokens that the assistant will be allowed to generate
     #  in each turn of the conversation. Default is 250.
     attr_reader :max_tokens
@@ -69,6 +71,8 @@ module Vapi
     # @param tool_ids [Array<String>] These are the tools that the assistant can use during the call. To use transient
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
+    # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
+    # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
     # @param metadata_send_mode [Vapi::CustomLlmModelMetadataSendMode] This determines whether metadata is sent in requests to the custom provider.
     #  - `off` will not send any metadata. payload will look like `{ messages }`
     #  - `variable` will send `assistant.metadata` as a variable on the payload.
@@ -83,7 +87,6 @@ module Vapi
     # @param model [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
-    # @param knowledge_base [Vapi::KnowledgeBase] These are the options for the knowledge base.
     # @param max_tokens [Float] This is the max number of tokens that the assistant will be allowed to generate
     #  in each turn of the conversation. Default is 250.
     # @param emotion_recognition_enabled [Boolean] This determines whether we detect user's emotion while they speak and send it as
@@ -98,16 +101,17 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CustomLlmModel]
-    def initialize(url:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, metadata_send_mode: OMIT,
-                   temperature: OMIT, knowledge_base: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+    def initialize(url:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
+                   metadata_send_mode: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
+      @knowledge_base = knowledge_base if knowledge_base != OMIT
+      @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @metadata_send_mode = metadata_send_mode if metadata_send_mode != OMIT
       @url = url
       @model = model
       @temperature = temperature if temperature != OMIT
-      @knowledge_base = knowledge_base if knowledge_base != OMIT
       @max_tokens = max_tokens if max_tokens != OMIT
       @emotion_recognition_enabled = emotion_recognition_enabled if emotion_recognition_enabled != OMIT
       @num_fast_turns = num_fast_turns if num_fast_turns != OMIT
@@ -116,11 +120,12 @@ module Vapi
         "messages": messages,
         "tools": tools,
         "toolIds": tool_ids,
+        "knowledgeBase": knowledge_base,
+        "knowledgeBaseId": knowledge_base_id,
         "metadataSendMode": metadata_send_mode,
         "url": url,
         "model": model,
         "temperature": temperature,
-        "knowledgeBase": knowledge_base,
         "maxTokens": max_tokens,
         "emotionRecognitionEnabled": emotion_recognition_enabled,
         "numFastTurns": num_fast_turns
@@ -145,16 +150,17 @@ module Vapi
         Vapi::CustomLlmModelToolsItem.from_json(json_object: item)
       end
       tool_ids = parsed_json["toolIds"]
-      metadata_send_mode = parsed_json["metadataSendMode"]
-      url = parsed_json["url"]
-      model = parsed_json["model"]
-      temperature = parsed_json["temperature"]
       if parsed_json["knowledgeBase"].nil?
         knowledge_base = nil
       else
         knowledge_base = parsed_json["knowledgeBase"].to_json
-        knowledge_base = Vapi::KnowledgeBase.from_json(json_object: knowledge_base)
+        knowledge_base = Vapi::CreateCustomKnowledgeBaseDto.from_json(json_object: knowledge_base)
       end
+      knowledge_base_id = parsed_json["knowledgeBaseId"]
+      metadata_send_mode = parsed_json["metadataSendMode"]
+      url = parsed_json["url"]
+      model = parsed_json["model"]
+      temperature = parsed_json["temperature"]
       max_tokens = parsed_json["maxTokens"]
       emotion_recognition_enabled = parsed_json["emotionRecognitionEnabled"]
       num_fast_turns = parsed_json["numFastTurns"]
@@ -162,11 +168,12 @@ module Vapi
         messages: messages,
         tools: tools,
         tool_ids: tool_ids,
+        knowledge_base: knowledge_base,
+        knowledge_base_id: knowledge_base_id,
         metadata_send_mode: metadata_send_mode,
         url: url,
         model: model,
         temperature: temperature,
-        knowledge_base: knowledge_base,
         max_tokens: max_tokens,
         emotion_recognition_enabled: emotion_recognition_enabled,
         num_fast_turns: num_fast_turns,
@@ -191,11 +198,12 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
+      obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
+      obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
       obj.metadata_send_mode&.is_a?(Vapi::CustomLlmModelMetadataSendMode) != false || raise("Passed value for field obj.metadata_send_mode is not the expected type, validation failed.")
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
-      obj.knowledge_base.nil? || Vapi::KnowledgeBase.validate_raw(obj: obj.knowledge_base)
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")
       obj.emotion_recognition_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.emotion_recognition_enabled is not the expected type, validation failed.")
       obj.num_fast_turns&.is_a?(Float) != false || raise("Passed value for field obj.num_fast_turns is not the expected type, validation failed.")

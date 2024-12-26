@@ -20,6 +20,7 @@ require_relative "../types/message_plan"
 require_relative "../types/start_speaking_plan"
 require_relative "../types/stop_speaking_plan"
 require_relative "../types/monitor_plan"
+require_relative "../types/server"
 require "async"
 
 module Vapi
@@ -93,6 +94,7 @@ module Vapi
     #   * :transcriber (Hash)
     #   * :model (Hash)
     #   * :voice (Hash)
+    #   * :first_message (String)
     #   * :first_message_mode (Vapi::CreateAssistantDtoFirstMessageMode)
     #   * :hipaa_enabled (Boolean)
     #   * :client_messages (Array<Vapi::CreateAssistantDtoClientMessagesItem>)
@@ -100,12 +102,10 @@ module Vapi
     #   * :silence_timeout_seconds (Float)
     #   * :max_duration_seconds (Float)
     #   * :background_sound (Vapi::CreateAssistantDtoBackgroundSound)
-    #   * :backchanneling_enabled (Boolean)
     #   * :background_denoising_enabled (Boolean)
     #   * :model_output_in_messages_enabled (Boolean)
     #   * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #   * :name (String)
-    #   * :first_message (String)
     #   * :voicemail_detection (Hash)
     #     * :provider (String)
     #     * :voicemail_detection_types (Array<Vapi::TwilioVoicemailDetectionVoicemailDetectionTypesItem>)
@@ -118,8 +118,6 @@ module Vapi
     #   * :end_call_message (String)
     #   * :end_call_phrases (Array<String>)
     #   * :metadata (Hash{String => Object})
-    #   * :server_url (String)
-    #   * :server_url_secret (String)
     #   * :analysis_plan (Hash)
     #     * :summary_plan (Hash)
     #       * :messages (Array<Hash{String => Object}>)
@@ -155,6 +153,7 @@ module Vapi
     #   * :start_speaking_plan (Hash)
     #     * :wait_seconds (Float)
     #     * :smart_endpointing_enabled (Boolean)
+    #     * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #     * :transcription_endpointing_plan (Hash)
     #       * :on_punctuation_seconds (Float)
     #       * :on_no_punctuation_seconds (Float)
@@ -167,6 +166,11 @@ module Vapi
     #     * :listen_enabled (Boolean)
     #     * :control_enabled (Boolean)
     #   * :credential_ids (Array<String>)
+    #   * :server (Hash)
+    #     * :timeout_seconds (Float)
+    #     * :url (String)
+    #     * :secret (String)
+    #     * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
     # @example
@@ -258,6 +262,10 @@ module Vapi
     # @param transcriber [Vapi::Assistants::UpdateAssistantDtoTranscriber] These are the options for the assistant's transcriber.
     # @param model [Vapi::Assistants::UpdateAssistantDtoModel] These are the options for the assistant's LLM.
     # @param voice [Vapi::Assistants::UpdateAssistantDtoVoice] These are the options for the assistant's voice.
+    # @param first_message [String] This is the first message that the assistant will say. This can also be a URL to
+    #  a containerized audio file (mp3, wav, etc.).
+    #  If unspecified, assistant will wait for user to speak and use the model to
+    #  respond once they speak.
     # @param first_message_mode [Vapi::Assistants::UpdateAssistantDtoFirstMessageMode] This is the mode for the first message. Default is 'assistant-speaks-first'.
     #  Use:
     #  - 'assistant-speaks-first' to have the assistant speak first.
@@ -272,7 +280,7 @@ module Vapi
     #  the end of the call, you will still receive an end-of-call-report message to
     #  store on your server. Defaults to false.
     # @param client_messages [Array<Vapi::Assistants::UpdateAssistantDtoClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
-    #  ,speech-update,status-update,transcript,tool-calls,user-interrupted,voice-input.
+    #  tatus-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input.
     #  You can check the shape of the messages in ClientMessage schema.
     # @param server_messages [Array<Vapi::Assistants::UpdateAssistantDtoServerMessagesItem>] These are the messages that will be sent to your Server URL. Default is
     #  h-update,status-update,tool-calls,transfer-destination-request,user-interrupted.
@@ -284,10 +292,6 @@ module Vapi
     #  @default 600 (10 minutes)
     # @param background_sound [Vapi::Assistants::UpdateAssistantDtoBackgroundSound] This is the background sound in the call. Default for phone calls is 'office'
     #  and default for web calls is 'off'.
-    # @param backchanneling_enabled [Boolean] This determines whether the model says 'mhmm', 'ahem' etc. while user is
-    #  speaking.
-    #  Default `false` while in beta.
-    #  @default false
     # @param background_denoising_enabled [Boolean] This enables filtering of noise and background speech while the user is talking.
     #  Default `false` while in beta.
     #  @default false
@@ -305,10 +309,6 @@ module Vapi
     #   * :recording_channels (Vapi::TransportConfigurationTwilioRecordingChannels)
     # @param name [String] This is the name of the assistant.
     #  This is required when you want to transfer between assistants in a call.
-    # @param first_message [String] This is the first message that the assistant will say. This can also be a URL to
-    #  a containerized audio file (mp3, wav, etc.).
-    #  If unspecified, assistant will wait for user to speak and use the model to
-    #  respond once they speak.
     # @param voicemail_detection [Hash] These are the settings to configure or disable voicemail detection.
     #  Alternatively, voicemail detection can be configured using the
     #  model.tools=[VoicemailTool].
@@ -331,16 +331,6 @@ module Vapi
     # @param end_call_phrases [Array<String>] This list contains phrases that, if spoken by the assistant, will trigger the
     #  call to be hung up. Case insensitive.
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the assistant.
-    # @param server_url [String] This is the URL Vapi will communicate with via HTTP GET and POST Requests. This
-    #  is used for retrieving context, function calling, and end-of-call reports.
-    #  All requests will be sent with the call object among other things relevant to
-    #  that message. You can find more details in the Server URL documentation.
-    #  This overrides the serverUrl set on the org and the phoneNumber. Order of
-    #  precedence: tool.server.url > assistant.serverUrl > phoneNumber.serverUrl >
-    #  org.serverUrl
-    # @param server_url_secret [String] This is the secret you can set that Vapi will send with every request to your
-    #  server. Will be sent as a header called x-vapi-secret.
-    #  Same precedence logic as serverUrl.
     # @param analysis_plan [Hash] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.Request of type Vapi::AnalysisPlan, as a Hash
     #   * :summary_plan (Hash)
     #     * :messages (Array<Hash{String => Object}>)
@@ -389,6 +379,7 @@ module Vapi
     #  - The assistant is so fast that it's actually interrupting the customer.Request of type Vapi::StartSpeakingPlan, as a Hash
     #   * :wait_seconds (Float)
     #   * :smart_endpointing_enabled (Boolean)
+    #   * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #   * :transcription_endpointing_plan (Hash)
     #     * :on_punctuation_seconds (Float)
     #     * :on_no_punctuation_seconds (Float)
@@ -419,6 +410,16 @@ module Vapi
     # @param credential_ids [Array<String>] These are the credentials that will be used for the assistant calls. By default,
     #  all the credentials are available for use in the call but you can provide a
     #  subset using this.
+    # @param server [Hash] This is where Vapi will send webhooks. You can find all webhooks available along
+    #  with their shape in ServerMessage schema.
+    #  The order of precedence is:
+    #  1. assistant.server.url
+    #  2. phoneNumber.serverUrl
+    #  3. org.serverUrlRequest of type Vapi::Server, as a Hash
+    #   * :timeout_seconds (Float)
+    #   * :url (String)
+    #   * :secret (String)
+    #   * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
     # @example
@@ -428,8 +429,8 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.assistants.update(id: "id")
-    def update(id:, transcriber: nil, model: nil, voice: nil, first_message_mode: nil, hipaa_enabled: nil,
-               client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, backchanneling_enabled: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, name: nil, first_message: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, server_url: nil, server_url_secret: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, request_options: nil)
+    def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_mode: nil,
+               hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -446,6 +447,7 @@ module Vapi
           transcriber: transcriber,
           model: model,
           voice: voice,
+          firstMessage: first_message,
           firstMessageMode: first_message_mode,
           hipaaEnabled: hipaa_enabled,
           clientMessages: client_messages,
@@ -453,26 +455,23 @@ module Vapi
           silenceTimeoutSeconds: silence_timeout_seconds,
           maxDurationSeconds: max_duration_seconds,
           backgroundSound: background_sound,
-          backchannelingEnabled: backchanneling_enabled,
           backgroundDenoisingEnabled: background_denoising_enabled,
           modelOutputInMessagesEnabled: model_output_in_messages_enabled,
           transportConfigurations: transport_configurations,
           name: name,
-          firstMessage: first_message,
           voicemailDetection: voicemail_detection,
           voicemailMessage: voicemail_message,
           endCallMessage: end_call_message,
           endCallPhrases: end_call_phrases,
           metadata: metadata,
-          serverUrl: server_url,
-          serverUrlSecret: server_url_secret,
           analysisPlan: analysis_plan,
           artifactPlan: artifact_plan,
           messagePlan: message_plan,
           startSpeakingPlan: start_speaking_plan,
           stopSpeakingPlan: stop_speaking_plan,
           monitorPlan: monitor_plan,
-          credentialIds: credential_ids
+          credentialIds: credential_ids,
+          server: server
         }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/assistant/#{id}"
       end
@@ -552,6 +551,7 @@ module Vapi
     #   * :transcriber (Hash)
     #   * :model (Hash)
     #   * :voice (Hash)
+    #   * :first_message (String)
     #   * :first_message_mode (Vapi::CreateAssistantDtoFirstMessageMode)
     #   * :hipaa_enabled (Boolean)
     #   * :client_messages (Array<Vapi::CreateAssistantDtoClientMessagesItem>)
@@ -559,12 +559,10 @@ module Vapi
     #   * :silence_timeout_seconds (Float)
     #   * :max_duration_seconds (Float)
     #   * :background_sound (Vapi::CreateAssistantDtoBackgroundSound)
-    #   * :backchanneling_enabled (Boolean)
     #   * :background_denoising_enabled (Boolean)
     #   * :model_output_in_messages_enabled (Boolean)
     #   * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #   * :name (String)
-    #   * :first_message (String)
     #   * :voicemail_detection (Hash)
     #     * :provider (String)
     #     * :voicemail_detection_types (Array<Vapi::TwilioVoicemailDetectionVoicemailDetectionTypesItem>)
@@ -577,8 +575,6 @@ module Vapi
     #   * :end_call_message (String)
     #   * :end_call_phrases (Array<String>)
     #   * :metadata (Hash{String => Object})
-    #   * :server_url (String)
-    #   * :server_url_secret (String)
     #   * :analysis_plan (Hash)
     #     * :summary_plan (Hash)
     #       * :messages (Array<Hash{String => Object}>)
@@ -614,6 +610,7 @@ module Vapi
     #   * :start_speaking_plan (Hash)
     #     * :wait_seconds (Float)
     #     * :smart_endpointing_enabled (Boolean)
+    #     * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #     * :transcription_endpointing_plan (Hash)
     #       * :on_punctuation_seconds (Float)
     #       * :on_no_punctuation_seconds (Float)
@@ -626,6 +623,11 @@ module Vapi
     #     * :listen_enabled (Boolean)
     #     * :control_enabled (Boolean)
     #   * :credential_ids (Array<String>)
+    #   * :server (Hash)
+    #     * :timeout_seconds (Float)
+    #     * :url (String)
+    #     * :secret (String)
+    #     * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
     # @example
@@ -723,6 +725,10 @@ module Vapi
     # @param transcriber [Vapi::Assistants::UpdateAssistantDtoTranscriber] These are the options for the assistant's transcriber.
     # @param model [Vapi::Assistants::UpdateAssistantDtoModel] These are the options for the assistant's LLM.
     # @param voice [Vapi::Assistants::UpdateAssistantDtoVoice] These are the options for the assistant's voice.
+    # @param first_message [String] This is the first message that the assistant will say. This can also be a URL to
+    #  a containerized audio file (mp3, wav, etc.).
+    #  If unspecified, assistant will wait for user to speak and use the model to
+    #  respond once they speak.
     # @param first_message_mode [Vapi::Assistants::UpdateAssistantDtoFirstMessageMode] This is the mode for the first message. Default is 'assistant-speaks-first'.
     #  Use:
     #  - 'assistant-speaks-first' to have the assistant speak first.
@@ -737,7 +743,7 @@ module Vapi
     #  the end of the call, you will still receive an end-of-call-report message to
     #  store on your server. Defaults to false.
     # @param client_messages [Array<Vapi::Assistants::UpdateAssistantDtoClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
-    #  ,speech-update,status-update,transcript,tool-calls,user-interrupted,voice-input.
+    #  tatus-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input.
     #  You can check the shape of the messages in ClientMessage schema.
     # @param server_messages [Array<Vapi::Assistants::UpdateAssistantDtoServerMessagesItem>] These are the messages that will be sent to your Server URL. Default is
     #  h-update,status-update,tool-calls,transfer-destination-request,user-interrupted.
@@ -749,10 +755,6 @@ module Vapi
     #  @default 600 (10 minutes)
     # @param background_sound [Vapi::Assistants::UpdateAssistantDtoBackgroundSound] This is the background sound in the call. Default for phone calls is 'office'
     #  and default for web calls is 'off'.
-    # @param backchanneling_enabled [Boolean] This determines whether the model says 'mhmm', 'ahem' etc. while user is
-    #  speaking.
-    #  Default `false` while in beta.
-    #  @default false
     # @param background_denoising_enabled [Boolean] This enables filtering of noise and background speech while the user is talking.
     #  Default `false` while in beta.
     #  @default false
@@ -770,10 +772,6 @@ module Vapi
     #   * :recording_channels (Vapi::TransportConfigurationTwilioRecordingChannels)
     # @param name [String] This is the name of the assistant.
     #  This is required when you want to transfer between assistants in a call.
-    # @param first_message [String] This is the first message that the assistant will say. This can also be a URL to
-    #  a containerized audio file (mp3, wav, etc.).
-    #  If unspecified, assistant will wait for user to speak and use the model to
-    #  respond once they speak.
     # @param voicemail_detection [Hash] These are the settings to configure or disable voicemail detection.
     #  Alternatively, voicemail detection can be configured using the
     #  model.tools=[VoicemailTool].
@@ -796,16 +794,6 @@ module Vapi
     # @param end_call_phrases [Array<String>] This list contains phrases that, if spoken by the assistant, will trigger the
     #  call to be hung up. Case insensitive.
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the assistant.
-    # @param server_url [String] This is the URL Vapi will communicate with via HTTP GET and POST Requests. This
-    #  is used for retrieving context, function calling, and end-of-call reports.
-    #  All requests will be sent with the call object among other things relevant to
-    #  that message. You can find more details in the Server URL documentation.
-    #  This overrides the serverUrl set on the org and the phoneNumber. Order of
-    #  precedence: tool.server.url > assistant.serverUrl > phoneNumber.serverUrl >
-    #  org.serverUrl
-    # @param server_url_secret [String] This is the secret you can set that Vapi will send with every request to your
-    #  server. Will be sent as a header called x-vapi-secret.
-    #  Same precedence logic as serverUrl.
     # @param analysis_plan [Hash] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.Request of type Vapi::AnalysisPlan, as a Hash
     #   * :summary_plan (Hash)
     #     * :messages (Array<Hash{String => Object}>)
@@ -854,6 +842,7 @@ module Vapi
     #  - The assistant is so fast that it's actually interrupting the customer.Request of type Vapi::StartSpeakingPlan, as a Hash
     #   * :wait_seconds (Float)
     #   * :smart_endpointing_enabled (Boolean)
+    #   * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #   * :transcription_endpointing_plan (Hash)
     #     * :on_punctuation_seconds (Float)
     #     * :on_no_punctuation_seconds (Float)
@@ -884,6 +873,16 @@ module Vapi
     # @param credential_ids [Array<String>] These are the credentials that will be used for the assistant calls. By default,
     #  all the credentials are available for use in the call but you can provide a
     #  subset using this.
+    # @param server [Hash] This is where Vapi will send webhooks. You can find all webhooks available along
+    #  with their shape in ServerMessage schema.
+    #  The order of precedence is:
+    #  1. assistant.server.url
+    #  2. phoneNumber.serverUrl
+    #  3. org.serverUrlRequest of type Vapi::Server, as a Hash
+    #   * :timeout_seconds (Float)
+    #   * :url (String)
+    #   * :secret (String)
+    #   * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
     # @example
@@ -893,8 +892,8 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.assistants.update(id: "id")
-    def update(id:, transcriber: nil, model: nil, voice: nil, first_message_mode: nil, hipaa_enabled: nil,
-               client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, backchanneling_enabled: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, name: nil, first_message: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, server_url: nil, server_url_secret: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, request_options: nil)
+    def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_mode: nil,
+               hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -912,6 +911,7 @@ module Vapi
             transcriber: transcriber,
             model: model,
             voice: voice,
+            firstMessage: first_message,
             firstMessageMode: first_message_mode,
             hipaaEnabled: hipaa_enabled,
             clientMessages: client_messages,
@@ -919,26 +919,23 @@ module Vapi
             silenceTimeoutSeconds: silence_timeout_seconds,
             maxDurationSeconds: max_duration_seconds,
             backgroundSound: background_sound,
-            backchannelingEnabled: backchanneling_enabled,
             backgroundDenoisingEnabled: background_denoising_enabled,
             modelOutputInMessagesEnabled: model_output_in_messages_enabled,
             transportConfigurations: transport_configurations,
             name: name,
-            firstMessage: first_message,
             voicemailDetection: voicemail_detection,
             voicemailMessage: voicemail_message,
             endCallMessage: end_call_message,
             endCallPhrases: end_call_phrases,
             metadata: metadata,
-            serverUrl: server_url,
-            serverUrlSecret: server_url_secret,
             analysisPlan: analysis_plan,
             artifactPlan: artifact_plan,
             messagePlan: message_plan,
             startSpeakingPlan: start_speaking_plan,
             stopSpeakingPlan: stop_speaking_plan,
             monitorPlan: monitor_plan,
-            credentialIds: credential_ids
+            credentialIds: credential_ids,
+            server: server
           }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/assistant/#{id}"
         end

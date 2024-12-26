@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "vapi_cost_sub_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class VapiCost
+    # @return [Vapi::VapiCostSubType] This is the sub type of the cost.
+    attr_reader :sub_type
     # @return [Float] This is the minutes of Vapi usage. This should match `call.endedAt` -
     #  `call.startedAt`.
     attr_reader :minutes
@@ -18,16 +21,18 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param sub_type [Vapi::VapiCostSubType] This is the sub type of the cost.
     # @param minutes [Float] This is the minutes of Vapi usage. This should match `call.endedAt` -
     #  `call.startedAt`.
     # @param cost [Float] This is the cost of the component in USD.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VapiCost]
-    def initialize(minutes:, cost:, additional_properties: nil)
+    def initialize(sub_type:, minutes:, cost:, additional_properties: nil)
+      @sub_type = sub_type
       @minutes = minutes
       @cost = cost
       @additional_properties = additional_properties
-      @_field_set = { "minutes": minutes, "cost": cost }
+      @_field_set = { "subType": sub_type, "minutes": minutes, "cost": cost }
     end
 
     # Deserialize a JSON object to an instance of VapiCost
@@ -37,9 +42,11 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      sub_type = parsed_json["subType"]
       minutes = parsed_json["minutes"]
       cost = parsed_json["cost"]
       new(
+        sub_type: sub_type,
         minutes: minutes,
         cost: cost,
         additional_properties: struct
@@ -60,6 +67,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.sub_type.is_a?(Vapi::VapiCostSubType) != false || raise("Passed value for field obj.sub_type is not the expected type, validation failed.")
       obj.minutes.is_a?(Float) != false || raise("Passed value for field obj.minutes is not the expected type, validation failed.")
       obj.cost.is_a?(Float) != false || raise("Passed value for field obj.cost is not the expected type, validation failed.")
     end

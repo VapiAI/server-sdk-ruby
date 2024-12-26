@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 require_relative "../../requests"
-require_relative "../types/analytics_query"
-require_relative "../types/analytics_query_result"
-require "json"
 require "async"
 
 module Vapi
@@ -17,27 +14,17 @@ module Vapi
       @request_client = request_client
     end
 
-    # @param queries [Array<Hash>] This is the list of metric queries you want to perform.Request of type Array<Vapi::AnalyticsQuery>, as a Hash
-    #   * :table (String)
-    #   * :group_by (Array<Vapi::AnalyticsQueryGroupByItem>)
-    #   * :name (String)
-    #   * :time_range (Hash)
-    #     * :step (Vapi::TimeRangeStep)
-    #     * :start (DateTime)
-    #     * :end_ (DateTime)
-    #     * :timezone (String)
-    #   * :operations (Array<Vapi::AnalyticsOperation>)
     # @param request_options [Vapi::RequestOptions]
-    # @return [Array<Vapi::AnalyticsQueryResult>]
+    # @return [Void]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
     #    environment: Vapi::Environment::DEFAULT,
     #    token: "YOUR_AUTH_TOKEN"
     #  )
-    #  api.analytics.get(queries: [{ table: "call", name: "name", operations: [{ operation: SUM, column: ID }] }])
-    def get(queries:, request_options: nil)
-      response = @request_client.conn.post do |req|
+    #  api.analytics.get
+    def get(request_options: nil)
+      @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
         req.headers = {
@@ -48,13 +35,10 @@ module Vapi
         unless request_options.nil? || request_options&.additional_query_parameters.nil?
           req.params = { **(request_options&.additional_query_parameters || {}) }.compact
         end
-        req.body = { **(request_options&.additional_body_parameters || {}), queries: queries }.compact
+        unless request_options.nil? || request_options&.additional_body_parameters.nil?
+          req.body = { **(request_options&.additional_body_parameters || {}) }.compact
+        end
         req.url "#{@request_client.get_url(request_options: request_options)}/analytics"
-      end
-      parsed_json = JSON.parse(response.body)
-      parsed_json&.map do |item|
-        item = item.to_json
-        Vapi::AnalyticsQueryResult.from_json(json_object: item)
       end
     end
   end
@@ -69,28 +53,18 @@ module Vapi
       @request_client = request_client
     end
 
-    # @param queries [Array<Hash>] This is the list of metric queries you want to perform.Request of type Array<Vapi::AnalyticsQuery>, as a Hash
-    #   * :table (String)
-    #   * :group_by (Array<Vapi::AnalyticsQueryGroupByItem>)
-    #   * :name (String)
-    #   * :time_range (Hash)
-    #     * :step (Vapi::TimeRangeStep)
-    #     * :start (DateTime)
-    #     * :end_ (DateTime)
-    #     * :timezone (String)
-    #   * :operations (Array<Vapi::AnalyticsOperation>)
     # @param request_options [Vapi::RequestOptions]
-    # @return [Array<Vapi::AnalyticsQueryResult>]
+    # @return [Void]
     # @example
     #  api = Vapi::Client.new(
     #    base_url: "https://api.example.com",
     #    environment: Vapi::Environment::DEFAULT,
     #    token: "YOUR_AUTH_TOKEN"
     #  )
-    #  api.analytics.get(queries: [{ table: "call", name: "name", operations: [{ operation: SUM, column: ID }] }])
-    def get(queries:, request_options: nil)
+    #  api.analytics.get
+    def get(request_options: nil)
       Async do
-        response = @request_client.conn.post do |req|
+        @request_client.conn.post do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
           req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
           req.headers = {
@@ -101,13 +75,10 @@ module Vapi
           unless request_options.nil? || request_options&.additional_query_parameters.nil?
             req.params = { **(request_options&.additional_query_parameters || {}) }.compact
           end
-          req.body = { **(request_options&.additional_body_parameters || {}), queries: queries }.compact
+          unless request_options.nil? || request_options&.additional_body_parameters.nil?
+            req.body = { **(request_options&.additional_body_parameters || {}) }.compact
+          end
           req.url "#{@request_client.get_url(request_options: request_options)}/analytics"
-        end
-        parsed_json = JSON.parse(response.body)
-        parsed_json&.map do |item|
-          item = item.to_json
-          Vapi::AnalyticsQueryResult.from_json(json_object: item)
         end
       end
     end

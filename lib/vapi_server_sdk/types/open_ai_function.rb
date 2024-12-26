@@ -6,11 +6,20 @@ require "json"
 
 module Vapi
   class OpenAiFunction
+    # @return [Boolean] This is a boolean that controls whether to enable strict schema adherence when
+    #  generating the function call. If set to true, the model will follow the exact
+    #  schema defined in the parameters field. Only a subset of JSON Schema is
+    #  supported when strict is true. Learn more about Structured Outputs in the
+    #  [OpenAI
+    #  guide](https://openai.com/index/introducing-structured-outputs-in-the-api/).
+    #  @default false
+    attr_reader :strict
     # @return [String] This is the the name of the function to be called.
     #  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
     #  of 64.
     attr_reader :name
-    # @return [String]
+    # @return [String] This is the description of what the function does, used by the AI to choose when
+    #  and how to call the function.
     attr_reader :description
     # @return [Vapi::OpenAiFunctionParameters] These are the parameters the functions accepts, described as a JSON Schema
     #  object.
@@ -28,10 +37,18 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param strict [Boolean] This is a boolean that controls whether to enable strict schema adherence when
+    #  generating the function call. If set to true, the model will follow the exact
+    #  schema defined in the parameters field. Only a subset of JSON Schema is
+    #  supported when strict is true. Learn more about Structured Outputs in the
+    #  [OpenAI
+    #  guide](https://openai.com/index/introducing-structured-outputs-in-the-api/).
+    #  @default false
     # @param name [String] This is the the name of the function to be called.
     #  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
     #  of 64.
-    # @param description [String]
+    # @param description [String] This is the description of what the function does, used by the AI to choose when
+    #  and how to call the function.
     # @param parameters [Vapi::OpenAiFunctionParameters] These are the parameters the functions accepts, described as a JSON Schema
     #  object.
     #  See the [OpenAI guide](https://platform.openai.com/docs/guides/function-calling)
@@ -41,12 +58,18 @@ module Vapi
     #  Omitting parameters defines a function with an empty parameter list.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::OpenAiFunction]
-    def initialize(name:, description: OMIT, parameters: OMIT, additional_properties: nil)
+    def initialize(name:, strict: OMIT, description: OMIT, parameters: OMIT, additional_properties: nil)
+      @strict = strict if strict != OMIT
       @name = name
       @description = description if description != OMIT
       @parameters = parameters if parameters != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "name": name, "description": description, "parameters": parameters }.reject do |_k, v|
+      @_field_set = {
+        "strict": strict,
+        "name": name,
+        "description": description,
+        "parameters": parameters
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -58,6 +81,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      strict = parsed_json["strict"]
       name = parsed_json["name"]
       description = parsed_json["description"]
       if parsed_json["parameters"].nil?
@@ -67,6 +91,7 @@ module Vapi
         parameters = Vapi::OpenAiFunctionParameters.from_json(json_object: parameters)
       end
       new(
+        strict: strict,
         name: name,
         description: description,
         parameters: parameters,
@@ -88,6 +113,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.strict&.is_a?(Boolean) != false || raise("Passed value for field obj.strict is not the expected type, validation failed.")
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")
       obj.parameters.nil? || Vapi::OpenAiFunctionParameters.validate_raw(obj: obj.parameters)

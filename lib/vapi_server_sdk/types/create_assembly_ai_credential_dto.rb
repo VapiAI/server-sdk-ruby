@@ -4,13 +4,13 @@ require "ostruct"
 require "json"
 
 module Vapi
-  class KnowledgeBase
+  class CreateAssemblyAiCredentialDto
     # @return [String]
     attr_reader :provider
-    # @return [Float]
-    attr_reader :top_k
-    # @return [Array<String>]
-    attr_reader :file_ids
+    # @return [String] This is not returned in the API.
+    attr_reader :api_key
+    # @return [String] This is the name of credential. This is just for your reference.
+    attr_reader :name
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -20,39 +20,39 @@ module Vapi
     OMIT = Object.new
 
     # @param provider [String]
-    # @param top_k [Float]
-    # @param file_ids [Array<String>]
+    # @param api_key [String] This is not returned in the API.
+    # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::KnowledgeBase]
-    def initialize(provider:, file_ids:, top_k: OMIT, additional_properties: nil)
+    # @return [Vapi::CreateAssemblyAiCredentialDto]
+    def initialize(provider:, api_key:, name: OMIT, additional_properties: nil)
       @provider = provider
-      @top_k = top_k if top_k != OMIT
-      @file_ids = file_ids
+      @api_key = api_key
+      @name = name if name != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "topK": top_k, "fileIds": file_ids }.reject do |_k, v|
+      @_field_set = { "provider": provider, "apiKey": api_key, "name": name }.reject do |_k, v|
         v == OMIT
       end
     end
 
-    # Deserialize a JSON object to an instance of KnowledgeBase
+    # Deserialize a JSON object to an instance of CreateAssemblyAiCredentialDto
     #
     # @param json_object [String]
-    # @return [Vapi::KnowledgeBase]
+    # @return [Vapi::CreateAssemblyAiCredentialDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       provider = parsed_json["provider"]
-      top_k = parsed_json["topK"]
-      file_ids = parsed_json["fileIds"]
+      api_key = parsed_json["apiKey"]
+      name = parsed_json["name"]
       new(
         provider: provider,
-        top_k: top_k,
-        file_ids: file_ids,
+        api_key: api_key,
+        name: name,
         additional_properties: struct
       )
     end
 
-    # Serialize an instance of KnowledgeBase to a JSON object
+    # Serialize an instance of CreateAssemblyAiCredentialDto to a JSON object
     #
     # @return [String]
     def to_json(*_args)
@@ -67,8 +67,8 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
-      obj.top_k&.is_a?(Float) != false || raise("Passed value for field obj.top_k is not the expected type, validation failed.")
-      obj.file_ids.is_a?(Array) != false || raise("Passed value for field obj.file_ids is not the expected type, validation failed.")
+      obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
+      obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end
   end
 end

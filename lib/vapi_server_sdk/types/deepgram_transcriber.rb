@@ -17,9 +17,38 @@ module Vapi
     # @return [Boolean] This will be use smart format option provided by Deepgram. It's default disabled
     #  because it can sometimes format numbers as times but it's getting better.
     attr_reader :smart_format
-    # @return [Boolean] This enables or disables language detection. If true, swaps transcribers to
-    #  detected language automatically. Defaults to false.
-    attr_reader :language_detection_enabled
+    # @return [Boolean] This automatically switches the transcriber's language when the customer's
+    #  language changes. Defaults to false.
+    #  Usage:
+    #  - If your customers switch languages mid-call, you can set this to true.
+    #  Note:
+    #  - To detect language changes, Vapi uses a custom trained model. Languages
+    #  supported (X = limited support):
+    #  1. Arabic
+    #  2. Bengali
+    #  3. Cantonese
+    #  4. Chinese
+    #  5. Chinese Simplified (X)
+    #  6. Chinese Traditional (X)
+    #  7. English
+    #  8. Farsi (X)
+    #  9. French
+    #  10. German
+    #  11. Haitian Creole (X)
+    #  12. Hindi
+    #  13. Italian
+    #  14. Japanese
+    #  15. Korean
+    #  16. Portuguese
+    #  17. Russian
+    #  18. Spanish
+    #  19. Thai
+    #  20. Urdu
+    #  21. Vietnamese
+    #  - To receive `language-change-detected` webhook events, add it to
+    #  `assistant.serverMessages`.
+    #  @default false
+    attr_reader :code_switching_enabled
     # @return [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
     #  specific words. Anything that may not be a common word, like your company name,
     #  should be added here.
@@ -53,8 +82,37 @@ module Vapi
     #  https://developers.deepgram.com/docs/models-languages-overview
     # @param smart_format [Boolean] This will be use smart format option provided by Deepgram. It's default disabled
     #  because it can sometimes format numbers as times but it's getting better.
-    # @param language_detection_enabled [Boolean] This enables or disables language detection. If true, swaps transcribers to
-    #  detected language automatically. Defaults to false.
+    # @param code_switching_enabled [Boolean] This automatically switches the transcriber's language when the customer's
+    #  language changes. Defaults to false.
+    #  Usage:
+    #  - If your customers switch languages mid-call, you can set this to true.
+    #  Note:
+    #  - To detect language changes, Vapi uses a custom trained model. Languages
+    #  supported (X = limited support):
+    #  1. Arabic
+    #  2. Bengali
+    #  3. Cantonese
+    #  4. Chinese
+    #  5. Chinese Simplified (X)
+    #  6. Chinese Traditional (X)
+    #  7. English
+    #  8. Farsi (X)
+    #  9. French
+    #  10. German
+    #  11. Haitian Creole (X)
+    #  12. Hindi
+    #  13. Italian
+    #  14. Japanese
+    #  15. Korean
+    #  16. Portuguese
+    #  17. Russian
+    #  18. Spanish
+    #  19. Thai
+    #  20. Urdu
+    #  21. Vietnamese
+    #  - To receive `language-change-detected` webhook events, add it to
+    #  `assistant.serverMessages`.
+    #  @default false
     # @param keywords [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
     #  specific words. Anything that may not be a common word, like your company name,
     #  should be added here.
@@ -73,12 +131,12 @@ module Vapi
     #  @default 10
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::DeepgramTranscriber]
-    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, language_detection_enabled: OMIT, keywords: OMIT,
+    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, code_switching_enabled: OMIT, keywords: OMIT,
                    endpointing: OMIT, additional_properties: nil)
       @model = model if model != OMIT
       @language = language if language != OMIT
       @smart_format = smart_format if smart_format != OMIT
-      @language_detection_enabled = language_detection_enabled if language_detection_enabled != OMIT
+      @code_switching_enabled = code_switching_enabled if code_switching_enabled != OMIT
       @keywords = keywords if keywords != OMIT
       @endpointing = endpointing if endpointing != OMIT
       @additional_properties = additional_properties
@@ -86,7 +144,7 @@ module Vapi
         "model": model,
         "language": language,
         "smartFormat": smart_format,
-        "languageDetectionEnabled": language_detection_enabled,
+        "codeSwitchingEnabled": code_switching_enabled,
         "keywords": keywords,
         "endpointing": endpointing
       }.reject do |_k, v|
@@ -104,14 +162,14 @@ module Vapi
       model = parsed_json["model"]
       language = parsed_json["language"]
       smart_format = parsed_json["smartFormat"]
-      language_detection_enabled = parsed_json["languageDetectionEnabled"]
+      code_switching_enabled = parsed_json["codeSwitchingEnabled"]
       keywords = parsed_json["keywords"]
       endpointing = parsed_json["endpointing"]
       new(
         model: model,
         language: language,
         smart_format: smart_format,
-        language_detection_enabled: language_detection_enabled,
+        code_switching_enabled: code_switching_enabled,
         keywords: keywords,
         endpointing: endpointing,
         additional_properties: struct
@@ -135,7 +193,7 @@ module Vapi
       obj.model&.is_a?(Vapi::DeepgramTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::DeepgramTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.smart_format&.is_a?(Boolean) != false || raise("Passed value for field obj.smart_format is not the expected type, validation failed.")
-      obj.language_detection_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.language_detection_enabled is not the expected type, validation failed.")
+      obj.code_switching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.code_switching_enabled is not the expected type, validation failed.")
       obj.keywords&.is_a?(Array) != false || raise("Passed value for field obj.keywords is not the expected type, validation failed.")
       obj.endpointing&.is_a?(Float) != false || raise("Passed value for field obj.endpointing is not the expected type, validation failed.")
     end

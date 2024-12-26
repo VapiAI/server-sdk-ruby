@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "server_message_language_changed_phone_number"
+require_relative "server_message_language_change_detected_phone_number"
 require_relative "artifact"
 require_relative "create_assistant_dto"
 require_relative "create_customer_dto"
@@ -9,8 +9,8 @@ require "ostruct"
 require "json"
 
 module Vapi
-  class ServerMessageLanguageChanged
-    # @return [Vapi::ServerMessageLanguageChangedPhoneNumber] This is the phone number associated with the call.
+  class ServerMessageLanguageChangeDetected
+    # @return [Vapi::ServerMessageLanguageChangeDetectedPhoneNumber] This is the phone number associated with the call.
     #  This matches one of the following:
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
@@ -50,7 +50,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param phone_number [Vapi::ServerMessageLanguageChangedPhoneNumber] This is the phone number associated with the call.
+    # @param phone_number [Vapi::ServerMessageLanguageChangeDetectedPhoneNumber] This is the phone number associated with the call.
     #  This matches one of the following:
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
@@ -76,7 +76,7 @@ module Vapi
     #  especially after the call is ended, use GET /call/:id.
     # @param language [String] This is the language the transcriber is switched to.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::ServerMessageLanguageChanged]
+    # @return [Vapi::ServerMessageLanguageChangeDetected]
     def initialize(language:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT,
                    call: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
@@ -100,10 +100,10 @@ module Vapi
       end
     end
 
-    # Deserialize a JSON object to an instance of ServerMessageLanguageChanged
+    # Deserialize a JSON object to an instance of ServerMessageLanguageChangeDetected
     #
     # @param json_object [String]
-    # @return [Vapi::ServerMessageLanguageChanged]
+    # @return [Vapi::ServerMessageLanguageChangeDetected]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
@@ -111,7 +111,7 @@ module Vapi
         phone_number = nil
       else
         phone_number = parsed_json["phoneNumber"].to_json
-        phone_number = Vapi::ServerMessageLanguageChangedPhoneNumber.from_json(json_object: phone_number)
+        phone_number = Vapi::ServerMessageLanguageChangeDetectedPhoneNumber.from_json(json_object: phone_number)
       end
       timestamp = parsed_json["timestamp"]
       if parsed_json["artifact"].nil?
@@ -151,7 +151,7 @@ module Vapi
       )
     end
 
-    # Serialize an instance of ServerMessageLanguageChanged to a JSON object
+    # Serialize an instance of ServerMessageLanguageChangeDetected to a JSON object
     #
     # @return [String]
     def to_json(*_args)
@@ -165,7 +165,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.phone_number.nil? || Vapi::ServerMessageLanguageChangedPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.phone_number.nil? || Vapi::ServerMessageLanguageChangeDetectedPhoneNumber.validate_raw(obj: obj.phone_number)
       obj.timestamp&.is_a?(String) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)

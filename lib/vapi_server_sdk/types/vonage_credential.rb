@@ -23,6 +23,8 @@ module Vapi
     # @return [String] This is the Vonage Application ID for the credential.
     #  Only relevant for Vonage credentials.
     attr_reader :vonage_application_id
+    # @return [String] This is the name of credential. This is just for your reference.
+    attr_reader :name
     # @return [String]
     attr_reader :api_key
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -42,11 +44,12 @@ module Vapi
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     # @param vonage_application_id [String] This is the Vonage Application ID for the credential.
     #  Only relevant for Vonage credentials.
+    # @param name [String] This is the name of credential. This is just for your reference.
     # @param api_key [String]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VonageCredential]
     def initialize(vonage_application_private_key:, provider:, api_secret:, id:, org_id:, created_at:, updated_at:,
-                   vonage_application_id:, api_key:, additional_properties: nil)
+                   vonage_application_id:, api_key:, name: OMIT, additional_properties: nil)
       @vonage_application_private_key = vonage_application_private_key
       @provider = provider
       @api_secret = api_secret
@@ -55,6 +58,7 @@ module Vapi
       @created_at = created_at
       @updated_at = updated_at
       @vonage_application_id = vonage_application_id
+      @name = name if name != OMIT
       @api_key = api_key
       @additional_properties = additional_properties
       @_field_set = {
@@ -66,8 +70,11 @@ module Vapi
         "createdAt": created_at,
         "updatedAt": updated_at,
         "vonageApplicationId": vonage_application_id,
+        "name": name,
         "apiKey": api_key
-      }
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of VonageCredential
@@ -85,6 +92,7 @@ module Vapi
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
       vonage_application_id = parsed_json["vonageApplicationId"]
+      name = parsed_json["name"]
       api_key = parsed_json["apiKey"]
       new(
         vonage_application_private_key: vonage_application_private_key,
@@ -95,6 +103,7 @@ module Vapi
         created_at: created_at,
         updated_at: updated_at,
         vonage_application_id: vonage_application_id,
+        name: name,
         api_key: api_key,
         additional_properties: struct
       )
@@ -122,6 +131,7 @@ module Vapi
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
       obj.vonage_application_id.is_a?(String) != false || raise("Passed value for field obj.vonage_application_id is not the expected type, validation failed.")
+      obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
     end
   end

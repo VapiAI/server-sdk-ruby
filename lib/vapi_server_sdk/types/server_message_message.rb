@@ -5,6 +5,7 @@ require_relative "server_message_assistant_request"
 require_relative "server_message_conversation_update"
 require_relative "server_message_end_of_call_report"
 require_relative "server_message_hang"
+require_relative "server_message_knowledge_base_request"
 require_relative "server_message_model_output"
 require_relative "server_message_phone_call_control"
 require_relative "server_message_speech_update"
@@ -14,7 +15,7 @@ require_relative "server_message_transfer_destination_request"
 require_relative "server_message_transfer_update"
 require_relative "server_message_transcript"
 require_relative "server_message_user_interrupted"
-require_relative "server_message_language_changed"
+require_relative "server_message_language_change_detected"
 require_relative "server_message_voice_input"
 require_relative "server_message_voice_request"
 
@@ -60,6 +61,8 @@ module Vapi
                  Vapi::ServerMessageEndOfCallReport.from_json(json_object: json_object)
                when "hang"
                  Vapi::ServerMessageHang.from_json(json_object: json_object)
+               when "knowledge-base-request"
+                 Vapi::ServerMessageKnowledgeBaseRequest.from_json(json_object: json_object)
                when "model-output"
                  Vapi::ServerMessageModelOutput.from_json(json_object: json_object)
                when "phone-call-control"
@@ -78,8 +81,8 @@ module Vapi
                  Vapi::ServerMessageTranscript.from_json(json_object: json_object)
                when "user-interrupted"
                  Vapi::ServerMessageUserInterrupted.from_json(json_object: json_object)
-               when "language-changed"
-                 Vapi::ServerMessageLanguageChanged.from_json(json_object: json_object)
+               when "language-change-detected"
+                 Vapi::ServerMessageLanguageChangeDetected.from_json(json_object: json_object)
                when "voice-input"
                  Vapi::ServerMessageVoiceInput.from_json(json_object: json_object)
                when "voice-request"
@@ -103,6 +106,8 @@ module Vapi
         { **@member.to_json, type: @discriminant }.to_json
       when "hang"
         { **@member.to_json, type: @discriminant }.to_json
+      when "knowledge-base-request"
+        { **@member.to_json, type: @discriminant }.to_json
       when "model-output"
         { **@member.to_json, type: @discriminant }.to_json
       when "phone-call-control"
@@ -121,7 +126,7 @@ module Vapi
         { **@member.to_json, type: @discriminant }.to_json
       when "user-interrupted"
         { **@member.to_json, type: @discriminant }.to_json
-      when "language-changed"
+      when "language-change-detected"
         { **@member.to_json, type: @discriminant }.to_json
       when "voice-input"
         { **@member.to_json, type: @discriminant }.to_json
@@ -149,6 +154,8 @@ module Vapi
         Vapi::ServerMessageEndOfCallReport.validate_raw(obj: obj)
       when "hang"
         Vapi::ServerMessageHang.validate_raw(obj: obj)
+      when "knowledge-base-request"
+        Vapi::ServerMessageKnowledgeBaseRequest.validate_raw(obj: obj)
       when "model-output"
         Vapi::ServerMessageModelOutput.validate_raw(obj: obj)
       when "phone-call-control"
@@ -167,8 +174,8 @@ module Vapi
         Vapi::ServerMessageTranscript.validate_raw(obj: obj)
       when "user-interrupted"
         Vapi::ServerMessageUserInterrupted.validate_raw(obj: obj)
-      when "language-changed"
-        Vapi::ServerMessageLanguageChanged.validate_raw(obj: obj)
+      when "language-change-detected"
+        Vapi::ServerMessageLanguageChangeDetected.validate_raw(obj: obj)
       when "voice-input"
         Vapi::ServerMessageVoiceInput.validate_raw(obj: obj)
       when "voice-request"
@@ -208,6 +215,12 @@ module Vapi
     # @return [Vapi::ServerMessageMessage]
     def self.hang(member:)
       new(member: member, discriminant: "hang")
+    end
+
+    # @param member [Vapi::ServerMessageKnowledgeBaseRequest]
+    # @return [Vapi::ServerMessageMessage]
+    def self.knowledge_base_request(member:)
+      new(member: member, discriminant: "knowledge-base-request")
     end
 
     # @param member [Vapi::ServerMessageModelOutput]
@@ -264,10 +277,10 @@ module Vapi
       new(member: member, discriminant: "user-interrupted")
     end
 
-    # @param member [Vapi::ServerMessageLanguageChanged]
+    # @param member [Vapi::ServerMessageLanguageChangeDetected]
     # @return [Vapi::ServerMessageMessage]
-    def self.language_changed(member:)
-      new(member: member, discriminant: "language-changed")
+    def self.language_change_detected(member:)
+      new(member: member, discriminant: "language-change-detected")
     end
 
     # @param member [Vapi::ServerMessageVoiceInput]

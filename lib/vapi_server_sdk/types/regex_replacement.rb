@@ -7,9 +7,14 @@ require "json"
 module Vapi
   class RegexReplacement
     # @return [String] This is the regex pattern to replace.
+    #  Note:
+    #  - This works by using the `string.replace` method in Node.JS. Eg. `"hello
+    #  there".replace(/hello/g, "hi")` will return `"hi there"`.
+    #  Hot tip:
+    #  - In JavaScript, escape `\` when sending the regex pattern. Eg. `"hello\sthere"`
+    #  will be sent over the wire as `"hellosthere"`. Send `"hello\\sthere"` instead.
     attr_reader :regex
-    # @return [Array<Vapi::RegexOption>] These are the options for the regex replacement. Default all options are
-    #  disabled.
+    # @return [Array<Vapi::RegexOption>] These are the options for the regex replacement. Defaults to all disabled.
     #  @default []
     attr_reader :options
     # @return [String] This is the value that will replace the match.
@@ -23,8 +28,13 @@ module Vapi
     OMIT = Object.new
 
     # @param regex [String] This is the regex pattern to replace.
-    # @param options [Array<Vapi::RegexOption>] These are the options for the regex replacement. Default all options are
-    #  disabled.
+    #  Note:
+    #  - This works by using the `string.replace` method in Node.JS. Eg. `"hello
+    #  there".replace(/hello/g, "hi")` will return `"hi there"`.
+    #  Hot tip:
+    #  - In JavaScript, escape `\` when sending the regex pattern. Eg. `"hello\sthere"`
+    #  will be sent over the wire as `"hellosthere"`. Send `"hello\\sthere"` instead.
+    # @param options [Array<Vapi::RegexOption>] These are the options for the regex replacement. Defaults to all disabled.
     #  @default []
     # @param value [String] This is the value that will replace the match.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition

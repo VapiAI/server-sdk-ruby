@@ -20,12 +20,13 @@ module Vapi
 
     # @param org_id [String] This is the unique identifier for the org that this log belongs to.
     # @param type [Vapi::Logs::LogsGetRequestType] This is the type of the log.
+    # @param webhook_type [String] This is the type of the webhook, given the log is from a webhook.
     # @param assistant_id [String] This is the ID of the assistant.
     # @param phone_number_id [String] This is the ID of the phone number.
     # @param customer_id [String] This is the ID of the customer.
     # @param squad_id [String] This is the ID of the squad.
     # @param call_id [String] This is the ID of the call.
-    # @param page [Integer] This is the page number to return. Defaults to 1.
+    # @param page [Float] This is the page number to return. Defaults to 1.
     # @param sort_order [Vapi::Logs::LogsGetRequestSortOrder] This is the sort order for pagination. Defaults to 'ASC'.
     # @param limit [Float] This is the maximum number of items to return. Defaults to 100.
     # @param created_at_gt [DateTime] This will return items where the createdAt is greater than the specified value.
@@ -49,8 +50,8 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.logs.get
-    def get(org_id: nil, type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil, squad_id: nil,
-            call_id: nil, page: nil, sort_order: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
+    def get(org_id: nil, type: nil, webhook_type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
+            squad_id: nil, call_id: nil, page: nil, sort_order: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -63,6 +64,7 @@ module Vapi
           **(request_options&.additional_query_parameters || {}),
           "orgId": org_id,
           "type": type,
+          "webhookType": webhook_type,
           "assistantId": assistant_id,
           "phoneNumberId": phone_number_id,
           "customerId": customer_id,
@@ -101,12 +103,13 @@ module Vapi
 
     # @param org_id [String] This is the unique identifier for the org that this log belongs to.
     # @param type [Vapi::Logs::LogsGetRequestType] This is the type of the log.
+    # @param webhook_type [String] This is the type of the webhook, given the log is from a webhook.
     # @param assistant_id [String] This is the ID of the assistant.
     # @param phone_number_id [String] This is the ID of the phone number.
     # @param customer_id [String] This is the ID of the customer.
     # @param squad_id [String] This is the ID of the squad.
     # @param call_id [String] This is the ID of the call.
-    # @param page [Integer] This is the page number to return. Defaults to 1.
+    # @param page [Float] This is the page number to return. Defaults to 1.
     # @param sort_order [Vapi::Logs::LogsGetRequestSortOrder] This is the sort order for pagination. Defaults to 'ASC'.
     # @param limit [Float] This is the maximum number of items to return. Defaults to 100.
     # @param created_at_gt [DateTime] This will return items where the createdAt is greater than the specified value.
@@ -130,8 +133,8 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.logs.get
-    def get(org_id: nil, type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil, squad_id: nil,
-            call_id: nil, page: nil, sort_order: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
+    def get(org_id: nil, type: nil, webhook_type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
+            squad_id: nil, call_id: nil, page: nil, sort_order: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -145,6 +148,7 @@ module Vapi
             **(request_options&.additional_query_parameters || {}),
             "orgId": org_id,
             "type": type,
+            "webhookType": webhook_type,
             "assistantId": assistant_id,
             "phoneNumberId": phone_number_id,
             "customerId": customer_id,

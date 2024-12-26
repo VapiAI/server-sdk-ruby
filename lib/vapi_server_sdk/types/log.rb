@@ -9,12 +9,14 @@ require "json"
 
 module Vapi
   class Log
-    # @return [Float] This is the timestamp at which the log was written.
+    # @return [String] This is the timestamp at which the log was written.
     attr_reader :time
     # @return [String] This is the unique identifier for the org that this log belongs to.
     attr_reader :org_id
     # @return [Vapi::LogType] This is the type of the log.
     attr_reader :type
+    # @return [String] This is the type of the webhook, given the log is from a webhook.
+    attr_reader :webhook_type
     # @return [Vapi::LogResource] This is the specific resource, relevant only to API logs.
     attr_reader :resource
     # @return [Float] 'This is how long the request took.
@@ -63,9 +65,10 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param time [Float] This is the timestamp at which the log was written.
+    # @param time [String] This is the timestamp at which the log was written.
     # @param org_id [String] This is the unique identifier for the org that this log belongs to.
     # @param type [Vapi::LogType] This is the type of the log.
+    # @param webhook_type [String] This is the type of the webhook, given the log is from a webhook.
     # @param resource [Vapi::LogResource] This is the specific resource, relevant only to API logs.
     # @param request_duration_seconds [Float] 'This is how long the request took.
     # @param request_started_at [String] This is the timestamp at which the request began.
@@ -89,10 +92,11 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Log]
     def initialize(time:, org_id:, type:, request_duration_seconds:, request_started_at:, request_finished_at:,
-                   request_body:, request_http_method:, request_url:, request_path:, response_http_code:, resource: OMIT, request_query: OMIT, request_ip_address: OMIT, request_origin: OMIT, response_body: OMIT, request_headers: OMIT, error: OMIT, assistant_id: OMIT, phone_number_id: OMIT, customer_id: OMIT, squad_id: OMIT, call_id: OMIT, additional_properties: nil)
+                   request_body:, request_http_method:, request_url:, request_path:, response_http_code:, webhook_type: OMIT, resource: OMIT, request_query: OMIT, request_ip_address: OMIT, request_origin: OMIT, response_body: OMIT, request_headers: OMIT, error: OMIT, assistant_id: OMIT, phone_number_id: OMIT, customer_id: OMIT, squad_id: OMIT, call_id: OMIT, additional_properties: nil)
       @time = time
       @org_id = org_id
       @type = type
+      @webhook_type = webhook_type if webhook_type != OMIT
       @resource = resource if resource != OMIT
       @request_duration_seconds = request_duration_seconds
       @request_started_at = request_started_at
@@ -118,6 +122,7 @@ module Vapi
         "time": time,
         "orgId": org_id,
         "type": type,
+        "webhookType": webhook_type,
         "resource": resource,
         "requestDurationSeconds": request_duration_seconds,
         "requestStartedAt": request_started_at,
@@ -153,6 +158,7 @@ module Vapi
       time = parsed_json["time"]
       org_id = parsed_json["orgId"]
       type = parsed_json["type"]
+      webhook_type = parsed_json["webhookType"]
       resource = parsed_json["resource"]
       request_duration_seconds = parsed_json["requestDurationSeconds"]
       request_started_at = parsed_json["requestStartedAt"]
@@ -182,6 +188,7 @@ module Vapi
         time: time,
         org_id: org_id,
         type: type,
+        webhook_type: webhook_type,
         resource: resource,
         request_duration_seconds: request_duration_seconds,
         request_started_at: request_started_at,
@@ -220,9 +227,10 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.time.is_a?(Float) != false || raise("Passed value for field obj.time is not the expected type, validation failed.")
+      obj.time.is_a?(String) != false || raise("Passed value for field obj.time is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.type.is_a?(Vapi::LogType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.webhook_type&.is_a?(String) != false || raise("Passed value for field obj.webhook_type is not the expected type, validation failed.")
       obj.resource&.is_a?(Vapi::LogResource) != false || raise("Passed value for field obj.resource is not the expected type, validation failed.")
       obj.request_duration_seconds.is_a?(Float) != false || raise("Passed value for field obj.request_duration_seconds is not the expected type, validation failed.")
       obj.request_started_at.is_a?(String) != false || raise("Passed value for field obj.request_started_at is not the expected type, validation failed.")

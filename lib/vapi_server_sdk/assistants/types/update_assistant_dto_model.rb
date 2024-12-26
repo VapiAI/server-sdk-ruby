@@ -5,12 +5,15 @@ require_relative "../../types/anyscale_model"
 require_relative "../../types/anthropic_model"
 require_relative "../../types/custom_llm_model"
 require_relative "../../types/deep_infra_model"
+require_relative "../../types/google_model"
 require_relative "../../types/groq_model"
+require_relative "../../types/inflection_ai_model"
 require_relative "../../types/open_ai_model"
 require_relative "../../types/open_router_model"
 require_relative "../../types/perplexity_ai_model"
 require_relative "../../types/together_ai_model"
 require_relative "../../types/vapi_model"
+require_relative "../../types/xai_model"
 
 module Vapi
   class Assistants
@@ -47,8 +50,12 @@ module Vapi
                    Vapi::CustomLlmModel.from_json(json_object: json_object)
                  when "deepinfra"
                    Vapi::DeepInfraModel.from_json(json_object: json_object)
+                 when "google"
+                   Vapi::GoogleModel.from_json(json_object: json_object)
                  when "groq"
                    Vapi::GroqModel.from_json(json_object: json_object)
+                 when "inflection-ai"
+                   Vapi::InflectionAiModel.from_json(json_object: json_object)
                  when "openai"
                    Vapi::OpenAiModel.from_json(json_object: json_object)
                  when "openrouter"
@@ -59,6 +66,8 @@ module Vapi
                    Vapi::TogetherAiModel.from_json(json_object: json_object)
                  when "vapi"
                    Vapi::VapiModel.from_json(json_object: json_object)
+                 when "xai"
+                   Vapi::XaiModel.from_json(json_object: json_object)
                  else
                    Vapi::AnyscaleModel.from_json(json_object: json_object)
                  end
@@ -78,7 +87,11 @@ module Vapi
           { **@member.to_json, provider: @discriminant }.to_json
         when "deepinfra"
           { **@member.to_json, provider: @discriminant }.to_json
+        when "google"
+          { **@member.to_json, provider: @discriminant }.to_json
         when "groq"
+          { **@member.to_json, provider: @discriminant }.to_json
+        when "inflection-ai"
           { **@member.to_json, provider: @discriminant }.to_json
         when "openai"
           { **@member.to_json, provider: @discriminant }.to_json
@@ -89,6 +102,8 @@ module Vapi
         when "together-ai"
           { **@member.to_json, provider: @discriminant }.to_json
         when "vapi"
+          { **@member.to_json, provider: @discriminant }.to_json
+        when "xai"
           { **@member.to_json, provider: @discriminant }.to_json
         else
           { "provider": @discriminant, value: @member }.to_json
@@ -112,8 +127,12 @@ module Vapi
           Vapi::CustomLlmModel.validate_raw(obj: obj)
         when "deepinfra"
           Vapi::DeepInfraModel.validate_raw(obj: obj)
+        when "google"
+          Vapi::GoogleModel.validate_raw(obj: obj)
         when "groq"
           Vapi::GroqModel.validate_raw(obj: obj)
+        when "inflection-ai"
+          Vapi::InflectionAiModel.validate_raw(obj: obj)
         when "openai"
           Vapi::OpenAiModel.validate_raw(obj: obj)
         when "openrouter"
@@ -124,6 +143,8 @@ module Vapi
           Vapi::TogetherAiModel.validate_raw(obj: obj)
         when "vapi"
           Vapi::VapiModel.validate_raw(obj: obj)
+        when "xai"
+          Vapi::XaiModel.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -161,10 +182,22 @@ module Vapi
         new(member: member, discriminant: "deepinfra")
       end
 
+      # @param member [Vapi::GoogleModel]
+      # @return [Vapi::Assistants::UpdateAssistantDtoModel]
+      def self.google(member:)
+        new(member: member, discriminant: "google")
+      end
+
       # @param member [Vapi::GroqModel]
       # @return [Vapi::Assistants::UpdateAssistantDtoModel]
       def self.groq(member:)
         new(member: member, discriminant: "groq")
+      end
+
+      # @param member [Vapi::InflectionAiModel]
+      # @return [Vapi::Assistants::UpdateAssistantDtoModel]
+      def self.inflection_ai(member:)
+        new(member: member, discriminant: "inflection-ai")
       end
 
       # @param member [Vapi::OpenAiModel]
@@ -195,6 +228,12 @@ module Vapi
       # @return [Vapi::Assistants::UpdateAssistantDtoModel]
       def self.vapi(member:)
         new(member: member, discriminant: "vapi")
+      end
+
+      # @param member [Vapi::XaiModel]
+      # @return [Vapi::Assistants::UpdateAssistantDtoModel]
+      def self.xai(member:)
+        new(member: member, discriminant: "xai")
       end
     end
   end

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require_relative "subscription"
 require "date"
 require_relative "org_plan"
+require_relative "org_channel"
 require "ostruct"
 require "json"
 
@@ -15,6 +17,10 @@ module Vapi
     #  This is due to the compliance requirements of HIPAA. Other providers may not
     #  meet these requirements.
     attr_reader :hipaa_enabled
+    # @return [Vapi::Subscription]
+    attr_reader :subscription
+    # @return [String] This is the ID of the subscription the org belongs to.
+    attr_reader :subscription_id
     # @return [String] This is the unique identifier for the org.
     attr_reader :id
     # @return [DateTime] This is the ISO 8601 date-time string of when the org was created.
@@ -35,6 +41,9 @@ module Vapi
     attr_reader :plan
     # @return [String] This is the name of the org. This is just for your own reference.
     attr_reader :name
+    # @return [Vapi::OrgChannel] This is the channel of the org. There is the cluster the API traffic for the org
+    #  will be directed.
+    attr_reader :channel
     # @return [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
     #  contact us at support@vapi.ai.
     attr_reader :billing_limit
@@ -65,6 +74,8 @@ module Vapi
     #  available for LLM and Voice respectively.
     #  This is due to the compliance requirements of HIPAA. Other providers may not
     #  meet these requirements.
+    # @param subscription [Vapi::Subscription]
+    # @param subscription_id [String] This is the ID of the subscription the org belongs to.
     # @param id [String] This is the unique identifier for the org.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the org was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the org was last updated.
@@ -75,6 +86,8 @@ module Vapi
     # @param stripe_subscription_status [String] This is the subscription's status.
     # @param plan [Vapi::OrgPlan] This is the plan for the org.
     # @param name [String] This is the name of the org. This is just for your own reference.
+    # @param channel [Vapi::OrgChannel] This is the channel of the org. There is the cluster the API traffic for the org
+    #  will be directed.
     # @param billing_limit [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
     #  contact us at support@vapi.ai.
     # @param server_url [String] This is the URL Vapi will communicate with via HTTP GET and POST Requests. This
@@ -88,9 +101,11 @@ module Vapi
     #  support@vapi.ai.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Org]
-    def initialize(id:, created_at:, updated_at:, hipaa_enabled: OMIT, stripe_customer_id: OMIT,
-                   stripe_subscription_id: OMIT, stripe_subscription_item_id: OMIT, stripe_subscription_current_period_start: OMIT, stripe_subscription_status: OMIT, plan: OMIT, name: OMIT, billing_limit: OMIT, server_url: OMIT, server_url_secret: OMIT, concurrency_limit: OMIT, additional_properties: nil)
+    def initialize(id:, created_at:, updated_at:, hipaa_enabled: OMIT, subscription: OMIT, subscription_id: OMIT,
+                   stripe_customer_id: OMIT, stripe_subscription_id: OMIT, stripe_subscription_item_id: OMIT, stripe_subscription_current_period_start: OMIT, stripe_subscription_status: OMIT, plan: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT, server_url: OMIT, server_url_secret: OMIT, concurrency_limit: OMIT, additional_properties: nil)
       @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
+      @subscription = subscription if subscription != OMIT
+      @subscription_id = subscription_id if subscription_id != OMIT
       @id = id
       @created_at = created_at
       @updated_at = updated_at
@@ -103,6 +118,7 @@ module Vapi
       @stripe_subscription_status = stripe_subscription_status if stripe_subscription_status != OMIT
       @plan = plan if plan != OMIT
       @name = name if name != OMIT
+      @channel = channel if channel != OMIT
       @billing_limit = billing_limit if billing_limit != OMIT
       @server_url = server_url if server_url != OMIT
       @server_url_secret = server_url_secret if server_url_secret != OMIT
@@ -110,6 +126,8 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "hipaaEnabled": hipaa_enabled,
+        "subscription": subscription,
+        "subscriptionId": subscription_id,
         "id": id,
         "createdAt": created_at,
         "updatedAt": updated_at,
@@ -120,6 +138,7 @@ module Vapi
         "stripeSubscriptionStatus": stripe_subscription_status,
         "plan": plan,
         "name": name,
+        "channel": channel,
         "billingLimit": billing_limit,
         "serverUrl": server_url,
         "serverUrlSecret": server_url_secret,
@@ -137,6 +156,13 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       hipaa_enabled = parsed_json["hipaaEnabled"]
+      if parsed_json["subscription"].nil?
+        subscription = nil
+      else
+        subscription = parsed_json["subscription"].to_json
+        subscription = Vapi::Subscription.from_json(json_object: subscription)
+      end
+      subscription_id = parsed_json["subscriptionId"]
       id = parsed_json["id"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
@@ -154,12 +180,15 @@ module Vapi
         plan = Vapi::OrgPlan.from_json(json_object: plan)
       end
       name = parsed_json["name"]
+      channel = parsed_json["channel"]
       billing_limit = parsed_json["billingLimit"]
       server_url = parsed_json["serverUrl"]
       server_url_secret = parsed_json["serverUrlSecret"]
       concurrency_limit = parsed_json["concurrencyLimit"]
       new(
         hipaa_enabled: hipaa_enabled,
+        subscription: subscription,
+        subscription_id: subscription_id,
         id: id,
         created_at: created_at,
         updated_at: updated_at,
@@ -170,6 +199,7 @@ module Vapi
         stripe_subscription_status: stripe_subscription_status,
         plan: plan,
         name: name,
+        channel: channel,
         billing_limit: billing_limit,
         server_url: server_url,
         server_url_secret: server_url_secret,
@@ -193,6 +223,8 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.hipaa_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.hipaa_enabled is not the expected type, validation failed.")
+      obj.subscription.nil? || Vapi::Subscription.validate_raw(obj: obj.subscription)
+      obj.subscription_id&.is_a?(String) != false || raise("Passed value for field obj.subscription_id is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
@@ -203,6 +235,7 @@ module Vapi
       obj.stripe_subscription_status&.is_a?(String) != false || raise("Passed value for field obj.stripe_subscription_status is not the expected type, validation failed.")
       obj.plan.nil? || Vapi::OrgPlan.validate_raw(obj: obj.plan)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.channel&.is_a?(Vapi::OrgChannel) != false || raise("Passed value for field obj.channel is not the expected type, validation failed.")
       obj.billing_limit&.is_a?(Float) != false || raise("Passed value for field obj.billing_limit is not the expected type, validation failed.")
       obj.server_url&.is_a?(String) != false || raise("Passed value for field obj.server_url is not the expected type, validation failed.")
       obj.server_url_secret&.is_a?(String) != false || raise("Passed value for field obj.server_url_secret is not the expected type, validation failed.")

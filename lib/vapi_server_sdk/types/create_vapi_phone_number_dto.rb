@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "create_vapi_phone_number_dto_fallback_destination"
+require_relative "sip_authentication"
 require "ostruct"
 require "json"
 
@@ -17,6 +18,10 @@ module Vapi
     #  attached to this number will answer.
     #  This is case-insensitive.
     attr_reader :sip_uri
+    # @return [Vapi::SipAuthentication] This enables authentication for incoming SIP INVITE requests to the `sipUri`.
+    #  If not set, any username/password to the 401 challenge of the SIP INVITE will be
+    #  accepted.
+    attr_reader :authentication
     # @return [String] This is the name of the phone number. This is just for your own reference.
     attr_reader :name
     # @return [String] This is the assistant that will be used for incoming calls to this phone number.
@@ -56,6 +61,9 @@ module Vapi
     # @param sip_uri [String] This is the SIP URI of the phone number. You can SIP INVITE this. The assistant
     #  attached to this number will answer.
     #  This is case-insensitive.
+    # @param authentication [Vapi::SipAuthentication] This enables authentication for incoming SIP INVITE requests to the `sipUri`.
+    #  If not set, any username/password to the 401 challenge of the SIP INVITE will be
+    #  accepted.
     # @param name [String] This is the name of the phone number. This is just for your own reference.
     # @param assistant_id [String] This is the assistant that will be used for incoming calls to this phone number.
     #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
@@ -75,10 +83,11 @@ module Vapi
     #  Same precedence logic as serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateVapiPhoneNumberDto]
-    def initialize(sip_uri:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT, squad_id: OMIT,
-                   server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
+    def initialize(sip_uri:, fallback_destination: OMIT, authentication: OMIT, name: OMIT, assistant_id: OMIT,
+                   squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
       @sip_uri = sip_uri
+      @authentication = authentication if authentication != OMIT
       @name = name if name != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
       @squad_id = squad_id if squad_id != OMIT
@@ -88,6 +97,7 @@ module Vapi
       @_field_set = {
         "fallbackDestination": fallback_destination,
         "sipUri": sip_uri,
+        "authentication": authentication,
         "name": name,
         "assistantId": assistant_id,
         "squadId": squad_id,
@@ -112,6 +122,12 @@ module Vapi
         fallback_destination = Vapi::CreateVapiPhoneNumberDtoFallbackDestination.from_json(json_object: fallback_destination)
       end
       sip_uri = parsed_json["sipUri"]
+      if parsed_json["authentication"].nil?
+        authentication = nil
+      else
+        authentication = parsed_json["authentication"].to_json
+        authentication = Vapi::SipAuthentication.from_json(json_object: authentication)
+      end
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]
       squad_id = parsed_json["squadId"]
@@ -120,6 +136,7 @@ module Vapi
       new(
         fallback_destination: fallback_destination,
         sip_uri: sip_uri,
+        authentication: authentication,
         name: name,
         assistant_id: assistant_id,
         squad_id: squad_id,
@@ -145,6 +162,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::CreateVapiPhoneNumberDtoFallbackDestination.validate_raw(obj: obj.fallback_destination)
       obj.sip_uri.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
+      obj.authentication.nil? || Vapi::SipAuthentication.validate_raw(obj: obj.authentication)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")

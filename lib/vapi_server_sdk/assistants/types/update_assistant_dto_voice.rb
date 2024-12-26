@@ -3,6 +3,7 @@
 require "json"
 require_relative "../../types/azure_voice"
 require_relative "../../types/cartesia_voice"
+require_relative "../../types/custom_voice"
 require_relative "../../types/deepgram_voice"
 require_relative "../../types/eleven_labs_voice"
 require_relative "../../types/lmnt_voice"
@@ -10,6 +11,7 @@ require_relative "../../types/neets_voice"
 require_relative "../../types/open_ai_voice"
 require_relative "../../types/play_ht_voice"
 require_relative "../../types/rime_ai_voice"
+require_relative "../../types/tavus_voice"
 
 module Vapi
   class Assistants
@@ -42,6 +44,8 @@ module Vapi
                    Vapi::AzureVoice.from_json(json_object: json_object)
                  when "cartesia"
                    Vapi::CartesiaVoice.from_json(json_object: json_object)
+                 when "custom-voice"
+                   Vapi::CustomVoice.from_json(json_object: json_object)
                  when "deepgram"
                    Vapi::DeepgramVoice.from_json(json_object: json_object)
                  when "11labs"
@@ -56,6 +60,8 @@ module Vapi
                    Vapi::PlayHtVoice.from_json(json_object: json_object)
                  when "rime-ai"
                    Vapi::RimeAiVoice.from_json(json_object: json_object)
+                 when "tavus"
+                   Vapi::TavusVoice.from_json(json_object: json_object)
                  else
                    Vapi::AzureVoice.from_json(json_object: json_object)
                  end
@@ -71,6 +77,8 @@ module Vapi
           { **@member.to_json, provider: @discriminant }.to_json
         when "cartesia"
           { **@member.to_json, provider: @discriminant }.to_json
+        when "custom-voice"
+          { **@member.to_json, provider: @discriminant }.to_json
         when "deepgram"
           { **@member.to_json, provider: @discriminant }.to_json
         when "11labs"
@@ -84,6 +92,8 @@ module Vapi
         when "playht"
           { **@member.to_json, provider: @discriminant }.to_json
         when "rime-ai"
+          { **@member.to_json, provider: @discriminant }.to_json
+        when "tavus"
           { **@member.to_json, provider: @discriminant }.to_json
         else
           { "provider": @discriminant, value: @member }.to_json
@@ -103,6 +113,8 @@ module Vapi
           Vapi::AzureVoice.validate_raw(obj: obj)
         when "cartesia"
           Vapi::CartesiaVoice.validate_raw(obj: obj)
+        when "custom-voice"
+          Vapi::CustomVoice.validate_raw(obj: obj)
         when "deepgram"
           Vapi::DeepgramVoice.validate_raw(obj: obj)
         when "11labs"
@@ -117,6 +129,8 @@ module Vapi
           Vapi::PlayHtVoice.validate_raw(obj: obj)
         when "rime-ai"
           Vapi::RimeAiVoice.validate_raw(obj: obj)
+        when "tavus"
+          Vapi::TavusVoice.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -140,6 +154,12 @@ module Vapi
       # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
       def self.cartesia(member:)
         new(member: member, discriminant: "cartesia")
+      end
+
+      # @param member [Vapi::CustomVoice]
+      # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
+      def self.custom_voice(member:)
+        new(member: member, discriminant: "custom-voice")
       end
 
       # @param member [Vapi::DeepgramVoice]
@@ -182,6 +202,12 @@ module Vapi
       # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
       def self.rime_ai(member:)
         new(member: member, discriminant: "rime-ai")
+      end
+
+      # @param member [Vapi::TavusVoice]
+      # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
+      def self.tavus(member:)
+        new(member: member, discriminant: "tavus")
       end
     end
   end

@@ -6,10 +6,19 @@ require "json"
 module Vapi
   class SummaryPlan
     # @return [Array<Hash{String => Object}>] These are the messages used to generate the summary.
-    #  @default: ` [ { "role": "system", "content": "You are an expert note-taker. You
-    #  will be given a transcript of a call. Summarize the call in 2-3 sentences. DO
-    #  NOT return anything except the summary." }, { "role": "user", "content": "Here
-    #  is the transcript:\n\n{{transcript}}\n\n" } ]`
+    #  @default: ```
+    #  [
+    #  {
+    #  "role": "system",
+    #  "content": "You are an expert note-taker. You will be given a transcript of
+    #  a call. Summarize the call in 2-3 sentences. DO NOT return anything except the
+    #  summary."
+    #  },
+    #  {
+    #  "role": "user",
+    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n"
+    #  }
+    #  ]```
     #  You can customize by providing any messages you want.
     #  Here are the template variables available:
     #  - {{transcript}}: The transcript of the call from `call.artifact.transcript`-
@@ -38,10 +47,19 @@ module Vapi
     OMIT = Object.new
 
     # @param messages [Array<Hash{String => Object}>] These are the messages used to generate the summary.
-    #  @default: ` [ { "role": "system", "content": "You are an expert note-taker. You
-    #  will be given a transcript of a call. Summarize the call in 2-3 sentences. DO
-    #  NOT return anything except the summary." }, { "role": "user", "content": "Here
-    #  is the transcript:\n\n{{transcript}}\n\n" } ]`
+    #  @default: ```
+    #  [
+    #  {
+    #  "role": "system",
+    #  "content": "You are an expert note-taker. You will be given a transcript of
+    #  a call. Summarize the call in 2-3 sentences. DO NOT return anything except the
+    #  summary."
+    #  },
+    #  {
+    #  "role": "user",
+    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n"
+    #  }
+    #  ]```
     #  You can customize by providing any messages you want.
     #  Here are the template variables available:
     #  - {{transcript}}: The transcript of the call from `call.artifact.transcript`-

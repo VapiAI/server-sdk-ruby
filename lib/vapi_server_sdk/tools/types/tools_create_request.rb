@@ -8,6 +8,9 @@ require_relative "../../types/create_ghl_tool_dto"
 require_relative "../../types/create_make_tool_dto"
 require_relative "../../types/create_transfer_call_tool_dto"
 require_relative "../../types/create_output_tool_dto"
+require_relative "../../types/create_bash_tool_dto"
+require_relative "../../types/create_computer_tool_dto"
+require_relative "../../types/create_text_editor_tool_dto"
 
 module Vapi
   class Tools
@@ -49,6 +52,12 @@ module Vapi
                    Vapi::CreateTransferCallToolDto.from_json(json_object: json_object)
                  when "output"
                    Vapi::CreateOutputToolDto.from_json(json_object: json_object)
+                 when "bash"
+                   Vapi::CreateBashToolDto.from_json(json_object: json_object)
+                 when "computer"
+                   Vapi::CreateComputerToolDto.from_json(json_object: json_object)
+                 when "textEditor"
+                   Vapi::CreateTextEditorToolDto.from_json(json_object: json_object)
                  else
                    Vapi::CreateDtmfToolDto.from_json(json_object: json_object)
                  end
@@ -73,6 +82,12 @@ module Vapi
         when "transferCall"
           { **@member.to_json, type: @discriminant }.to_json
         when "output"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "bash"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "computer"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "textEditor"
           { **@member.to_json, type: @discriminant }.to_json
         else
           { "type": @discriminant, value: @member }.to_json
@@ -102,6 +117,12 @@ module Vapi
           Vapi::CreateTransferCallToolDto.validate_raw(obj: obj)
         when "output"
           Vapi::CreateOutputToolDto.validate_raw(obj: obj)
+        when "bash"
+          Vapi::CreateBashToolDto.validate_raw(obj: obj)
+        when "computer"
+          Vapi::CreateComputerToolDto.validate_raw(obj: obj)
+        when "textEditor"
+          Vapi::CreateTextEditorToolDto.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -155,6 +176,24 @@ module Vapi
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.output(member:)
         new(member: member, discriminant: "output")
+      end
+
+      # @param member [Vapi::CreateBashToolDto]
+      # @return [Vapi::Tools::ToolsCreateRequest]
+      def self.bash(member:)
+        new(member: member, discriminant: "bash")
+      end
+
+      # @param member [Vapi::CreateComputerToolDto]
+      # @return [Vapi::Tools::ToolsCreateRequest]
+      def self.computer(member:)
+        new(member: member, discriminant: "computer")
+      end
+
+      # @param member [Vapi::CreateTextEditorToolDto]
+      # @return [Vapi::Tools::ToolsCreateRequest]
+      def self.text_editor(member:)
+        new(member: member, discriminant: "textEditor")
       end
     end
   end

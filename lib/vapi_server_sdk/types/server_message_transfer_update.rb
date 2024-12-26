@@ -49,6 +49,10 @@ module Vapi
     # @return [Vapi::CreateAssistantDto] This is the assistant that the call is being transferred from. This is only sent
     #  if `destination.type` is "assistant".
     attr_reader :from_assistant
+    # @return [Hash{String => Object}] This is the step that the conversation moved to.
+    attr_reader :to_step_record
+    # @return [Hash{String => Object}] This is the step that the conversation moved from. =
+    attr_reader :from_step_record
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -86,10 +90,12 @@ module Vapi
     #  if `destination.type` is "assistant".
     # @param from_assistant [Vapi::CreateAssistantDto] This is the assistant that the call is being transferred from. This is only sent
     #  if `destination.type` is "assistant".
+    # @param to_step_record [Hash{String => Object}] This is the step that the conversation moved to.
+    # @param from_step_record [Hash{String => Object}] This is the step that the conversation moved from. =
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageTransferUpdate]
     def initialize(phone_number: OMIT, destination: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT,
-                   customer: OMIT, call: OMIT, to_assistant: OMIT, from_assistant: OMIT, additional_properties: nil)
+                   customer: OMIT, call: OMIT, to_assistant: OMIT, from_assistant: OMIT, to_step_record: OMIT, from_step_record: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
       @destination = destination if destination != OMIT
       @timestamp = timestamp if timestamp != OMIT
@@ -99,6 +105,8 @@ module Vapi
       @call = call if call != OMIT
       @to_assistant = to_assistant if to_assistant != OMIT
       @from_assistant = from_assistant if from_assistant != OMIT
+      @to_step_record = to_step_record if to_step_record != OMIT
+      @from_step_record = from_step_record if from_step_record != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
@@ -109,7 +117,9 @@ module Vapi
         "customer": customer,
         "call": call,
         "toAssistant": to_assistant,
-        "fromAssistant": from_assistant
+        "fromAssistant": from_assistant,
+        "toStepRecord": to_step_record,
+        "fromStepRecord": from_step_record
       }.reject do |_k, v|
         v == OMIT
       end
@@ -171,6 +181,8 @@ module Vapi
         from_assistant = parsed_json["fromAssistant"].to_json
         from_assistant = Vapi::CreateAssistantDto.from_json(json_object: from_assistant)
       end
+      to_step_record = parsed_json["toStepRecord"]
+      from_step_record = parsed_json["fromStepRecord"]
       new(
         phone_number: phone_number,
         destination: destination,
@@ -181,6 +193,8 @@ module Vapi
         call: call,
         to_assistant: to_assistant,
         from_assistant: from_assistant,
+        to_step_record: to_step_record,
+        from_step_record: from_step_record,
         additional_properties: struct
       )
     end
@@ -208,6 +222,8 @@ module Vapi
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
       obj.to_assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.to_assistant)
       obj.from_assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.from_assistant)
+      obj.to_step_record&.is_a?(Hash) != false || raise("Passed value for field obj.to_step_record is not the expected type, validation failed.")
+      obj.from_step_record&.is_a?(Hash) != false || raise("Passed value for field obj.from_step_record is not the expected type, validation failed.")
     end
   end
 end

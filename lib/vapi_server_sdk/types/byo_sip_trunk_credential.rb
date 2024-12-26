@@ -19,10 +19,10 @@ module Vapi
     attr_reader :created_at
     # @return [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     attr_reader :updated_at
+    # @return [String] This is the name of credential. This is just for your reference.
+    attr_reader :name
     # @return [Array<Vapi::SipTrunkGateway>] This is the list of SIP trunk's gateways.
     attr_reader :gateways
-    # @return [String] This is the name of the SIP trunk. This is just for your reference.
-    attr_reader :name
     # @return [Vapi::SipTrunkOutboundAuthenticationPlan] This can be used to configure the outbound authentication if required by the SIP
     #  trunk.
     attr_reader :outbound_authentication_plan
@@ -32,6 +32,12 @@ module Vapi
     #  - Vonage/Twilio requires leading plus for all outbound calls. Set this to true.
     #  @default false
     attr_reader :outbound_leading_plus_enabled
+    # @return [String] This can be used to configure the tech prefix on outbound calls. This is an
+    #  advanced property.
+    attr_reader :tech_prefix
+    # @return [String] This can be used to enable the SIP diversion header for authenticating the
+    #  calling number if the SIP trunk supports it. This is an advanced property.
+    attr_reader :sip_diversion_header
     # @return [Vapi::SbcConfiguration] This is an advanced configuration for enterprise deployments. This uses the
     #  onprem SBC to trunk into the SIP trunk's `gateways`, rather than the managed SBC
     #  provided by Vapi.
@@ -49,8 +55,8 @@ module Vapi
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
+    # @param name [String] This is the name of credential. This is just for your reference.
     # @param gateways [Array<Vapi::SipTrunkGateway>] This is the list of SIP trunk's gateways.
-    # @param name [String] This is the name of the SIP trunk. This is just for your reference.
     # @param outbound_authentication_plan [Vapi::SipTrunkOutboundAuthenticationPlan] This can be used to configure the outbound authentication if required by the SIP
     #  trunk.
     # @param outbound_leading_plus_enabled [Boolean] This ensures the outbound origination attempts have a leading plus. Defaults to
@@ -58,22 +64,28 @@ module Vapi
     #  Usage:
     #  - Vonage/Twilio requires leading plus for all outbound calls. Set this to true.
     #  @default false
+    # @param tech_prefix [String] This can be used to configure the tech prefix on outbound calls. This is an
+    #  advanced property.
+    # @param sip_diversion_header [String] This can be used to enable the SIP diversion header for authenticating the
+    #  calling number if the SIP trunk supports it. This is an advanced property.
     # @param sbc_configuration [Vapi::SbcConfiguration] This is an advanced configuration for enterprise deployments. This uses the
     #  onprem SBC to trunk into the SIP trunk's `gateways`, rather than the managed SBC
     #  provided by Vapi.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ByoSipTrunkCredential]
     def initialize(id:, org_id:, created_at:, updated_at:, gateways:, provider: OMIT, name: OMIT,
-                   outbound_authentication_plan: OMIT, outbound_leading_plus_enabled: OMIT, sbc_configuration: OMIT, additional_properties: nil)
+                   outbound_authentication_plan: OMIT, outbound_leading_plus_enabled: OMIT, tech_prefix: OMIT, sip_diversion_header: OMIT, sbc_configuration: OMIT, additional_properties: nil)
       @provider = provider if provider != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
       @updated_at = updated_at
-      @gateways = gateways
       @name = name if name != OMIT
+      @gateways = gateways
       @outbound_authentication_plan = outbound_authentication_plan if outbound_authentication_plan != OMIT
       @outbound_leading_plus_enabled = outbound_leading_plus_enabled if outbound_leading_plus_enabled != OMIT
+      @tech_prefix = tech_prefix if tech_prefix != OMIT
+      @sip_diversion_header = sip_diversion_header if sip_diversion_header != OMIT
       @sbc_configuration = sbc_configuration if sbc_configuration != OMIT
       @additional_properties = additional_properties
       @_field_set = {
@@ -82,10 +94,12 @@ module Vapi
         "orgId": org_id,
         "createdAt": created_at,
         "updatedAt": updated_at,
-        "gateways": gateways,
         "name": name,
+        "gateways": gateways,
         "outboundAuthenticationPlan": outbound_authentication_plan,
         "outboundLeadingPlusEnabled": outbound_leading_plus_enabled,
+        "techPrefix": tech_prefix,
+        "sipDiversionHeader": sip_diversion_header,
         "sbcConfiguration": sbc_configuration
       }.reject do |_k, v|
         v == OMIT
@@ -104,11 +118,11 @@ module Vapi
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
+      name = parsed_json["name"]
       gateways = parsed_json["gateways"]&.map do |item|
         item = item.to_json
         Vapi::SipTrunkGateway.from_json(json_object: item)
       end
-      name = parsed_json["name"]
       if parsed_json["outboundAuthenticationPlan"].nil?
         outbound_authentication_plan = nil
       else
@@ -116,6 +130,8 @@ module Vapi
         outbound_authentication_plan = Vapi::SipTrunkOutboundAuthenticationPlan.from_json(json_object: outbound_authentication_plan)
       end
       outbound_leading_plus_enabled = parsed_json["outboundLeadingPlusEnabled"]
+      tech_prefix = parsed_json["techPrefix"]
+      sip_diversion_header = parsed_json["sipDiversionHeader"]
       if parsed_json["sbcConfiguration"].nil?
         sbc_configuration = nil
       else
@@ -128,10 +144,12 @@ module Vapi
         org_id: org_id,
         created_at: created_at,
         updated_at: updated_at,
-        gateways: gateways,
         name: name,
+        gateways: gateways,
         outbound_authentication_plan: outbound_authentication_plan,
         outbound_leading_plus_enabled: outbound_leading_plus_enabled,
+        tech_prefix: tech_prefix,
+        sip_diversion_header: sip_diversion_header,
         sbc_configuration: sbc_configuration,
         additional_properties: struct
       )
@@ -156,10 +174,12 @@ module Vapi
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
-      obj.gateways.is_a?(Array) != false || raise("Passed value for field obj.gateways is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.gateways.is_a?(Array) != false || raise("Passed value for field obj.gateways is not the expected type, validation failed.")
       obj.outbound_authentication_plan.nil? || Vapi::SipTrunkOutboundAuthenticationPlan.validate_raw(obj: obj.outbound_authentication_plan)
       obj.outbound_leading_plus_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.outbound_leading_plus_enabled is not the expected type, validation failed.")
+      obj.tech_prefix&.is_a?(String) != false || raise("Passed value for field obj.tech_prefix is not the expected type, validation failed.")
+      obj.sip_diversion_header&.is_a?(String) != false || raise("Passed value for field obj.sip_diversion_header is not the expected type, validation failed.")
       obj.sbc_configuration.nil? || Vapi::SbcConfiguration.validate_raw(obj: obj.sbc_configuration)
     end
   end

@@ -12,5 +12,6 @@ module Vapi
     OPENAI = "openai"
     PLAYHT = "playht"
     RIME_AI = "rime-ai"
+    TAVUS = "tavus"
   end
 end

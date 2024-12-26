@@ -13,6 +13,8 @@ module Vapi
     attr_reader :region
     # @return [String] This is not returned in the API.
     attr_reader :api_key
+    # @return [String] This is the name of credential. This is just for your reference.
+    attr_reader :name
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -25,15 +27,25 @@ module Vapi
     # @param team_id [String] Team ID
     # @param region [String] Region of your application. For example: eu1, eu2, us1, us2
     # @param api_key [String] This is not returned in the API.
+    # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateMakeCredentialDto]
-    def initialize(provider:, team_id:, region:, api_key:, additional_properties: nil)
+    def initialize(provider:, team_id:, region:, api_key:, name: OMIT, additional_properties: nil)
       @provider = provider
       @team_id = team_id
       @region = region
       @api_key = api_key
+      @name = name if name != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "teamId": team_id, "region": region, "apiKey": api_key }
+      @_field_set = {
+        "provider": provider,
+        "teamId": team_id,
+        "region": region,
+        "apiKey": api_key,
+        "name": name
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of UpdateMakeCredentialDto
@@ -47,11 +59,13 @@ module Vapi
       team_id = parsed_json["teamId"]
       region = parsed_json["region"]
       api_key = parsed_json["apiKey"]
+      name = parsed_json["name"]
       new(
         provider: provider,
         team_id: team_id,
         region: region,
         api_key: api_key,
+        name: name,
         additional_properties: struct
       )
     end
@@ -74,6 +88,7 @@ module Vapi
       obj.team_id.is_a?(String) != false || raise("Passed value for field obj.team_id is not the expected type, validation failed.")
       obj.region.is_a?(String) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
+      obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end
   end
 end

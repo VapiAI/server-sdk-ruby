@@ -18,6 +18,8 @@ module Vapi
     attr_reader :created_at
     # @return [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     attr_reader :updated_at
+    # @return [String] This is the name of credential. This is just for your reference.
+    attr_reader :name
     # @return [String] This can be used to point to an onprem Deepgram instance. Defaults to
     #  api.deepgram.com.
     attr_reader :api_url
@@ -35,11 +37,12 @@ module Vapi
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
+    # @param name [String] This is the name of credential. This is just for your reference.
     # @param api_url [String] This can be used to point to an onprem Deepgram instance. Defaults to
     #  api.deepgram.com.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::DeepgramCredential]
-    def initialize(provider:, api_key:, id:, org_id:, created_at:, updated_at:, api_url: OMIT,
+    def initialize(provider:, api_key:, id:, org_id:, created_at:, updated_at:, name: OMIT, api_url: OMIT,
                    additional_properties: nil)
       @provider = provider
       @api_key = api_key
@@ -47,6 +50,7 @@ module Vapi
       @org_id = org_id
       @created_at = created_at
       @updated_at = updated_at
+      @name = name if name != OMIT
       @api_url = api_url if api_url != OMIT
       @additional_properties = additional_properties
       @_field_set = {
@@ -56,6 +60,7 @@ module Vapi
         "orgId": org_id,
         "createdAt": created_at,
         "updatedAt": updated_at,
+        "name": name,
         "apiUrl": api_url
       }.reject do |_k, v|
         v == OMIT
@@ -75,6 +80,7 @@ module Vapi
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
+      name = parsed_json["name"]
       api_url = parsed_json["apiUrl"]
       new(
         provider: provider,
@@ -83,6 +89,7 @@ module Vapi
         org_id: org_id,
         created_at: created_at,
         updated_at: updated_at,
+        name: name,
         api_url: api_url,
         additional_properties: struct
       )
@@ -108,6 +115,7 @@ module Vapi
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
+      obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.api_url&.is_a?(String) != false || raise("Passed value for field obj.api_url is not the expected type, validation failed.")
     end
   end

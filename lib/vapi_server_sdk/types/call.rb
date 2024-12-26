@@ -14,6 +14,7 @@ require_relative "artifact_plan"
 require_relative "analysis"
 require_relative "monitor"
 require_relative "artifact"
+require_relative "transport"
 require_relative "create_assistant_dto"
 require_relative "assistant_overrides"
 require_relative "create_squad_dto"
@@ -70,6 +71,8 @@ module Vapi
     # @return [Vapi::Artifact] These are the artifacts created from the call. Configure in
     #  `assistant.artifactPlan`.
     attr_reader :artifact
+    # @return [Vapi::Transport] This is the transport used for the call.
+    attr_reader :transport
     # @return [String] The ID of the call as provided by the phone number service. callSid in Twilio.
     #  conversationUuid in Vonage.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
@@ -141,6 +144,7 @@ module Vapi
     # @param monitor [Vapi::Monitor] This is to real-time monitor the call. Configure in `assistant.monitorPlan`.
     # @param artifact [Vapi::Artifact] These are the artifacts created from the call. Configure in
     #  `assistant.artifactPlan`.
+    # @param transport [Vapi::Transport] This is the transport used for the call.
     # @param phone_call_provider_id [String] The ID of the call as provided by the phone number service. callSid in Twilio.
     #  conversationUuid in Vonage.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
@@ -170,7 +174,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Call]
     def initialize(id:, org_id:, created_at:, updated_at:, type: OMIT, costs: OMIT, messages: OMIT, phone_call_provider: OMIT, phone_call_transport: OMIT,
-                   status: OMIT, ended_reason: OMIT, destination: OMIT, started_at: OMIT, ended_at: OMIT, cost: OMIT, cost_breakdown: OMIT, artifact_plan: OMIT, analysis: OMIT, monitor: OMIT, artifact: OMIT, phone_call_provider_id: OMIT, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, name: OMIT, additional_properties: nil)
+                   status: OMIT, ended_reason: OMIT, destination: OMIT, started_at: OMIT, ended_at: OMIT, cost: OMIT, cost_breakdown: OMIT, artifact_plan: OMIT, analysis: OMIT, monitor: OMIT, artifact: OMIT, transport: OMIT, phone_call_provider_id: OMIT, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, name: OMIT, additional_properties: nil)
       @type = type if type != OMIT
       @costs = costs if costs != OMIT
       @messages = messages if messages != OMIT
@@ -191,6 +195,7 @@ module Vapi
       @analysis = analysis if analysis != OMIT
       @monitor = monitor if monitor != OMIT
       @artifact = artifact if artifact != OMIT
+      @transport = transport if transport != OMIT
       @phone_call_provider_id = phone_call_provider_id if phone_call_provider_id != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
       @assistant = assistant if assistant != OMIT
@@ -224,6 +229,7 @@ module Vapi
         "analysis": analysis,
         "monitor": monitor,
         "artifact": artifact,
+        "transport": transport,
         "phoneCallProviderId": phone_call_provider_id,
         "assistantId": assistant_id,
         "assistant": assistant,
@@ -303,6 +309,12 @@ module Vapi
         artifact = parsed_json["artifact"].to_json
         artifact = Vapi::Artifact.from_json(json_object: artifact)
       end
+      if parsed_json["transport"].nil?
+        transport = nil
+      else
+        transport = parsed_json["transport"].to_json
+        transport = Vapi::Transport.from_json(json_object: transport)
+      end
       phone_call_provider_id = parsed_json["phoneCallProviderId"]
       assistant_id = parsed_json["assistantId"]
       if parsed_json["assistant"].nil?
@@ -360,6 +372,7 @@ module Vapi
         analysis: analysis,
         monitor: monitor,
         artifact: artifact,
+        transport: transport,
         phone_call_provider_id: phone_call_provider_id,
         assistant_id: assistant_id,
         assistant: assistant,
@@ -409,6 +422,7 @@ module Vapi
       obj.analysis.nil? || Vapi::Analysis.validate_raw(obj: obj.analysis)
       obj.monitor.nil? || Vapi::Monitor.validate_raw(obj: obj.monitor)
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
+      obj.transport.nil? || Vapi::Transport.validate_raw(obj: obj.transport)
       obj.phone_call_provider_id&.is_a?(String) != false || raise("Passed value for field obj.phone_call_provider_id is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "create_org_dto_channel"
 require "ostruct"
 require "json"
 
@@ -13,8 +14,13 @@ module Vapi
     #  This is due to the compliance requirements of HIPAA. Other providers may not
     #  meet these requirements.
     attr_reader :hipaa_enabled
+    # @return [String] This is the ID of the subscription the org belongs to.
+    attr_reader :subscription_id
     # @return [String] This is the name of the org. This is just for your own reference.
     attr_reader :name
+    # @return [Vapi::CreateOrgDtoChannel] This is the channel of the org. There is the cluster the API traffic for the org
+    #  will be directed.
+    attr_reader :channel
     # @return [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
     #  contact us at support@vapi.ai.
     attr_reader :billing_limit
@@ -45,7 +51,10 @@ module Vapi
     #  available for LLM and Voice respectively.
     #  This is due to the compliance requirements of HIPAA. Other providers may not
     #  meet these requirements.
+    # @param subscription_id [String] This is the ID of the subscription the org belongs to.
     # @param name [String] This is the name of the org. This is just for your own reference.
+    # @param channel [Vapi::CreateOrgDtoChannel] This is the channel of the org. There is the cluster the API traffic for the org
+    #  will be directed.
     # @param billing_limit [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
     #  contact us at support@vapi.ai.
     # @param server_url [String] This is the URL Vapi will communicate with via HTTP GET and POST Requests. This
@@ -59,10 +68,12 @@ module Vapi
     #  support@vapi.ai.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateOrgDto]
-    def initialize(hipaa_enabled: OMIT, name: OMIT, billing_limit: OMIT, server_url: OMIT, server_url_secret: OMIT,
-                   concurrency_limit: OMIT, additional_properties: nil)
+    def initialize(hipaa_enabled: OMIT, subscription_id: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT,
+                   server_url: OMIT, server_url_secret: OMIT, concurrency_limit: OMIT, additional_properties: nil)
       @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
+      @subscription_id = subscription_id if subscription_id != OMIT
       @name = name if name != OMIT
+      @channel = channel if channel != OMIT
       @billing_limit = billing_limit if billing_limit != OMIT
       @server_url = server_url if server_url != OMIT
       @server_url_secret = server_url_secret if server_url_secret != OMIT
@@ -70,7 +81,9 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "hipaaEnabled": hipaa_enabled,
+        "subscriptionId": subscription_id,
         "name": name,
+        "channel": channel,
         "billingLimit": billing_limit,
         "serverUrl": server_url,
         "serverUrlSecret": server_url_secret,
@@ -88,14 +101,18 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       hipaa_enabled = parsed_json["hipaaEnabled"]
+      subscription_id = parsed_json["subscriptionId"]
       name = parsed_json["name"]
+      channel = parsed_json["channel"]
       billing_limit = parsed_json["billingLimit"]
       server_url = parsed_json["serverUrl"]
       server_url_secret = parsed_json["serverUrlSecret"]
       concurrency_limit = parsed_json["concurrencyLimit"]
       new(
         hipaa_enabled: hipaa_enabled,
+        subscription_id: subscription_id,
         name: name,
+        channel: channel,
         billing_limit: billing_limit,
         server_url: server_url,
         server_url_secret: server_url_secret,
@@ -119,7 +136,9 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.hipaa_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.hipaa_enabled is not the expected type, validation failed.")
+      obj.subscription_id&.is_a?(String) != false || raise("Passed value for field obj.subscription_id is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.channel&.is_a?(Vapi::CreateOrgDtoChannel) != false || raise("Passed value for field obj.channel is not the expected type, validation failed.")
       obj.billing_limit&.is_a?(Float) != false || raise("Passed value for field obj.billing_limit is not the expected type, validation failed.")
       obj.server_url&.is_a?(String) != false || raise("Passed value for field obj.server_url is not the expected type, validation failed.")
       obj.server_url_secret&.is_a?(String) != false || raise("Passed value for field obj.server_url_secret is not the expected type, validation failed.")

@@ -1,10 +1,25 @@
 # frozen_string_literal: true
 
+require_relative "transfer_destination_number_message"
+require_relative "transfer_plan"
 require "ostruct"
 require "json"
 
 module Vapi
   class TransferDestinationNumber
+    # @return [Vapi::TransferDestinationNumberMessage] This is spoken to the customer before connecting them to the destination.
+    #  Usage:
+    #  - If this is not provided and transfer tool messages is not provided, default is
+    #  "Transferring the call now".
+    #  - If set to "", nothing is spoken. This is useful when you want to silently
+    #  transfer. This is especially useful when transferring between assistants in a
+    #  squad. In this scenario, you likely also want to set
+    #  `assistant.firstMessageMode=assistant-speaks-first-with-model-generated-message`
+    #  for the destination assistant.
+    #  This accepts a string or a ToolMessageStart class. Latter is useful if you want
+    #  to specify multiple messages for different languages through the `contents`
+    #  field.
+    attr_reader :message
     # @return [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -35,15 +50,10 @@ module Vapi
     #  For Twilio, you can read up more here:
     #  https://www.twilio.com/docs/voice/twiml/dial#callerid
     attr_reader :caller_id
-    # @return [String] This is the message to say before transferring the call to the destination.
-    #  If this is not provided and transfer tool messages is not provided, default is
-    #  "Transferring the call now".
-    #  If set to "", nothing is spoken. This is useful when you want to silently
-    #  transfer. This is especially useful when transferring between assistants in a
-    #  squad. In this scenario, you likely also want to set
-    #  `assistant.firstMessageMode=assistant-speaks-first-with-model-generated-message`
-    #  for the destination assistant.
-    attr_reader :message
+    # @return [Vapi::TransferPlan] This configures how transfer is executed and the experience of the destination
+    #  party receiving the call. Defaults to `blind-transfer`.
+    #  @default `transferPlan.mode='blind-transfer'`
+    attr_reader :transfer_plan
     # @return [String] This is the description of the destination, used by the AI to choose when and
     #  how to transfer the call.
     attr_reader :description
@@ -55,6 +65,18 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param message [Vapi::TransferDestinationNumberMessage] This is spoken to the customer before connecting them to the destination.
+    #  Usage:
+    #  - If this is not provided and transfer tool messages is not provided, default is
+    #  "Transferring the call now".
+    #  - If set to "", nothing is spoken. This is useful when you want to silently
+    #  transfer. This is especially useful when transferring between assistants in a
+    #  squad. In this scenario, you likely also want to set
+    #  `assistant.firstMessageMode=assistant-speaks-first-with-model-generated-message`
+    #  for the destination assistant.
+    #  This accepts a string or a ToolMessageStart class. Latter is useful if you want
+    #  to specify multiple messages for different languages through the `contents`
+    #  field.
     # @param number_e_164_check_enabled [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -81,33 +103,30 @@ module Vapi
     #  to be a number that is owned or verified by your Transport provider like Twilio.
     #  For Twilio, you can read up more here:
     #  https://www.twilio.com/docs/voice/twiml/dial#callerid
-    # @param message [String] This is the message to say before transferring the call to the destination.
-    #  If this is not provided and transfer tool messages is not provided, default is
-    #  "Transferring the call now".
-    #  If set to "", nothing is spoken. This is useful when you want to silently
-    #  transfer. This is especially useful when transferring between assistants in a
-    #  squad. In this scenario, you likely also want to set
-    #  `assistant.firstMessageMode=assistant-speaks-first-with-model-generated-message`
-    #  for the destination assistant.
+    # @param transfer_plan [Vapi::TransferPlan] This configures how transfer is executed and the experience of the destination
+    #  party receiving the call. Defaults to `blind-transfer`.
+    #  @default `transferPlan.mode='blind-transfer'`
     # @param description [String] This is the description of the destination, used by the AI to choose when and
     #  how to transfer the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferDestinationNumber]
-    def initialize(number:, number_e_164_check_enabled: OMIT, extension: OMIT, caller_id: OMIT, message: OMIT,
-                   description: OMIT, additional_properties: nil)
+    def initialize(number:, message: OMIT, number_e_164_check_enabled: OMIT, extension: OMIT, caller_id: OMIT,
+                   transfer_plan: OMIT, description: OMIT, additional_properties: nil)
+      @message = message if message != OMIT
       @number_e_164_check_enabled = number_e_164_check_enabled if number_e_164_check_enabled != OMIT
       @number = number
       @extension = extension if extension != OMIT
       @caller_id = caller_id if caller_id != OMIT
-      @message = message if message != OMIT
+      @transfer_plan = transfer_plan if transfer_plan != OMIT
       @description = description if description != OMIT
       @additional_properties = additional_properties
       @_field_set = {
+        "message": message,
         "numberE164CheckEnabled": number_e_164_check_enabled,
         "number": number,
         "extension": extension,
         "callerId": caller_id,
-        "message": message,
+        "transferPlan": transfer_plan,
         "description": description
       }.reject do |_k, v|
         v == OMIT
@@ -121,18 +140,30 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      if parsed_json["message"].nil?
+        message = nil
+      else
+        message = parsed_json["message"].to_json
+        message = Vapi::TransferDestinationNumberMessage.from_json(json_object: message)
+      end
       number_e_164_check_enabled = parsed_json["numberE164CheckEnabled"]
       number = parsed_json["number"]
       extension = parsed_json["extension"]
       caller_id = parsed_json["callerId"]
-      message = parsed_json["message"]
+      if parsed_json["transferPlan"].nil?
+        transfer_plan = nil
+      else
+        transfer_plan = parsed_json["transferPlan"].to_json
+        transfer_plan = Vapi::TransferPlan.from_json(json_object: transfer_plan)
+      end
       description = parsed_json["description"]
       new(
+        message: message,
         number_e_164_check_enabled: number_e_164_check_enabled,
         number: number,
         extension: extension,
         caller_id: caller_id,
-        message: message,
+        transfer_plan: transfer_plan,
         description: description,
         additional_properties: struct
       )
@@ -152,11 +183,12 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.message.nil? || Vapi::TransferDestinationNumberMessage.validate_raw(obj: obj.message)
       obj.number_e_164_check_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.number_e_164_check_enabled is not the expected type, validation failed.")
       obj.number.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")
       obj.extension&.is_a?(String) != false || raise("Passed value for field obj.extension is not the expected type, validation failed.")
       obj.caller_id&.is_a?(String) != false || raise("Passed value for field obj.caller_id is not the expected type, validation failed.")
-      obj.message&.is_a?(String) != false || raise("Passed value for field obj.message is not the expected type, validation failed.")
+      obj.transfer_plan.nil? || Vapi::TransferPlan.validate_raw(obj: obj.transfer_plan)
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")
     end
   end

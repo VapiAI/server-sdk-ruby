@@ -11,7 +11,7 @@ module Vapi
   #  This matches one of the following:
   #  - `call.phoneNumber`,
   #  - `call.phoneNumberId`.
-  class ServerMessageLanguageChangedPhoneNumber
+  class ServerMessageLanguageChangeDetectedPhoneNumber
     # @return [Object]
     attr_reader :member
     # @return [String]
@@ -22,17 +22,17 @@ module Vapi
 
     # @param member [Object]
     # @param discriminant [String]
-    # @return [Vapi::ServerMessageLanguageChangedPhoneNumber]
+    # @return [Vapi::ServerMessageLanguageChangeDetectedPhoneNumber]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
 
     # Deserialize a JSON object to an instance of
-    #  ServerMessageLanguageChangedPhoneNumber
+    #  ServerMessageLanguageChangeDetectedPhoneNumber
     #
     # @param json_object [String]
-    # @return [Vapi::ServerMessageLanguageChangedPhoneNumber]
+    # @return [Vapi::ServerMessageLanguageChangeDetectedPhoneNumber]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       member = case struct.provider
@@ -99,25 +99,25 @@ module Vapi
     end
 
     # @param member [Vapi::CreateByoPhoneNumberDto]
-    # @return [Vapi::ServerMessageLanguageChangedPhoneNumber]
+    # @return [Vapi::ServerMessageLanguageChangeDetectedPhoneNumber]
     def self.byo_phone_number(member:)
       new(member: member, discriminant: "byo-phone-number")
     end
 
     # @param member [Vapi::CreateTwilioPhoneNumberDto]
-    # @return [Vapi::ServerMessageLanguageChangedPhoneNumber]
+    # @return [Vapi::ServerMessageLanguageChangeDetectedPhoneNumber]
     def self.twilio(member:)
       new(member: member, discriminant: "twilio")
     end
 
     # @param member [Vapi::CreateVonagePhoneNumberDto]
-    # @return [Vapi::ServerMessageLanguageChangedPhoneNumber]
+    # @return [Vapi::ServerMessageLanguageChangeDetectedPhoneNumber]
     def self.vonage(member:)
       new(member: member, discriminant: "vonage")
     end
 
     # @param member [Vapi::CreateVapiPhoneNumberDto]
-    # @return [Vapi::ServerMessageLanguageChangedPhoneNumber]
+    # @return [Vapi::ServerMessageLanguageChangeDetectedPhoneNumber]
     def self.vapi(member:)
       new(member: member, discriminant: "vapi")
     end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "json"
+require_relative "assembly_ai_transcriber"
+require_relative "custom_transcriber"
 require_relative "deepgram_transcriber"
 require_relative "gladia_transcriber"
 require_relative "talkscriber_transcriber"
@@ -31,6 +33,10 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       member = case struct.provider
+               when "assembly-ai"
+                 Vapi::AssemblyAiTranscriber.from_json(json_object: json_object)
+               when "custom-transcriber"
+                 Vapi::CustomTranscriber.from_json(json_object: json_object)
                when "deepgram"
                  Vapi::DeepgramTranscriber.from_json(json_object: json_object)
                when "gladia"
@@ -38,7 +44,7 @@ module Vapi
                when "talkscriber"
                  Vapi::TalkscriberTranscriber.from_json(json_object: json_object)
                else
-                 Vapi::DeepgramTranscriber.from_json(json_object: json_object)
+                 Vapi::AssemblyAiTranscriber.from_json(json_object: json_object)
                end
       new(member: member, discriminant: struct.provider)
     end
@@ -48,6 +54,10 @@ module Vapi
     # @return [String]
     def to_json(*_args)
       case @discriminant
+      when "assembly-ai"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "custom-transcriber"
+        { **@member.to_json, provider: @discriminant }.to_json
       when "deepgram"
         { **@member.to_json, provider: @discriminant }.to_json
       when "gladia"
@@ -68,6 +78,10 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.provider
+      when "assembly-ai"
+        Vapi::AssemblyAiTranscriber.validate_raw(obj: obj)
+      when "custom-transcriber"
+        Vapi::CustomTranscriber.validate_raw(obj: obj)
       when "deepgram"
         Vapi::DeepgramTranscriber.validate_raw(obj: obj)
       when "gladia"
@@ -85,6 +99,18 @@ module Vapi
     # @return [Boolean]
     def is_a?(obj)
       @member.is_a?(obj)
+    end
+
+    # @param member [Vapi::AssemblyAiTranscriber]
+    # @return [Vapi::CreateAssistantDtoTranscriber]
+    def self.assembly_ai(member:)
+      new(member: member, discriminant: "assembly-ai")
+    end
+
+    # @param member [Vapi::CustomTranscriber]
+    # @return [Vapi::CreateAssistantDtoTranscriber]
+    def self.custom_transcriber(member:)
+      new(member: member, discriminant: "custom-transcriber")
     end
 
     # @param member [Vapi::DeepgramTranscriber]

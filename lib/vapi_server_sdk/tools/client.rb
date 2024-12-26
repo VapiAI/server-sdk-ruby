@@ -189,6 +189,7 @@ module Vapi
     #  argument "reason". Then, in `messages` array, you can have many
     #  "request-complete" messages. One of these messages will be triggered if the
     #  `messages[].conditions` matches the "reason" argument.Request of type Vapi::OpenAiFunction, as a Hash
+    #   * :strict (Boolean)
     #   * :name (String)
     #   * :description (String)
     #   * :parameters (Hash)
@@ -204,6 +205,7 @@ module Vapi
     #   * :timeout_seconds (Float)
     #   * :url (String)
     #   * :secret (String)
+    #   * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Tools::ToolsUpdateResponse]
     # @example
@@ -420,6 +422,7 @@ module Vapi
     #  argument "reason". Then, in `messages` array, you can have many
     #  "request-complete" messages. One of these messages will be triggered if the
     #  `messages[].conditions` matches the "reason" argument.Request of type Vapi::OpenAiFunction, as a Hash
+    #   * :strict (Boolean)
     #   * :name (String)
     #   * :description (String)
     #   * :parameters (Hash)
@@ -435,6 +438,7 @@ module Vapi
     #   * :timeout_seconds (Float)
     #   * :url (String)
     #   * :secret (String)
+    #   * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Tools::ToolsUpdateResponse]
     # @example

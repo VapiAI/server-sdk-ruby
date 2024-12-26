@@ -18,7 +18,7 @@ module Vapi
     attr_reader :created_at
     # @return [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     attr_reader :updated_at
-    # @return [String] This is the name of the GCP credential. This is just for your reference.
+    # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
     # @return [Vapi::GcpKey] This is the GCP key. This is the JSON that can be generated in the Google Cloud
     #  Console at
@@ -40,7 +40,7 @@ module Vapi
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
-    # @param name [String] This is the name of the GCP credential. This is just for your reference.
+    # @param name [String] This is the name of credential. This is just for your reference.
     # @param gcp_key [Vapi::GcpKey] This is the GCP key. This is the JSON that can be generated in the Google Cloud
     #  Console at
     #  le.cloud.google.com/iam-admin/serviceaccounts/details/<service-account-id>/keys.

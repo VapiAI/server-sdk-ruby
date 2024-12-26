@@ -6,12 +6,12 @@ require "json"
 
 module Vapi
   class Condition
-    # @return [String] This is the value you want to compare against the parameter.
-    attr_reader :value
     # @return [Vapi::ConditionOperator] This is the operator you want to use to compare the parameter and value.
     attr_reader :operator
     # @return [String] This is the name of the parameter that you want to check.
     attr_reader :param
+    # @return [Hash{String => Object}] This is the value you want to compare against the parameter.
+    attr_reader :value
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -20,17 +20,17 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param value [String] This is the value you want to compare against the parameter.
     # @param operator [Vapi::ConditionOperator] This is the operator you want to use to compare the parameter and value.
     # @param param [String] This is the name of the parameter that you want to check.
+    # @param value [Hash{String => Object}] This is the value you want to compare against the parameter.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Condition]
-    def initialize(value:, operator:, param:, additional_properties: nil)
-      @value = value
+    def initialize(operator:, param:, value:, additional_properties: nil)
       @operator = operator
       @param = param
+      @value = value
       @additional_properties = additional_properties
-      @_field_set = { "value": value, "operator": operator, "param": param }
+      @_field_set = { "operator": operator, "param": param, "value": value }
     end
 
     # Deserialize a JSON object to an instance of Condition
@@ -40,13 +40,13 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      value = parsed_json["value"]
       operator = parsed_json["operator"]
       param = parsed_json["param"]
+      value = parsed_json["value"]
       new(
-        value: value,
         operator: operator,
         param: param,
+        value: value,
         additional_properties: struct
       )
     end
@@ -65,9 +65,9 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.value.is_a?(String) != false || raise("Passed value for field obj.value is not the expected type, validation failed.")
       obj.operator.is_a?(Vapi::ConditionOperator) != false || raise("Passed value for field obj.operator is not the expected type, validation failed.")
       obj.param.is_a?(String) != false || raise("Passed value for field obj.param is not the expected type, validation failed.")
+      obj.value.is_a?(Hash) != false || raise("Passed value for field obj.value is not the expected type, validation failed.")
     end
   end
 end

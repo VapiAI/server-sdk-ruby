@@ -17,6 +17,8 @@ module Vapi
     attr_reader :open_ai_key
     # @return [String]
     attr_reader :open_ai_endpoint
+    # @return [String] This is the name of credential. This is just for your reference.
+    attr_reader :name
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -30,22 +32,27 @@ module Vapi
     # @param models [Array<Vapi::UpdateAzureOpenAiCredentialDtoModelsItem>]
     # @param open_ai_key [String] This is not returned in the API.
     # @param open_ai_endpoint [String]
+    # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateAzureOpenAiCredentialDto]
-    def initialize(provider:, region:, models:, open_ai_key:, open_ai_endpoint:, additional_properties: nil)
+    def initialize(provider:, region:, models:, open_ai_key:, open_ai_endpoint:, name: OMIT, additional_properties: nil)
       @provider = provider
       @region = region
       @models = models
       @open_ai_key = open_ai_key
       @open_ai_endpoint = open_ai_endpoint
+      @name = name if name != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "provider": provider,
         "region": region,
         "models": models,
         "openAIKey": open_ai_key,
-        "openAIEndpoint": open_ai_endpoint
-      }
+        "openAIEndpoint": open_ai_endpoint,
+        "name": name
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of UpdateAzureOpenAiCredentialDto
@@ -60,12 +67,14 @@ module Vapi
       models = parsed_json["models"]
       open_ai_key = parsed_json["openAIKey"]
       open_ai_endpoint = parsed_json["openAIEndpoint"]
+      name = parsed_json["name"]
       new(
         provider: provider,
         region: region,
         models: models,
         open_ai_key: open_ai_key,
         open_ai_endpoint: open_ai_endpoint,
+        name: name,
         additional_properties: struct
       )
     end
@@ -89,6 +98,7 @@ module Vapi
       obj.models.is_a?(Array) != false || raise("Passed value for field obj.models is not the expected type, validation failed.")
       obj.open_ai_key.is_a?(String) != false || raise("Passed value for field obj.open_ai_key is not the expected type, validation failed.")
       obj.open_ai_endpoint.is_a?(String) != false || raise("Passed value for field obj.open_ai_endpoint is not the expected type, validation failed.")
+      obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end
   end
 end

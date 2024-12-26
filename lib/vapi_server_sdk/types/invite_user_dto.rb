@@ -6,8 +6,8 @@ require "json"
 
 module Vapi
   class InviteUserDto
-    # @return [String]
-    attr_reader :email
+    # @return [Array<String>]
+    attr_reader :emails
     # @return [Vapi::InviteUserDtoRole]
     attr_reader :role
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -18,15 +18,15 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param email [String]
+    # @param emails [Array<String>]
     # @param role [Vapi::InviteUserDtoRole]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::InviteUserDto]
-    def initialize(email:, role:, additional_properties: nil)
-      @email = email
+    def initialize(emails:, role:, additional_properties: nil)
+      @emails = emails
       @role = role
       @additional_properties = additional_properties
-      @_field_set = { "email": email, "role": role }
+      @_field_set = { "emails": emails, "role": role }
     end
 
     # Deserialize a JSON object to an instance of InviteUserDto
@@ -36,10 +36,10 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      email = parsed_json["email"]
+      emails = parsed_json["emails"]
       role = parsed_json["role"]
       new(
-        email: email,
+        emails: emails,
         role: role,
         additional_properties: struct
       )
@@ -59,7 +59,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.email.is_a?(String) != false || raise("Passed value for field obj.email is not the expected type, validation failed.")
+      obj.emails.is_a?(Array) != false || raise("Passed value for field obj.emails is not the expected type, validation failed.")
       obj.role.is_a?(Vapi::InviteUserDtoRole) != false || raise("Passed value for field obj.role is not the expected type, validation failed.")
     end
   end

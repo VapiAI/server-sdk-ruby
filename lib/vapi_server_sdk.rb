@@ -7,6 +7,7 @@ require_relative "vapi_server_sdk/calls/client"
 require_relative "vapi_server_sdk/assistants/client"
 require_relative "vapi_server_sdk/phone_numbers/client"
 require_relative "vapi_server_sdk/squads/client"
+require_relative "vapi_server_sdk/knowledge_bases/client"
 require_relative "vapi_server_sdk/blocks/client"
 require_relative "vapi_server_sdk/tools/client"
 require_relative "vapi_server_sdk/files/client"
@@ -23,6 +24,8 @@ module Vapi
     attr_reader :phone_numbers
     # @return [Vapi::SquadsClient]
     attr_reader :squads
+    # @return [Vapi::KnowledgeBasesClient]
+    attr_reader :knowledge_bases
     # @return [Vapi::BlocksClient]
     attr_reader :blocks
     # @return [Vapi::ToolsClient]
@@ -53,6 +56,7 @@ module Vapi
       @assistants = Vapi::AssistantsClient.new(request_client: @request_client)
       @phone_numbers = Vapi::PhoneNumbersClient.new(request_client: @request_client)
       @squads = Vapi::SquadsClient.new(request_client: @request_client)
+      @knowledge_bases = Vapi::KnowledgeBasesClient.new(request_client: @request_client)
       @blocks = Vapi::BlocksClient.new(request_client: @request_client)
       @tools = Vapi::ToolsClient.new(request_client: @request_client)
       @files = Vapi::FilesClient.new(request_client: @request_client)
@@ -70,6 +74,8 @@ module Vapi
     attr_reader :phone_numbers
     # @return [Vapi::AsyncSquadsClient]
     attr_reader :squads
+    # @return [Vapi::AsyncKnowledgeBasesClient]
+    attr_reader :knowledge_bases
     # @return [Vapi::AsyncBlocksClient]
     attr_reader :blocks
     # @return [Vapi::AsyncToolsClient]
@@ -100,6 +106,7 @@ module Vapi
       @assistants = Vapi::AsyncAssistantsClient.new(request_client: @async_request_client)
       @phone_numbers = Vapi::AsyncPhoneNumbersClient.new(request_client: @async_request_client)
       @squads = Vapi::AsyncSquadsClient.new(request_client: @async_request_client)
+      @knowledge_bases = Vapi::AsyncKnowledgeBasesClient.new(request_client: @async_request_client)
       @blocks = Vapi::AsyncBlocksClient.new(request_client: @async_request_client)
       @tools = Vapi::AsyncToolsClient.new(request_client: @async_request_client)
       @files = Vapi::AsyncFilesClient.new(request_client: @async_request_client)

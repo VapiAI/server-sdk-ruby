@@ -8,6 +8,9 @@ require_relative "../../types/ghl_tool"
 require_relative "../../types/make_tool"
 require_relative "../../types/transfer_call_tool"
 require_relative "../../types/output_tool"
+require_relative "../../types/bash_tool"
+require_relative "../../types/computer_tool"
+require_relative "../../types/text_editor_tool"
 
 module Vapi
   class Tools
@@ -49,6 +52,12 @@ module Vapi
                    Vapi::TransferCallTool.from_json(json_object: json_object)
                  when "output"
                    Vapi::OutputTool.from_json(json_object: json_object)
+                 when "bash"
+                   Vapi::BashTool.from_json(json_object: json_object)
+                 when "computer"
+                   Vapi::ComputerTool.from_json(json_object: json_object)
+                 when "textEditor"
+                   Vapi::TextEditorTool.from_json(json_object: json_object)
                  else
                    Vapi::DtmfTool.from_json(json_object: json_object)
                  end
@@ -73,6 +82,12 @@ module Vapi
         when "transferCall"
           { **@member.to_json, type: @discriminant }.to_json
         when "output"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "bash"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "computer"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "textEditor"
           { **@member.to_json, type: @discriminant }.to_json
         else
           { "type": @discriminant, value: @member }.to_json
@@ -102,6 +117,12 @@ module Vapi
           Vapi::TransferCallTool.validate_raw(obj: obj)
         when "output"
           Vapi::OutputTool.validate_raw(obj: obj)
+        when "bash"
+          Vapi::BashTool.validate_raw(obj: obj)
+        when "computer"
+          Vapi::ComputerTool.validate_raw(obj: obj)
+        when "textEditor"
+          Vapi::TextEditorTool.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -155,6 +176,24 @@ module Vapi
       # @return [Vapi::Tools::ToolsUpdateResponse]
       def self.output(member:)
         new(member: member, discriminant: "output")
+      end
+
+      # @param member [Vapi::BashTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.bash(member:)
+        new(member: member, discriminant: "bash")
+      end
+
+      # @param member [Vapi::ComputerTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.computer(member:)
+        new(member: member, discriminant: "computer")
+      end
+
+      # @param member [Vapi::TextEditorTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.text_editor(member:)
+        new(member: member, discriminant: "textEditor")
       end
     end
   end

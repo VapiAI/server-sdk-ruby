@@ -18,6 +18,8 @@ module Vapi
     attr_reader :created_at
     # @return [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     attr_reader :updated_at
+    # @return [String] This is the name of credential. This is just for your reference.
+    attr_reader :name
     # @return [String]
     attr_reader :user_id
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -34,16 +36,19 @@ module Vapi
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
+    # @param name [String] This is the name of credential. This is just for your reference.
     # @param user_id [String]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::PlayHtCredential]
-    def initialize(provider:, api_key:, id:, org_id:, created_at:, updated_at:, user_id:, additional_properties: nil)
+    def initialize(provider:, api_key:, id:, org_id:, created_at:, updated_at:, user_id:, name: OMIT,
+                   additional_properties: nil)
       @provider = provider
       @api_key = api_key
       @id = id
       @org_id = org_id
       @created_at = created_at
       @updated_at = updated_at
+      @name = name if name != OMIT
       @user_id = user_id
       @additional_properties = additional_properties
       @_field_set = {
@@ -53,8 +58,11 @@ module Vapi
         "orgId": org_id,
         "createdAt": created_at,
         "updatedAt": updated_at,
+        "name": name,
         "userId": user_id
-      }
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of PlayHtCredential
@@ -70,6 +78,7 @@ module Vapi
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
+      name = parsed_json["name"]
       user_id = parsed_json["userId"]
       new(
         provider: provider,
@@ -78,6 +87,7 @@ module Vapi
         org_id: org_id,
         created_at: created_at,
         updated_at: updated_at,
+        name: name,
         user_id: user_id,
         additional_properties: struct
       )
@@ -103,6 +113,7 @@ module Vapi
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
+      obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.user_id.is_a?(String) != false || raise("Passed value for field obj.user_id is not the expected type, validation failed.")
     end
   end

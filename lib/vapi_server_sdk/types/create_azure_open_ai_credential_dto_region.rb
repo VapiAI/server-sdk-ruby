@@ -9,6 +9,7 @@ module Vapi
     FRANCE = "france"
     INDIA = "india"
     JAPAN = "japan"
+    UAENORTH = "uaenorth"
     NORTHCENTRALUS = "northcentralus"
     NORWAY = "norway"
     SOUTHCENTRALUS = "southcentralus"

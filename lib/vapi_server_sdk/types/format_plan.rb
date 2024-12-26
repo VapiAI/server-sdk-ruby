@@ -11,7 +11,6 @@ module Vapi
     #  addresses. Default `true`.
     #  Usage:
     #  - To rely on the voice provider's formatting logic, set this to `false`.
-    #  - To use ElevenLabs's `enableSsmlParsing` feature, set this to `false`.
     #  If `voice.chunkPlan.enabled` is `false`, this is automatically `false` since
     #  there's no chunk to format.
     #  @default true
@@ -49,7 +48,6 @@ module Vapi
     #  addresses. Default `true`.
     #  Usage:
     #  - To rely on the voice provider's formatting logic, set this to `false`.
-    #  - To use ElevenLabs's `enableSsmlParsing` feature, set this to `false`.
     #  If `voice.chunkPlan.enabled` is `false`, this is automatically `false` since
     #  there's no chunk to format.
     #  @default true

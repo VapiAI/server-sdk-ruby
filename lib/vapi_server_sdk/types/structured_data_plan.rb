@@ -7,11 +7,20 @@ require "json"
 module Vapi
   class StructuredDataPlan
     # @return [Array<Hash{String => Object}>] These are the messages used to generate the structured data.
-    #  @default: ` [ { "role": "system", "content": "You are an expert data extractor.
-    #  You will be given a transcript of a call. Extract structured data per the JSON
-    #  Schema. DO NOT return anything except the structured data.\n\nJson
-    #  Schema:\\n{{schema}}\n\nOnly respond with the JSON." }, { "role": "user",
-    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n" } ]`
+    #  @default: ```
+    #  [
+    #  {
+    #  "role": "system",
+    #  "content": "You are an expert data extractor. You will be given a transcript
+    #  of a call. Extract structured data per the JSON Schema. DO NOT return anything
+    #  except the structured data.\n\nJson Schema:\\n{{schema}}\n\nOnly respond with
+    #  the JSON."
+    #  },
+    #  {
+    #  "role": "user",
+    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n"
+    #  }
+    #  ]```
     #  You can customize by providing any messages you want.
     #  Here are the template variables available:
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-
@@ -47,11 +56,20 @@ module Vapi
     OMIT = Object.new
 
     # @param messages [Array<Hash{String => Object}>] These are the messages used to generate the structured data.
-    #  @default: ` [ { "role": "system", "content": "You are an expert data extractor.
-    #  You will be given a transcript of a call. Extract structured data per the JSON
-    #  Schema. DO NOT return anything except the structured data.\n\nJson
-    #  Schema:\\n{{schema}}\n\nOnly respond with the JSON." }, { "role": "user",
-    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n" } ]`
+    #  @default: ```
+    #  [
+    #  {
+    #  "role": "system",
+    #  "content": "You are an expert data extractor. You will be given a transcript
+    #  of a call. Extract structured data per the JSON Schema. DO NOT return anything
+    #  except the structured data.\n\nJson Schema:\\n{{schema}}\n\nOnly respond with
+    #  the JSON."
+    #  },
+    #  {
+    #  "role": "user",
+    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n"
+    #  }
+    #  ]```
     #  You can customize by providing any messages you want.
     #  Here are the template variables available:
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-

@@ -3,15 +3,12 @@
 require_relative "eleven_labs_voice_id"
 require_relative "eleven_labs_voice_model"
 require_relative "chunk_plan"
+require_relative "fallback_plan"
 require "ostruct"
 require "json"
 
 module Vapi
   class ElevenLabsVoice
-    # @return [Boolean] This determines whether fillers are injected into the model output before
-    #  inputting it into the voice provider.
-    #  Default `false` because you can achieve better results with prompting the model.
-    attr_reader :filler_injection_enabled
     # @return [Vapi::ElevenLabsVoiceId] This is the provider-specific ID that will be used. Ensure the Voice is present
     #  in your 11Labs Voice Library.
     attr_reader :voice_id
@@ -33,13 +30,16 @@ module Vapi
     # @return [Vapi::ElevenLabsVoiceModel] This is the model that will be used. Defaults to 'eleven_turbo_v2' if not
     #  specified.
     attr_reader :model
+    # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
+    #  provider.
+    attr_reader :chunk_plan
     # @return [String] This is the language (ISO 639-1) that is enforced for the model. Currently only
     #  Turbo v2.5 supports language enforcement. For other models, an error will be
     #  returned if language code is provided.
     attr_reader :language
-    # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
-    attr_reader :chunk_plan
+    # @return [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
+    #  voice provider fails.
+    attr_reader :fallback_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -48,9 +48,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param filler_injection_enabled [Boolean] This determines whether fillers are injected into the model output before
-    #  inputting it into the voice provider.
-    #  Default `false` because you can achieve better results with prompting the model.
     # @param voice_id [Vapi::ElevenLabsVoiceId] This is the provider-specific ID that will be used. Ensure the Voice is present
     #  in your 11Labs Voice Library.
     # @param stability [Float] Defines the stability for voice settings.
@@ -64,16 +61,17 @@ module Vapi
     #  @default false
     # @param model [Vapi::ElevenLabsVoiceModel] This is the model that will be used. Defaults to 'eleven_turbo_v2' if not
     #  specified.
+    # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
+    #  provider.
     # @param language [String] This is the language (ISO 639-1) that is enforced for the model. Currently only
     #  Turbo v2.5 supports language enforcement. For other models, an error will be
     #  returned if language code is provided.
-    # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
+    # @param fallback_plan [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
+    #  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ElevenLabsVoice]
-    def initialize(voice_id:, filler_injection_enabled: OMIT, stability: OMIT, similarity_boost: OMIT, style: OMIT,
-                   use_speaker_boost: OMIT, optimize_streaming_latency: OMIT, enable_ssml_parsing: OMIT, model: OMIT, language: OMIT, chunk_plan: OMIT, additional_properties: nil)
-      @filler_injection_enabled = filler_injection_enabled if filler_injection_enabled != OMIT
+    def initialize(voice_id:, stability: OMIT, similarity_boost: OMIT, style: OMIT, use_speaker_boost: OMIT,
+                   optimize_streaming_latency: OMIT, enable_ssml_parsing: OMIT, model: OMIT, chunk_plan: OMIT, language: OMIT, fallback_plan: OMIT, additional_properties: nil)
       @voice_id = voice_id
       @stability = stability if stability != OMIT
       @similarity_boost = similarity_boost if similarity_boost != OMIT
@@ -82,11 +80,11 @@ module Vapi
       @optimize_streaming_latency = optimize_streaming_latency if optimize_streaming_latency != OMIT
       @enable_ssml_parsing = enable_ssml_parsing if enable_ssml_parsing != OMIT
       @model = model if model != OMIT
-      @language = language if language != OMIT
       @chunk_plan = chunk_plan if chunk_plan != OMIT
+      @language = language if language != OMIT
+      @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
-        "fillerInjectionEnabled": filler_injection_enabled,
         "voiceId": voice_id,
         "stability": stability,
         "similarityBoost": similarity_boost,
@@ -95,8 +93,9 @@ module Vapi
         "optimizeStreamingLatency": optimize_streaming_latency,
         "enableSsmlParsing": enable_ssml_parsing,
         "model": model,
+        "chunkPlan": chunk_plan,
         "language": language,
-        "chunkPlan": chunk_plan
+        "fallbackPlan": fallback_plan
       }.reject do |_k, v|
         v == OMIT
       end
@@ -109,7 +108,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      filler_injection_enabled = parsed_json["fillerInjectionEnabled"]
       if parsed_json["voiceId"].nil?
         voice_id = nil
       else
@@ -123,15 +121,20 @@ module Vapi
       optimize_streaming_latency = parsed_json["optimizeStreamingLatency"]
       enable_ssml_parsing = parsed_json["enableSsmlParsing"]
       model = parsed_json["model"]
-      language = parsed_json["language"]
       if parsed_json["chunkPlan"].nil?
         chunk_plan = nil
       else
         chunk_plan = parsed_json["chunkPlan"].to_json
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
       end
+      language = parsed_json["language"]
+      if parsed_json["fallbackPlan"].nil?
+        fallback_plan = nil
+      else
+        fallback_plan = parsed_json["fallbackPlan"].to_json
+        fallback_plan = Vapi::FallbackPlan.from_json(json_object: fallback_plan)
+      end
       new(
-        filler_injection_enabled: filler_injection_enabled,
         voice_id: voice_id,
         stability: stability,
         similarity_boost: similarity_boost,
@@ -140,8 +143,9 @@ module Vapi
         optimize_streaming_latency: optimize_streaming_latency,
         enable_ssml_parsing: enable_ssml_parsing,
         model: model,
-        language: language,
         chunk_plan: chunk_plan,
+        language: language,
+        fallback_plan: fallback_plan,
         additional_properties: struct
       )
     end
@@ -160,7 +164,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.filler_injection_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.filler_injection_enabled is not the expected type, validation failed.")
       Vapi::ElevenLabsVoiceId.validate_raw(obj: obj.voice_id)
       obj.stability&.is_a?(Float) != false || raise("Passed value for field obj.stability is not the expected type, validation failed.")
       obj.similarity_boost&.is_a?(Float) != false || raise("Passed value for field obj.similarity_boost is not the expected type, validation failed.")
@@ -169,8 +172,9 @@ module Vapi
       obj.optimize_streaming_latency&.is_a?(Float) != false || raise("Passed value for field obj.optimize_streaming_latency is not the expected type, validation failed.")
       obj.enable_ssml_parsing&.is_a?(Boolean) != false || raise("Passed value for field obj.enable_ssml_parsing is not the expected type, validation failed.")
       obj.model&.is_a?(Vapi::ElevenLabsVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
-      obj.language&.is_a?(String) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
+      obj.language&.is_a?(String) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
+      obj.fallback_plan.nil? || Vapi::FallbackPlan.validate_raw(obj: obj.fallback_plan)
     end
   end
 end

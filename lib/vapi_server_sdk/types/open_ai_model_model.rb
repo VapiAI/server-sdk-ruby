@@ -3,11 +3,13 @@
 module Vapi
   # This is the OpenAI model that will be used.
   class OpenAiModelModel
+    GPT_4_O_REALTIME_PREVIEW_20241001 = "gpt-4o-realtime-preview-2024-10-01"
     GPT_4_O_MINI = "gpt-4o-mini"
     GPT_4_O_MINI_20240718 = "gpt-4o-mini-2024-07-18"
     GPT_4_O = "gpt-4o"
     GPT_4_O_20240513 = "gpt-4o-2024-05-13"
     GPT_4_O_20240806 = "gpt-4o-2024-08-06"
+    GPT_4_O_20241120 = "gpt-4o-2024-11-20"
     GPT_4_TURBO = "gpt-4-turbo"
     GPT_4_TURBO_20240409 = "gpt-4-turbo-2024-04-09"
     GPT_4_TURBO_PREVIEW = "gpt-4-turbo-preview"

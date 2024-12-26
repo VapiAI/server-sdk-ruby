@@ -15,6 +15,9 @@ module Vapi
     #  server. Will be sent as a header called x-vapi-secret.
     #  Same precedence logic as server.
     attr_reader :secret
+    # @return [Hash{String => Object}] These are the custom headers to include in the request sent to your server.
+    #  Each key-value pair represents a header name and its value.
+    attr_reader :headers
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -30,14 +33,22 @@ module Vapi
     # @param secret [String] This is the secret you can set that Vapi will send with every request to your
     #  server. Will be sent as a header called x-vapi-secret.
     #  Same precedence logic as server.
+    # @param headers [Hash{String => Object}] These are the custom headers to include in the request sent to your server.
+    #  Each key-value pair represents a header name and its value.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Server]
-    def initialize(url:, timeout_seconds: OMIT, secret: OMIT, additional_properties: nil)
+    def initialize(url:, timeout_seconds: OMIT, secret: OMIT, headers: OMIT, additional_properties: nil)
       @timeout_seconds = timeout_seconds if timeout_seconds != OMIT
       @url = url
       @secret = secret if secret != OMIT
+      @headers = headers if headers != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "timeoutSeconds": timeout_seconds, "url": url, "secret": secret }.reject do |_k, v|
+      @_field_set = {
+        "timeoutSeconds": timeout_seconds,
+        "url": url,
+        "secret": secret,
+        "headers": headers
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -52,10 +63,12 @@ module Vapi
       timeout_seconds = parsed_json["timeoutSeconds"]
       url = parsed_json["url"]
       secret = parsed_json["secret"]
+      headers = parsed_json["headers"]
       new(
         timeout_seconds: timeout_seconds,
         url: url,
         secret: secret,
+        headers: headers,
         additional_properties: struct
       )
     end
@@ -77,6 +90,7 @@ module Vapi
       obj.timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.timeout_seconds is not the expected type, validation failed.")
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
       obj.secret&.is_a?(String) != false || raise("Passed value for field obj.secret is not the expected type, validation failed.")
+      obj.headers&.is_a?(Hash) != false || raise("Passed value for field obj.headers is not the expected type, validation failed.")
     end
   end
 end

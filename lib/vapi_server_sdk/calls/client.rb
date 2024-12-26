@@ -22,7 +22,11 @@ module Vapi
       @request_client = request_client
     end
 
+    # @param id [String] This is the unique identifier for the call.
     # @param assistant_id [String] This will return calls with the specified assistantId.
+    # @param phone_number_id [String] This is the phone number that will be used for the call. To use a transient
+    #  number, use `phoneNumber` instead.
+    #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
     # @param limit [Float] This is the maximum number of items to return. Defaults to 100.
     # @param created_at_gt [DateTime] This will return items where the createdAt is greater than the specified value.
     # @param created_at_lt [DateTime] This will return items where the createdAt is less than the specified value.
@@ -45,8 +49,8 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.calls.list
-    def list(assistant_id: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil,
-             created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
+    def list(id: nil, assistant_id: nil, phone_number_id: nil, limit: nil, created_at_gt: nil, created_at_lt: nil,
+             created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -57,7 +61,9 @@ module Vapi
         }.compact
         req.params = {
           **(request_options&.additional_query_parameters || {}),
+          "id": id,
           "assistantId": assistant_id,
+          "phoneNumberId": phone_number_id,
           "limit": limit,
           "createdAtGt": created_at_gt,
           "createdAtLt": created_at_lt,
@@ -88,6 +94,7 @@ module Vapi
     #   * :transcriber (Hash)
     #   * :model (Hash)
     #   * :voice (Hash)
+    #   * :first_message (String)
     #   * :first_message_mode (Vapi::CreateAssistantDtoFirstMessageMode)
     #   * :hipaa_enabled (Boolean)
     #   * :client_messages (Array<Vapi::CreateAssistantDtoClientMessagesItem>)
@@ -95,12 +102,10 @@ module Vapi
     #   * :silence_timeout_seconds (Float)
     #   * :max_duration_seconds (Float)
     #   * :background_sound (Vapi::CreateAssistantDtoBackgroundSound)
-    #   * :backchanneling_enabled (Boolean)
     #   * :background_denoising_enabled (Boolean)
     #   * :model_output_in_messages_enabled (Boolean)
     #   * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #   * :name (String)
-    #   * :first_message (String)
     #   * :voicemail_detection (Hash)
     #     * :provider (String)
     #     * :voicemail_detection_types (Array<Vapi::TwilioVoicemailDetectionVoicemailDetectionTypesItem>)
@@ -113,8 +118,6 @@ module Vapi
     #   * :end_call_message (String)
     #   * :end_call_phrases (Array<String>)
     #   * :metadata (Hash{String => Object})
-    #   * :server_url (String)
-    #   * :server_url_secret (String)
     #   * :analysis_plan (Hash)
     #     * :summary_plan (Hash)
     #       * :messages (Array<Hash{String => Object}>)
@@ -150,6 +153,7 @@ module Vapi
     #   * :start_speaking_plan (Hash)
     #     * :wait_seconds (Float)
     #     * :smart_endpointing_enabled (Boolean)
+    #     * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #     * :transcription_endpointing_plan (Hash)
     #       * :on_punctuation_seconds (Float)
     #       * :on_no_punctuation_seconds (Float)
@@ -162,11 +166,17 @@ module Vapi
     #     * :listen_enabled (Boolean)
     #     * :control_enabled (Boolean)
     #   * :credential_ids (Array<String>)
+    #   * :server (Hash)
+    #     * :timeout_seconds (Float)
+    #     * :url (String)
+    #     * :secret (String)
+    #     * :headers (Hash{String => Object})
     # @param assistant_overrides [Hash] These are the overrides for the `assistant` or `assistantId`'s settings and
     #  template variables.Request of type Vapi::AssistantOverrides, as a Hash
     #   * :transcriber (Hash)
     #   * :model (Hash)
     #   * :voice (Hash)
+    #   * :first_message (String)
     #   * :first_message_mode (Vapi::AssistantOverridesFirstMessageMode)
     #   * :hipaa_enabled (Boolean)
     #   * :client_messages (Array<Vapi::AssistantOverridesClientMessagesItem>)
@@ -174,13 +184,11 @@ module Vapi
     #   * :silence_timeout_seconds (Float)
     #   * :max_duration_seconds (Float)
     #   * :background_sound (Vapi::AssistantOverridesBackgroundSound)
-    #   * :backchanneling_enabled (Boolean)
     #   * :background_denoising_enabled (Boolean)
     #   * :model_output_in_messages_enabled (Boolean)
     #   * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #   * :variable_values (Hash{String => Object})
     #   * :name (String)
-    #   * :first_message (String)
     #   * :voicemail_detection (Hash)
     #     * :provider (String)
     #     * :voicemail_detection_types (Array<Vapi::TwilioVoicemailDetectionVoicemailDetectionTypesItem>)
@@ -193,8 +201,6 @@ module Vapi
     #   * :end_call_message (String)
     #   * :end_call_phrases (Array<String>)
     #   * :metadata (Hash{String => Object})
-    #   * :server_url (String)
-    #   * :server_url_secret (String)
     #   * :analysis_plan (Hash)
     #     * :summary_plan (Hash)
     #       * :messages (Array<Hash{String => Object}>)
@@ -230,6 +236,7 @@ module Vapi
     #   * :start_speaking_plan (Hash)
     #     * :wait_seconds (Float)
     #     * :smart_endpointing_enabled (Boolean)
+    #     * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #     * :transcription_endpointing_plan (Hash)
     #       * :on_punctuation_seconds (Float)
     #       * :on_no_punctuation_seconds (Float)
@@ -242,6 +249,11 @@ module Vapi
     #     * :listen_enabled (Boolean)
     #     * :control_enabled (Boolean)
     #   * :credential_ids (Array<String>)
+    #   * :server (Hash)
+    #     * :timeout_seconds (Float)
+    #     * :url (String)
+    #     * :secret (String)
+    #     * :headers (Hash{String => Object})
     # @param squad_id [String] This is the squad that will be used for the call. To use a transient squad, use
     #  `squad` instead.
     # @param squad [Hash] This is a squad that will be used for the call. To use an existing squad, use
@@ -252,6 +264,7 @@ module Vapi
     #     * :transcriber (Hash)
     #     * :model (Hash)
     #     * :voice (Hash)
+    #     * :first_message (String)
     #     * :first_message_mode (Vapi::AssistantOverridesFirstMessageMode)
     #     * :hipaa_enabled (Boolean)
     #     * :client_messages (Array<Vapi::AssistantOverridesClientMessagesItem>)
@@ -259,13 +272,11 @@ module Vapi
     #     * :silence_timeout_seconds (Float)
     #     * :max_duration_seconds (Float)
     #     * :background_sound (Vapi::AssistantOverridesBackgroundSound)
-    #     * :backchanneling_enabled (Boolean)
     #     * :background_denoising_enabled (Boolean)
     #     * :model_output_in_messages_enabled (Boolean)
     #     * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #     * :variable_values (Hash{String => Object})
     #     * :name (String)
-    #     * :first_message (String)
     #     * :voicemail_detection (Hash)
     #       * :provider (String)
     #       * :voicemail_detection_types (Array<Vapi::TwilioVoicemailDetectionVoicemailDetectionTypesItem>)
@@ -278,8 +289,6 @@ module Vapi
     #     * :end_call_message (String)
     #     * :end_call_phrases (Array<String>)
     #     * :metadata (Hash{String => Object})
-    #     * :server_url (String)
-    #     * :server_url_secret (String)
     #     * :analysis_plan (Hash)
     #       * :summary_plan (Hash)
     #         * :messages (Array<Hash{String => Object}>)
@@ -315,6 +324,7 @@ module Vapi
     #     * :start_speaking_plan (Hash)
     #       * :wait_seconds (Float)
     #       * :smart_endpointing_enabled (Boolean)
+    #       * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #       * :transcription_endpointing_plan (Hash)
     #         * :on_punctuation_seconds (Float)
     #         * :on_no_punctuation_seconds (Float)
@@ -327,6 +337,11 @@ module Vapi
     #       * :listen_enabled (Boolean)
     #       * :control_enabled (Boolean)
     #     * :credential_ids (Array<String>)
+    #     * :server (Hash)
+    #       * :timeout_seconds (Float)
+    #       * :url (String)
+    #       * :secret (String)
+    #       * :headers (Hash{String => Object})
     # @param phone_number_id [String] This is the phone number that will be used for the call. To use a transient
     #  number, use `phoneNumber` instead.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
@@ -493,7 +508,11 @@ module Vapi
       @request_client = request_client
     end
 
+    # @param id [String] This is the unique identifier for the call.
     # @param assistant_id [String] This will return calls with the specified assistantId.
+    # @param phone_number_id [String] This is the phone number that will be used for the call. To use a transient
+    #  number, use `phoneNumber` instead.
+    #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
     # @param limit [Float] This is the maximum number of items to return. Defaults to 100.
     # @param created_at_gt [DateTime] This will return items where the createdAt is greater than the specified value.
     # @param created_at_lt [DateTime] This will return items where the createdAt is less than the specified value.
@@ -516,8 +535,8 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.calls.list
-    def list(assistant_id: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil,
-             created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
+    def list(id: nil, assistant_id: nil, phone_number_id: nil, limit: nil, created_at_gt: nil, created_at_lt: nil,
+             created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -529,7 +548,9 @@ module Vapi
           }.compact
           req.params = {
             **(request_options&.additional_query_parameters || {}),
+            "id": id,
             "assistantId": assistant_id,
+            "phoneNumberId": phone_number_id,
             "limit": limit,
             "createdAtGt": created_at_gt,
             "createdAtLt": created_at_lt,
@@ -561,6 +582,7 @@ module Vapi
     #   * :transcriber (Hash)
     #   * :model (Hash)
     #   * :voice (Hash)
+    #   * :first_message (String)
     #   * :first_message_mode (Vapi::CreateAssistantDtoFirstMessageMode)
     #   * :hipaa_enabled (Boolean)
     #   * :client_messages (Array<Vapi::CreateAssistantDtoClientMessagesItem>)
@@ -568,12 +590,10 @@ module Vapi
     #   * :silence_timeout_seconds (Float)
     #   * :max_duration_seconds (Float)
     #   * :background_sound (Vapi::CreateAssistantDtoBackgroundSound)
-    #   * :backchanneling_enabled (Boolean)
     #   * :background_denoising_enabled (Boolean)
     #   * :model_output_in_messages_enabled (Boolean)
     #   * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #   * :name (String)
-    #   * :first_message (String)
     #   * :voicemail_detection (Hash)
     #     * :provider (String)
     #     * :voicemail_detection_types (Array<Vapi::TwilioVoicemailDetectionVoicemailDetectionTypesItem>)
@@ -586,8 +606,6 @@ module Vapi
     #   * :end_call_message (String)
     #   * :end_call_phrases (Array<String>)
     #   * :metadata (Hash{String => Object})
-    #   * :server_url (String)
-    #   * :server_url_secret (String)
     #   * :analysis_plan (Hash)
     #     * :summary_plan (Hash)
     #       * :messages (Array<Hash{String => Object}>)
@@ -623,6 +641,7 @@ module Vapi
     #   * :start_speaking_plan (Hash)
     #     * :wait_seconds (Float)
     #     * :smart_endpointing_enabled (Boolean)
+    #     * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #     * :transcription_endpointing_plan (Hash)
     #       * :on_punctuation_seconds (Float)
     #       * :on_no_punctuation_seconds (Float)
@@ -635,11 +654,17 @@ module Vapi
     #     * :listen_enabled (Boolean)
     #     * :control_enabled (Boolean)
     #   * :credential_ids (Array<String>)
+    #   * :server (Hash)
+    #     * :timeout_seconds (Float)
+    #     * :url (String)
+    #     * :secret (String)
+    #     * :headers (Hash{String => Object})
     # @param assistant_overrides [Hash] These are the overrides for the `assistant` or `assistantId`'s settings and
     #  template variables.Request of type Vapi::AssistantOverrides, as a Hash
     #   * :transcriber (Hash)
     #   * :model (Hash)
     #   * :voice (Hash)
+    #   * :first_message (String)
     #   * :first_message_mode (Vapi::AssistantOverridesFirstMessageMode)
     #   * :hipaa_enabled (Boolean)
     #   * :client_messages (Array<Vapi::AssistantOverridesClientMessagesItem>)
@@ -647,13 +672,11 @@ module Vapi
     #   * :silence_timeout_seconds (Float)
     #   * :max_duration_seconds (Float)
     #   * :background_sound (Vapi::AssistantOverridesBackgroundSound)
-    #   * :backchanneling_enabled (Boolean)
     #   * :background_denoising_enabled (Boolean)
     #   * :model_output_in_messages_enabled (Boolean)
     #   * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #   * :variable_values (Hash{String => Object})
     #   * :name (String)
-    #   * :first_message (String)
     #   * :voicemail_detection (Hash)
     #     * :provider (String)
     #     * :voicemail_detection_types (Array<Vapi::TwilioVoicemailDetectionVoicemailDetectionTypesItem>)
@@ -666,8 +689,6 @@ module Vapi
     #   * :end_call_message (String)
     #   * :end_call_phrases (Array<String>)
     #   * :metadata (Hash{String => Object})
-    #   * :server_url (String)
-    #   * :server_url_secret (String)
     #   * :analysis_plan (Hash)
     #     * :summary_plan (Hash)
     #       * :messages (Array<Hash{String => Object}>)
@@ -703,6 +724,7 @@ module Vapi
     #   * :start_speaking_plan (Hash)
     #     * :wait_seconds (Float)
     #     * :smart_endpointing_enabled (Boolean)
+    #     * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #     * :transcription_endpointing_plan (Hash)
     #       * :on_punctuation_seconds (Float)
     #       * :on_no_punctuation_seconds (Float)
@@ -715,6 +737,11 @@ module Vapi
     #     * :listen_enabled (Boolean)
     #     * :control_enabled (Boolean)
     #   * :credential_ids (Array<String>)
+    #   * :server (Hash)
+    #     * :timeout_seconds (Float)
+    #     * :url (String)
+    #     * :secret (String)
+    #     * :headers (Hash{String => Object})
     # @param squad_id [String] This is the squad that will be used for the call. To use a transient squad, use
     #  `squad` instead.
     # @param squad [Hash] This is a squad that will be used for the call. To use an existing squad, use
@@ -725,6 +752,7 @@ module Vapi
     #     * :transcriber (Hash)
     #     * :model (Hash)
     #     * :voice (Hash)
+    #     * :first_message (String)
     #     * :first_message_mode (Vapi::AssistantOverridesFirstMessageMode)
     #     * :hipaa_enabled (Boolean)
     #     * :client_messages (Array<Vapi::AssistantOverridesClientMessagesItem>)
@@ -732,13 +760,11 @@ module Vapi
     #     * :silence_timeout_seconds (Float)
     #     * :max_duration_seconds (Float)
     #     * :background_sound (Vapi::AssistantOverridesBackgroundSound)
-    #     * :backchanneling_enabled (Boolean)
     #     * :background_denoising_enabled (Boolean)
     #     * :model_output_in_messages_enabled (Boolean)
     #     * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #     * :variable_values (Hash{String => Object})
     #     * :name (String)
-    #     * :first_message (String)
     #     * :voicemail_detection (Hash)
     #       * :provider (String)
     #       * :voicemail_detection_types (Array<Vapi::TwilioVoicemailDetectionVoicemailDetectionTypesItem>)
@@ -751,8 +777,6 @@ module Vapi
     #     * :end_call_message (String)
     #     * :end_call_phrases (Array<String>)
     #     * :metadata (Hash{String => Object})
-    #     * :server_url (String)
-    #     * :server_url_secret (String)
     #     * :analysis_plan (Hash)
     #       * :summary_plan (Hash)
     #         * :messages (Array<Hash{String => Object}>)
@@ -788,6 +812,7 @@ module Vapi
     #     * :start_speaking_plan (Hash)
     #       * :wait_seconds (Float)
     #       * :smart_endpointing_enabled (Boolean)
+    #       * :custom_endpointing_rules (Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>)
     #       * :transcription_endpointing_plan (Hash)
     #         * :on_punctuation_seconds (Float)
     #         * :on_no_punctuation_seconds (Float)
@@ -800,6 +825,11 @@ module Vapi
     #       * :listen_enabled (Boolean)
     #       * :control_enabled (Boolean)
     #     * :credential_ids (Array<String>)
+    #     * :server (Hash)
+    #       * :timeout_seconds (Float)
+    #       * :url (String)
+    #       * :secret (String)
+    #       * :headers (Hash{String => Object})
     # @param phone_number_id [String] This is the phone number that will be used for the call. To use a transient
     #  number, use `phoneNumber` instead.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
