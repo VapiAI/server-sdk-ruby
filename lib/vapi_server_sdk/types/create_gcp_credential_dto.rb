@@ -7,8 +7,6 @@ require "json"
 
 module Vapi
   class CreateGcpCredentialDto
-    # @return [String]
-    attr_reader :provider
     # @return [Vapi::GcpKey] This is the GCP key. This is the JSON that can be generated in the Google Cloud
     #  Console at
     #  le.cloud.google.com/iam-admin/serviceaccounts/details/<service-account-id>/keys.
@@ -26,7 +24,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
     # @param gcp_key [Vapi::GcpKey] This is the GCP key. This is the JSON that can be generated in the Google Cloud
     #  Console at
     #  le.cloud.google.com/iam-admin/serviceaccounts/details/<service-account-id>/keys.
@@ -35,18 +32,12 @@ module Vapi
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateGcpCredentialDto]
-    def initialize(provider:, gcp_key:, bucket_plan: OMIT, name: OMIT, additional_properties: nil)
-      @provider = provider
+    def initialize(gcp_key:, bucket_plan: OMIT, name: OMIT, additional_properties: nil)
       @gcp_key = gcp_key
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @name = name if name != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "provider": provider,
-        "gcpKey": gcp_key,
-        "bucketPlan": bucket_plan,
-        "name": name
-      }.reject do |_k, v|
+      @_field_set = { "gcpKey": gcp_key, "bucketPlan": bucket_plan, "name": name }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -58,7 +49,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      provider = parsed_json["provider"]
       if parsed_json["gcpKey"].nil?
         gcp_key = nil
       else
@@ -73,7 +63,6 @@ module Vapi
       end
       name = parsed_json["name"]
       new(
-        provider: provider,
         gcp_key: gcp_key,
         bucket_plan: bucket_plan,
         name: name,
@@ -95,7 +84,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       Vapi::GcpKey.validate_raw(obj: obj.gcp_key)
       obj.bucket_plan.nil? || Vapi::BucketPlan.validate_raw(obj: obj.bucket_plan)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")

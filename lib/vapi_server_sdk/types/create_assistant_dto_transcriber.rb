@@ -2,6 +2,7 @@
 
 require "json"
 require_relative "assembly_ai_transcriber"
+require_relative "azure_speech_transcriber"
 require_relative "custom_transcriber"
 require_relative "deepgram_transcriber"
 require_relative "gladia_transcriber"
@@ -35,6 +36,8 @@ module Vapi
       member = case struct.provider
                when "assembly-ai"
                  Vapi::AssemblyAiTranscriber.from_json(json_object: json_object)
+               when "azure"
+                 Vapi::AzureSpeechTranscriber.from_json(json_object: json_object)
                when "custom-transcriber"
                  Vapi::CustomTranscriber.from_json(json_object: json_object)
                when "deepgram"
@@ -55,6 +58,8 @@ module Vapi
     def to_json(*_args)
       case @discriminant
       when "assembly-ai"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "azure"
         { **@member.to_json, provider: @discriminant }.to_json
       when "custom-transcriber"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -80,6 +85,8 @@ module Vapi
       case obj.provider
       when "assembly-ai"
         Vapi::AssemblyAiTranscriber.validate_raw(obj: obj)
+      when "azure"
+        Vapi::AzureSpeechTranscriber.validate_raw(obj: obj)
       when "custom-transcriber"
         Vapi::CustomTranscriber.validate_raw(obj: obj)
       when "deepgram"
@@ -105,6 +112,12 @@ module Vapi
     # @return [Vapi::CreateAssistantDtoTranscriber]
     def self.assembly_ai(member:)
       new(member: member, discriminant: "assembly-ai")
+    end
+
+    # @param member [Vapi::AzureSpeechTranscriber]
+    # @return [Vapi::CreateAssistantDtoTranscriber]
+    def self.azure(member:)
+      new(member: member, discriminant: "azure")
     end
 
     # @param member [Vapi::CustomTranscriber]

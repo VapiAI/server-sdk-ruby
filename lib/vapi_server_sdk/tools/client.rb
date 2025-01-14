@@ -8,9 +8,7 @@ require_relative "types/tools_create_request"
 require_relative "types/tools_create_response"
 require_relative "types/tools_get_response"
 require_relative "types/tools_delete_response"
-require_relative "types/update_tool_dto_messages_item"
-require_relative "../types/open_ai_function"
-require_relative "../types/server"
+require_relative "types/tools_update_request"
 require_relative "types/tools_update_response"
 require "async"
 
@@ -170,42 +168,7 @@ module Vapi
     end
 
     # @param id [String]
-    # @param async [Boolean] This determines if the tool is async.
-    #  If async, the assistant will move forward without waiting for your server to
-    #  respond. This is useful if you just want to trigger something on your server.
-    #  If sync, the assistant will wait for your server to respond. This is useful if
-    #  want assistant to respond with the result from your server.
-    #  Defaults to synchronous (`false`).
-    # @param messages [Array<Hash>] These are the messages that will be spoken to the user as the tool is running.
-    #  For some tools, this is auto-filled based on special fields like
-    #  `tool.destinations`. For others like the function tool, these can be custom
-    #  configured.Request of type Array<Vapi::Tools::UpdateToolDtoMessagesItem>, as a Hash
-    # @param function [Hash] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.Request of type Vapi::OpenAiFunction, as a Hash
-    #   * :strict (Boolean)
-    #   * :name (String)
-    #   * :description (String)
-    #   * :parameters (Hash)
-    #     * :type (String)
-    #     * :properties (Hash{String => Vapi::JsonSchema})
-    #     * :required (Array<String>)
-    # @param server [Hash] This is the server that will be hit when this tool is requested by the model.
-    #  All requests will be sent with the call object among other things. You can find
-    #  more details in the Server URL documentation.
-    #  This overrides the serverUrl set on the org and the phoneNumber. Order of
-    #  precedence: highest tool.server.url, then assistant.serverUrl, then
-    #  phoneNumber.serverUrl, then org.serverUrl.Request of type Vapi::Server, as a Hash
-    #   * :timeout_seconds (Float)
-    #   * :url (String)
-    #   * :secret (String)
-    #   * :headers (Hash{String => Object})
+    # @param request [Vapi::Tools::ToolsUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Tools::ToolsUpdateResponse]
     # @example
@@ -215,7 +178,7 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.tools.update(id: "id")
-    def update(id:, async: nil, messages: nil, function: nil, server: nil, request_options: nil)
+    def update(id:, request:, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -227,13 +190,7 @@ module Vapi
         unless request_options.nil? || request_options&.additional_query_parameters.nil?
           req.params = { **(request_options&.additional_query_parameters || {}) }.compact
         end
-        req.body = {
-          **(request_options&.additional_body_parameters || {}),
-          async: async,
-          messages: messages,
-          function: function,
-          server: server
-        }.compact
+        req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/tool/#{id}"
       end
       Vapi::Tools::ToolsUpdateResponse.from_json(json_object: response.body)
@@ -403,42 +360,7 @@ module Vapi
     end
 
     # @param id [String]
-    # @param async [Boolean] This determines if the tool is async.
-    #  If async, the assistant will move forward without waiting for your server to
-    #  respond. This is useful if you just want to trigger something on your server.
-    #  If sync, the assistant will wait for your server to respond. This is useful if
-    #  want assistant to respond with the result from your server.
-    #  Defaults to synchronous (`false`).
-    # @param messages [Array<Hash>] These are the messages that will be spoken to the user as the tool is running.
-    #  For some tools, this is auto-filled based on special fields like
-    #  `tool.destinations`. For others like the function tool, these can be custom
-    #  configured.Request of type Array<Vapi::Tools::UpdateToolDtoMessagesItem>, as a Hash
-    # @param function [Hash] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.Request of type Vapi::OpenAiFunction, as a Hash
-    #   * :strict (Boolean)
-    #   * :name (String)
-    #   * :description (String)
-    #   * :parameters (Hash)
-    #     * :type (String)
-    #     * :properties (Hash{String => Vapi::JsonSchema})
-    #     * :required (Array<String>)
-    # @param server [Hash] This is the server that will be hit when this tool is requested by the model.
-    #  All requests will be sent with the call object among other things. You can find
-    #  more details in the Server URL documentation.
-    #  This overrides the serverUrl set on the org and the phoneNumber. Order of
-    #  precedence: highest tool.server.url, then assistant.serverUrl, then
-    #  phoneNumber.serverUrl, then org.serverUrl.Request of type Vapi::Server, as a Hash
-    #   * :timeout_seconds (Float)
-    #   * :url (String)
-    #   * :secret (String)
-    #   * :headers (Hash{String => Object})
+    # @param request [Vapi::Tools::ToolsUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Tools::ToolsUpdateResponse]
     # @example
@@ -448,7 +370,7 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.tools.update(id: "id")
-    def update(id:, async: nil, messages: nil, function: nil, server: nil, request_options: nil)
+    def update(id:, request:, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -461,13 +383,7 @@ module Vapi
           unless request_options.nil? || request_options&.additional_query_parameters.nil?
             req.params = { **(request_options&.additional_query_parameters || {}) }.compact
           end
-          req.body = {
-            **(request_options&.additional_body_parameters || {}),
-            async: async,
-            messages: messages,
-            function: function,
-            server: server
-          }.compact
+          req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/tool/#{id}"
         end
         Vapi::Tools::ToolsUpdateResponse.from_json(json_object: response.body)

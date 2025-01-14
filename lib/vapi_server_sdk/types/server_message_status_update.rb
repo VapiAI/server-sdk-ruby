@@ -61,6 +61,9 @@ module Vapi
     # @return [String] This is the transcript of the call. This is only sent if the status is
     #  "forwarding".
     attr_reader :transcript
+    # @return [String] This is the summary of the call. This is only sent if the status is
+    #  "forwarding".
+    attr_reader :summary
     # @return [Hash{String => Object}] This is the inbound phone call debugging artifacts. This is only sent if the
     #  status is "ended" and there was an error accepting the inbound phone call.
     #  This will include any errors related to the "assistant-request" if one was made.
@@ -107,13 +110,15 @@ module Vapi
     #  especially after the call is ended, use GET /call/:id.
     # @param transcript [String] This is the transcript of the call. This is only sent if the status is
     #  "forwarding".
+    # @param summary [String] This is the summary of the call. This is only sent if the status is
+    #  "forwarding".
     # @param inbound_phone_call_debugging_artifacts [Hash{String => Object}] This is the inbound phone call debugging artifacts. This is only sent if the
     #  status is "ended" and there was an error accepting the inbound phone call.
     #  This will include any errors related to the "assistant-request" if one was made.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageStatusUpdate]
     def initialize(status:, phone_number: OMIT, ended_reason: OMIT, messages: OMIT, messages_open_ai_formatted: OMIT,
-                   destination: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, transcript: OMIT, inbound_phone_call_debugging_artifacts: OMIT, additional_properties: nil)
+                   destination: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, transcript: OMIT, summary: OMIT, inbound_phone_call_debugging_artifacts: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
       @status = status
       @ended_reason = ended_reason if ended_reason != OMIT
@@ -126,6 +131,7 @@ module Vapi
       @customer = customer if customer != OMIT
       @call = call if call != OMIT
       @transcript = transcript if transcript != OMIT
+      @summary = summary if summary != OMIT
       if inbound_phone_call_debugging_artifacts != OMIT
         @inbound_phone_call_debugging_artifacts = inbound_phone_call_debugging_artifacts
       end
@@ -143,6 +149,7 @@ module Vapi
         "customer": customer,
         "call": call,
         "transcript": transcript,
+        "summary": summary,
         "inboundPhoneCallDebuggingArtifacts": inbound_phone_call_debugging_artifacts
       }.reject do |_k, v|
         v == OMIT
@@ -204,6 +211,7 @@ module Vapi
         call = Vapi::Call.from_json(json_object: call)
       end
       transcript = parsed_json["transcript"]
+      summary = parsed_json["summary"]
       inbound_phone_call_debugging_artifacts = parsed_json["inboundPhoneCallDebuggingArtifacts"]
       new(
         phone_number: phone_number,
@@ -218,6 +226,7 @@ module Vapi
         customer: customer,
         call: call,
         transcript: transcript,
+        summary: summary,
         inbound_phone_call_debugging_artifacts: inbound_phone_call_debugging_artifacts,
         additional_properties: struct
       )
@@ -249,6 +258,7 @@ module Vapi
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
       obj.transcript&.is_a?(String) != false || raise("Passed value for field obj.transcript is not the expected type, validation failed.")
+      obj.summary&.is_a?(String) != false || raise("Passed value for field obj.summary is not the expected type, validation failed.")
       obj.inbound_phone_call_debugging_artifacts&.is_a?(Hash) != false || raise("Passed value for field obj.inbound_phone_call_debugging_artifacts is not the expected type, validation failed.")
     end
   end

@@ -11,6 +11,7 @@ require_relative "neets_voice"
 require_relative "open_ai_voice"
 require_relative "play_ht_voice"
 require_relative "rime_ai_voice"
+require_relative "smallest_ai_voice"
 require_relative "tavus_voice"
 
 module Vapi
@@ -59,6 +60,8 @@ module Vapi
                  Vapi::PlayHtVoice.from_json(json_object: json_object)
                when "rime-ai"
                  Vapi::RimeAiVoice.from_json(json_object: json_object)
+               when "smallest-ai"
+                 Vapi::SmallestAiVoice.from_json(json_object: json_object)
                when "tavus"
                  Vapi::TavusVoice.from_json(json_object: json_object)
                else
@@ -91,6 +94,8 @@ module Vapi
       when "playht"
         { **@member.to_json, provider: @discriminant }.to_json
       when "rime-ai"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "smallest-ai"
         { **@member.to_json, provider: @discriminant }.to_json
       when "tavus"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -128,6 +133,8 @@ module Vapi
         Vapi::PlayHtVoice.validate_raw(obj: obj)
       when "rime-ai"
         Vapi::RimeAiVoice.validate_raw(obj: obj)
+      when "smallest-ai"
+        Vapi::SmallestAiVoice.validate_raw(obj: obj)
       when "tavus"
         Vapi::TavusVoice.validate_raw(obj: obj)
       else
@@ -201,6 +208,12 @@ module Vapi
     # @return [Vapi::CreateAssistantDtoVoice]
     def self.rime_ai(member:)
       new(member: member, discriminant: "rime-ai")
+    end
+
+    # @param member [Vapi::SmallestAiVoice]
+    # @return [Vapi::CreateAssistantDtoVoice]
+    def self.smallest_ai(member:)
+      new(member: member, discriminant: "smallest-ai")
     end
 
     # @param member [Vapi::TavusVoice]

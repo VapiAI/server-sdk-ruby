@@ -32,13 +32,19 @@ module Vapi
     # @return [Vapi::TransferPlanMessage] This is the message the assistant will deliver to the destination party before
     #  connecting the customer.
     #  Usage:
-    #  - Used only when `mode` is `warm-transfer-say-message` or
+    #  - Used only when `mode` is `blind-transfer-add-summary-to-sip-header`,
+    #  `warm-transfer-say-message` or
     #  `warm-transfer-wait-for-operator-to-speak-first-and-then-say-message`.
     attr_reader :message
+    # @return [Hash{String => Object}] This specifies the SIP verb to use while transferring the call.
+    #  - 'refer': Uses SIP REFER to transfer the call (default)
+    #  - 'bye': Ends current call with SIP BYE
+    attr_reader :sip_verb
     # @return [Vapi::SummaryPlan] This is the plan for generating a summary of the call to present to the
     #  destination party.
     #  Usage:
-    #  - Used only when `mode` is `warm-transfer-say-summary` or
+    #  - Used only when `mode` is `blind-transfer-add-summary-to-sip-header` or
+    #  `warm-transfer-say-summary` or
     #  `warm-transfer-wait-for-operator-to-speak-first-and-then-say-summary`.
     attr_reader :summary_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -72,21 +78,32 @@ module Vapi
     # @param message [Vapi::TransferPlanMessage] This is the message the assistant will deliver to the destination party before
     #  connecting the customer.
     #  Usage:
-    #  - Used only when `mode` is `warm-transfer-say-message` or
+    #  - Used only when `mode` is `blind-transfer-add-summary-to-sip-header`,
+    #  `warm-transfer-say-message` or
     #  `warm-transfer-wait-for-operator-to-speak-first-and-then-say-message`.
+    # @param sip_verb [Hash{String => Object}] This specifies the SIP verb to use while transferring the call.
+    #  - 'refer': Uses SIP REFER to transfer the call (default)
+    #  - 'bye': Ends current call with SIP BYE
     # @param summary_plan [Vapi::SummaryPlan] This is the plan for generating a summary of the call to present to the
     #  destination party.
     #  Usage:
-    #  - Used only when `mode` is `warm-transfer-say-summary` or
+    #  - Used only when `mode` is `blind-transfer-add-summary-to-sip-header` or
+    #  `warm-transfer-say-summary` or
     #  `warm-transfer-wait-for-operator-to-speak-first-and-then-say-summary`.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferPlan]
-    def initialize(mode:, message: OMIT, summary_plan: OMIT, additional_properties: nil)
+    def initialize(mode:, message: OMIT, sip_verb: OMIT, summary_plan: OMIT, additional_properties: nil)
       @mode = mode
       @message = message if message != OMIT
+      @sip_verb = sip_verb if sip_verb != OMIT
       @summary_plan = summary_plan if summary_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "mode": mode, "message": message, "summaryPlan": summary_plan }.reject do |_k, v|
+      @_field_set = {
+        "mode": mode,
+        "message": message,
+        "sipVerb": sip_verb,
+        "summaryPlan": summary_plan
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -105,6 +122,7 @@ module Vapi
         message = parsed_json["message"].to_json
         message = Vapi::TransferPlanMessage.from_json(json_object: message)
       end
+      sip_verb = parsed_json["sipVerb"]
       if parsed_json["summaryPlan"].nil?
         summary_plan = nil
       else
@@ -114,6 +132,7 @@ module Vapi
       new(
         mode: mode,
         message: message,
+        sip_verb: sip_verb,
         summary_plan: summary_plan,
         additional_properties: struct
       )
@@ -135,6 +154,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.mode.is_a?(Vapi::TransferPlanMode) != false || raise("Passed value for field obj.mode is not the expected type, validation failed.")
       obj.message.nil? || Vapi::TransferPlanMessage.validate_raw(obj: obj.message)
+      obj.sip_verb&.is_a?(Hash) != false || raise("Passed value for field obj.sip_verb is not the expected type, validation failed.")
       obj.summary_plan.nil? || Vapi::SummaryPlan.validate_raw(obj: obj.summary_plan)
     end
   end

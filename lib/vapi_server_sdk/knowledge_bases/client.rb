@@ -8,6 +8,7 @@ require_relative "types/knowledge_bases_create_request"
 require_relative "types/knowledge_bases_create_response"
 require_relative "types/knowledge_bases_get_response"
 require_relative "types/knowledge_bases_delete_response"
+require_relative "types/knowledge_bases_update_request"
 require_relative "types/knowledge_bases_update_response"
 require "async"
 
@@ -167,6 +168,7 @@ module Vapi
     end
 
     # @param id [String]
+    # @param request [Vapi::KnowledgeBases::KnowledgeBasesUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::KnowledgeBases::KnowledgeBasesUpdateResponse]
     # @example
@@ -176,7 +178,7 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.knowledge_bases.update(id: "id")
-    def update(id:, request_options: nil)
+    def update(id:, request:, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -188,9 +190,7 @@ module Vapi
         unless request_options.nil? || request_options&.additional_query_parameters.nil?
           req.params = { **(request_options&.additional_query_parameters || {}) }.compact
         end
-        unless request_options.nil? || request_options&.additional_body_parameters.nil?
-          req.body = { **(request_options&.additional_body_parameters || {}) }.compact
-        end
+        req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/knowledge-base/#{id}"
       end
       Vapi::KnowledgeBases::KnowledgeBasesUpdateResponse.from_json(json_object: response.body)
@@ -360,6 +360,7 @@ module Vapi
     end
 
     # @param id [String]
+    # @param request [Vapi::KnowledgeBases::KnowledgeBasesUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::KnowledgeBases::KnowledgeBasesUpdateResponse]
     # @example
@@ -369,7 +370,7 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.knowledge_bases.update(id: "id")
-    def update(id:, request_options: nil)
+    def update(id:, request:, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -382,9 +383,7 @@ module Vapi
           unless request_options.nil? || request_options&.additional_query_parameters.nil?
             req.params = { **(request_options&.additional_query_parameters || {}) }.compact
           end
-          unless request_options.nil? || request_options&.additional_body_parameters.nil?
-            req.body = { **(request_options&.additional_body_parameters || {}) }.compact
-          end
+          req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/knowledge-base/#{id}"
         end
         Vapi::KnowledgeBases::KnowledgeBasesUpdateResponse.from_json(json_object: response.body)

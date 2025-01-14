@@ -4,6 +4,7 @@ require_relative "open_ai_message"
 require_relative "google_model_tools_item"
 require_relative "create_custom_knowledge_base_dto"
 require_relative "google_model_model"
+require_relative "google_realtime_config"
 require "ostruct"
 require "json"
 
@@ -25,6 +26,9 @@ module Vapi
     attr_reader :knowledge_base_id
     # @return [Vapi::GoogleModelModel] This is the Google model that will be used.
     attr_reader :model
+    # @return [Vapi::GoogleRealtimeConfig] This is the session configuration for the Gemini Flash 2.0 Multimodal Live API.
+    #  Only applicable if the model `gemini-2.0-flash-realtime-exp` is selected.
+    attr_reader :realtime_config
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     attr_reader :temperature
@@ -61,6 +65,8 @@ module Vapi
     # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
     # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
     # @param model [Vapi::GoogleModelModel] This is the Google model that will be used.
+    # @param realtime_config [Vapi::GoogleRealtimeConfig] This is the session configuration for the Gemini Flash 2.0 Multimodal Live API.
+    #  Only applicable if the model `gemini-2.0-flash-realtime-exp` is selected.
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     # @param max_tokens [Float] This is the max number of tokens that the assistant will be allowed to generate
@@ -78,13 +84,14 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::GoogleModel]
     def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
-                   temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+                   realtime_config: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
       @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @model = model
+      @realtime_config = realtime_config if realtime_config != OMIT
       @temperature = temperature if temperature != OMIT
       @max_tokens = max_tokens if max_tokens != OMIT
       @emotion_recognition_enabled = emotion_recognition_enabled if emotion_recognition_enabled != OMIT
@@ -97,6 +104,7 @@ module Vapi
         "knowledgeBase": knowledge_base,
         "knowledgeBaseId": knowledge_base_id,
         "model": model,
+        "realtimeConfig": realtime_config,
         "temperature": temperature,
         "maxTokens": max_tokens,
         "emotionRecognitionEnabled": emotion_recognition_enabled,
@@ -130,6 +138,12 @@ module Vapi
       end
       knowledge_base_id = parsed_json["knowledgeBaseId"]
       model = parsed_json["model"]
+      if parsed_json["realtimeConfig"].nil?
+        realtime_config = nil
+      else
+        realtime_config = parsed_json["realtimeConfig"].to_json
+        realtime_config = Vapi::GoogleRealtimeConfig.from_json(json_object: realtime_config)
+      end
       temperature = parsed_json["temperature"]
       max_tokens = parsed_json["maxTokens"]
       emotion_recognition_enabled = parsed_json["emotionRecognitionEnabled"]
@@ -141,6 +155,7 @@ module Vapi
         knowledge_base: knowledge_base,
         knowledge_base_id: knowledge_base_id,
         model: model,
+        realtime_config: realtime_config,
         temperature: temperature,
         max_tokens: max_tokens,
         emotion_recognition_enabled: emotion_recognition_enabled,
@@ -169,6 +184,7 @@ module Vapi
       obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
       obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
       obj.model.is_a?(Vapi::GoogleModelModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.realtime_config.nil? || Vapi::GoogleRealtimeConfig.validate_raw(obj: obj.realtime_config)
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")
       obj.emotion_recognition_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.emotion_recognition_enabled is not the expected type, validation failed.")

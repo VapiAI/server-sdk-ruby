@@ -9,8 +9,8 @@ require "json"
 module Vapi
   class OpenAiVoice
     # @return [Vapi::OpenAiVoiceId] This is the provider-specific ID that will be used.
-    #  Please note that ash, ballad, coral, sage, and verse may only be used with the
-    #  `gpt-4o-realtime-preview-2024-10-01` model.
+    #  Please note that ash, ballad, coral, sage, and verse may only be used with
+    #  realtime models.
     attr_reader :voice_id
     # @return [Float] This is the speed multiplier that will be used.
     attr_reader :speed
@@ -29,8 +29,8 @@ module Vapi
     OMIT = Object.new
 
     # @param voice_id [Vapi::OpenAiVoiceId] This is the provider-specific ID that will be used.
-    #  Please note that ash, ballad, coral, sage, and verse may only be used with the
-    #  `gpt-4o-realtime-preview-2024-10-01` model.
+    #  Please note that ash, ballad, coral, sage, and verse may only be used with
+    #  realtime models.
     # @param speed [Float] This is the speed multiplier that will be used.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.

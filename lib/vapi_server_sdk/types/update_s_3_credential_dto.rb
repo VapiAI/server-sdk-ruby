@@ -5,8 +5,6 @@ require "json"
 
 module Vapi
   class UpdateS3CredentialDto
-    # @return [String] Credential provider. Only allowed value is s3
-    attr_reader :provider
     # @return [String] AWS access key ID.
     attr_reader :aws_access_key_id
     # @return [String] AWS access key secret. This is not returned in the API.
@@ -27,7 +25,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String] Credential provider. Only allowed value is s3
     # @param aws_access_key_id [String] AWS access key ID.
     # @param aws_secret_access_key [String] AWS access key secret. This is not returned in the API.
     # @param region [String] AWS region in which the S3 bucket is located.
@@ -36,18 +33,16 @@ module Vapi
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateS3CredentialDto]
-    def initialize(provider:, aws_access_key_id:, aws_secret_access_key:, region:, s_3_bucket_name:, s_3_path_prefix:,
-                   name: OMIT, additional_properties: nil)
-      @provider = provider
-      @aws_access_key_id = aws_access_key_id
-      @aws_secret_access_key = aws_secret_access_key
-      @region = region
-      @s_3_bucket_name = s_3_bucket_name
-      @s_3_path_prefix = s_3_path_prefix
+    def initialize(aws_access_key_id: OMIT, aws_secret_access_key: OMIT, region: OMIT, s_3_bucket_name: OMIT,
+                   s_3_path_prefix: OMIT, name: OMIT, additional_properties: nil)
+      @aws_access_key_id = aws_access_key_id if aws_access_key_id != OMIT
+      @aws_secret_access_key = aws_secret_access_key if aws_secret_access_key != OMIT
+      @region = region if region != OMIT
+      @s_3_bucket_name = s_3_bucket_name if s_3_bucket_name != OMIT
+      @s_3_path_prefix = s_3_path_prefix if s_3_path_prefix != OMIT
       @name = name if name != OMIT
       @additional_properties = additional_properties
       @_field_set = {
-        "provider": provider,
         "awsAccessKeyId": aws_access_key_id,
         "awsSecretAccessKey": aws_secret_access_key,
         "region": region,
@@ -66,7 +61,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      provider = parsed_json["provider"]
       aws_access_key_id = parsed_json["awsAccessKeyId"]
       aws_secret_access_key = parsed_json["awsSecretAccessKey"]
       region = parsed_json["region"]
@@ -74,7 +68,6 @@ module Vapi
       s_3_path_prefix = parsed_json["s3PathPrefix"]
       name = parsed_json["name"]
       new(
-        provider: provider,
         aws_access_key_id: aws_access_key_id,
         aws_secret_access_key: aws_secret_access_key,
         region: region,
@@ -99,12 +92,11 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
-      obj.aws_access_key_id.is_a?(String) != false || raise("Passed value for field obj.aws_access_key_id is not the expected type, validation failed.")
-      obj.aws_secret_access_key.is_a?(String) != false || raise("Passed value for field obj.aws_secret_access_key is not the expected type, validation failed.")
-      obj.region.is_a?(String) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
-      obj.s_3_bucket_name.is_a?(String) != false || raise("Passed value for field obj.s_3_bucket_name is not the expected type, validation failed.")
-      obj.s_3_path_prefix.is_a?(String) != false || raise("Passed value for field obj.s_3_path_prefix is not the expected type, validation failed.")
+      obj.aws_access_key_id&.is_a?(String) != false || raise("Passed value for field obj.aws_access_key_id is not the expected type, validation failed.")
+      obj.aws_secret_access_key&.is_a?(String) != false || raise("Passed value for field obj.aws_secret_access_key is not the expected type, validation failed.")
+      obj.region&.is_a?(String) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
+      obj.s_3_bucket_name&.is_a?(String) != false || raise("Passed value for field obj.s_3_bucket_name is not the expected type, validation failed.")
+      obj.s_3_path_prefix&.is_a?(String) != false || raise("Passed value for field obj.s_3_path_prefix is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end
   end

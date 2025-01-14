@@ -5,8 +5,6 @@ require "json"
 
 module Vapi
   class UpdateLmntCredentialDto
-    # @return [String]
-    attr_reader :provider
     # @return [String] This is not returned in the API.
     attr_reader :api_key
     # @return [String] This is the name of credential. This is just for your reference.
@@ -19,17 +17,15 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
     # @param api_key [String] This is not returned in the API.
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateLmntCredentialDto]
-    def initialize(provider:, api_key:, name: OMIT, additional_properties: nil)
-      @provider = provider
-      @api_key = api_key
+    def initialize(api_key: OMIT, name: OMIT, additional_properties: nil)
+      @api_key = api_key if api_key != OMIT
       @name = name if name != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "apiKey": api_key, "name": name }.reject do |_k, v|
+      @_field_set = { "apiKey": api_key, "name": name }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -41,11 +37,9 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      provider = parsed_json["provider"]
       api_key = parsed_json["apiKey"]
       name = parsed_json["name"]
       new(
-        provider: provider,
         api_key: api_key,
         name: name,
         additional_properties: struct
@@ -66,8 +60,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
-      obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
+      obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end
   end

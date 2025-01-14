@@ -2,6 +2,7 @@
 
 require_relative "twilio_phone_number_fallback_destination"
 require "date"
+require_relative "server"
 require "ostruct"
 require "json"
 
@@ -34,16 +35,13 @@ module Vapi
     #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
     #  shape of the message and response that is expected.
     attr_reader :squad_id
-    # @return [String] This is the server URL where messages will be sent for calls on this number.
-    #  This includes the `assistant-request` message.
-    #  You can see the shape of the messages sent in `ServerMessage`.
-    #  This overrides the `org.serverUrl`. Order of precedence: tool.server.url >
-    #  assistant.serverUrl > phoneNumber.serverUrl > org.serverUrl.
-    attr_reader :server_url
-    # @return [String] This is the secret Vapi will send with every message to your server. It's sent
-    #  as a header called x-vapi-secret.
-    #  Same precedence logic as serverUrl.
-    attr_reader :server_url_secret
+    # @return [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
+    #  with their shape in ServerMessage schema.
+    #  The order of precedence is:
+    #  1. assistant.server
+    #  2. phoneNumber.server
+    #  3. org.server
+    attr_reader :server
     # @return [String] These are the digits of the phone number you own on your Twilio.
     attr_reader :number
     # @return [String] This is the Twilio Account SID for the phone number.
@@ -77,21 +75,19 @@ module Vapi
     #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
     #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
     #  shape of the message and response that is expected.
-    # @param server_url [String] This is the server URL where messages will be sent for calls on this number.
-    #  This includes the `assistant-request` message.
-    #  You can see the shape of the messages sent in `ServerMessage`.
-    #  This overrides the `org.serverUrl`. Order of precedence: tool.server.url >
-    #  assistant.serverUrl > phoneNumber.serverUrl > org.serverUrl.
-    # @param server_url_secret [String] This is the secret Vapi will send with every message to your server. It's sent
-    #  as a header called x-vapi-secret.
-    #  Same precedence logic as serverUrl.
+    # @param server [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
+    #  with their shape in ServerMessage schema.
+    #  The order of precedence is:
+    #  1. assistant.server
+    #  2. phoneNumber.server
+    #  3. org.server
     # @param number [String] These are the digits of the phone number you own on your Twilio.
     # @param twilio_account_sid [String] This is the Twilio Account SID for the phone number.
     # @param twilio_auth_token [String] This is the Twilio Auth Token for the phone number.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TwilioPhoneNumber]
     def initialize(id:, org_id:, created_at:, updated_at:, number:, twilio_account_sid:, twilio_auth_token:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT,
-                   squad_id: OMIT, server_url: OMIT, server_url_secret: OMIT, additional_properties: nil)
+                   squad_id: OMIT, server: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
       @id = id
       @org_id = org_id
@@ -100,8 +96,7 @@ module Vapi
       @name = name if name != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
       @squad_id = squad_id if squad_id != OMIT
-      @server_url = server_url if server_url != OMIT
-      @server_url_secret = server_url_secret if server_url_secret != OMIT
+      @server = server if server != OMIT
       @number = number
       @twilio_account_sid = twilio_account_sid
       @twilio_auth_token = twilio_auth_token
@@ -115,8 +110,7 @@ module Vapi
         "name": name,
         "assistantId": assistant_id,
         "squadId": squad_id,
-        "serverUrl": server_url,
-        "serverUrlSecret": server_url_secret,
+        "server": server,
         "number": number,
         "twilioAccountSid": twilio_account_sid,
         "twilioAuthToken": twilio_auth_token
@@ -145,8 +139,12 @@ module Vapi
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]
       squad_id = parsed_json["squadId"]
-      server_url = parsed_json["serverUrl"]
-      server_url_secret = parsed_json["serverUrlSecret"]
+      if parsed_json["server"].nil?
+        server = nil
+      else
+        server = parsed_json["server"].to_json
+        server = Vapi::Server.from_json(json_object: server)
+      end
       number = parsed_json["number"]
       twilio_account_sid = parsed_json["twilioAccountSid"]
       twilio_auth_token = parsed_json["twilioAuthToken"]
@@ -159,8 +157,7 @@ module Vapi
         name: name,
         assistant_id: assistant_id,
         squad_id: squad_id,
-        server_url: server_url,
-        server_url_secret: server_url_secret,
+        server: server,
         number: number,
         twilio_account_sid: twilio_account_sid,
         twilio_auth_token: twilio_auth_token,
@@ -190,8 +187,7 @@ module Vapi
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
-      obj.server_url&.is_a?(String) != false || raise("Passed value for field obj.server_url is not the expected type, validation failed.")
-      obj.server_url_secret&.is_a?(String) != false || raise("Passed value for field obj.server_url_secret is not the expected type, validation failed.")
+      obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
       obj.number.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")
       obj.twilio_account_sid.is_a?(String) != false || raise("Passed value for field obj.twilio_account_sid is not the expected type, validation failed.")
       obj.twilio_auth_token.is_a?(String) != false || raise("Passed value for field obj.twilio_auth_token is not the expected type, validation failed.")

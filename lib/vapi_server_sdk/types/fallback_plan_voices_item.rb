@@ -11,6 +11,7 @@ require_relative "fallback_neets_voice"
 require_relative "fallback_open_ai_voice"
 require_relative "fallback_play_ht_voice"
 require_relative "fallback_rime_ai_voice"
+require_relative "fallback_smallest_ai_voice"
 require_relative "fallback_tavus_voice"
 
 module Vapi
@@ -58,6 +59,8 @@ module Vapi
                  Vapi::FallbackPlayHtVoice.from_json(json_object: json_object)
                when "rime-ai"
                  Vapi::FallbackRimeAiVoice.from_json(json_object: json_object)
+               when "smallest-ai"
+                 Vapi::FallbackSmallestAiVoice.from_json(json_object: json_object)
                when "tavus"
                  Vapi::FallbackTavusVoice.from_json(json_object: json_object)
                else
@@ -90,6 +93,8 @@ module Vapi
       when "playht"
         { **@member.to_json, provider: @discriminant }.to_json
       when "rime-ai"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "smallest-ai"
         { **@member.to_json, provider: @discriminant }.to_json
       when "tavus"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -127,6 +132,8 @@ module Vapi
         Vapi::FallbackPlayHtVoice.validate_raw(obj: obj)
       when "rime-ai"
         Vapi::FallbackRimeAiVoice.validate_raw(obj: obj)
+      when "smallest-ai"
+        Vapi::FallbackSmallestAiVoice.validate_raw(obj: obj)
       when "tavus"
         Vapi::FallbackTavusVoice.validate_raw(obj: obj)
       else
@@ -200,6 +207,12 @@ module Vapi
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.rime_ai(member:)
       new(member: member, discriminant: "rime-ai")
+    end
+
+    # @param member [Vapi::FallbackSmallestAiVoice]
+    # @return [Vapi::FallbackPlanVoicesItem]
+    def self.smallest_ai(member:)
+      new(member: member, discriminant: "smallest-ai")
     end
 
     # @param member [Vapi::FallbackTavusVoice]

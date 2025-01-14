@@ -13,6 +13,7 @@ require_relative "types/update_assistant_dto_client_messages_item"
 require_relative "types/update_assistant_dto_server_messages_item"
 require_relative "types/update_assistant_dto_background_sound"
 require_relative "../types/transport_configuration_twilio"
+require_relative "types/update_assistant_dto_credentials_item"
 require_relative "../types/twilio_voicemail_detection"
 require_relative "../types/analysis_plan"
 require_relative "../types/artifact_plan"
@@ -105,6 +106,7 @@ module Vapi
     #   * :background_denoising_enabled (Boolean)
     #   * :model_output_in_messages_enabled (Boolean)
     #   * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
+    #   * :credentials (Array<Vapi::CreateAssistantDtoCredentialsItem>)
     #   * :name (String)
     #   * :voicemail_detection (Hash)
     #     * :provider (String)
@@ -307,6 +309,10 @@ module Vapi
     #   * :timeout (Float)
     #   * :record (Boolean)
     #   * :recording_channels (Vapi::TransportConfigurationTwilioRecordingChannels)
+    # @param credentials [Array<Hash>] These are dynamic credentials that will be used for the assistant calls. By
+    #  default, all the credentials are available for use in the call but you can
+    #  supplement an additional credentials using this. Dynamic credentials override
+    #  existing credentials.Request of type Array<Vapi::Assistants::UpdateAssistantDtoCredentialsItem>, as a Hash
     # @param name [String] This is the name of the assistant.
     #  This is required when you want to transfer between assistants in a call.
     # @param voicemail_detection [Hash] These are the settings to configure or disable voicemail detection.
@@ -430,7 +436,7 @@ module Vapi
     #  )
     #  api.assistants.update(id: "id")
     def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_mode: nil,
-               hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
+               hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, credentials: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -458,6 +464,7 @@ module Vapi
           backgroundDenoisingEnabled: background_denoising_enabled,
           modelOutputInMessagesEnabled: model_output_in_messages_enabled,
           transportConfigurations: transport_configurations,
+          credentials: credentials,
           name: name,
           voicemailDetection: voicemail_detection,
           voicemailMessage: voicemail_message,
@@ -562,6 +569,7 @@ module Vapi
     #   * :background_denoising_enabled (Boolean)
     #   * :model_output_in_messages_enabled (Boolean)
     #   * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
+    #   * :credentials (Array<Vapi::CreateAssistantDtoCredentialsItem>)
     #   * :name (String)
     #   * :voicemail_detection (Hash)
     #     * :provider (String)
@@ -770,6 +778,10 @@ module Vapi
     #   * :timeout (Float)
     #   * :record (Boolean)
     #   * :recording_channels (Vapi::TransportConfigurationTwilioRecordingChannels)
+    # @param credentials [Array<Hash>] These are dynamic credentials that will be used for the assistant calls. By
+    #  default, all the credentials are available for use in the call but you can
+    #  supplement an additional credentials using this. Dynamic credentials override
+    #  existing credentials.Request of type Array<Vapi::Assistants::UpdateAssistantDtoCredentialsItem>, as a Hash
     # @param name [String] This is the name of the assistant.
     #  This is required when you want to transfer between assistants in a call.
     # @param voicemail_detection [Hash] These are the settings to configure or disable voicemail detection.
@@ -893,7 +905,7 @@ module Vapi
     #  )
     #  api.assistants.update(id: "id")
     def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_mode: nil,
-               hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
+               hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, credentials: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -922,6 +934,7 @@ module Vapi
             backgroundDenoisingEnabled: background_denoising_enabled,
             modelOutputInMessagesEnabled: model_output_in_messages_enabled,
             transportConfigurations: transport_configurations,
+            credentials: credentials,
             name: name,
             voicemailDetection: voicemail_detection,
             voicemailMessage: voicemail_message,

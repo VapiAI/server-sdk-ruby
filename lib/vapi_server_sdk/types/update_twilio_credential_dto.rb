@@ -5,14 +5,12 @@ require "json"
 
 module Vapi
   class UpdateTwilioCredentialDto
-    # @return [String]
-    attr_reader :provider
     # @return [String] This is not returned in the API.
     attr_reader :auth_token
-    # @return [String]
-    attr_reader :account_sid
     # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
+    # @return [String]
+    attr_reader :account_sid
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -21,24 +19,17 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
     # @param auth_token [String] This is not returned in the API.
-    # @param account_sid [String]
     # @param name [String] This is the name of credential. This is just for your reference.
+    # @param account_sid [String]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateTwilioCredentialDto]
-    def initialize(provider:, auth_token:, account_sid:, name: OMIT, additional_properties: nil)
-      @provider = provider
-      @auth_token = auth_token
-      @account_sid = account_sid
+    def initialize(auth_token: OMIT, name: OMIT, account_sid: OMIT, additional_properties: nil)
+      @auth_token = auth_token if auth_token != OMIT
       @name = name if name != OMIT
+      @account_sid = account_sid if account_sid != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "provider": provider,
-        "authToken": auth_token,
-        "accountSid": account_sid,
-        "name": name
-      }.reject do |_k, v|
+      @_field_set = { "authToken": auth_token, "name": name, "accountSid": account_sid }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -50,15 +41,13 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      provider = parsed_json["provider"]
       auth_token = parsed_json["authToken"]
-      account_sid = parsed_json["accountSid"]
       name = parsed_json["name"]
+      account_sid = parsed_json["accountSid"]
       new(
-        provider: provider,
         auth_token: auth_token,
-        account_sid: account_sid,
         name: name,
+        account_sid: account_sid,
         additional_properties: struct
       )
     end
@@ -77,10 +66,9 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
-      obj.auth_token.is_a?(String) != false || raise("Passed value for field obj.auth_token is not the expected type, validation failed.")
-      obj.account_sid.is_a?(String) != false || raise("Passed value for field obj.account_sid is not the expected type, validation failed.")
+      obj.auth_token&.is_a?(String) != false || raise("Passed value for field obj.auth_token is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.account_sid&.is_a?(String) != false || raise("Passed value for field obj.account_sid is not the expected type, validation failed.")
     end
   end
 end

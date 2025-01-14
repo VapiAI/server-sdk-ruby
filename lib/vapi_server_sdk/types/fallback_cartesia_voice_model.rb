@@ -6,5 +6,7 @@ module Vapi
   class FallbackCartesiaVoiceModel
     SONIC_ENGLISH = "sonic-english"
     SONIC_MULTILINGUAL = "sonic-multilingual"
+    SONIC_PREVIEW = "sonic-preview"
+    SONIC = "sonic"
   end
 end

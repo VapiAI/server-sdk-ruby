@@ -8,6 +8,7 @@ require_relative "deep_infra_model"
 require_relative "google_model"
 require_relative "groq_model"
 require_relative "inflection_ai_model"
+require_relative "deep_seek_model"
 require_relative "open_ai_model"
 require_relative "open_router_model"
 require_relative "perplexity_ai_model"
@@ -55,6 +56,8 @@ module Vapi
                  Vapi::GroqModel.from_json(json_object: json_object)
                when "inflection-ai"
                  Vapi::InflectionAiModel.from_json(json_object: json_object)
+               when "deep-seek"
+                 Vapi::DeepSeekModel.from_json(json_object: json_object)
                when "openai"
                  Vapi::OpenAiModel.from_json(json_object: json_object)
                when "openrouter"
@@ -91,6 +94,8 @@ module Vapi
       when "groq"
         { **@member.to_json, provider: @discriminant }.to_json
       when "inflection-ai"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "deep-seek"
         { **@member.to_json, provider: @discriminant }.to_json
       when "openai"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -132,6 +137,8 @@ module Vapi
         Vapi::GroqModel.validate_raw(obj: obj)
       when "inflection-ai"
         Vapi::InflectionAiModel.validate_raw(obj: obj)
+      when "deep-seek"
+        Vapi::DeepSeekModel.validate_raw(obj: obj)
       when "openai"
         Vapi::OpenAiModel.validate_raw(obj: obj)
       when "openrouter"
@@ -197,6 +204,12 @@ module Vapi
     # @return [Vapi::CreateAssistantDtoModel]
     def self.inflection_ai(member:)
       new(member: member, discriminant: "inflection-ai")
+    end
+
+    # @param member [Vapi::DeepSeekModel]
+    # @return [Vapi::CreateAssistantDtoModel]
+    def self.deep_seek(member:)
+      new(member: member, discriminant: "deep-seek")
     end
 
     # @param member [Vapi::OpenAiModel]

@@ -89,6 +89,47 @@ module Vapi
       end
       Vapi::LogsPaginatedResponse.from_json(json_object: response.body)
     end
+
+    # @param org_id [String] This is the unique identifier for the org that this log belongs to.
+    # @param assistant_id [String] This is the ID of the assistant.
+    # @param phone_number_id [String] This is the ID of the phone number.
+    # @param customer_id [String] This is the ID of the customer.
+    # @param squad_id [String] This is the ID of the squad.
+    # @param call_id [String] This is the ID of the call.
+    # @param request_options [Vapi::RequestOptions]
+    # @return [Void]
+    # @example
+    #  api = Vapi::Client.new(
+    #    base_url: "https://api.example.com",
+    #    environment: Vapi::Environment::DEFAULT,
+    #    token: "YOUR_AUTH_TOKEN"
+    #  )
+    #  api.logs.logging_controller_logs_delete_query
+    def logging_controller_logs_delete_query(org_id: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
+                                             squad_id: nil, call_id: nil, request_options: nil)
+      @request_client.conn.delete do |req|
+        req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
+        req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
+        req.headers = {
+      **(req.headers || {}),
+      **@request_client.get_headers,
+      **(request_options&.additional_headers || {})
+        }.compact
+        req.params = {
+          **(request_options&.additional_query_parameters || {}),
+          "orgId": org_id,
+          "assistantId": assistant_id,
+          "phoneNumberId": phone_number_id,
+          "customerId": customer_id,
+          "squadId": squad_id,
+          "callId": call_id
+        }.compact
+        unless request_options.nil? || request_options&.additional_body_parameters.nil?
+          req.body = { **(request_options&.additional_body_parameters || {}) }.compact
+        end
+        req.url "#{@request_client.get_url(request_options: request_options)}/logs"
+      end
+    end
   end
 
   class AsyncLogsClient
@@ -172,6 +213,49 @@ module Vapi
           req.url "#{@request_client.get_url(request_options: request_options)}/logs"
         end
         Vapi::LogsPaginatedResponse.from_json(json_object: response.body)
+      end
+    end
+
+    # @param org_id [String] This is the unique identifier for the org that this log belongs to.
+    # @param assistant_id [String] This is the ID of the assistant.
+    # @param phone_number_id [String] This is the ID of the phone number.
+    # @param customer_id [String] This is the ID of the customer.
+    # @param squad_id [String] This is the ID of the squad.
+    # @param call_id [String] This is the ID of the call.
+    # @param request_options [Vapi::RequestOptions]
+    # @return [Void]
+    # @example
+    #  api = Vapi::Client.new(
+    #    base_url: "https://api.example.com",
+    #    environment: Vapi::Environment::DEFAULT,
+    #    token: "YOUR_AUTH_TOKEN"
+    #  )
+    #  api.logs.logging_controller_logs_delete_query
+    def logging_controller_logs_delete_query(org_id: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
+                                             squad_id: nil, call_id: nil, request_options: nil)
+      Async do
+        @request_client.conn.delete do |req|
+          req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
+          req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
+          req.headers = {
+        **(req.headers || {}),
+        **@request_client.get_headers,
+        **(request_options&.additional_headers || {})
+          }.compact
+          req.params = {
+            **(request_options&.additional_query_parameters || {}),
+            "orgId": org_id,
+            "assistantId": assistant_id,
+            "phoneNumberId": phone_number_id,
+            "customerId": customer_id,
+            "squadId": squad_id,
+            "callId": call_id
+          }.compact
+          unless request_options.nil? || request_options&.additional_body_parameters.nil?
+            req.body = { **(request_options&.additional_body_parameters || {}) }.compact
+          end
+          req.url "#{@request_client.get_url(request_options: request_options)}/logs"
+        end
       end
     end
   end

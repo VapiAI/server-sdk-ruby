@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require_relative "azure_credential_service"
 require_relative "azure_credential_region"
 require "date"
+require_relative "azure_blob_storage_bucket_plan"
 require "ostruct"
 require "json"
 
@@ -9,7 +11,7 @@ module Vapi
   class AzureCredential
     # @return [String]
     attr_reader :provider
-    # @return [String] This is the service being used in Azure.
+    # @return [Vapi::AzureCredentialService] This is the service being used in Azure.
     attr_reader :service
     # @return [Vapi::AzureCredentialRegion] This is the region of the Azure resource.
     attr_reader :region
@@ -25,6 +27,9 @@ module Vapi
     attr_reader :updated_at
     # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
+    # @return [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
+    #  Blob Storage.
+    attr_reader :bucket_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -34,7 +39,7 @@ module Vapi
     OMIT = Object.new
 
     # @param provider [String]
-    # @param service [String] This is the service being used in Azure.
+    # @param service [Vapi::AzureCredentialService] This is the service being used in Azure.
     # @param region [Vapi::AzureCredentialRegion] This is the region of the Azure resource.
     # @param api_key [String] This is not returned in the API.
     # @param id [String] This is the unique identifier for the credential.
@@ -42,10 +47,12 @@ module Vapi
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     # @param name [String] This is the name of credential. This is just for your reference.
+    # @param bucket_plan [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
+    #  Blob Storage.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AzureCredential]
     def initialize(provider:, service:, id:, org_id:, created_at:, updated_at:, region: OMIT, api_key: OMIT,
-                   name: OMIT, additional_properties: nil)
+                   name: OMIT, bucket_plan: OMIT, additional_properties: nil)
       @provider = provider
       @service = service
       @region = region if region != OMIT
@@ -55,6 +62,7 @@ module Vapi
       @created_at = created_at
       @updated_at = updated_at
       @name = name if name != OMIT
+      @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "provider": provider,
@@ -65,7 +73,8 @@ module Vapi
         "orgId": org_id,
         "createdAt": created_at,
         "updatedAt": updated_at,
-        "name": name
+        "name": name,
+        "bucketPlan": bucket_plan
       }.reject do |_k, v|
         v == OMIT
       end
@@ -87,6 +96,12 @@ module Vapi
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
       name = parsed_json["name"]
+      if parsed_json["bucketPlan"].nil?
+        bucket_plan = nil
+      else
+        bucket_plan = parsed_json["bucketPlan"].to_json
+        bucket_plan = Vapi::AzureBlobStorageBucketPlan.from_json(json_object: bucket_plan)
+      end
       new(
         provider: provider,
         service: service,
@@ -97,6 +112,7 @@ module Vapi
         created_at: created_at,
         updated_at: updated_at,
         name: name,
+        bucket_plan: bucket_plan,
         additional_properties: struct
       )
     end
@@ -116,7 +132,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
-      obj.service.is_a?(String) != false || raise("Passed value for field obj.service is not the expected type, validation failed.")
+      obj.service.is_a?(Vapi::AzureCredentialService) != false || raise("Passed value for field obj.service is not the expected type, validation failed.")
       obj.region&.is_a?(Vapi::AzureCredentialRegion) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
@@ -124,6 +140,7 @@ module Vapi
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.bucket_plan.nil? || Vapi::AzureBlobStorageBucketPlan.validate_raw(obj: obj.bucket_plan)
     end
   end
 end

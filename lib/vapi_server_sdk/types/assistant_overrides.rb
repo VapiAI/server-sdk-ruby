@@ -8,6 +8,7 @@ require_relative "assistant_overrides_client_messages_item"
 require_relative "assistant_overrides_server_messages_item"
 require_relative "assistant_overrides_background_sound"
 require_relative "transport_configuration_twilio"
+require_relative "assistant_overrides_credentials_item"
 require_relative "twilio_voicemail_detection"
 require_relative "analysis_plan"
 require_relative "artifact_plan"
@@ -79,6 +80,11 @@ module Vapi
     #  different transport providers. For a call, only the configuration matching the
     #  call transport provider is used.
     attr_reader :transport_configurations
+    # @return [Array<Vapi::AssistantOverridesCredentialsItem>] These are dynamic credentials that will be used for the assistant calls. By
+    #  default, all the credentials are available for use in the call but you can
+    #  supplement an additional credentials using this. Dynamic credentials override
+    #  existing credentials.
+    attr_reader :credentials
     # @return [Hash{String => Object}] These are values that will be used to replace the template variables in the
     #  assistant messages and other text-based fields.
     #  This uses LiquidJS syntax. https://liquidjs.com/tutorials/intro-to-liquid.html
@@ -216,6 +222,10 @@ module Vapi
     #  assistant's calls, like Twilio. You can store multiple configurations for
     #  different transport providers. For a call, only the configuration matching the
     #  call transport provider is used.
+    # @param credentials [Array<Vapi::AssistantOverridesCredentialsItem>] These are dynamic credentials that will be used for the assistant calls. By
+    #  default, all the credentials are available for use in the call but you can
+    #  supplement an additional credentials using this. Dynamic credentials override
+    #  existing credentials.
     # @param variable_values [Hash{String => Object}] These are values that will be used to replace the template variables in the
     #  assistant messages and other text-based fields.
     #  This uses LiquidJS syntax. https://liquidjs.com/tutorials/intro-to-liquid.html
@@ -289,7 +299,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AssistantOverrides]
     def initialize(transcriber: OMIT, model: OMIT, voice: OMIT, first_message: OMIT, first_message_mode: OMIT,
-                   hipaa_enabled: OMIT, client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, variable_values: OMIT, name: OMIT, voicemail_detection: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, metadata: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, additional_properties: nil)
+                   hipaa_enabled: OMIT, client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, credentials: OMIT, variable_values: OMIT, name: OMIT, voicemail_detection: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, metadata: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, additional_properties: nil)
       @transcriber = transcriber if transcriber != OMIT
       @model = model if model != OMIT
       @voice = voice if voice != OMIT
@@ -304,6 +314,7 @@ module Vapi
       @background_denoising_enabled = background_denoising_enabled if background_denoising_enabled != OMIT
       @model_output_in_messages_enabled = model_output_in_messages_enabled if model_output_in_messages_enabled != OMIT
       @transport_configurations = transport_configurations if transport_configurations != OMIT
+      @credentials = credentials if credentials != OMIT
       @variable_values = variable_values if variable_values != OMIT
       @name = name if name != OMIT
       @voicemail_detection = voicemail_detection if voicemail_detection != OMIT
@@ -335,6 +346,7 @@ module Vapi
         "backgroundDenoisingEnabled": background_denoising_enabled,
         "modelOutputInMessagesEnabled": model_output_in_messages_enabled,
         "transportConfigurations": transport_configurations,
+        "credentials": credentials,
         "variableValues": variable_values,
         "name": name,
         "voicemailDetection": voicemail_detection,
@@ -393,6 +405,10 @@ module Vapi
       transport_configurations = parsed_json["transportConfigurations"]&.map do |item|
         item = item.to_json
         Vapi::TransportConfigurationTwilio.from_json(json_object: item)
+      end
+      credentials = parsed_json["credentials"]&.map do |item|
+        item = item.to_json
+        Vapi::AssistantOverridesCredentialsItem.from_json(json_object: item)
       end
       variable_values = parsed_json["variableValues"]
       name = parsed_json["name"]
@@ -464,6 +480,7 @@ module Vapi
         background_denoising_enabled: background_denoising_enabled,
         model_output_in_messages_enabled: model_output_in_messages_enabled,
         transport_configurations: transport_configurations,
+        credentials: credentials,
         variable_values: variable_values,
         name: name,
         voicemail_detection: voicemail_detection,
@@ -511,6 +528,7 @@ module Vapi
       obj.background_denoising_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.background_denoising_enabled is not the expected type, validation failed.")
       obj.model_output_in_messages_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.model_output_in_messages_enabled is not the expected type, validation failed.")
       obj.transport_configurations&.is_a?(Array) != false || raise("Passed value for field obj.transport_configurations is not the expected type, validation failed.")
+      obj.credentials&.is_a?(Array) != false || raise("Passed value for field obj.credentials is not the expected type, validation failed.")
       obj.variable_values&.is_a?(Hash) != false || raise("Passed value for field obj.variable_values is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.voicemail_detection.nil? || Vapi::TwilioVoicemailDetection.validate_raw(obj: obj.voicemail_detection)

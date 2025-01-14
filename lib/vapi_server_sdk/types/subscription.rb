@@ -54,7 +54,7 @@ module Vapi
     # @return [String] This is the Stripe fingerprint of the payment method (card). It allows us
     #  to detect users who try to abuse our system through multiple sign-ups.
     attr_reader :stripe_payment_method_fingerprint
-    # @return [String] This is the stripe customer's email.
+    # @return [String] This is the customer's email on Stripe.
     attr_reader :stripe_customer_email
     # @return [String] This is the email of the referrer for the subscription.
     attr_reader :referred_by_email
@@ -117,7 +117,7 @@ module Vapi
     # @param hipaa_common_paper_agreement_id [String] This is the ID for the Common Paper agreement outlining the HIPAA contract.
     # @param stripe_payment_method_fingerprint [String] This is the Stripe fingerprint of the payment method (card). It allows us
     #  to detect users who try to abuse our system through multiple sign-ups.
-    # @param stripe_customer_email [String] This is the stripe customer's email.
+    # @param stripe_customer_email [String] This is the customer's email on Stripe.
     # @param referred_by_email [String] This is the email of the referrer for the subscription.
     # @param auto_reload_plan [Vapi::AutoReloadPlan] This is the auto reload plan configured for the subscription.
     # @param minutes_included [Float] The number of minutes included in the subscription. Enterprise only.

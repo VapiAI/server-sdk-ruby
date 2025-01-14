@@ -14,7 +14,7 @@ module Vapi
     NORTHCENTRALUS = "northcentralus"
     NORWAY = "norway"
     SOUTHCENTRALUS = "southcentralus"
-    SWEDEN = "sweden"
+    SWEDENCENTRAL = "swedencentral"
     SWITZERLAND = "switzerland"
     UK = "uk"
     WESTUS = "westus"

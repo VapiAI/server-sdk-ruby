@@ -8,8 +8,6 @@ require "json"
 
 module Vapi
   class CreateByoSipTrunkCredentialDto
-    # @return [String] This can be used to bring your own SIP trunks or to connect to a Carrier.
-    attr_reader :provider
     # @return [Array<Vapi::SipTrunkGateway>] This is the list of SIP trunk's gateways.
     attr_reader :gateways
     # @return [Vapi::SipTrunkOutboundAuthenticationPlan] This can be used to configure the outbound authentication if required by the SIP
@@ -41,7 +39,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String] This can be used to bring your own SIP trunks or to connect to a Carrier.
     # @param gateways [Array<Vapi::SipTrunkGateway>] This is the list of SIP trunk's gateways.
     # @param outbound_authentication_plan [Vapi::SipTrunkOutboundAuthenticationPlan] This can be used to configure the outbound authentication if required by the SIP
     #  trunk.
@@ -60,9 +57,8 @@ module Vapi
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateByoSipTrunkCredentialDto]
-    def initialize(gateways:, provider: OMIT, outbound_authentication_plan: OMIT, outbound_leading_plus_enabled: OMIT,
+    def initialize(gateways:, outbound_authentication_plan: OMIT, outbound_leading_plus_enabled: OMIT,
                    tech_prefix: OMIT, sip_diversion_header: OMIT, sbc_configuration: OMIT, name: OMIT, additional_properties: nil)
-      @provider = provider if provider != OMIT
       @gateways = gateways
       @outbound_authentication_plan = outbound_authentication_plan if outbound_authentication_plan != OMIT
       @outbound_leading_plus_enabled = outbound_leading_plus_enabled if outbound_leading_plus_enabled != OMIT
@@ -72,7 +68,6 @@ module Vapi
       @name = name if name != OMIT
       @additional_properties = additional_properties
       @_field_set = {
-        "provider": provider,
         "gateways": gateways,
         "outboundAuthenticationPlan": outbound_authentication_plan,
         "outboundLeadingPlusEnabled": outbound_leading_plus_enabled,
@@ -92,7 +87,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      provider = parsed_json["provider"]
       gateways = parsed_json["gateways"]&.map do |item|
         item = item.to_json
         Vapi::SipTrunkGateway.from_json(json_object: item)
@@ -114,7 +108,6 @@ module Vapi
       end
       name = parsed_json["name"]
       new(
-        provider: provider,
         gateways: gateways,
         outbound_authentication_plan: outbound_authentication_plan,
         outbound_leading_plus_enabled: outbound_leading_plus_enabled,
@@ -140,7 +133,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider&.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.gateways.is_a?(Array) != false || raise("Passed value for field obj.gateways is not the expected type, validation failed.")
       obj.outbound_authentication_plan.nil? || Vapi::SipTrunkOutboundAuthenticationPlan.validate_raw(obj: obj.outbound_authentication_plan)
       obj.outbound_leading_plus_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.outbound_leading_plus_enabled is not the expected type, validation failed.")

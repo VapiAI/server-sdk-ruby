@@ -8,7 +8,7 @@ require_relative "types/phone_numbers_create_request"
 require_relative "types/phone_numbers_create_response"
 require_relative "types/phone_numbers_get_response"
 require_relative "types/phone_numbers_delete_response"
-require_relative "types/update_phone_number_dto_fallback_destination"
+require_relative "types/phone_numbers_update_request"
 require_relative "types/phone_numbers_update_response"
 require "async"
 
@@ -168,29 +168,7 @@ module Vapi
     end
 
     # @param id [String]
-    # @param fallback_destination [Vapi::PhoneNumbers::UpdatePhoneNumberDtoFallbackDestination] This is the fallback destination an inbound call will be transferred to if:
-    #  1. `assistantId` is not set
-    #  2. `squadId` is not set
-    #  3. and, `assistant-request` message to the `serverUrl` fails
-    #  If this is not set and above conditions are met, the inbound call is hung up
-    #  with an error message.
-    # @param name [String] This is the name of the phone number. This is just for your own reference.
-    # @param assistant_id [String] This is the assistant that will be used for incoming calls to this phone number.
-    #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
-    #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
-    #  shape of the message and response that is expected.
-    # @param squad_id [String] This is the squad that will be used for incoming calls to this phone number.
-    #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
-    #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
-    #  shape of the message and response that is expected.
-    # @param server_url [String] This is the server URL where messages will be sent for calls on this number.
-    #  This includes the `assistant-request` message.
-    #  You can see the shape of the messages sent in `ServerMessage`.
-    #  This overrides the `org.serverUrl`. Order of precedence: tool.server.url >
-    #  assistant.serverUrl > phoneNumber.serverUrl > org.serverUrl.
-    # @param server_url_secret [String] This is the secret Vapi will send with every message to your server. It's sent
-    #  as a header called x-vapi-secret.
-    #  Same precedence logic as serverUrl.
+    # @param request [Vapi::PhoneNumbers::PhoneNumbersUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersUpdateResponse]
     # @example
@@ -200,8 +178,7 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.phone_numbers.update(id: "id")
-    def update(id:, fallback_destination: nil, name: nil, assistant_id: nil, squad_id: nil, server_url: nil,
-               server_url_secret: nil, request_options: nil)
+    def update(id:, request:, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -213,15 +190,7 @@ module Vapi
         unless request_options.nil? || request_options&.additional_query_parameters.nil?
           req.params = { **(request_options&.additional_query_parameters || {}) }.compact
         end
-        req.body = {
-          **(request_options&.additional_body_parameters || {}),
-          fallbackDestination: fallback_destination,
-          name: name,
-          assistantId: assistant_id,
-          squadId: squad_id,
-          serverUrl: server_url,
-          serverUrlSecret: server_url_secret
-        }.compact
+        req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/phone-number/#{id}"
       end
       Vapi::PhoneNumbers::PhoneNumbersUpdateResponse.from_json(json_object: response.body)
@@ -391,29 +360,7 @@ module Vapi
     end
 
     # @param id [String]
-    # @param fallback_destination [Vapi::PhoneNumbers::UpdatePhoneNumberDtoFallbackDestination] This is the fallback destination an inbound call will be transferred to if:
-    #  1. `assistantId` is not set
-    #  2. `squadId` is not set
-    #  3. and, `assistant-request` message to the `serverUrl` fails
-    #  If this is not set and above conditions are met, the inbound call is hung up
-    #  with an error message.
-    # @param name [String] This is the name of the phone number. This is just for your own reference.
-    # @param assistant_id [String] This is the assistant that will be used for incoming calls to this phone number.
-    #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
-    #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
-    #  shape of the message and response that is expected.
-    # @param squad_id [String] This is the squad that will be used for incoming calls to this phone number.
-    #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
-    #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
-    #  shape of the message and response that is expected.
-    # @param server_url [String] This is the server URL where messages will be sent for calls on this number.
-    #  This includes the `assistant-request` message.
-    #  You can see the shape of the messages sent in `ServerMessage`.
-    #  This overrides the `org.serverUrl`. Order of precedence: tool.server.url >
-    #  assistant.serverUrl > phoneNumber.serverUrl > org.serverUrl.
-    # @param server_url_secret [String] This is the secret Vapi will send with every message to your server. It's sent
-    #  as a header called x-vapi-secret.
-    #  Same precedence logic as serverUrl.
+    # @param request [Vapi::PhoneNumbers::PhoneNumbersUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersUpdateResponse]
     # @example
@@ -423,8 +370,7 @@ module Vapi
     #    token: "YOUR_AUTH_TOKEN"
     #  )
     #  api.phone_numbers.update(id: "id")
-    def update(id:, fallback_destination: nil, name: nil, assistant_id: nil, squad_id: nil, server_url: nil,
-               server_url_secret: nil, request_options: nil)
+    def update(id:, request:, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -437,15 +383,7 @@ module Vapi
           unless request_options.nil? || request_options&.additional_query_parameters.nil?
             req.params = { **(request_options&.additional_query_parameters || {}) }.compact
           end
-          req.body = {
-            **(request_options&.additional_body_parameters || {}),
-            fallbackDestination: fallback_destination,
-            name: name,
-            assistantId: assistant_id,
-            squadId: squad_id,
-            serverUrl: server_url,
-            serverUrlSecret: server_url_secret
-          }.compact
+          req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/phone-number/#{id}"
         end
         Vapi::PhoneNumbers::PhoneNumbersUpdateResponse.from_json(json_object: response.body)

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "update_org_dto_channel"
+require_relative "server"
 require "ostruct"
 require "json"
 
@@ -24,14 +25,13 @@ module Vapi
     # @return [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
     #  contact us at support@vapi.ai.
     attr_reader :billing_limit
-    # @return [String] This is the URL Vapi will communicate with via HTTP GET and POST Requests. This
-    #  is used for retrieving context, function calling, and end-of-call reports.
-    #  All requests will be sent with the call object among other things relevant to
-    #  that message. You can find more details in the Server URL documentation.
-    attr_reader :server_url
-    # @return [String] This is the secret you can set that Vapi will send with every request to your
-    #  server. Will be sent as a header called x-vapi-secret.
-    attr_reader :server_url_secret
+    # @return [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
+    #  with their shape in ServerMessage schema.
+    #  The order of precedence is:
+    #  1. assistant.server
+    #  2. phoneNumber.server
+    #  3. org.server
+    attr_reader :server
     # @return [Float] This is the concurrency limit for the org. This is the maximum number of calls
     #  that can be active at any given time. To go beyond 10, please contact us at
     #  support@vapi.ai.
@@ -57,26 +57,25 @@ module Vapi
     #  will be directed.
     # @param billing_limit [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
     #  contact us at support@vapi.ai.
-    # @param server_url [String] This is the URL Vapi will communicate with via HTTP GET and POST Requests. This
-    #  is used for retrieving context, function calling, and end-of-call reports.
-    #  All requests will be sent with the call object among other things relevant to
-    #  that message. You can find more details in the Server URL documentation.
-    # @param server_url_secret [String] This is the secret you can set that Vapi will send with every request to your
-    #  server. Will be sent as a header called x-vapi-secret.
+    # @param server [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
+    #  with their shape in ServerMessage schema.
+    #  The order of precedence is:
+    #  1. assistant.server
+    #  2. phoneNumber.server
+    #  3. org.server
     # @param concurrency_limit [Float] This is the concurrency limit for the org. This is the maximum number of calls
     #  that can be active at any given time. To go beyond 10, please contact us at
     #  support@vapi.ai.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateOrgDto]
     def initialize(hipaa_enabled: OMIT, subscription_id: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT,
-                   server_url: OMIT, server_url_secret: OMIT, concurrency_limit: OMIT, additional_properties: nil)
+                   server: OMIT, concurrency_limit: OMIT, additional_properties: nil)
       @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
       @subscription_id = subscription_id if subscription_id != OMIT
       @name = name if name != OMIT
       @channel = channel if channel != OMIT
       @billing_limit = billing_limit if billing_limit != OMIT
-      @server_url = server_url if server_url != OMIT
-      @server_url_secret = server_url_secret if server_url_secret != OMIT
+      @server = server if server != OMIT
       @concurrency_limit = concurrency_limit if concurrency_limit != OMIT
       @additional_properties = additional_properties
       @_field_set = {
@@ -85,8 +84,7 @@ module Vapi
         "name": name,
         "channel": channel,
         "billingLimit": billing_limit,
-        "serverUrl": server_url,
-        "serverUrlSecret": server_url_secret,
+        "server": server,
         "concurrencyLimit": concurrency_limit
       }.reject do |_k, v|
         v == OMIT
@@ -105,8 +103,12 @@ module Vapi
       name = parsed_json["name"]
       channel = parsed_json["channel"]
       billing_limit = parsed_json["billingLimit"]
-      server_url = parsed_json["serverUrl"]
-      server_url_secret = parsed_json["serverUrlSecret"]
+      if parsed_json["server"].nil?
+        server = nil
+      else
+        server = parsed_json["server"].to_json
+        server = Vapi::Server.from_json(json_object: server)
+      end
       concurrency_limit = parsed_json["concurrencyLimit"]
       new(
         hipaa_enabled: hipaa_enabled,
@@ -114,8 +116,7 @@ module Vapi
         name: name,
         channel: channel,
         billing_limit: billing_limit,
-        server_url: server_url,
-        server_url_secret: server_url_secret,
+        server: server,
         concurrency_limit: concurrency_limit,
         additional_properties: struct
       )
@@ -140,8 +141,7 @@ module Vapi
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.channel&.is_a?(Vapi::UpdateOrgDtoChannel) != false || raise("Passed value for field obj.channel is not the expected type, validation failed.")
       obj.billing_limit&.is_a?(Float) != false || raise("Passed value for field obj.billing_limit is not the expected type, validation failed.")
-      obj.server_url&.is_a?(String) != false || raise("Passed value for field obj.server_url is not the expected type, validation failed.")
-      obj.server_url_secret&.is_a?(String) != false || raise("Passed value for field obj.server_url_secret is not the expected type, validation failed.")
+      obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
       obj.concurrency_limit&.is_a?(Float) != false || raise("Passed value for field obj.concurrency_limit is not the expected type, validation failed.")
     end
   end
