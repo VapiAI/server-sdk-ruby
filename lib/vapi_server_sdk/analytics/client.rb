@@ -16,13 +16,6 @@ module Vapi
 
     # @param request_options [Vapi::RequestOptions]
     # @return [Void]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.analytics.get
     def get(request_options: nil)
       @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -55,13 +48,6 @@ module Vapi
 
     # @param request_options [Vapi::RequestOptions]
     # @return [Void]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.analytics.get
     def get(request_options: nil)
       Async do
         @request_client.conn.post do |req|

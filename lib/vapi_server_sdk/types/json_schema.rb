@@ -31,6 +31,9 @@ module Vapi
     # @return [Array<String>] This is a list of properties that are required.
     #  This only makes sense if the type is "object".
     attr_reader :required
+    # @return [Array<String>] This array specifies the allowed values that can be used to restrict the output
+    #  of the model.
+    attr_reader :enum
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -59,21 +62,26 @@ module Vapi
     # @param description [String] This is the description to help the model understand what it needs to output.
     # @param required [Array<String>] This is a list of properties that are required.
     #  This only makes sense if the type is "object".
+    # @param enum [Array<String>] This array specifies the allowed values that can be used to restrict the output
+    #  of the model.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::JsonSchema]
-    def initialize(type:, items: OMIT, properties: OMIT, description: OMIT, required: OMIT, additional_properties: nil)
+    def initialize(type:, items: OMIT, properties: OMIT, description: OMIT, required: OMIT, enum: OMIT,
+                   additional_properties: nil)
       @type = type
       @items = items if items != OMIT
       @properties = properties if properties != OMIT
       @description = description if description != OMIT
       @required = required if required != OMIT
+      @enum = enum if enum != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "type": type,
         "items": items,
         "properties": properties,
         "description": description,
-        "required": required
+        "required": required,
+        "enum": enum
       }.reject do |_k, v|
         v == OMIT
       end
@@ -91,12 +99,14 @@ module Vapi
       properties = parsed_json["properties"]
       description = parsed_json["description"]
       required = parsed_json["required"]
+      enum = parsed_json["enum"]
       new(
         type: type,
         items: items,
         properties: properties,
         description: description,
         required: required,
+        enum: enum,
         additional_properties: struct
       )
     end
@@ -120,6 +130,7 @@ module Vapi
       obj.properties&.is_a?(Hash) != false || raise("Passed value for field obj.properties is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")
       obj.required&.is_a?(Array) != false || raise("Passed value for field obj.required is not the expected type, validation failed.")
+      obj.enum&.is_a?(Array) != false || raise("Passed value for field obj.enum is not the expected type, validation failed.")
     end
   end
 end

@@ -19,13 +19,6 @@ module Vapi
 
     # @param request_options [Vapi::RequestOptions]
     # @return [Array<Vapi::File>]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.list
     def list(request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -53,13 +46,6 @@ module Vapi
     # @param file [String, IO]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::File]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.create(file: my_file.txt)
     def create(file:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -84,13 +70,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::File]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.get(id: "id")
     def get(id:, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -114,13 +93,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::File]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.delete(id: "id")
     def delete(id:, request_options: nil)
       response = @request_client.conn.delete do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -145,13 +117,6 @@ module Vapi
     # @param name [String] This is the name of the file. This is just for your own reference.
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::File]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.update(id: "id")
     def update(id:, name: nil, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -183,13 +148,6 @@ module Vapi
 
     # @param request_options [Vapi::RequestOptions]
     # @return [Array<Vapi::File>]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.list
     def list(request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
@@ -219,13 +177,6 @@ module Vapi
     # @param file [String, IO]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::File]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.create(file: my_file.txt)
     def create(file:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -252,13 +203,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::File]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.get(id: "id")
     def get(id:, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
@@ -284,13 +228,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::File]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.delete(id: "id")
     def delete(id:, request_options: nil)
       Async do
         response = @request_client.conn.delete do |req|
@@ -317,13 +254,6 @@ module Vapi
     # @param name [String] This is the name of the file. This is just for your own reference.
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::File]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.files.update(id: "id")
     def update(id:, name: nil, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|

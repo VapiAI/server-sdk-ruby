@@ -5,6 +5,7 @@ require_relative "types/logs_get_request_type"
 require_relative "types/logs_get_request_sort_order"
 require "date"
 require_relative "../types/logs_paginated_response"
+require_relative "types/logging_controller_logs_delete_query_request_type"
 require "async"
 
 module Vapi
@@ -18,7 +19,6 @@ module Vapi
       @request_client = request_client
     end
 
-    # @param org_id [String] This is the unique identifier for the org that this log belongs to.
     # @param type [Vapi::Logs::LogsGetRequestType] This is the type of the log.
     # @param webhook_type [String] This is the type of the webhook, given the log is from a webhook.
     # @param assistant_id [String] This is the ID of the assistant.
@@ -43,15 +43,8 @@ module Vapi
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::LogsPaginatedResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.logs.get
-    def get(org_id: nil, type: nil, webhook_type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
-            squad_id: nil, call_id: nil, page: nil, sort_order: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
+    def get(type: nil, webhook_type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil, squad_id: nil,
+            call_id: nil, page: nil, sort_order: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -62,7 +55,6 @@ module Vapi
         }.compact
         req.params = {
           **(request_options&.additional_query_parameters || {}),
-          "orgId": org_id,
           "type": type,
           "webhookType": webhook_type,
           "assistantId": assistant_id,
@@ -90,22 +82,15 @@ module Vapi
       Vapi::LogsPaginatedResponse.from_json(json_object: response.body)
     end
 
-    # @param org_id [String] This is the unique identifier for the org that this log belongs to.
-    # @param assistant_id [String] This is the ID of the assistant.
+    # @param type [Vapi::Logs::LoggingControllerLogsDeleteQueryRequestType] This is the type of the log.
+    # @param assistant_id [String]
     # @param phone_number_id [String] This is the ID of the phone number.
     # @param customer_id [String] This is the ID of the customer.
     # @param squad_id [String] This is the ID of the squad.
     # @param call_id [String] This is the ID of the call.
     # @param request_options [Vapi::RequestOptions]
     # @return [Void]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.logs.logging_controller_logs_delete_query
-    def logging_controller_logs_delete_query(org_id: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
+    def logging_controller_logs_delete_query(type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
                                              squad_id: nil, call_id: nil, request_options: nil)
       @request_client.conn.delete do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -117,7 +102,7 @@ module Vapi
         }.compact
         req.params = {
           **(request_options&.additional_query_parameters || {}),
-          "orgId": org_id,
+          "type": type,
           "assistantId": assistant_id,
           "phoneNumberId": phone_number_id,
           "customerId": customer_id,
@@ -142,7 +127,6 @@ module Vapi
       @request_client = request_client
     end
 
-    # @param org_id [String] This is the unique identifier for the org that this log belongs to.
     # @param type [Vapi::Logs::LogsGetRequestType] This is the type of the log.
     # @param webhook_type [String] This is the type of the webhook, given the log is from a webhook.
     # @param assistant_id [String] This is the ID of the assistant.
@@ -167,15 +151,8 @@ module Vapi
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::LogsPaginatedResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.logs.get
-    def get(org_id: nil, type: nil, webhook_type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
-            squad_id: nil, call_id: nil, page: nil, sort_order: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
+    def get(type: nil, webhook_type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil, squad_id: nil,
+            call_id: nil, page: nil, sort_order: nil, limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil, updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -187,7 +164,6 @@ module Vapi
           }.compact
           req.params = {
             **(request_options&.additional_query_parameters || {}),
-            "orgId": org_id,
             "type": type,
             "webhookType": webhook_type,
             "assistantId": assistant_id,
@@ -216,22 +192,15 @@ module Vapi
       end
     end
 
-    # @param org_id [String] This is the unique identifier for the org that this log belongs to.
-    # @param assistant_id [String] This is the ID of the assistant.
+    # @param type [Vapi::Logs::LoggingControllerLogsDeleteQueryRequestType] This is the type of the log.
+    # @param assistant_id [String]
     # @param phone_number_id [String] This is the ID of the phone number.
     # @param customer_id [String] This is the ID of the customer.
     # @param squad_id [String] This is the ID of the squad.
     # @param call_id [String] This is the ID of the call.
     # @param request_options [Vapi::RequestOptions]
     # @return [Void]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.logs.logging_controller_logs_delete_query
-    def logging_controller_logs_delete_query(org_id: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
+    def logging_controller_logs_delete_query(type: nil, assistant_id: nil, phone_number_id: nil, customer_id: nil,
                                              squad_id: nil, call_id: nil, request_options: nil)
       Async do
         @request_client.conn.delete do |req|
@@ -244,7 +213,7 @@ module Vapi
           }.compact
           req.params = {
             **(request_options&.additional_query_parameters || {}),
-            "orgId": org_id,
+            "type": type,
             "assistantId": assistant_id,
             "phoneNumberId": phone_number_id,
             "customerId": customer_id,

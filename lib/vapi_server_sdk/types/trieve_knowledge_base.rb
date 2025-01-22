@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "trieve_knowledge_base_vector_store_search_plan"
-require_relative "trieve_knowledge_base_vector_store_create_plan"
+require_relative "trieve_knowledge_base_search_plan"
+require_relative "trieve_knowledge_base_create_plan"
 require "ostruct"
 require "json"
 
@@ -9,17 +9,15 @@ module Vapi
   class TrieveKnowledgeBase
     # @return [String] This is the name of the knowledge base.
     attr_reader :name
-    # @return [Vapi::TrieveKnowledgeBaseVectorStoreSearchPlan] This is the plan on how to search the vector store while a call is going on.
-    attr_reader :vector_store_search_plan
-    # @return [Vapi::TrieveKnowledgeBaseVectorStoreCreatePlan] This is the plan if you want us to create a new vector store on your behalf. To
-    #  use an existing vector store from your account, use `vectoreStoreProviderId`
-    attr_reader :vector_store_create_plan
-    # @return [String] This is an vector store that you already have on your account with the provider.
-    #  To create a new vector store, use vectorStoreCreatePlan.
-    #  Usage:
-    #  - To bring your own vector store from Trieve, go to https://trieve.ai
-    #  - Create a dataset, and use the datasetId here.
-    attr_reader :vector_store_provider_id
+    # @return [Vapi::TrieveKnowledgeBaseSearchPlan] This is the searching plan used when searching for relevant chunks from the
+    #  vector store.
+    #  You should configure this if you're running into these issues:
+    #  - Too much unnecessary context is being fed as knowledge base context.
+    #  - Not enough relevant context is being fed as knowledge base context.
+    attr_reader :search_plan
+    # @return [Vapi::TrieveKnowledgeBaseCreatePlan] This is the plan if you want us to create/import a new vector store using
+    #  Trieve.
+    attr_reader :create_plan
     # @return [String] This is the id of the knowledge base.
     attr_reader :id
     # @return [String] This is the org id of the knowledge base.
@@ -33,32 +31,28 @@ module Vapi
     OMIT = Object.new
 
     # @param name [String] This is the name of the knowledge base.
-    # @param vector_store_search_plan [Vapi::TrieveKnowledgeBaseVectorStoreSearchPlan] This is the plan on how to search the vector store while a call is going on.
-    # @param vector_store_create_plan [Vapi::TrieveKnowledgeBaseVectorStoreCreatePlan] This is the plan if you want us to create a new vector store on your behalf. To
-    #  use an existing vector store from your account, use `vectoreStoreProviderId`
-    # @param vector_store_provider_id [String] This is an vector store that you already have on your account with the provider.
-    #  To create a new vector store, use vectorStoreCreatePlan.
-    #  Usage:
-    #  - To bring your own vector store from Trieve, go to https://trieve.ai
-    #  - Create a dataset, and use the datasetId here.
+    # @param search_plan [Vapi::TrieveKnowledgeBaseSearchPlan] This is the searching plan used when searching for relevant chunks from the
+    #  vector store.
+    #  You should configure this if you're running into these issues:
+    #  - Too much unnecessary context is being fed as knowledge base context.
+    #  - Not enough relevant context is being fed as knowledge base context.
+    # @param create_plan [Vapi::TrieveKnowledgeBaseCreatePlan] This is the plan if you want us to create/import a new vector store using
+    #  Trieve.
     # @param id [String] This is the id of the knowledge base.
     # @param org_id [String] This is the org id of the knowledge base.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TrieveKnowledgeBase]
-    def initialize(vector_store_search_plan:, id:, org_id:, name: OMIT, vector_store_create_plan: OMIT,
-                   vector_store_provider_id: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, name: OMIT, search_plan: OMIT, create_plan: OMIT, additional_properties: nil)
       @name = name if name != OMIT
-      @vector_store_search_plan = vector_store_search_plan
-      @vector_store_create_plan = vector_store_create_plan if vector_store_create_plan != OMIT
-      @vector_store_provider_id = vector_store_provider_id if vector_store_provider_id != OMIT
+      @search_plan = search_plan if search_plan != OMIT
+      @create_plan = create_plan if create_plan != OMIT
       @id = id
       @org_id = org_id
       @additional_properties = additional_properties
       @_field_set = {
         "name": name,
-        "vectorStoreSearchPlan": vector_store_search_plan,
-        "vectorStoreCreatePlan": vector_store_create_plan,
-        "vectorStoreProviderId": vector_store_provider_id,
+        "searchPlan": search_plan,
+        "createPlan": create_plan,
         "id": id,
         "orgId": org_id
       }.reject do |_k, v|
@@ -74,26 +68,24 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       name = parsed_json["name"]
-      if parsed_json["vectorStoreSearchPlan"].nil?
-        vector_store_search_plan = nil
+      if parsed_json["searchPlan"].nil?
+        search_plan = nil
       else
-        vector_store_search_plan = parsed_json["vectorStoreSearchPlan"].to_json
-        vector_store_search_plan = Vapi::TrieveKnowledgeBaseVectorStoreSearchPlan.from_json(json_object: vector_store_search_plan)
+        search_plan = parsed_json["searchPlan"].to_json
+        search_plan = Vapi::TrieveKnowledgeBaseSearchPlan.from_json(json_object: search_plan)
       end
-      if parsed_json["vectorStoreCreatePlan"].nil?
-        vector_store_create_plan = nil
+      if parsed_json["createPlan"].nil?
+        create_plan = nil
       else
-        vector_store_create_plan = parsed_json["vectorStoreCreatePlan"].to_json
-        vector_store_create_plan = Vapi::TrieveKnowledgeBaseVectorStoreCreatePlan.from_json(json_object: vector_store_create_plan)
+        create_plan = parsed_json["createPlan"].to_json
+        create_plan = Vapi::TrieveKnowledgeBaseCreatePlan.from_json(json_object: create_plan)
       end
-      vector_store_provider_id = parsed_json["vectorStoreProviderId"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       new(
         name: name,
-        vector_store_search_plan: vector_store_search_plan,
-        vector_store_create_plan: vector_store_create_plan,
-        vector_store_provider_id: vector_store_provider_id,
+        search_plan: search_plan,
+        create_plan: create_plan,
         id: id,
         org_id: org_id,
         additional_properties: struct
@@ -115,9 +107,8 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
-      Vapi::TrieveKnowledgeBaseVectorStoreSearchPlan.validate_raw(obj: obj.vector_store_search_plan)
-      obj.vector_store_create_plan.nil? || Vapi::TrieveKnowledgeBaseVectorStoreCreatePlan.validate_raw(obj: obj.vector_store_create_plan)
-      obj.vector_store_provider_id&.is_a?(String) != false || raise("Passed value for field obj.vector_store_provider_id is not the expected type, validation failed.")
+      obj.search_plan.nil? || Vapi::TrieveKnowledgeBaseSearchPlan.validate_raw(obj: obj.search_plan)
+      obj.create_plan.nil? || Vapi::TrieveKnowledgeBaseCreatePlan.validate_raw(obj: obj.create_plan)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
     end

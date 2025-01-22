@@ -4,6 +4,7 @@ require "json"
 require_relative "client_inbound_message_add_message"
 require_relative "client_inbound_message_control"
 require_relative "client_inbound_message_say"
+require_relative "client_inbound_message_end_call"
 require_relative "client_inbound_message_transfer"
 
 module Vapi
@@ -39,6 +40,8 @@ module Vapi
                  Vapi::ClientInboundMessageControl.from_json(json_object: json_object)
                when "say"
                  Vapi::ClientInboundMessageSay.from_json(json_object: json_object)
+               when "end-call"
+                 Vapi::ClientInboundMessageEndCall.from_json(json_object: json_object)
                when "transfer"
                  Vapi::ClientInboundMessageTransfer.from_json(json_object: json_object)
                else
@@ -57,6 +60,8 @@ module Vapi
       when "control"
         { **@member.to_json, type: @discriminant }.to_json
       when "say"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "end-call"
         { **@member.to_json, type: @discriminant }.to_json
       when "transfer"
         { **@member.to_json, type: @discriminant }.to_json
@@ -80,6 +85,8 @@ module Vapi
         Vapi::ClientInboundMessageControl.validate_raw(obj: obj)
       when "say"
         Vapi::ClientInboundMessageSay.validate_raw(obj: obj)
+      when "end-call"
+        Vapi::ClientInboundMessageEndCall.validate_raw(obj: obj)
       when "transfer"
         Vapi::ClientInboundMessageTransfer.validate_raw(obj: obj)
       else
@@ -111,6 +118,12 @@ module Vapi
     # @return [Vapi::ClientInboundMessageMessage]
     def self.say(member:)
       new(member: member, discriminant: "say")
+    end
+
+    # @param member [Vapi::ClientInboundMessageEndCall]
+    # @return [Vapi::ClientInboundMessageMessage]
+    def self.end_call(member:)
+      new(member: member, discriminant: "end-call")
     end
 
     # @param member [Vapi::ClientInboundMessageTransfer]

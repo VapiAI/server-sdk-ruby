@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-require_relative "make_tool_with_tool_call_messages_item"
+require_relative "computer_tool_with_tool_call_messages_item"
 require_relative "tool_call"
-require_relative "make_tool_metadata"
 require_relative "open_ai_function"
 require_relative "server"
 require "ostruct"
 require "json"
 
 module Vapi
-  class MakeToolWithToolCall
+  class ComputerToolWithToolCall
     # @return [Boolean] This determines if the tool is async.
     #  If async, the assistant will move forward without waiting for your server to
     #  respond. This is useful if you just want to trigger something on your server.
@@ -17,15 +16,23 @@ module Vapi
     #  want assistant to respond with the result from your server.
     #  Defaults to synchronous (`false`).
     attr_reader :async
-    # @return [Array<Vapi::MakeToolWithToolCallMessagesItem>] These are the messages that will be spoken to the user as the tool is running.
+    # @return [Array<Vapi::ComputerToolWithToolCallMessagesItem>] These are the messages that will be spoken to the user as the tool is running.
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
     attr_reader :messages
+    # @return [String] The sub type of tool.
+    attr_reader :sub_type
     # @return [Vapi::ToolCall]
     attr_reader :tool_call
-    # @return [Vapi::MakeToolMetadata]
-    attr_reader :metadata
+    # @return [String] The name of the tool, fixed to 'computer'
+    attr_reader :name
+    # @return [Float] The display width in pixels
+    attr_reader :display_width_px
+    # @return [Float] The display height in pixels
+    attr_reader :display_height_px
+    # @return [Float] Optional display number
+    attr_reader :display_number
     # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
     #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
     #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
@@ -57,12 +64,16 @@ module Vapi
     #  If sync, the assistant will wait for your server to respond. This is useful if
     #  want assistant to respond with the result from your server.
     #  Defaults to synchronous (`false`).
-    # @param messages [Array<Vapi::MakeToolWithToolCallMessagesItem>] These are the messages that will be spoken to the user as the tool is running.
+    # @param messages [Array<Vapi::ComputerToolWithToolCallMessagesItem>] These are the messages that will be spoken to the user as the tool is running.
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
+    # @param sub_type [String] The sub type of tool.
     # @param tool_call [Vapi::ToolCall]
-    # @param metadata [Vapi::MakeToolMetadata]
+    # @param name [String] The name of the tool, fixed to 'computer'
+    # @param display_width_px [Float] The display width in pixels
+    # @param display_height_px [Float] The display height in pixels
+    # @param display_number [Float] Optional display number
     # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
     #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
     #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
@@ -79,21 +90,29 @@ module Vapi
     #  precedence: highest tool.server.url, then assistant.serverUrl, then
     #  phoneNumber.serverUrl, then org.serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::MakeToolWithToolCall]
-    def initialize(tool_call:, metadata:, async: OMIT, messages: OMIT, function: OMIT, server: OMIT,
-                   additional_properties: nil)
+    # @return [Vapi::ComputerToolWithToolCall]
+    def initialize(sub_type:, tool_call:, name:, display_width_px:, display_height_px:, async: OMIT, messages: OMIT,
+                   display_number: OMIT, function: OMIT, server: OMIT, additional_properties: nil)
       @async = async if async != OMIT
       @messages = messages if messages != OMIT
+      @sub_type = sub_type
       @tool_call = tool_call
-      @metadata = metadata
+      @name = name
+      @display_width_px = display_width_px
+      @display_height_px = display_height_px
+      @display_number = display_number if display_number != OMIT
       @function = function if function != OMIT
       @server = server if server != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "async": async,
         "messages": messages,
+        "subType": sub_type,
         "toolCall": tool_call,
-        "metadata": metadata,
+        "name": name,
+        "displayWidthPx": display_width_px,
+        "displayHeightPx": display_height_px,
+        "displayNumber": display_number,
         "function": function,
         "server": server
       }.reject do |_k, v|
@@ -101,30 +120,29 @@ module Vapi
       end
     end
 
-    # Deserialize a JSON object to an instance of MakeToolWithToolCall
+    # Deserialize a JSON object to an instance of ComputerToolWithToolCall
     #
     # @param json_object [String]
-    # @return [Vapi::MakeToolWithToolCall]
+    # @return [Vapi::ComputerToolWithToolCall]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       async = parsed_json["async"]
       messages = parsed_json["messages"]&.map do |item|
         item = item.to_json
-        Vapi::MakeToolWithToolCallMessagesItem.from_json(json_object: item)
+        Vapi::ComputerToolWithToolCallMessagesItem.from_json(json_object: item)
       end
+      sub_type = parsed_json["subType"]
       if parsed_json["toolCall"].nil?
         tool_call = nil
       else
         tool_call = parsed_json["toolCall"].to_json
         tool_call = Vapi::ToolCall.from_json(json_object: tool_call)
       end
-      if parsed_json["metadata"].nil?
-        metadata = nil
-      else
-        metadata = parsed_json["metadata"].to_json
-        metadata = Vapi::MakeToolMetadata.from_json(json_object: metadata)
-      end
+      name = parsed_json["name"]
+      display_width_px = parsed_json["displayWidthPx"]
+      display_height_px = parsed_json["displayHeightPx"]
+      display_number = parsed_json["displayNumber"]
       if parsed_json["function"].nil?
         function = nil
       else
@@ -140,15 +158,19 @@ module Vapi
       new(
         async: async,
         messages: messages,
+        sub_type: sub_type,
         tool_call: tool_call,
-        metadata: metadata,
+        name: name,
+        display_width_px: display_width_px,
+        display_height_px: display_height_px,
+        display_number: display_number,
         function: function,
         server: server,
         additional_properties: struct
       )
     end
 
-    # Serialize an instance of MakeToolWithToolCall to a JSON object
+    # Serialize an instance of ComputerToolWithToolCall to a JSON object
     #
     # @return [String]
     def to_json(*_args)
@@ -164,8 +186,12 @@ module Vapi
     def self.validate_raw(obj:)
       obj.async&.is_a?(Boolean) != false || raise("Passed value for field obj.async is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
+      obj.sub_type.is_a?(String) != false || raise("Passed value for field obj.sub_type is not the expected type, validation failed.")
       Vapi::ToolCall.validate_raw(obj: obj.tool_call)
-      Vapi::MakeToolMetadata.validate_raw(obj: obj.metadata)
+      obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.display_width_px.is_a?(Float) != false || raise("Passed value for field obj.display_width_px is not the expected type, validation failed.")
+      obj.display_height_px.is_a?(Float) != false || raise("Passed value for field obj.display_height_px is not the expected type, validation failed.")
+      obj.display_number&.is_a?(Float) != false || raise("Passed value for field obj.display_number is not the expected type, validation failed.")
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
     end

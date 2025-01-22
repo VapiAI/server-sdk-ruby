@@ -35,13 +35,6 @@ module Vapi
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
     # @return [Array<Vapi::Squad>]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.list
     def list(limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil,
              updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       response = @request_client.conn.get do |req|
@@ -123,6 +116,7 @@ module Vapi
     #           * :properties (Hash{String => Object})
     #           * :description (String)
     #           * :required (Array<String>)
+    #           * :enum (Array<String>)
     #         * :timeout_seconds (Float)
     #       * :success_evaluation_plan (Hash)
     #         * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -164,13 +158,6 @@ module Vapi
     #       * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Squad]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.create(request: { members: [{  }] })
     def create(request:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -192,13 +179,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Squad]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.get(id: "id")
     def get(id:, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -222,13 +202,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Squad]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.delete(id: "id")
     def delete(id:, request_options: nil)
       response = @request_client.conn.delete do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -297,6 +270,7 @@ module Vapi
     #           * :properties (Hash{String => Object})
     #           * :description (String)
     #           * :required (Array<String>)
+    #           * :enum (Array<String>)
     #         * :timeout_seconds (Float)
     #       * :success_evaluation_plan (Hash)
     #         * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -380,6 +354,7 @@ module Vapi
     #           * :properties (Hash{String => Object})
     #           * :description (String)
     #           * :required (Array<String>)
+    #           * :enum (Array<String>)
     #         * :timeout_seconds (Float)
     #       * :success_evaluation_plan (Hash)
     #         * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -468,6 +443,7 @@ module Vapi
     #         * :properties (Hash{String => Object})
     #         * :description (String)
     #         * :required (Array<String>)
+    #         * :enum (Array<String>)
     #       * :timeout_seconds (Float)
     #     * :success_evaluation_plan (Hash)
     #       * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -509,13 +485,6 @@ module Vapi
     #     * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Squad]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.update(id: "id", members: [{  }])
     def update(id:, members:, name: nil, members_overrides: nil, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -565,13 +534,6 @@ module Vapi
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
     # @return [Array<Vapi::Squad>]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.list
     def list(limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil,
              updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       Async do
@@ -655,6 +617,7 @@ module Vapi
     #           * :properties (Hash{String => Object})
     #           * :description (String)
     #           * :required (Array<String>)
+    #           * :enum (Array<String>)
     #         * :timeout_seconds (Float)
     #       * :success_evaluation_plan (Hash)
     #         * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -696,13 +659,6 @@ module Vapi
     #       * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Squad]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.create(request: { members: [{  }] })
     def create(request:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -726,13 +682,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Squad]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.get(id: "id")
     def get(id:, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
@@ -758,13 +707,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Squad]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.delete(id: "id")
     def delete(id:, request_options: nil)
       Async do
         response = @request_client.conn.delete do |req|
@@ -835,6 +777,7 @@ module Vapi
     #           * :properties (Hash{String => Object})
     #           * :description (String)
     #           * :required (Array<String>)
+    #           * :enum (Array<String>)
     #         * :timeout_seconds (Float)
     #       * :success_evaluation_plan (Hash)
     #         * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -918,6 +861,7 @@ module Vapi
     #           * :properties (Hash{String => Object})
     #           * :description (String)
     #           * :required (Array<String>)
+    #           * :enum (Array<String>)
     #         * :timeout_seconds (Float)
     #       * :success_evaluation_plan (Hash)
     #         * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -1006,6 +950,7 @@ module Vapi
     #         * :properties (Hash{String => Object})
     #         * :description (String)
     #         * :required (Array<String>)
+    #         * :enum (Array<String>)
     #       * :timeout_seconds (Float)
     #     * :success_evaluation_plan (Hash)
     #       * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -1047,13 +992,6 @@ module Vapi
     #     * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Squad]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.squads.update(id: "id", members: [{  }])
     def update(id:, members:, name: nil, members_overrides: nil, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|

@@ -3,12 +3,14 @@
 module Vapi
   class UpdateAzureOpenAiCredentialDtoRegion
     AUSTRALIA = "australia"
-    CANADA = "canada"
+    CANADAEAST = "canadaeast"
+    CANADACENTRAL = "canadacentral"
     EASTUS_2 = "eastus2"
     EASTUS = "eastus"
     FRANCE = "france"
     INDIA = "india"
-    JAPAN = "japan"
+    JAPANEAST = "japaneast"
+    JAPANWEST = "japanwest"
     UAENORTH = "uaenorth"
     NORTHCENTRALUS = "northcentralus"
     NORWAY = "norway"

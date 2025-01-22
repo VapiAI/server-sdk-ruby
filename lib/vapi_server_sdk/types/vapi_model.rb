@@ -4,6 +4,7 @@ require_relative "open_ai_message"
 require_relative "vapi_model_tools_item"
 require_relative "create_custom_knowledge_base_dto"
 require_relative "vapi_model_steps_item"
+require_relative "workflow"
 require "ostruct"
 require "json"
 
@@ -25,6 +26,12 @@ module Vapi
     attr_reader :knowledge_base_id
     # @return [Array<Vapi::VapiModelStepsItem>]
     attr_reader :steps
+    # @return [String] This is the workflow that will be used for the call. To use a transient
+    #  workflow, use `workflow` instead.
+    attr_reader :workflow_id
+    # @return [Vapi::Workflow] This is the workflow that will be used for the call. To use an existing
+    #  workflow, use `workflowId` instead.
+    attr_reader :workflow
     # @return [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     attr_reader :model
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
@@ -63,6 +70,10 @@ module Vapi
     # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
     # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
     # @param steps [Array<Vapi::VapiModelStepsItem>]
+    # @param workflow_id [String] This is the workflow that will be used for the call. To use a transient
+    #  workflow, use `workflow` instead.
+    # @param workflow [Vapi::Workflow] This is the workflow that will be used for the call. To use an existing
+    #  workflow, use `workflowId` instead.
     # @param model [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
@@ -81,13 +92,15 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VapiModel]
     def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
-                   steps: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+                   steps: OMIT, workflow_id: OMIT, workflow: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
       @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @steps = steps if steps != OMIT
+      @workflow_id = workflow_id if workflow_id != OMIT
+      @workflow = workflow if workflow != OMIT
       @model = model
       @temperature = temperature if temperature != OMIT
       @max_tokens = max_tokens if max_tokens != OMIT
@@ -101,6 +114,8 @@ module Vapi
         "knowledgeBase": knowledge_base,
         "knowledgeBaseId": knowledge_base_id,
         "steps": steps,
+        "workflowId": workflow_id,
+        "workflow": workflow,
         "model": model,
         "temperature": temperature,
         "maxTokens": max_tokens,
@@ -138,6 +153,13 @@ module Vapi
         item = item.to_json
         Vapi::VapiModelStepsItem.from_json(json_object: item)
       end
+      workflow_id = parsed_json["workflowId"]
+      if parsed_json["workflow"].nil?
+        workflow = nil
+      else
+        workflow = parsed_json["workflow"].to_json
+        workflow = Vapi::Workflow.from_json(json_object: workflow)
+      end
       model = parsed_json["model"]
       temperature = parsed_json["temperature"]
       max_tokens = parsed_json["maxTokens"]
@@ -150,6 +172,8 @@ module Vapi
         knowledge_base: knowledge_base,
         knowledge_base_id: knowledge_base_id,
         steps: steps,
+        workflow_id: workflow_id,
+        workflow: workflow,
         model: model,
         temperature: temperature,
         max_tokens: max_tokens,
@@ -179,6 +203,8 @@ module Vapi
       obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
       obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
       obj.steps&.is_a?(Array) != false || raise("Passed value for field obj.steps is not the expected type, validation failed.")
+      obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
+      obj.workflow.nil? || Vapi::Workflow.validate_raw(obj: obj.workflow)
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")

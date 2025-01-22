@@ -91,22 +91,22 @@ module Vapi
     # @param call_id [String] This is the ID of the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Log]
-    def initialize(time:, org_id:, type:, request_duration_seconds:, request_started_at:, request_finished_at:,
-                   request_body:, request_http_method:, request_url:, request_path:, response_http_code:, webhook_type: OMIT, resource: OMIT, request_query: OMIT, request_ip_address: OMIT, request_origin: OMIT, response_body: OMIT, request_headers: OMIT, error: OMIT, assistant_id: OMIT, phone_number_id: OMIT, customer_id: OMIT, squad_id: OMIT, call_id: OMIT, additional_properties: nil)
+    def initialize(time:, org_id:, type:, webhook_type: OMIT, resource: OMIT, request_duration_seconds: OMIT,
+                   request_started_at: OMIT, request_finished_at: OMIT, request_body: OMIT, request_http_method: OMIT, request_url: OMIT, request_path: OMIT, request_query: OMIT, response_http_code: OMIT, request_ip_address: OMIT, request_origin: OMIT, response_body: OMIT, request_headers: OMIT, error: OMIT, assistant_id: OMIT, phone_number_id: OMIT, customer_id: OMIT, squad_id: OMIT, call_id: OMIT, additional_properties: nil)
       @time = time
       @org_id = org_id
       @type = type
       @webhook_type = webhook_type if webhook_type != OMIT
       @resource = resource if resource != OMIT
-      @request_duration_seconds = request_duration_seconds
-      @request_started_at = request_started_at
-      @request_finished_at = request_finished_at
-      @request_body = request_body
-      @request_http_method = request_http_method
-      @request_url = request_url
-      @request_path = request_path
+      @request_duration_seconds = request_duration_seconds if request_duration_seconds != OMIT
+      @request_started_at = request_started_at if request_started_at != OMIT
+      @request_finished_at = request_finished_at if request_finished_at != OMIT
+      @request_body = request_body if request_body != OMIT
+      @request_http_method = request_http_method if request_http_method != OMIT
+      @request_url = request_url if request_url != OMIT
+      @request_path = request_path if request_path != OMIT
       @request_query = request_query if request_query != OMIT
-      @response_http_code = response_http_code
+      @response_http_code = response_http_code if response_http_code != OMIT
       @request_ip_address = request_ip_address if request_ip_address != OMIT
       @request_origin = request_origin if request_origin != OMIT
       @response_body = response_body if response_body != OMIT
@@ -232,15 +232,15 @@ module Vapi
       obj.type.is_a?(Vapi::LogType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.webhook_type&.is_a?(String) != false || raise("Passed value for field obj.webhook_type is not the expected type, validation failed.")
       obj.resource&.is_a?(Vapi::LogResource) != false || raise("Passed value for field obj.resource is not the expected type, validation failed.")
-      obj.request_duration_seconds.is_a?(Float) != false || raise("Passed value for field obj.request_duration_seconds is not the expected type, validation failed.")
-      obj.request_started_at.is_a?(String) != false || raise("Passed value for field obj.request_started_at is not the expected type, validation failed.")
-      obj.request_finished_at.is_a?(String) != false || raise("Passed value for field obj.request_finished_at is not the expected type, validation failed.")
-      obj.request_body.is_a?(Hash) != false || raise("Passed value for field obj.request_body is not the expected type, validation failed.")
-      obj.request_http_method.is_a?(Vapi::LogRequestHttpMethod) != false || raise("Passed value for field obj.request_http_method is not the expected type, validation failed.")
-      obj.request_url.is_a?(String) != false || raise("Passed value for field obj.request_url is not the expected type, validation failed.")
-      obj.request_path.is_a?(String) != false || raise("Passed value for field obj.request_path is not the expected type, validation failed.")
+      obj.request_duration_seconds&.is_a?(Float) != false || raise("Passed value for field obj.request_duration_seconds is not the expected type, validation failed.")
+      obj.request_started_at&.is_a?(String) != false || raise("Passed value for field obj.request_started_at is not the expected type, validation failed.")
+      obj.request_finished_at&.is_a?(String) != false || raise("Passed value for field obj.request_finished_at is not the expected type, validation failed.")
+      obj.request_body&.is_a?(Hash) != false || raise("Passed value for field obj.request_body is not the expected type, validation failed.")
+      obj.request_http_method&.is_a?(Vapi::LogRequestHttpMethod) != false || raise("Passed value for field obj.request_http_method is not the expected type, validation failed.")
+      obj.request_url&.is_a?(String) != false || raise("Passed value for field obj.request_url is not the expected type, validation failed.")
+      obj.request_path&.is_a?(String) != false || raise("Passed value for field obj.request_path is not the expected type, validation failed.")
       obj.request_query&.is_a?(String) != false || raise("Passed value for field obj.request_query is not the expected type, validation failed.")
-      obj.response_http_code.is_a?(Float) != false || raise("Passed value for field obj.response_http_code is not the expected type, validation failed.")
+      obj.response_http_code&.is_a?(Float) != false || raise("Passed value for field obj.response_http_code is not the expected type, validation failed.")
       obj.request_ip_address&.is_a?(String) != false || raise("Passed value for field obj.request_ip_address is not the expected type, validation failed.")
       obj.request_origin&.is_a?(String) != false || raise("Passed value for field obj.request_origin is not the expected type, validation failed.")
       obj.response_body&.is_a?(Hash) != false || raise("Passed value for field obj.response_body is not the expected type, validation failed.")

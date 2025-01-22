@@ -1,0 +1,87 @@
+# frozen_string_literal: true
+
+require_relative "create_workflow_dto_nodes_item"
+require_relative "edge"
+require "ostruct"
+require "json"
+
+module Vapi
+  class CreateWorkflowDto
+    # @return [String]
+    attr_reader :type
+    # @return [Array<Vapi::CreateWorkflowDtoNodesItem>]
+    attr_reader :nodes
+    # @return [String]
+    attr_reader :name
+    # @return [Array<Vapi::Edge>]
+    attr_reader :edges
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
+    attr_reader :additional_properties
+    # @return [Object]
+    attr_reader :_field_set
+    protected :_field_set
+
+    OMIT = Object.new
+
+    # @param type [String]
+    # @param nodes [Array<Vapi::CreateWorkflowDtoNodesItem>]
+    # @param name [String]
+    # @param edges [Array<Vapi::Edge>]
+    # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [Vapi::CreateWorkflowDto]
+    def initialize(type:, nodes:, name:, edges:, additional_properties: nil)
+      @type = type
+      @nodes = nodes
+      @name = name
+      @edges = edges
+      @additional_properties = additional_properties
+      @_field_set = { "type": type, "nodes": nodes, "name": name, "edges": edges }
+    end
+
+    # Deserialize a JSON object to an instance of CreateWorkflowDto
+    #
+    # @param json_object [String]
+    # @return [Vapi::CreateWorkflowDto]
+    def self.from_json(json_object:)
+      struct = JSON.parse(json_object, object_class: OpenStruct)
+      parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
+      nodes = parsed_json["nodes"]&.map do |item|
+        item = item.to_json
+        Vapi::CreateWorkflowDtoNodesItem.from_json(json_object: item)
+      end
+      name = parsed_json["name"]
+      edges = parsed_json["edges"]&.map do |item|
+        item = item.to_json
+        Vapi::Edge.from_json(json_object: item)
+      end
+      new(
+        type: type,
+        nodes: nodes,
+        name: name,
+        edges: edges,
+        additional_properties: struct
+      )
+    end
+
+    # Serialize an instance of CreateWorkflowDto to a JSON object
+    #
+    # @return [String]
+    def to_json(*_args)
+      @_field_set&.to_json
+    end
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
+    #
+    # @param obj [Object]
+    # @return [Void]
+    def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.nodes.is_a?(Array) != false || raise("Passed value for field obj.nodes is not the expected type, validation failed.")
+      obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.edges.is_a?(Array) != false || raise("Passed value for field obj.edges is not the expected type, validation failed.")
+    end
+  end
+end

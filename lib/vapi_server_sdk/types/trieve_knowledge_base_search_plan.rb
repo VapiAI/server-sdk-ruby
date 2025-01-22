@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative "trieve_knowledge_base_vector_store_search_plan_search_type"
+require_relative "trieve_knowledge_base_search_plan_search_type"
 require "ostruct"
 require "json"
 
 module Vapi
-  class TrieveKnowledgeBaseVectorStoreSearchPlan
+  class TrieveKnowledgeBaseSearchPlan
     # @return [Boolean] If true, stop words (specified in server/src/stop-words.txt in the git repo)
     #  will be removed. This will preserve queries that are entirely stop words.
     attr_reader :remove_stop_words
@@ -16,7 +16,7 @@ module Vapi
     #  specified, this defaults to no threshold. A threshold of 0 will default to no
     #  threshold.
     attr_reader :score_threshold
-    # @return [Vapi::TrieveKnowledgeBaseVectorStoreSearchPlanSearchType] This is the search method used when searching for relevant chunks from the
+    # @return [Vapi::TrieveKnowledgeBaseSearchPlanSearchType] This is the search method used when searching for relevant chunks from the
     #  vector store.
     attr_reader :search_type
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -35,10 +35,10 @@ module Vapi
     #  distance. This threshold applies before weight and bias modifications. If not
     #  specified, this defaults to no threshold. A threshold of 0 will default to no
     #  threshold.
-    # @param search_type [Vapi::TrieveKnowledgeBaseVectorStoreSearchPlanSearchType] This is the search method used when searching for relevant chunks from the
+    # @param search_type [Vapi::TrieveKnowledgeBaseSearchPlanSearchType] This is the search method used when searching for relevant chunks from the
     #  vector store.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::TrieveKnowledgeBaseVectorStoreSearchPlan]
+    # @return [Vapi::TrieveKnowledgeBaseSearchPlan]
     def initialize(search_type:, remove_stop_words: OMIT, score_threshold: OMIT, additional_properties: nil)
       @remove_stop_words = remove_stop_words if remove_stop_words != OMIT
       @score_threshold = score_threshold if score_threshold != OMIT
@@ -53,11 +53,10 @@ module Vapi
       end
     end
 
-    # Deserialize a JSON object to an instance of
-    #  TrieveKnowledgeBaseVectorStoreSearchPlan
+    # Deserialize a JSON object to an instance of TrieveKnowledgeBaseSearchPlan
     #
     # @param json_object [String]
-    # @return [Vapi::TrieveKnowledgeBaseVectorStoreSearchPlan]
+    # @return [Vapi::TrieveKnowledgeBaseSearchPlan]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
@@ -72,8 +71,7 @@ module Vapi
       )
     end
 
-    # Serialize an instance of TrieveKnowledgeBaseVectorStoreSearchPlan to a JSON
-    #  object
+    # Serialize an instance of TrieveKnowledgeBaseSearchPlan to a JSON object
     #
     # @return [String]
     def to_json(*_args)
@@ -89,7 +87,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.remove_stop_words&.is_a?(Boolean) != false || raise("Passed value for field obj.remove_stop_words is not the expected type, validation failed.")
       obj.score_threshold&.is_a?(Float) != false || raise("Passed value for field obj.score_threshold is not the expected type, validation failed.")
-      obj.search_type.is_a?(Vapi::TrieveKnowledgeBaseVectorStoreSearchPlanSearchType) != false || raise("Passed value for field obj.search_type is not the expected type, validation failed.")
+      obj.search_type.is_a?(Vapi::TrieveKnowledgeBaseSearchPlanSearchType) != false || raise("Passed value for field obj.search_type is not the expected type, validation failed.")
     end
   end
 end

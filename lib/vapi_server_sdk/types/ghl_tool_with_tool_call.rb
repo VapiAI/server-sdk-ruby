@@ -22,8 +22,6 @@ module Vapi
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
     attr_reader :messages
-    # @return [String] The type of tool. "ghl" for GHL tool.
-    attr_reader :type
     # @return [Vapi::ToolCall]
     attr_reader :tool_call
     # @return [Vapi::GhlToolMetadata]
@@ -63,7 +61,6 @@ module Vapi
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
-    # @param type [String] The type of tool. "ghl" for GHL tool.
     # @param tool_call [Vapi::ToolCall]
     # @param metadata [Vapi::GhlToolMetadata]
     # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
@@ -83,11 +80,10 @@ module Vapi
     #  phoneNumber.serverUrl, then org.serverUrl.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::GhlToolWithToolCall]
-    def initialize(type:, tool_call:, metadata:, async: OMIT, messages: OMIT, function: OMIT, server: OMIT,
+    def initialize(tool_call:, metadata:, async: OMIT, messages: OMIT, function: OMIT, server: OMIT,
                    additional_properties: nil)
       @async = async if async != OMIT
       @messages = messages if messages != OMIT
-      @type = type
       @tool_call = tool_call
       @metadata = metadata
       @function = function if function != OMIT
@@ -96,7 +92,6 @@ module Vapi
       @_field_set = {
         "async": async,
         "messages": messages,
-        "type": type,
         "toolCall": tool_call,
         "metadata": metadata,
         "function": function,
@@ -118,7 +113,6 @@ module Vapi
         item = item.to_json
         Vapi::GhlToolWithToolCallMessagesItem.from_json(json_object: item)
       end
-      type = parsed_json["type"]
       if parsed_json["toolCall"].nil?
         tool_call = nil
       else
@@ -146,7 +140,6 @@ module Vapi
       new(
         async: async,
         messages: messages,
-        type: type,
         tool_call: tool_call,
         metadata: metadata,
         function: function,
@@ -171,7 +164,6 @@ module Vapi
     def self.validate_raw(obj:)
       obj.async&.is_a?(Boolean) != false || raise("Passed value for field obj.async is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       Vapi::ToolCall.validate_raw(obj: obj.tool_call)
       Vapi::GhlToolMetadata.validate_raw(obj: obj.metadata)
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)

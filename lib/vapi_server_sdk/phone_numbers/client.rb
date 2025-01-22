@@ -38,13 +38,6 @@ module Vapi
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
     # @return [Array<Vapi::PhoneNumbers::PhoneNumbersListResponseItem>]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.list
     def list(limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil,
              updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       response = @request_client.conn.get do |req|
@@ -82,13 +75,6 @@ module Vapi
     # @param request [Vapi::PhoneNumbers::PhoneNumbersCreateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersCreateResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.create
     def create(request:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -110,13 +96,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersGetResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.get(id: "id")
     def get(id:, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -140,13 +119,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.delete(id: "id")
     def delete(id:, request_options: nil)
       response = @request_client.conn.delete do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -171,13 +143,6 @@ module Vapi
     # @param request [Vapi::PhoneNumbers::PhoneNumbersUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersUpdateResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.update(id: "id")
     def update(id:, request:, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -222,13 +187,6 @@ module Vapi
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
     # @return [Array<Vapi::PhoneNumbers::PhoneNumbersListResponseItem>]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.list
     def list(limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil,
              updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       Async do
@@ -268,13 +226,6 @@ module Vapi
     # @param request [Vapi::PhoneNumbers::PhoneNumbersCreateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersCreateResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.create
     def create(request:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -298,13 +249,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersGetResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.get(id: "id")
     def get(id:, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
@@ -330,13 +274,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersDeleteResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.delete(id: "id")
     def delete(id:, request_options: nil)
       Async do
         response = @request_client.conn.delete do |req|
@@ -363,13 +300,6 @@ module Vapi
     # @param request [Vapi::PhoneNumbers::PhoneNumbersUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::PhoneNumbers::PhoneNumbersUpdateResponse]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.phone_numbers.update(id: "id")
     def update(id:, request:, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|

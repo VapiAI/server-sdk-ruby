@@ -23,8 +23,9 @@ module Vapi
     # @return [String] This is the number of credits the subscription currently has.
     #  Note: This is a string to avoid floating point precision issues.
     attr_reader :credits
-    # @return [Float] This is the total concurrency limit for the subscription.
-    attr_reader :concurrency_limit
+    # @return [Float] This is the total number of active calls (concurrency) across all orgs under
+    #  this subscription.
+    attr_reader :concurrency_counter
     # @return [Float] This is the default concurrency limit for the subscription.
     attr_reader :concurrency_limit_included
     # @return [Float] This is the purchased add-on concurrency limit for the subscription.
@@ -98,7 +99,8 @@ module Vapi
     #  with past due payments.
     # @param credits [String] This is the number of credits the subscription currently has.
     #  Note: This is a string to avoid floating point precision issues.
-    # @param concurrency_limit [Float] This is the total concurrency limit for the subscription.
+    # @param concurrency_counter [Float] This is the total number of active calls (concurrency) across all orgs under
+    #  this subscription.
     # @param concurrency_limit_included [Float] This is the default concurrency limit for the subscription.
     # @param concurrency_limit_purchased [Float] This is the purchased add-on concurrency limit for the subscription.
     # @param monthly_charge_schedule_id [Float] This is the ID of the monthly job that charges for subscription add ons and
@@ -135,7 +137,7 @@ module Vapi
     # @param coupon_usage_left [String] This is the number of credits left obtained from a coupon.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Subscription]
-    def initialize(id:, created_at:, updated_at:, type:, status:, credits:, concurrency_limit:,
+    def initialize(id:, created_at:, updated_at:, type:, status:, credits:, concurrency_counter:,
                    concurrency_limit_included:, concurrency_limit_purchased:, monthly_charge_schedule_id: OMIT, monthly_credit_check_schedule_id: OMIT, stripe_customer_id: OMIT, stripe_payment_method_id: OMIT, slack_support_enabled: OMIT, slack_channel_id: OMIT, hipaa_enabled: OMIT, hipaa_common_paper_agreement_id: OMIT, stripe_payment_method_fingerprint: OMIT, stripe_customer_email: OMIT, referred_by_email: OMIT, auto_reload_plan: OMIT, minutes_included: OMIT, minutes_used: OMIT, minutes_overage_cost: OMIT, providers_included: OMIT, outbound_calls_daily_limit: OMIT, outbound_calls_counter: OMIT, outbound_calls_counter_next_reset_at: OMIT, coupon_ids: OMIT, coupon_usage_left: OMIT, additional_properties: nil)
       @id = id
       @created_at = created_at
@@ -143,7 +145,7 @@ module Vapi
       @type = type
       @status = status
       @credits = credits
-      @concurrency_limit = concurrency_limit
+      @concurrency_counter = concurrency_counter
       @concurrency_limit_included = concurrency_limit_included
       @concurrency_limit_purchased = concurrency_limit_purchased
       @monthly_charge_schedule_id = monthly_charge_schedule_id if monthly_charge_schedule_id != OMIT
@@ -179,7 +181,7 @@ module Vapi
         "type": type,
         "status": status,
         "credits": credits,
-        "concurrencyLimit": concurrency_limit,
+        "concurrencyCounter": concurrency_counter,
         "concurrencyLimitIncluded": concurrency_limit_included,
         "concurrencyLimitPurchased": concurrency_limit_purchased,
         "monthlyChargeScheduleId": monthly_charge_schedule_id,
@@ -221,7 +223,7 @@ module Vapi
       type = parsed_json["type"]
       status = parsed_json["status"]
       credits = parsed_json["credits"]
-      concurrency_limit = parsed_json["concurrencyLimit"]
+      concurrency_counter = parsed_json["concurrencyCounter"]
       concurrency_limit_included = parsed_json["concurrencyLimitIncluded"]
       concurrency_limit_purchased = parsed_json["concurrencyLimitPurchased"]
       monthly_charge_schedule_id = parsed_json["monthlyChargeScheduleId"]
@@ -259,7 +261,7 @@ module Vapi
         type: type,
         status: status,
         credits: credits,
-        concurrency_limit: concurrency_limit,
+        concurrency_counter: concurrency_counter,
         concurrency_limit_included: concurrency_limit_included,
         concurrency_limit_purchased: concurrency_limit_purchased,
         monthly_charge_schedule_id: monthly_charge_schedule_id,
@@ -307,7 +309,7 @@ module Vapi
       obj.type.is_a?(Vapi::SubscriptionType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.status.is_a?(Vapi::SubscriptionStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.credits.is_a?(String) != false || raise("Passed value for field obj.credits is not the expected type, validation failed.")
-      obj.concurrency_limit.is_a?(Float) != false || raise("Passed value for field obj.concurrency_limit is not the expected type, validation failed.")
+      obj.concurrency_counter.is_a?(Float) != false || raise("Passed value for field obj.concurrency_counter is not the expected type, validation failed.")
       obj.concurrency_limit_included.is_a?(Float) != false || raise("Passed value for field obj.concurrency_limit_included is not the expected type, validation failed.")
       obj.concurrency_limit_purchased.is_a?(Float) != false || raise("Passed value for field obj.concurrency_limit_purchased is not the expected type, validation failed.")
       obj.monthly_charge_schedule_id&.is_a?(Float) != false || raise("Passed value for field obj.monthly_charge_schedule_id is not the expected type, validation failed.")

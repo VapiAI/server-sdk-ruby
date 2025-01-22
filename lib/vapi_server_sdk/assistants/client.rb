@@ -50,13 +50,6 @@ module Vapi
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
     # @return [Array<Vapi::Assistant>]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.list
     def list(limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil,
              updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       response = @request_client.conn.get do |req|
@@ -134,6 +127,7 @@ module Vapi
     #         * :properties (Hash{String => Object})
     #         * :description (String)
     #         * :required (Array<String>)
+    #         * :enum (Array<String>)
     #       * :timeout_seconds (Float)
     #     * :success_evaluation_plan (Hash)
     #       * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -175,13 +169,6 @@ module Vapi
     #     * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.create(request: {  })
     def create(request:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -203,13 +190,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.get(id: "id")
     def get(id:, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -233,13 +213,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.delete(id: "id")
     def delete(id:, request_options: nil)
       response = @request_client.conn.delete do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -351,6 +324,7 @@ module Vapi
     #       * :properties (Hash{String => Object})
     #       * :description (String)
     #       * :required (Array<String>)
+    #       * :enum (Array<String>)
     #     * :timeout_seconds (Float)
     #   * :success_evaluation_plan (Hash)
     #     * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -428,13 +402,6 @@ module Vapi
     #   * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.update(id: "id")
     def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_mode: nil,
                hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, credentials: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
       response = @request_client.conn.patch do |req|
@@ -511,13 +478,6 @@ module Vapi
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
     # @return [Array<Vapi::Assistant>]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.list
     def list(limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil,
              updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       Async do
@@ -597,6 +557,7 @@ module Vapi
     #         * :properties (Hash{String => Object})
     #         * :description (String)
     #         * :required (Array<String>)
+    #         * :enum (Array<String>)
     #       * :timeout_seconds (Float)
     #     * :success_evaluation_plan (Hash)
     #       * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -638,13 +599,6 @@ module Vapi
     #     * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.create(request: {  })
     def create(request:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -668,13 +622,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.get(id: "id")
     def get(id:, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
@@ -700,13 +647,6 @@ module Vapi
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.delete(id: "id")
     def delete(id:, request_options: nil)
       Async do
         response = @request_client.conn.delete do |req|
@@ -820,6 +760,7 @@ module Vapi
     #       * :properties (Hash{String => Object})
     #       * :description (String)
     #       * :required (Array<String>)
+    #       * :enum (Array<String>)
     #     * :timeout_seconds (Float)
     #   * :success_evaluation_plan (Hash)
     #     * :rubric (Vapi::SuccessEvaluationPlanRubric)
@@ -897,13 +838,6 @@ module Vapi
     #   * :headers (Hash{String => Object})
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
-    # @example
-    #  api = Vapi::Client.new(
-    #    base_url: "https://api.example.com",
-    #    environment: Vapi::Environment::DEFAULT,
-    #    token: "YOUR_AUTH_TOKEN"
-    #  )
-    #  api.assistants.update(id: "id")
     def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_mode: nil,
                hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, credentials: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
       Async do

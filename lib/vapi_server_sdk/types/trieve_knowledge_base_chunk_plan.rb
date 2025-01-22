@@ -4,10 +4,12 @@ require "ostruct"
 require "json"
 
 module Vapi
-  class TrieveKnowledgeBaseVectorStoreCreatePlan
+  class TrieveKnowledgeBaseChunkPlan
     # @return [Array<String>] These are the file ids that will be used to create the vector store. To upload
     #  files, use the `POST /files` endpoint.
     attr_reader :file_ids
+    # @return [Array<String>] These are the websites that will be used to create the vector store.
+    attr_reader :websites
     # @return [Float] This is an optional field which allows you to specify the number of splits you
     #  want per chunk. If not specified, the default 20 is used. However, you may want
     #  to use a different number.
@@ -33,6 +35,7 @@ module Vapi
 
     # @param file_ids [Array<String>] These are the file ids that will be used to create the vector store. To upload
     #  files, use the `POST /files` endpoint.
+    # @param websites [Array<String>] These are the websites that will be used to create the vector store.
     # @param target_splits_per_chunk [Float] This is an optional field which allows you to specify the number of splits you
     #  want per chunk. If not specified, the default 20 is used. However, you may want
     #  to use a different number.
@@ -46,16 +49,18 @@ module Vapi
     #  such that 66 splits with a target_splits_per_chunk of 20 will result in 3 chunks
     #  with 22 splits each.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::TrieveKnowledgeBaseVectorStoreCreatePlan]
-    def initialize(file_ids:, target_splits_per_chunk: OMIT, split_delimiters: OMIT, rebalance_chunks: OMIT,
-                   additional_properties: nil)
-      @file_ids = file_ids
+    # @return [Vapi::TrieveKnowledgeBaseChunkPlan]
+    def initialize(file_ids: OMIT, websites: OMIT, target_splits_per_chunk: OMIT, split_delimiters: OMIT,
+                   rebalance_chunks: OMIT, additional_properties: nil)
+      @file_ids = file_ids if file_ids != OMIT
+      @websites = websites if websites != OMIT
       @target_splits_per_chunk = target_splits_per_chunk if target_splits_per_chunk != OMIT
       @split_delimiters = split_delimiters if split_delimiters != OMIT
       @rebalance_chunks = rebalance_chunks if rebalance_chunks != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "fileIds": file_ids,
+        "websites": websites,
         "targetSplitsPerChunk": target_splits_per_chunk,
         "splitDelimiters": split_delimiters,
         "rebalanceChunks": rebalance_chunks
@@ -64,20 +69,21 @@ module Vapi
       end
     end
 
-    # Deserialize a JSON object to an instance of
-    #  TrieveKnowledgeBaseVectorStoreCreatePlan
+    # Deserialize a JSON object to an instance of TrieveKnowledgeBaseChunkPlan
     #
     # @param json_object [String]
-    # @return [Vapi::TrieveKnowledgeBaseVectorStoreCreatePlan]
+    # @return [Vapi::TrieveKnowledgeBaseChunkPlan]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       file_ids = parsed_json["fileIds"]
+      websites = parsed_json["websites"]
       target_splits_per_chunk = parsed_json["targetSplitsPerChunk"]
       split_delimiters = parsed_json["splitDelimiters"]
       rebalance_chunks = parsed_json["rebalanceChunks"]
       new(
         file_ids: file_ids,
+        websites: websites,
         target_splits_per_chunk: target_splits_per_chunk,
         split_delimiters: split_delimiters,
         rebalance_chunks: rebalance_chunks,
@@ -85,8 +91,7 @@ module Vapi
       )
     end
 
-    # Serialize an instance of TrieveKnowledgeBaseVectorStoreCreatePlan to a JSON
-    #  object
+    # Serialize an instance of TrieveKnowledgeBaseChunkPlan to a JSON object
     #
     # @return [String]
     def to_json(*_args)
@@ -100,7 +105,8 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.file_ids.is_a?(Array) != false || raise("Passed value for field obj.file_ids is not the expected type, validation failed.")
+      obj.file_ids&.is_a?(Array) != false || raise("Passed value for field obj.file_ids is not the expected type, validation failed.")
+      obj.websites&.is_a?(Array) != false || raise("Passed value for field obj.websites is not the expected type, validation failed.")
       obj.target_splits_per_chunk&.is_a?(Float) != false || raise("Passed value for field obj.target_splits_per_chunk is not the expected type, validation failed.")
       obj.split_delimiters&.is_a?(Array) != false || raise("Passed value for field obj.split_delimiters is not the expected type, validation failed.")
       obj.rebalance_chunks&.is_a?(Boolean) != false || raise("Passed value for field obj.rebalance_chunks is not the expected type, validation failed.")

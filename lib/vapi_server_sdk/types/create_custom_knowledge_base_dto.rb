@@ -6,8 +6,7 @@ require "json"
 
 module Vapi
   class CreateCustomKnowledgeBaseDto
-    # @return [Vapi::Server] /**
-    #  This is where the knowledge base request will be sent.
+    # @return [Vapi::Server] This is where the knowledge base request will be sent.
     #  Request Example:
     #  POST https://{server.url}
     #  Content-Type: application/json
@@ -54,8 +53,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param server [Vapi::Server] /**
-    #  This is where the knowledge base request will be sent.
+    # @param server [Vapi::Server] This is where the knowledge base request will be sent.
     #  Request Example:
     #  POST https://{server.url}
     #  Content-Type: application/json
