@@ -3,6 +3,7 @@
 require_relative "open_ai_message"
 require_relative "xai_model_tools_item"
 require_relative "create_custom_knowledge_base_dto"
+require_relative "xai_model_model"
 require "ostruct"
 require "json"
 
@@ -22,7 +23,7 @@ module Vapi
     attr_reader :knowledge_base
     # @return [String] This is the ID of the knowledge base the model will use.
     attr_reader :knowledge_base_id
-    # @return [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
+    # @return [Vapi::XaiModelModel] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     attr_reader :model
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
@@ -59,7 +60,7 @@ module Vapi
     #  Both `tools` and `toolIds` can be used together.
     # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
     # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
-    # @param model [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
+    # @param model [Vapi::XaiModelModel] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     # @param max_tokens [Float] This is the max number of tokens that the assistant will be allowed to generate
@@ -167,7 +168,7 @@ module Vapi
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
       obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
       obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
-      obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model.is_a?(Vapi::XaiModelModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")
       obj.emotion_recognition_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.emotion_recognition_enabled is not the expected type, validation failed.")

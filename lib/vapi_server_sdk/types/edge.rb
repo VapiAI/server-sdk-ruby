@@ -12,6 +12,8 @@ module Vapi
     attr_reader :from
     # @return [String]
     attr_reader :to
+    # @return [Hash{String => Object}] This is for metadata you want to store on the edge.
+    attr_reader :metadata
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -23,14 +25,16 @@ module Vapi
     # @param condition [Vapi::EdgeCondition]
     # @param from [String]
     # @param to [String]
+    # @param metadata [Hash{String => Object}] This is for metadata you want to store on the edge.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Edge]
-    def initialize(from:, to:, condition: OMIT, additional_properties: nil)
+    def initialize(from:, to:, condition: OMIT, metadata: OMIT, additional_properties: nil)
       @condition = condition if condition != OMIT
       @from = from
       @to = to
+      @metadata = metadata if metadata != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "condition": condition, "from": from, "to": to }.reject do |_k, v|
+      @_field_set = { "condition": condition, "from": from, "to": to, "metadata": metadata }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -50,10 +54,12 @@ module Vapi
       end
       from = parsed_json["from"]
       to = parsed_json["to"]
+      metadata = parsed_json["metadata"]
       new(
         condition: condition,
         from: from,
         to: to,
+        metadata: metadata,
         additional_properties: struct
       )
     end
@@ -75,6 +81,7 @@ module Vapi
       obj.condition.nil? || Vapi::EdgeCondition.validate_raw(obj: obj.condition)
       obj.from.is_a?(String) != false || raise("Passed value for field obj.from is not the expected type, validation failed.")
       obj.to.is_a?(String) != false || raise("Passed value for field obj.to is not the expected type, validation failed.")
+      obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")
     end
   end
 end

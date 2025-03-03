@@ -9,6 +9,7 @@ module Vapi
     DEEPGRAM = "deepgram"
     LMNT = "lmnt"
     NEETS = "neets"
+    NEUPHONIC = "neuphonic"
     OPENAI = "openai"
     PLAYHT = "playht"
     RIME_AI = "rime-ai"

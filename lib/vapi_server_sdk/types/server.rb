@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "backoff_plan"
 require "ostruct"
 require "json"
 
@@ -18,6 +19,8 @@ module Vapi
     # @return [Hash{String => Object}] These are the custom headers to include in the request sent to your server.
     #  Each key-value pair represents a header name and its value.
     attr_reader :headers
+    # @return [Vapi::BackoffPlan] This is the backoff plan to use if the request fails.
+    attr_reader :backoff_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -35,19 +38,23 @@ module Vapi
     #  Same precedence logic as server.
     # @param headers [Hash{String => Object}] These are the custom headers to include in the request sent to your server.
     #  Each key-value pair represents a header name and its value.
+    # @param backoff_plan [Vapi::BackoffPlan] This is the backoff plan to use if the request fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Server]
-    def initialize(url:, timeout_seconds: OMIT, secret: OMIT, headers: OMIT, additional_properties: nil)
+    def initialize(url:, timeout_seconds: OMIT, secret: OMIT, headers: OMIT, backoff_plan: OMIT,
+                   additional_properties: nil)
       @timeout_seconds = timeout_seconds if timeout_seconds != OMIT
       @url = url
       @secret = secret if secret != OMIT
       @headers = headers if headers != OMIT
+      @backoff_plan = backoff_plan if backoff_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "timeoutSeconds": timeout_seconds,
         "url": url,
         "secret": secret,
-        "headers": headers
+        "headers": headers,
+        "backoffPlan": backoff_plan
       }.reject do |_k, v|
         v == OMIT
       end
@@ -64,11 +71,18 @@ module Vapi
       url = parsed_json["url"]
       secret = parsed_json["secret"]
       headers = parsed_json["headers"]
+      if parsed_json["backoffPlan"].nil?
+        backoff_plan = nil
+      else
+        backoff_plan = parsed_json["backoffPlan"].to_json
+        backoff_plan = Vapi::BackoffPlan.from_json(json_object: backoff_plan)
+      end
       new(
         timeout_seconds: timeout_seconds,
         url: url,
         secret: secret,
         headers: headers,
+        backoff_plan: backoff_plan,
         additional_properties: struct
       )
     end
@@ -91,6 +105,7 @@ module Vapi
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
       obj.secret&.is_a?(String) != false || raise("Passed value for field obj.secret is not the expected type, validation failed.")
       obj.headers&.is_a?(Hash) != false || raise("Passed value for field obj.headers is not the expected type, validation failed.")
+      obj.backoff_plan.nil? || Vapi::BackoffPlan.validate_raw(obj: obj.backoff_plan)
     end
   end
 end

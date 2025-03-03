@@ -4,9 +4,7 @@ require "ostruct"
 require "json"
 
 module Vapi
-  class SemanticEdgeCondition
-    # @return [Array<String>]
-    attr_reader :matches
+  class AssistantHookActionBase
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -15,29 +13,23 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param matches [Array<String>]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::SemanticEdgeCondition]
-    def initialize(matches: OMIT, additional_properties: nil)
-      @matches = matches if matches != OMIT
+    # @return [Vapi::AssistantHookActionBase]
+    def initialize(additional_properties: nil)
       @additional_properties = additional_properties
-      @_field_set = { "matches": matches }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = {}
     end
 
-    # Deserialize a JSON object to an instance of SemanticEdgeCondition
+    # Deserialize a JSON object to an instance of AssistantHookActionBase
     #
     # @param json_object [String]
-    # @return [Vapi::SemanticEdgeCondition]
+    # @return [Vapi::AssistantHookActionBase]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      parsed_json = JSON.parse(json_object)
-      matches = parsed_json["matches"]
-      new(matches: matches, additional_properties: struct)
+      new(additional_properties: struct)
     end
 
-    # Serialize an instance of SemanticEdgeCondition to a JSON object
+    # Serialize an instance of AssistantHookActionBase to a JSON object
     #
     # @return [String]
     def to_json(*_args)
@@ -50,8 +42,6 @@ module Vapi
     #
     # @param obj [Object]
     # @return [Void]
-    def self.validate_raw(obj:)
-      obj.matches&.is_a?(Array) != false || raise("Passed value for field obj.matches is not the expected type, validation failed.")
-    end
+    def self.validate_raw(obj:); end
   end
 end

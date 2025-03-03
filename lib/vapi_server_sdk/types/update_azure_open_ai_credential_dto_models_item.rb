@@ -2,6 +2,7 @@
 
 module Vapi
   class UpdateAzureOpenAiCredentialDtoModelsItem
+    GPT_4_O_20240806_PTU = "gpt-4o-2024-08-06-ptu"
     GPT_4_O_20240806 = "gpt-4o-2024-08-06"
     GPT_4_O_MINI_20240718 = "gpt-4o-mini-2024-07-18"
     GPT_4_O_20240513 = "gpt-4o-2024-05-13"

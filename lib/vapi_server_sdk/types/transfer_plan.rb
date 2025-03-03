@@ -27,6 +27,9 @@ module Vapi
     #  - `warm-transfer-wait-for-operator-to-speak-first-and-then-say-summary`: The
     #  assistant dials the destination, waits for the operator to speak, provides a
     #  summary of the call to the destination party, and then connects the customer.
+    #  - `warm-transfer-twiml`: The assistant dials the destination, executes the twiml
+    #  instructions on the destination call leg, connects the customer, and leaves the
+    #  call.
     #  @default 'blind-transfer'
     attr_reader :mode
     # @return [Vapi::TransferPlanMessage] This is the message the assistant will deliver to the destination party before
@@ -40,6 +43,19 @@ module Vapi
     #  - 'refer': Uses SIP REFER to transfer the call (default)
     #  - 'bye': Ends current call with SIP BYE
     attr_reader :sip_verb
+    # @return [String] This is the TwiML instructions to execute on the destination call leg before
+    #  connecting the customer.
+    #  Usage:
+    #  - Used only when `mode` is `warm-transfer-twiml`.
+    #  - Supports only `Play`, `Say`, `Gather`, `Hangup` and `Pause` verbs.
+    #  - Maximum length is 4096 characters.
+    #  Example:
+    #  ```
+    #  <Say voice="alice" language="en-US">Hello, transferring a customer to you.</Say>
+    #  <Pause length="2"/>
+    #  <Say>They called about billing questions.</Say>
+    #  ```
+    attr_reader :twiml
     # @return [Vapi::SummaryPlan] This is the plan for generating a summary of the call to present to the
     #  destination party.
     #  Usage:
@@ -74,6 +90,9 @@ module Vapi
     #  - `warm-transfer-wait-for-operator-to-speak-first-and-then-say-summary`: The
     #  assistant dials the destination, waits for the operator to speak, provides a
     #  summary of the call to the destination party, and then connects the customer.
+    #  - `warm-transfer-twiml`: The assistant dials the destination, executes the twiml
+    #  instructions on the destination call leg, connects the customer, and leaves the
+    #  call.
     #  @default 'blind-transfer'
     # @param message [Vapi::TransferPlanMessage] This is the message the assistant will deliver to the destination party before
     #  connecting the customer.
@@ -84,6 +103,18 @@ module Vapi
     # @param sip_verb [Hash{String => Object}] This specifies the SIP verb to use while transferring the call.
     #  - 'refer': Uses SIP REFER to transfer the call (default)
     #  - 'bye': Ends current call with SIP BYE
+    # @param twiml [String] This is the TwiML instructions to execute on the destination call leg before
+    #  connecting the customer.
+    #  Usage:
+    #  - Used only when `mode` is `warm-transfer-twiml`.
+    #  - Supports only `Play`, `Say`, `Gather`, `Hangup` and `Pause` verbs.
+    #  - Maximum length is 4096 characters.
+    #  Example:
+    #  ```
+    #  <Say voice="alice" language="en-US">Hello, transferring a customer to you.</Say>
+    #  <Pause length="2"/>
+    #  <Say>They called about billing questions.</Say>
+    #  ```
     # @param summary_plan [Vapi::SummaryPlan] This is the plan for generating a summary of the call to present to the
     #  destination party.
     #  Usage:
@@ -92,16 +123,18 @@ module Vapi
     #  `warm-transfer-wait-for-operator-to-speak-first-and-then-say-summary`.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferPlan]
-    def initialize(mode:, message: OMIT, sip_verb: OMIT, summary_plan: OMIT, additional_properties: nil)
+    def initialize(mode:, message: OMIT, sip_verb: OMIT, twiml: OMIT, summary_plan: OMIT, additional_properties: nil)
       @mode = mode
       @message = message if message != OMIT
       @sip_verb = sip_verb if sip_verb != OMIT
+      @twiml = twiml if twiml != OMIT
       @summary_plan = summary_plan if summary_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "mode": mode,
         "message": message,
         "sipVerb": sip_verb,
+        "twiml": twiml,
         "summaryPlan": summary_plan
       }.reject do |_k, v|
         v == OMIT
@@ -123,6 +156,7 @@ module Vapi
         message = Vapi::TransferPlanMessage.from_json(json_object: message)
       end
       sip_verb = parsed_json["sipVerb"]
+      twiml = parsed_json["twiml"]
       if parsed_json["summaryPlan"].nil?
         summary_plan = nil
       else
@@ -133,6 +167,7 @@ module Vapi
         mode: mode,
         message: message,
         sip_verb: sip_verb,
+        twiml: twiml,
         summary_plan: summary_plan,
         additional_properties: struct
       )
@@ -155,6 +190,7 @@ module Vapi
       obj.mode.is_a?(Vapi::TransferPlanMode) != false || raise("Passed value for field obj.mode is not the expected type, validation failed.")
       obj.message.nil? || Vapi::TransferPlanMessage.validate_raw(obj: obj.message)
       obj.sip_verb&.is_a?(Hash) != false || raise("Passed value for field obj.sip_verb is not the expected type, validation failed.")
+      obj.twiml&.is_a?(String) != false || raise("Passed value for field obj.twiml is not the expected type, validation failed.")
       obj.summary_plan.nil? || Vapi::SummaryPlan.validate_raw(obj: obj.summary_plan)
     end
   end

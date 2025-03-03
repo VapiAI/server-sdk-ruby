@@ -15,6 +15,7 @@ require_relative "types/update_assistant_dto_background_sound"
 require_relative "../types/transport_configuration_twilio"
 require_relative "types/update_assistant_dto_credentials_item"
 require_relative "../types/twilio_voicemail_detection"
+require_relative "../types/compliance_plan"
 require_relative "../types/analysis_plan"
 require_relative "../types/artifact_plan"
 require_relative "../types/message_plan"
@@ -22,6 +23,7 @@ require_relative "../types/start_speaking_plan"
 require_relative "../types/stop_speaking_plan"
 require_relative "../types/monitor_plan"
 require_relative "../types/server"
+require_relative "../types/assistant_hooks"
 require "async"
 
 module Vapi
@@ -90,7 +92,6 @@ module Vapi
     #   * :voice (Hash)
     #   * :first_message (String)
     #   * :first_message_mode (Vapi::CreateAssistantDtoFirstMessageMode)
-    #   * :hipaa_enabled (Boolean)
     #   * :client_messages (Array<Vapi::CreateAssistantDtoClientMessagesItem>)
     #   * :server_messages (Array<Vapi::CreateAssistantDtoServerMessagesItem>)
     #   * :silence_timeout_seconds (Float)
@@ -112,6 +113,9 @@ module Vapi
     #   * :voicemail_message (String)
     #   * :end_call_message (String)
     #   * :end_call_phrases (Array<String>)
+    #   * :compliance_plan (Hash)
+    #     * :hipaa_enabled (Boolean)
+    #     * :pci_enabled (Boolean)
     #   * :metadata (Hash{String => Object})
     #   * :analysis_plan (Hash)
     #     * :summary_plan (Hash)
@@ -127,6 +131,9 @@ module Vapi
     #         * :properties (Hash{String => Object})
     #         * :description (String)
     #         * :required (Array<String>)
+    #         * :regex (String)
+    #         * :value (String)
+    #         * :target (String)
     #         * :enum (Array<String>)
     #       * :timeout_seconds (Float)
     #     * :success_evaluation_plan (Hash)
@@ -137,6 +144,8 @@ module Vapi
     #   * :artifact_plan (Hash)
     #     * :recording_enabled (Boolean)
     #     * :video_recording_enabled (Boolean)
+    #     * :pcap_enabled (Boolean)
+    #     * :pcap_s_3_path_prefix (String)
     #     * :transcript_plan (Hash)
     #       * :enabled (Boolean)
     #       * :assistant_name (String)
@@ -146,6 +155,7 @@ module Vapi
     #     * :idle_messages (Array<String>)
     #     * :idle_message_max_spoken_count (Float)
     #     * :idle_timeout_seconds (Float)
+    #     * :silence_timeout_message (String)
     #   * :start_speaking_plan (Hash)
     #     * :wait_seconds (Float)
     #     * :smart_endpointing_enabled (Boolean)
@@ -158,6 +168,8 @@ module Vapi
     #     * :num_words (Float)
     #     * :voice_seconds (Float)
     #     * :backoff_seconds (Float)
+    #     * :acknowledgement_phrases (Array<String>)
+    #     * :interruption_phrases (Array<String>)
     #   * :monitor_plan (Hash)
     #     * :listen_enabled (Boolean)
     #     * :control_enabled (Boolean)
@@ -167,6 +179,11 @@ module Vapi
     #     * :url (String)
     #     * :secret (String)
     #     * :headers (Hash{String => Object})
+    #     * :backoff_plan (Hash)
+    #       * :max_retries (Float)
+    #       * :type (Hash{String => Object})
+    #       * :base_delay_seconds (Float)
+    #   * :hooks (Array<Vapi::AssistantHooks>)
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
     def create(request:, request_options: nil)
@@ -251,9 +268,6 @@ module Vapi
     #  state. (`assistant.model.messages` at call start, `call.messages` at squad
     #  transfer points).
     #  @default 'assistant-speaks-first'
-    # @param hipaa_enabled [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
-    #  the end of the call, you will still receive an end-of-call-report message to
-    #  store on your server. Defaults to false.
     # @param client_messages [Array<Vapi::Assistants::UpdateAssistantDtoClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
     #  tatus-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input.
     #  You can check the shape of the messages in ClientMessage schema.
@@ -309,6 +323,9 @@ module Vapi
     #  If unspecified, it will hang up without saying anything.
     # @param end_call_phrases [Array<String>] This list contains phrases that, if spoken by the assistant, will trigger the
     #  call to be hung up. Case insensitive.
+    # @param compliance_plan [Hash] Request of type Vapi::CompliancePlan, as a Hash
+    #   * :hipaa_enabled (Boolean)
+    #   * :pci_enabled (Boolean)
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the assistant.
     # @param analysis_plan [Hash] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.Request of type Vapi::AnalysisPlan, as a Hash
     #   * :summary_plan (Hash)
@@ -324,6 +341,9 @@ module Vapi
     #       * :properties (Hash{String => Object})
     #       * :description (String)
     #       * :required (Array<String>)
+    #       * :regex (String)
+    #       * :value (String)
+    #       * :target (String)
     #       * :enum (Array<String>)
     #     * :timeout_seconds (Float)
     #   * :success_evaluation_plan (Hash)
@@ -337,6 +357,8 @@ module Vapi
     #  `artifactPlan` in the future, but will remain backwards compatible.Request of type Vapi::ArtifactPlan, as a Hash
     #   * :recording_enabled (Boolean)
     #   * :video_recording_enabled (Boolean)
+    #   * :pcap_enabled (Boolean)
+    #   * :pcap_s_3_path_prefix (String)
     #   * :transcript_plan (Hash)
     #     * :enabled (Boolean)
     #     * :assistant_name (String)
@@ -350,6 +372,7 @@ module Vapi
     #   * :idle_messages (Array<String>)
     #   * :idle_message_max_spoken_count (Float)
     #   * :idle_timeout_seconds (Float)
+    #   * :silence_timeout_message (String)
     # @param start_speaking_plan [Hash] This is the plan for when the assistant should start talking.
     #  You should configure this if you're running into these issues:
     #  - The assistant is too slow to start talking after the customer is done
@@ -376,6 +399,8 @@ module Vapi
     #   * :num_words (Float)
     #   * :voice_seconds (Float)
     #   * :backoff_seconds (Float)
+    #   * :acknowledgement_phrases (Array<String>)
+    #   * :interruption_phrases (Array<String>)
     # @param monitor_plan [Hash] This is the plan for real-time monitoring of the assistant's calls.
     #  Usage:
     #  - To enable live listening of the assistant's calls, set
@@ -400,10 +425,18 @@ module Vapi
     #   * :url (String)
     #   * :secret (String)
     #   * :headers (Hash{String => Object})
+    #   * :backoff_plan (Hash)
+    #     * :max_retries (Float)
+    #     * :type (Hash{String => Object})
+    #     * :base_delay_seconds (Float)
+    # @param hooks [Array<Hash>] This is a set of actions that will be performed on certain events.Request of type Array<Vapi::AssistantHooks>, as a Hash
+    #   * :on (String)
+    #   * :filters (Array<Vapi::AssistantHookFilter>)
+    #   * :do_ (Array<Vapi::AssistantHookActionBase>)
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
     def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_mode: nil,
-               hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, credentials: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
+               client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, credentials: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, compliance_plan: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, hooks: nil, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -422,7 +455,6 @@ module Vapi
           voice: voice,
           firstMessage: first_message,
           firstMessageMode: first_message_mode,
-          hipaaEnabled: hipaa_enabled,
           clientMessages: client_messages,
           serverMessages: server_messages,
           silenceTimeoutSeconds: silence_timeout_seconds,
@@ -437,6 +469,7 @@ module Vapi
           voicemailMessage: voicemail_message,
           endCallMessage: end_call_message,
           endCallPhrases: end_call_phrases,
+          compliancePlan: compliance_plan,
           metadata: metadata,
           analysisPlan: analysis_plan,
           artifactPlan: artifact_plan,
@@ -445,7 +478,8 @@ module Vapi
           stopSpeakingPlan: stop_speaking_plan,
           monitorPlan: monitor_plan,
           credentialIds: credential_ids,
-          server: server
+          server: server,
+          hooks: hooks
         }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/assistant/#{id}"
       end
@@ -520,7 +554,6 @@ module Vapi
     #   * :voice (Hash)
     #   * :first_message (String)
     #   * :first_message_mode (Vapi::CreateAssistantDtoFirstMessageMode)
-    #   * :hipaa_enabled (Boolean)
     #   * :client_messages (Array<Vapi::CreateAssistantDtoClientMessagesItem>)
     #   * :server_messages (Array<Vapi::CreateAssistantDtoServerMessagesItem>)
     #   * :silence_timeout_seconds (Float)
@@ -542,6 +575,9 @@ module Vapi
     #   * :voicemail_message (String)
     #   * :end_call_message (String)
     #   * :end_call_phrases (Array<String>)
+    #   * :compliance_plan (Hash)
+    #     * :hipaa_enabled (Boolean)
+    #     * :pci_enabled (Boolean)
     #   * :metadata (Hash{String => Object})
     #   * :analysis_plan (Hash)
     #     * :summary_plan (Hash)
@@ -557,6 +593,9 @@ module Vapi
     #         * :properties (Hash{String => Object})
     #         * :description (String)
     #         * :required (Array<String>)
+    #         * :regex (String)
+    #         * :value (String)
+    #         * :target (String)
     #         * :enum (Array<String>)
     #       * :timeout_seconds (Float)
     #     * :success_evaluation_plan (Hash)
@@ -567,6 +606,8 @@ module Vapi
     #   * :artifact_plan (Hash)
     #     * :recording_enabled (Boolean)
     #     * :video_recording_enabled (Boolean)
+    #     * :pcap_enabled (Boolean)
+    #     * :pcap_s_3_path_prefix (String)
     #     * :transcript_plan (Hash)
     #       * :enabled (Boolean)
     #       * :assistant_name (String)
@@ -576,6 +617,7 @@ module Vapi
     #     * :idle_messages (Array<String>)
     #     * :idle_message_max_spoken_count (Float)
     #     * :idle_timeout_seconds (Float)
+    #     * :silence_timeout_message (String)
     #   * :start_speaking_plan (Hash)
     #     * :wait_seconds (Float)
     #     * :smart_endpointing_enabled (Boolean)
@@ -588,6 +630,8 @@ module Vapi
     #     * :num_words (Float)
     #     * :voice_seconds (Float)
     #     * :backoff_seconds (Float)
+    #     * :acknowledgement_phrases (Array<String>)
+    #     * :interruption_phrases (Array<String>)
     #   * :monitor_plan (Hash)
     #     * :listen_enabled (Boolean)
     #     * :control_enabled (Boolean)
@@ -597,6 +641,11 @@ module Vapi
     #     * :url (String)
     #     * :secret (String)
     #     * :headers (Hash{String => Object})
+    #     * :backoff_plan (Hash)
+    #       * :max_retries (Float)
+    #       * :type (Hash{String => Object})
+    #       * :base_delay_seconds (Float)
+    #   * :hooks (Array<Vapi::AssistantHooks>)
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
     def create(request:, request_options: nil)
@@ -687,9 +736,6 @@ module Vapi
     #  state. (`assistant.model.messages` at call start, `call.messages` at squad
     #  transfer points).
     #  @default 'assistant-speaks-first'
-    # @param hipaa_enabled [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
-    #  the end of the call, you will still receive an end-of-call-report message to
-    #  store on your server. Defaults to false.
     # @param client_messages [Array<Vapi::Assistants::UpdateAssistantDtoClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
     #  tatus-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input.
     #  You can check the shape of the messages in ClientMessage schema.
@@ -745,6 +791,9 @@ module Vapi
     #  If unspecified, it will hang up without saying anything.
     # @param end_call_phrases [Array<String>] This list contains phrases that, if spoken by the assistant, will trigger the
     #  call to be hung up. Case insensitive.
+    # @param compliance_plan [Hash] Request of type Vapi::CompliancePlan, as a Hash
+    #   * :hipaa_enabled (Boolean)
+    #   * :pci_enabled (Boolean)
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the assistant.
     # @param analysis_plan [Hash] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.Request of type Vapi::AnalysisPlan, as a Hash
     #   * :summary_plan (Hash)
@@ -760,6 +809,9 @@ module Vapi
     #       * :properties (Hash{String => Object})
     #       * :description (String)
     #       * :required (Array<String>)
+    #       * :regex (String)
+    #       * :value (String)
+    #       * :target (String)
     #       * :enum (Array<String>)
     #     * :timeout_seconds (Float)
     #   * :success_evaluation_plan (Hash)
@@ -773,6 +825,8 @@ module Vapi
     #  `artifactPlan` in the future, but will remain backwards compatible.Request of type Vapi::ArtifactPlan, as a Hash
     #   * :recording_enabled (Boolean)
     #   * :video_recording_enabled (Boolean)
+    #   * :pcap_enabled (Boolean)
+    #   * :pcap_s_3_path_prefix (String)
     #   * :transcript_plan (Hash)
     #     * :enabled (Boolean)
     #     * :assistant_name (String)
@@ -786,6 +840,7 @@ module Vapi
     #   * :idle_messages (Array<String>)
     #   * :idle_message_max_spoken_count (Float)
     #   * :idle_timeout_seconds (Float)
+    #   * :silence_timeout_message (String)
     # @param start_speaking_plan [Hash] This is the plan for when the assistant should start talking.
     #  You should configure this if you're running into these issues:
     #  - The assistant is too slow to start talking after the customer is done
@@ -812,6 +867,8 @@ module Vapi
     #   * :num_words (Float)
     #   * :voice_seconds (Float)
     #   * :backoff_seconds (Float)
+    #   * :acknowledgement_phrases (Array<String>)
+    #   * :interruption_phrases (Array<String>)
     # @param monitor_plan [Hash] This is the plan for real-time monitoring of the assistant's calls.
     #  Usage:
     #  - To enable live listening of the assistant's calls, set
@@ -836,10 +893,18 @@ module Vapi
     #   * :url (String)
     #   * :secret (String)
     #   * :headers (Hash{String => Object})
+    #   * :backoff_plan (Hash)
+    #     * :max_retries (Float)
+    #     * :type (Hash{String => Object})
+    #     * :base_delay_seconds (Float)
+    # @param hooks [Array<Hash>] This is a set of actions that will be performed on certain events.Request of type Array<Vapi::AssistantHooks>, as a Hash
+    #   * :on (String)
+    #   * :filters (Array<Vapi::AssistantHookFilter>)
+    #   * :do_ (Array<Vapi::AssistantHookActionBase>)
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Assistant]
     def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_mode: nil,
-               hipaa_enabled: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, credentials: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, request_options: nil)
+               client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, credentials: nil, name: nil, voicemail_detection: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, compliance_plan: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, hooks: nil, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -859,7 +924,6 @@ module Vapi
             voice: voice,
             firstMessage: first_message,
             firstMessageMode: first_message_mode,
-            hipaaEnabled: hipaa_enabled,
             clientMessages: client_messages,
             serverMessages: server_messages,
             silenceTimeoutSeconds: silence_timeout_seconds,
@@ -874,6 +938,7 @@ module Vapi
             voicemailMessage: voicemail_message,
             endCallMessage: end_call_message,
             endCallPhrases: end_call_phrases,
+            compliancePlan: compliance_plan,
             metadata: metadata,
             analysisPlan: analysis_plan,
             artifactPlan: artifact_plan,
@@ -882,7 +947,8 @@ module Vapi
             stopSpeakingPlan: stop_speaking_plan,
             monitorPlan: monitor_plan,
             credentialIds: credential_ids,
-            server: server
+            server: server,
+            hooks: hooks
           }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/assistant/#{id}"
         end

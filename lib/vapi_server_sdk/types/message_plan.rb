@@ -25,6 +25,9 @@ module Vapi
     #  the user speaks.
     #  @default 10
     attr_reader :idle_timeout_seconds
+    # @return [String] This is the message that the assistant will say if the call ends due to silence.
+    #  If unspecified, it will hang up without saying anything.
+    attr_reader :silence_timeout_message
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -50,18 +53,22 @@ module Vapi
     #  The clock starts when the assistant finishes speaking and remains active until
     #  the user speaks.
     #  @default 10
+    # @param silence_timeout_message [String] This is the message that the assistant will say if the call ends due to silence.
+    #  If unspecified, it will hang up without saying anything.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::MessagePlan]
     def initialize(idle_messages: OMIT, idle_message_max_spoken_count: OMIT, idle_timeout_seconds: OMIT,
-                   additional_properties: nil)
+                   silence_timeout_message: OMIT, additional_properties: nil)
       @idle_messages = idle_messages if idle_messages != OMIT
       @idle_message_max_spoken_count = idle_message_max_spoken_count if idle_message_max_spoken_count != OMIT
       @idle_timeout_seconds = idle_timeout_seconds if idle_timeout_seconds != OMIT
+      @silence_timeout_message = silence_timeout_message if silence_timeout_message != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "idleMessages": idle_messages,
         "idleMessageMaxSpokenCount": idle_message_max_spoken_count,
-        "idleTimeoutSeconds": idle_timeout_seconds
+        "idleTimeoutSeconds": idle_timeout_seconds,
+        "silenceTimeoutMessage": silence_timeout_message
       }.reject do |_k, v|
         v == OMIT
       end
@@ -77,10 +84,12 @@ module Vapi
       idle_messages = parsed_json["idleMessages"]
       idle_message_max_spoken_count = parsed_json["idleMessageMaxSpokenCount"]
       idle_timeout_seconds = parsed_json["idleTimeoutSeconds"]
+      silence_timeout_message = parsed_json["silenceTimeoutMessage"]
       new(
         idle_messages: idle_messages,
         idle_message_max_spoken_count: idle_message_max_spoken_count,
         idle_timeout_seconds: idle_timeout_seconds,
+        silence_timeout_message: silence_timeout_message,
         additional_properties: struct
       )
     end
@@ -102,6 +111,7 @@ module Vapi
       obj.idle_messages&.is_a?(Array) != false || raise("Passed value for field obj.idle_messages is not the expected type, validation failed.")
       obj.idle_message_max_spoken_count&.is_a?(Float) != false || raise("Passed value for field obj.idle_message_max_spoken_count is not the expected type, validation failed.")
       obj.idle_timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.idle_timeout_seconds is not the expected type, validation failed.")
+      obj.silence_timeout_message&.is_a?(String) != false || raise("Passed value for field obj.silence_timeout_message is not the expected type, validation failed.")
     end
   end
 end

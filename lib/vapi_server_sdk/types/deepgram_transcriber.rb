@@ -49,10 +49,19 @@ module Vapi
     #  `assistant.serverMessages`.
     #  @default false
     attr_reader :code_switching_enabled
+    # @return [Boolean] If set to true, this will add mip_opt_out=true as a query parameter of all API
+    #  requests. See
+    #  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
+    #  This will only be used if you are using your own Deepgram API key.
+    #  @default false
+    attr_reader :mip_opt_out
     # @return [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
     #  specific words. Anything that may not be a common word, like your company name,
     #  should be added here.
     attr_reader :keywords
+    # @return [Array<String>] Keyterm Prompting allows you improve Keyword Recall Rate (KRR) for important
+    #  keyterms or phrases up to 90%.
+    attr_reader :keyterm
     # @return [Float] This is the timeout after which Deepgram will send transcription on user
     #  silence. You can read in-depth documentation here:
     #  https://developers.deepgram.com/docs/endpointing.
@@ -113,9 +122,16 @@ module Vapi
     #  - To receive `language-change-detected` webhook events, add it to
     #  `assistant.serverMessages`.
     #  @default false
+    # @param mip_opt_out [Boolean] If set to true, this will add mip_opt_out=true as a query parameter of all API
+    #  requests. See
+    #  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
+    #  This will only be used if you are using your own Deepgram API key.
+    #  @default false
     # @param keywords [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
     #  specific words. Anything that may not be a common word, like your company name,
     #  should be added here.
+    # @param keyterm [Array<String>] Keyterm Prompting allows you improve Keyword Recall Rate (KRR) for important
+    #  keyterms or phrases up to 90%.
     # @param endpointing [Float] This is the timeout after which Deepgram will send transcription on user
     #  silence. You can read in-depth documentation here:
     #  https://developers.deepgram.com/docs/endpointing.
@@ -131,13 +147,15 @@ module Vapi
     #  @default 10
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::DeepgramTranscriber]
-    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, code_switching_enabled: OMIT, keywords: OMIT,
-                   endpointing: OMIT, additional_properties: nil)
+    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, code_switching_enabled: OMIT, mip_opt_out: OMIT,
+                   keywords: OMIT, keyterm: OMIT, endpointing: OMIT, additional_properties: nil)
       @model = model if model != OMIT
       @language = language if language != OMIT
       @smart_format = smart_format if smart_format != OMIT
       @code_switching_enabled = code_switching_enabled if code_switching_enabled != OMIT
+      @mip_opt_out = mip_opt_out if mip_opt_out != OMIT
       @keywords = keywords if keywords != OMIT
+      @keyterm = keyterm if keyterm != OMIT
       @endpointing = endpointing if endpointing != OMIT
       @additional_properties = additional_properties
       @_field_set = {
@@ -145,7 +163,9 @@ module Vapi
         "language": language,
         "smartFormat": smart_format,
         "codeSwitchingEnabled": code_switching_enabled,
+        "mipOptOut": mip_opt_out,
         "keywords": keywords,
+        "keyterm": keyterm,
         "endpointing": endpointing
       }.reject do |_k, v|
         v == OMIT
@@ -163,14 +183,18 @@ module Vapi
       language = parsed_json["language"]
       smart_format = parsed_json["smartFormat"]
       code_switching_enabled = parsed_json["codeSwitchingEnabled"]
+      mip_opt_out = parsed_json["mipOptOut"]
       keywords = parsed_json["keywords"]
+      keyterm = parsed_json["keyterm"]
       endpointing = parsed_json["endpointing"]
       new(
         model: model,
         language: language,
         smart_format: smart_format,
         code_switching_enabled: code_switching_enabled,
+        mip_opt_out: mip_opt_out,
         keywords: keywords,
+        keyterm: keyterm,
         endpointing: endpointing,
         additional_properties: struct
       )
@@ -194,7 +218,9 @@ module Vapi
       obj.language&.is_a?(Vapi::DeepgramTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.smart_format&.is_a?(Boolean) != false || raise("Passed value for field obj.smart_format is not the expected type, validation failed.")
       obj.code_switching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.code_switching_enabled is not the expected type, validation failed.")
+      obj.mip_opt_out&.is_a?(Boolean) != false || raise("Passed value for field obj.mip_opt_out is not the expected type, validation failed.")
       obj.keywords&.is_a?(Array) != false || raise("Passed value for field obj.keywords is not the expected type, validation failed.")
+      obj.keyterm&.is_a?(Array) != false || raise("Passed value for field obj.keyterm is not the expected type, validation failed.")
       obj.endpointing&.is_a?(Float) != false || raise("Passed value for field obj.endpointing is not the expected type, validation failed.")
     end
   end

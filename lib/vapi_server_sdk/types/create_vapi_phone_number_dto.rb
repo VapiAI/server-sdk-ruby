@@ -15,6 +15,8 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
+    # @return [String] This is the area code of the phone number to purchase.
+    attr_reader :number_desired_area_code
     # @return [String] This is the SIP URI of the phone number. You can SIP INVITE this. The assistant
     #  attached to this number will answer.
     #  This is case-insensitive.
@@ -56,6 +58,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
+    # @param number_desired_area_code [String] This is the area code of the phone number to purchase.
     # @param sip_uri [String] This is the SIP URI of the phone number. You can SIP INVITE this. The assistant
     #  attached to this number will answer.
     #  This is case-insensitive.
@@ -79,10 +82,11 @@ module Vapi
     #  3. org.server
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateVapiPhoneNumberDto]
-    def initialize(sip_uri:, fallback_destination: OMIT, authentication: OMIT, name: OMIT, assistant_id: OMIT,
-                   squad_id: OMIT, server: OMIT, additional_properties: nil)
+    def initialize(fallback_destination: OMIT, number_desired_area_code: OMIT, sip_uri: OMIT, authentication: OMIT,
+                   name: OMIT, assistant_id: OMIT, squad_id: OMIT, server: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
-      @sip_uri = sip_uri
+      @number_desired_area_code = number_desired_area_code if number_desired_area_code != OMIT
+      @sip_uri = sip_uri if sip_uri != OMIT
       @authentication = authentication if authentication != OMIT
       @name = name if name != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
@@ -91,6 +95,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fallbackDestination": fallback_destination,
+        "numberDesiredAreaCode": number_desired_area_code,
         "sipUri": sip_uri,
         "authentication": authentication,
         "name": name,
@@ -115,6 +120,7 @@ module Vapi
         fallback_destination = parsed_json["fallbackDestination"].to_json
         fallback_destination = Vapi::CreateVapiPhoneNumberDtoFallbackDestination.from_json(json_object: fallback_destination)
       end
+      number_desired_area_code = parsed_json["numberDesiredAreaCode"]
       sip_uri = parsed_json["sipUri"]
       if parsed_json["authentication"].nil?
         authentication = nil
@@ -133,6 +139,7 @@ module Vapi
       end
       new(
         fallback_destination: fallback_destination,
+        number_desired_area_code: number_desired_area_code,
         sip_uri: sip_uri,
         authentication: authentication,
         name: name,
@@ -158,7 +165,8 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::CreateVapiPhoneNumberDtoFallbackDestination.validate_raw(obj: obj.fallback_destination)
-      obj.sip_uri.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
+      obj.number_desired_area_code&.is_a?(String) != false || raise("Passed value for field obj.number_desired_area_code is not the expected type, validation failed.")
+      obj.sip_uri&.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
       obj.authentication.nil? || Vapi::SipAuthentication.validate_raw(obj: obj.authentication)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")

@@ -2,6 +2,7 @@
 
 require_relative "twilio_phone_number_fallback_destination"
 require "date"
+require_relative "twilio_phone_number_status"
 require_relative "server"
 require "ostruct"
 require "json"
@@ -23,6 +24,8 @@ module Vapi
     attr_reader :created_at
     # @return [DateTime] This is the ISO 8601 date-time string of when the phone number was last updated.
     attr_reader :updated_at
+    # @return [Vapi::TwilioPhoneNumberStatus] This is the status of the phone number.
+    attr_reader :status
     # @return [String] This is the name of the phone number. This is just for your own reference.
     attr_reader :name
     # @return [String] This is the assistant that will be used for incoming calls to this phone number.
@@ -66,6 +69,7 @@ module Vapi
     # @param org_id [String] This is the unique identifier for the org that this phone number belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the phone number was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the phone number was last updated.
+    # @param status [Vapi::TwilioPhoneNumberStatus] This is the status of the phone number.
     # @param name [String] This is the name of the phone number. This is just for your own reference.
     # @param assistant_id [String] This is the assistant that will be used for incoming calls to this phone number.
     #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
@@ -86,13 +90,14 @@ module Vapi
     # @param twilio_auth_token [String] This is the Twilio Auth Token for the phone number.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TwilioPhoneNumber]
-    def initialize(id:, org_id:, created_at:, updated_at:, number:, twilio_account_sid:, twilio_auth_token:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT,
-                   squad_id: OMIT, server: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, created_at:, updated_at:, number:, twilio_account_sid:, twilio_auth_token:, fallback_destination: OMIT, status: OMIT, name: OMIT,
+                   assistant_id: OMIT, squad_id: OMIT, server: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
       @updated_at = updated_at
+      @status = status if status != OMIT
       @name = name if name != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
       @squad_id = squad_id if squad_id != OMIT
@@ -107,6 +112,7 @@ module Vapi
         "orgId": org_id,
         "createdAt": created_at,
         "updatedAt": updated_at,
+        "status": status,
         "name": name,
         "assistantId": assistant_id,
         "squadId": squad_id,
@@ -136,6 +142,7 @@ module Vapi
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
+      status = parsed_json["status"]
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]
       squad_id = parsed_json["squadId"]
@@ -154,6 +161,7 @@ module Vapi
         org_id: org_id,
         created_at: created_at,
         updated_at: updated_at,
+        status: status,
         name: name,
         assistant_id: assistant_id,
         squad_id: squad_id,
@@ -184,6 +192,7 @@ module Vapi
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
+      obj.status&.is_a?(Vapi::TwilioPhoneNumberStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")

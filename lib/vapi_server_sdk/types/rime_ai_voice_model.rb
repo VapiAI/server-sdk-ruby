@@ -5,5 +5,6 @@ module Vapi
   class RimeAiVoiceModel
     V_1 = "v1"
     MIST = "mist"
+    MISTV_2 = "mistv2"
   end
 end

@@ -13,6 +13,9 @@ require_relative "vapi_server_sdk/tools/client"
 require_relative "vapi_server_sdk/files/client"
 require_relative "vapi_server_sdk/analytics/client"
 require_relative "vapi_server_sdk/logs/client"
+require_relative "vapi_server_sdk/test_suites/client"
+require_relative "vapi_server_sdk/test_suite_tests/client"
+require_relative "vapi_server_sdk/test_suite_runs/client"
 
 module Vapi
   class Client
@@ -36,6 +39,12 @@ module Vapi
     attr_reader :analytics
     # @return [Vapi::LogsClient]
     attr_reader :logs
+    # @return [Vapi::TestSuitesClient]
+    attr_reader :test_suites
+    # @return [Vapi::TestSuiteTestsClient]
+    attr_reader :test_suite_tests
+    # @return [Vapi::TestSuiteRunsClient]
+    attr_reader :test_suite_runs
 
     # @param base_url [String]
     # @param environment [Vapi::Environment]
@@ -62,6 +71,9 @@ module Vapi
       @files = Vapi::FilesClient.new(request_client: @request_client)
       @analytics = Vapi::AnalyticsClient.new(request_client: @request_client)
       @logs = Vapi::LogsClient.new(request_client: @request_client)
+      @test_suites = Vapi::TestSuitesClient.new(request_client: @request_client)
+      @test_suite_tests = Vapi::TestSuiteTestsClient.new(request_client: @request_client)
+      @test_suite_runs = Vapi::TestSuiteRunsClient.new(request_client: @request_client)
     end
   end
 
@@ -86,6 +98,12 @@ module Vapi
     attr_reader :analytics
     # @return [Vapi::AsyncLogsClient]
     attr_reader :logs
+    # @return [Vapi::AsyncTestSuitesClient]
+    attr_reader :test_suites
+    # @return [Vapi::AsyncTestSuiteTestsClient]
+    attr_reader :test_suite_tests
+    # @return [Vapi::AsyncTestSuiteRunsClient]
+    attr_reader :test_suite_runs
 
     # @param base_url [String]
     # @param environment [Vapi::Environment]
@@ -112,6 +130,9 @@ module Vapi
       @files = Vapi::AsyncFilesClient.new(request_client: @async_request_client)
       @analytics = Vapi::AsyncAnalyticsClient.new(request_client: @async_request_client)
       @logs = Vapi::AsyncLogsClient.new(request_client: @async_request_client)
+      @test_suites = Vapi::AsyncTestSuitesClient.new(request_client: @async_request_client)
+      @test_suite_tests = Vapi::AsyncTestSuiteTestsClient.new(request_client: @async_request_client)
+      @test_suite_runs = Vapi::AsyncTestSuiteRunsClient.new(request_client: @async_request_client)
     end
   end
 end

@@ -31,6 +31,12 @@ module Vapi
     # @return [Array<String>] This is a list of properties that are required.
     #  This only makes sense if the type is "object".
     attr_reader :required
+    # @return [String] This is a regex that will be used to validate data in question.
+    attr_reader :regex
+    # @return [String] This the value that will be used in filling the property.
+    attr_reader :value
+    # @return [String] This the target variable that will be filled with the value of this property.
+    attr_reader :target
     # @return [Array<String>] This array specifies the allowed values that can be used to restrict the output
     #  of the model.
     attr_reader :enum
@@ -62,17 +68,23 @@ module Vapi
     # @param description [String] This is the description to help the model understand what it needs to output.
     # @param required [Array<String>] This is a list of properties that are required.
     #  This only makes sense if the type is "object".
+    # @param regex [String] This is a regex that will be used to validate data in question.
+    # @param value [String] This the value that will be used in filling the property.
+    # @param target [String] This the target variable that will be filled with the value of this property.
     # @param enum [Array<String>] This array specifies the allowed values that can be used to restrict the output
     #  of the model.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::JsonSchema]
-    def initialize(type:, items: OMIT, properties: OMIT, description: OMIT, required: OMIT, enum: OMIT,
-                   additional_properties: nil)
+    def initialize(type:, items: OMIT, properties: OMIT, description: OMIT, required: OMIT, regex: OMIT, value: OMIT,
+                   target: OMIT, enum: OMIT, additional_properties: nil)
       @type = type
       @items = items if items != OMIT
       @properties = properties if properties != OMIT
       @description = description if description != OMIT
       @required = required if required != OMIT
+      @regex = regex if regex != OMIT
+      @value = value if value != OMIT
+      @target = target if target != OMIT
       @enum = enum if enum != OMIT
       @additional_properties = additional_properties
       @_field_set = {
@@ -81,6 +93,9 @@ module Vapi
         "properties": properties,
         "description": description,
         "required": required,
+        "regex": regex,
+        "value": value,
+        "target": target,
         "enum": enum
       }.reject do |_k, v|
         v == OMIT
@@ -99,6 +114,9 @@ module Vapi
       properties = parsed_json["properties"]
       description = parsed_json["description"]
       required = parsed_json["required"]
+      regex = parsed_json["regex"]
+      value = parsed_json["value"]
+      target = parsed_json["target"]
       enum = parsed_json["enum"]
       new(
         type: type,
@@ -106,6 +124,9 @@ module Vapi
         properties: properties,
         description: description,
         required: required,
+        regex: regex,
+        value: value,
+        target: target,
         enum: enum,
         additional_properties: struct
       )
@@ -130,6 +151,9 @@ module Vapi
       obj.properties&.is_a?(Hash) != false || raise("Passed value for field obj.properties is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")
       obj.required&.is_a?(Array) != false || raise("Passed value for field obj.required is not the expected type, validation failed.")
+      obj.regex&.is_a?(String) != false || raise("Passed value for field obj.regex is not the expected type, validation failed.")
+      obj.value&.is_a?(String) != false || raise("Passed value for field obj.value is not the expected type, validation failed.")
+      obj.target&.is_a?(String) != false || raise("Passed value for field obj.target is not the expected type, validation failed.")
       obj.enum&.is_a?(Array) != false || raise("Passed value for field obj.enum is not the expected type, validation failed.")
     end
   end

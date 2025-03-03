@@ -8,5 +8,6 @@ module Vapi
     COUNT = "count"
     MIN = "min"
     MAX = "max"
+    HISTORY = "history"
   end
 end

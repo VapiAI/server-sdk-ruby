@@ -13,6 +13,7 @@ module Vapi
     SPEECH_UPDATE = "speech-update"
     STATUS_UPDATE = "status-update"
     TRANSCRIPT = "transcript"
+    TRANSCRIPT_TRANSCRIPT_TYPE_FINAL = "transcript[transcriptType='final']"
     TOOL_CALLS = "tool-calls"
     TRANSFER_DESTINATION_REQUEST = "transfer-destination-request"
     TRANSFER_UPDATE = "transfer-update"

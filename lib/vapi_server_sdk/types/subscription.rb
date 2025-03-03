@@ -28,6 +28,10 @@ module Vapi
     attr_reader :concurrency_counter
     # @return [Float] This is the default concurrency limit for the subscription.
     attr_reader :concurrency_limit_included
+    # @return [Float] This is the number of free phone numbers the subscription has
+    attr_reader :phone_numbers_counter
+    # @return [Float] This is the maximum number of free phone numbers the subscription can have
+    attr_reader :phone_numbers_included
     # @return [Float] This is the purchased add-on concurrency limit for the subscription.
     attr_reader :concurrency_limit_purchased
     # @return [Float] This is the ID of the monthly job that charges for subscription add ons and
@@ -61,10 +65,13 @@ module Vapi
     attr_reader :referred_by_email
     # @return [Vapi::AutoReloadPlan] This is the auto reload plan configured for the subscription.
     attr_reader :auto_reload_plan
-    # @return [Float] The number of minutes included in the subscription. Enterprise only.
+    # @return [Float] The number of minutes included in the subscription.
     attr_reader :minutes_included
-    # @return [Float] The number of minutes used in the subscription. Enterprise only.
+    # @return [Float] The number of minutes used in the subscription.
     attr_reader :minutes_used
+    # @return [DateTime] This is the timestamp at which the number of monthly free minutes is scheduled
+    #  to reset at.
+    attr_reader :minutes_used_next_reset_at
     # @return [Float] The per minute charge on minutes that exceed the included minutes. Enterprise
     #  only.
     attr_reader :minutes_overage_cost
@@ -102,6 +109,8 @@ module Vapi
     # @param concurrency_counter [Float] This is the total number of active calls (concurrency) across all orgs under
     #  this subscription.
     # @param concurrency_limit_included [Float] This is the default concurrency limit for the subscription.
+    # @param phone_numbers_counter [Float] This is the number of free phone numbers the subscription has
+    # @param phone_numbers_included [Float] This is the maximum number of free phone numbers the subscription can have
     # @param concurrency_limit_purchased [Float] This is the purchased add-on concurrency limit for the subscription.
     # @param monthly_charge_schedule_id [Float] This is the ID of the monthly job that charges for subscription add ons and
     #  phone numbers.
@@ -122,8 +131,10 @@ module Vapi
     # @param stripe_customer_email [String] This is the customer's email on Stripe.
     # @param referred_by_email [String] This is the email of the referrer for the subscription.
     # @param auto_reload_plan [Vapi::AutoReloadPlan] This is the auto reload plan configured for the subscription.
-    # @param minutes_included [Float] The number of minutes included in the subscription. Enterprise only.
-    # @param minutes_used [Float] The number of minutes used in the subscription. Enterprise only.
+    # @param minutes_included [Float] The number of minutes included in the subscription.
+    # @param minutes_used [Float] The number of minutes used in the subscription.
+    # @param minutes_used_next_reset_at [DateTime] This is the timestamp at which the number of monthly free minutes is scheduled
+    #  to reset at.
     # @param minutes_overage_cost [Float] The per minute charge on minutes that exceed the included minutes. Enterprise
     #  only.
     # @param providers_included [Array<String>] The list of providers included in the subscription. Enterprise only.
@@ -138,7 +149,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Subscription]
     def initialize(id:, created_at:, updated_at:, type:, status:, credits:, concurrency_counter:,
-                   concurrency_limit_included:, concurrency_limit_purchased:, monthly_charge_schedule_id: OMIT, monthly_credit_check_schedule_id: OMIT, stripe_customer_id: OMIT, stripe_payment_method_id: OMIT, slack_support_enabled: OMIT, slack_channel_id: OMIT, hipaa_enabled: OMIT, hipaa_common_paper_agreement_id: OMIT, stripe_payment_method_fingerprint: OMIT, stripe_customer_email: OMIT, referred_by_email: OMIT, auto_reload_plan: OMIT, minutes_included: OMIT, minutes_used: OMIT, minutes_overage_cost: OMIT, providers_included: OMIT, outbound_calls_daily_limit: OMIT, outbound_calls_counter: OMIT, outbound_calls_counter_next_reset_at: OMIT, coupon_ids: OMIT, coupon_usage_left: OMIT, additional_properties: nil)
+                   concurrency_limit_included:, concurrency_limit_purchased:, phone_numbers_counter: OMIT, phone_numbers_included: OMIT, monthly_charge_schedule_id: OMIT, monthly_credit_check_schedule_id: OMIT, stripe_customer_id: OMIT, stripe_payment_method_id: OMIT, slack_support_enabled: OMIT, slack_channel_id: OMIT, hipaa_enabled: OMIT, hipaa_common_paper_agreement_id: OMIT, stripe_payment_method_fingerprint: OMIT, stripe_customer_email: OMIT, referred_by_email: OMIT, auto_reload_plan: OMIT, minutes_included: OMIT, minutes_used: OMIT, minutes_used_next_reset_at: OMIT, minutes_overage_cost: OMIT, providers_included: OMIT, outbound_calls_daily_limit: OMIT, outbound_calls_counter: OMIT, outbound_calls_counter_next_reset_at: OMIT, coupon_ids: OMIT, coupon_usage_left: OMIT, additional_properties: nil)
       @id = id
       @created_at = created_at
       @updated_at = updated_at
@@ -147,6 +158,8 @@ module Vapi
       @credits = credits
       @concurrency_counter = concurrency_counter
       @concurrency_limit_included = concurrency_limit_included
+      @phone_numbers_counter = phone_numbers_counter if phone_numbers_counter != OMIT
+      @phone_numbers_included = phone_numbers_included if phone_numbers_included != OMIT
       @concurrency_limit_purchased = concurrency_limit_purchased
       @monthly_charge_schedule_id = monthly_charge_schedule_id if monthly_charge_schedule_id != OMIT
       @monthly_credit_check_schedule_id = monthly_credit_check_schedule_id if monthly_credit_check_schedule_id != OMIT
@@ -164,6 +177,7 @@ module Vapi
       @auto_reload_plan = auto_reload_plan if auto_reload_plan != OMIT
       @minutes_included = minutes_included if minutes_included != OMIT
       @minutes_used = minutes_used if minutes_used != OMIT
+      @minutes_used_next_reset_at = minutes_used_next_reset_at if minutes_used_next_reset_at != OMIT
       @minutes_overage_cost = minutes_overage_cost if minutes_overage_cost != OMIT
       @providers_included = providers_included if providers_included != OMIT
       @outbound_calls_daily_limit = outbound_calls_daily_limit if outbound_calls_daily_limit != OMIT
@@ -183,6 +197,8 @@ module Vapi
         "credits": credits,
         "concurrencyCounter": concurrency_counter,
         "concurrencyLimitIncluded": concurrency_limit_included,
+        "phoneNumbersCounter": phone_numbers_counter,
+        "phoneNumbersIncluded": phone_numbers_included,
         "concurrencyLimitPurchased": concurrency_limit_purchased,
         "monthlyChargeScheduleId": monthly_charge_schedule_id,
         "monthlyCreditCheckScheduleId": monthly_credit_check_schedule_id,
@@ -198,6 +214,7 @@ module Vapi
         "autoReloadPlan": auto_reload_plan,
         "minutesIncluded": minutes_included,
         "minutesUsed": minutes_used,
+        "minutesUsedNextResetAt": minutes_used_next_reset_at,
         "minutesOverageCost": minutes_overage_cost,
         "providersIncluded": providers_included,
         "outboundCallsDailyLimit": outbound_calls_daily_limit,
@@ -225,6 +242,8 @@ module Vapi
       credits = parsed_json["credits"]
       concurrency_counter = parsed_json["concurrencyCounter"]
       concurrency_limit_included = parsed_json["concurrencyLimitIncluded"]
+      phone_numbers_counter = parsed_json["phoneNumbersCounter"]
+      phone_numbers_included = parsed_json["phoneNumbersIncluded"]
       concurrency_limit_purchased = parsed_json["concurrencyLimitPurchased"]
       monthly_charge_schedule_id = parsed_json["monthlyChargeScheduleId"]
       monthly_credit_check_schedule_id = parsed_json["monthlyCreditCheckScheduleId"]
@@ -245,6 +264,9 @@ module Vapi
       end
       minutes_included = parsed_json["minutesIncluded"]
       minutes_used = parsed_json["minutesUsed"]
+      minutes_used_next_reset_at = unless parsed_json["minutesUsedNextResetAt"].nil?
+                                     DateTime.parse(parsed_json["minutesUsedNextResetAt"])
+                                   end
       minutes_overage_cost = parsed_json["minutesOverageCost"]
       providers_included = parsed_json["providersIncluded"]
       outbound_calls_daily_limit = parsed_json["outboundCallsDailyLimit"]
@@ -263,6 +285,8 @@ module Vapi
         credits: credits,
         concurrency_counter: concurrency_counter,
         concurrency_limit_included: concurrency_limit_included,
+        phone_numbers_counter: phone_numbers_counter,
+        phone_numbers_included: phone_numbers_included,
         concurrency_limit_purchased: concurrency_limit_purchased,
         monthly_charge_schedule_id: monthly_charge_schedule_id,
         monthly_credit_check_schedule_id: monthly_credit_check_schedule_id,
@@ -278,6 +302,7 @@ module Vapi
         auto_reload_plan: auto_reload_plan,
         minutes_included: minutes_included,
         minutes_used: minutes_used,
+        minutes_used_next_reset_at: minutes_used_next_reset_at,
         minutes_overage_cost: minutes_overage_cost,
         providers_included: providers_included,
         outbound_calls_daily_limit: outbound_calls_daily_limit,
@@ -311,6 +336,8 @@ module Vapi
       obj.credits.is_a?(String) != false || raise("Passed value for field obj.credits is not the expected type, validation failed.")
       obj.concurrency_counter.is_a?(Float) != false || raise("Passed value for field obj.concurrency_counter is not the expected type, validation failed.")
       obj.concurrency_limit_included.is_a?(Float) != false || raise("Passed value for field obj.concurrency_limit_included is not the expected type, validation failed.")
+      obj.phone_numbers_counter&.is_a?(Float) != false || raise("Passed value for field obj.phone_numbers_counter is not the expected type, validation failed.")
+      obj.phone_numbers_included&.is_a?(Float) != false || raise("Passed value for field obj.phone_numbers_included is not the expected type, validation failed.")
       obj.concurrency_limit_purchased.is_a?(Float) != false || raise("Passed value for field obj.concurrency_limit_purchased is not the expected type, validation failed.")
       obj.monthly_charge_schedule_id&.is_a?(Float) != false || raise("Passed value for field obj.monthly_charge_schedule_id is not the expected type, validation failed.")
       obj.monthly_credit_check_schedule_id&.is_a?(Float) != false || raise("Passed value for field obj.monthly_credit_check_schedule_id is not the expected type, validation failed.")
@@ -326,6 +353,7 @@ module Vapi
       obj.auto_reload_plan.nil? || Vapi::AutoReloadPlan.validate_raw(obj: obj.auto_reload_plan)
       obj.minutes_included&.is_a?(Float) != false || raise("Passed value for field obj.minutes_included is not the expected type, validation failed.")
       obj.minutes_used&.is_a?(Float) != false || raise("Passed value for field obj.minutes_used is not the expected type, validation failed.")
+      obj.minutes_used_next_reset_at&.is_a?(DateTime) != false || raise("Passed value for field obj.minutes_used_next_reset_at is not the expected type, validation failed.")
       obj.minutes_overage_cost&.is_a?(Float) != false || raise("Passed value for field obj.minutes_overage_cost is not the expected type, validation failed.")
       obj.providers_included&.is_a?(Array) != false || raise("Passed value for field obj.providers_included is not the expected type, validation failed.")
       obj.outbound_calls_daily_limit&.is_a?(Float) != false || raise("Passed value for field obj.outbound_calls_daily_limit is not the expected type, validation failed.")

@@ -6,11 +6,13 @@ require "json"
 module Vapi
   class Say
     # @return [String]
-    attr_reader :type
+    attr_reader :exact
     # @return [String]
-    attr_reader :instruction
+    attr_reader :prompt
     # @return [String]
     attr_reader :name
+    # @return [Hash{String => Object}] This is for metadata you want to store on the task.
+    attr_reader :metadata
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -19,17 +21,21 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
-    # @param instruction [String]
+    # @param exact [String]
+    # @param prompt [String]
     # @param name [String]
+    # @param metadata [Hash{String => Object}] This is for metadata you want to store on the task.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Say]
-    def initialize(type:, instruction:, name:, additional_properties: nil)
-      @type = type
-      @instruction = instruction
+    def initialize(name:, exact: OMIT, prompt: OMIT, metadata: OMIT, additional_properties: nil)
+      @exact = exact if exact != OMIT
+      @prompt = prompt if prompt != OMIT
       @name = name
+      @metadata = metadata if metadata != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "instruction": instruction, "name": name }
+      @_field_set = { "exact": exact, "prompt": prompt, "name": name, "metadata": metadata }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of Say
@@ -39,13 +45,15 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
-      instruction = parsed_json["instruction"]
+      exact = parsed_json["exact"]
+      prompt = parsed_json["prompt"]
       name = parsed_json["name"]
+      metadata = parsed_json["metadata"]
       new(
-        type: type,
-        instruction: instruction,
+        exact: exact,
+        prompt: prompt,
         name: name,
+        metadata: metadata,
         additional_properties: struct
       )
     end
@@ -64,9 +72,10 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
-      obj.instruction.is_a?(String) != false || raise("Passed value for field obj.instruction is not the expected type, validation failed.")
+      obj.exact&.is_a?(String) != false || raise("Passed value for field obj.exact is not the expected type, validation failed.")
+      obj.prompt&.is_a?(String) != false || raise("Passed value for field obj.prompt is not the expected type, validation failed.")
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")
     end
   end
 end

@@ -5,13 +5,9 @@ require_relative "transfer_destination_number"
 require_relative "transfer_destination_sip"
 
 module Vapi
-  # This is the fallback destination an inbound call will be transferred to if:
-  #  1. `assistantId` is not set
-  #  2. `squadId` is not set
-  #  3. and, `assistant-request` message to the `serverUrl` fails
-  #  If this is not set and above conditions are met, the inbound call is hung up
-  #  with an error message.
-  class BuyPhoneNumberDtoFallbackDestination
+  # This is the destination details for the transfer - can be a phone number or SIP
+  #  URI
+  class TransferAssistantHookActionDestination
     # @return [Object]
     attr_reader :member
     # @return [String]
@@ -22,16 +18,17 @@ module Vapi
 
     # @param member [Object]
     # @param discriminant [String]
-    # @return [Vapi::BuyPhoneNumberDtoFallbackDestination]
+    # @return [Vapi::TransferAssistantHookActionDestination]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
 
-    # Deserialize a JSON object to an instance of BuyPhoneNumberDtoFallbackDestination
+    # Deserialize a JSON object to an instance of
+    #  TransferAssistantHookActionDestination
     #
     # @param json_object [String]
-    # @return [Vapi::BuyPhoneNumberDtoFallbackDestination]
+    # @return [Vapi::TransferAssistantHookActionDestination]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       member = case struct.type
@@ -86,13 +83,13 @@ module Vapi
     end
 
     # @param member [Vapi::TransferDestinationNumber]
-    # @return [Vapi::BuyPhoneNumberDtoFallbackDestination]
+    # @return [Vapi::TransferAssistantHookActionDestination]
     def self.number(member:)
       new(member: member, discriminant: "number")
     end
 
     # @param member [Vapi::TransferDestinationSip]
-    # @return [Vapi::BuyPhoneNumberDtoFallbackDestination]
+    # @return [Vapi::TransferAssistantHookActionDestination]
     def self.sip(member:)
       new(member: member, discriminant: "sip")
     end

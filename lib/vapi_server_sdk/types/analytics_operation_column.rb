@@ -13,5 +13,6 @@ module Vapi
     COST_BREAKDOWN_LLM_PROMPT_TOKENS = "costBreakdown.llmPromptTokens"
     COST_BREAKDOWN_LLM_COMPLETION_TOKENS = "costBreakdown.llmCompletionTokens"
     DURATION = "duration"
+    CONCURRENCY = "concurrency"
   end
 end

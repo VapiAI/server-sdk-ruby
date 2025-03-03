@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
-require_relative "analytics_query"
+require_relative "hook_on"
+require_relative "say_hook"
 require "ostruct"
 require "json"
 
 module Vapi
-  class AnalyticsQueryDto
-    # @return [Array<Vapi::AnalyticsQuery>] This is the list of metric queries you want to perform.
-    attr_reader :queries
+  class Hook
+    # @return [Vapi::HookOn]
+    attr_reader :on
+    # @return [Array<Vapi::SayHook>]
+    attr_reader :do_
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -16,30 +19,37 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param queries [Array<Vapi::AnalyticsQuery>] This is the list of metric queries you want to perform.
+    # @param on [Vapi::HookOn]
+    # @param do_ [Array<Vapi::SayHook>]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::AnalyticsQueryDto]
-    def initialize(queries:, additional_properties: nil)
-      @queries = queries
+    # @return [Vapi::Hook]
+    def initialize(on:, do_:, additional_properties: nil)
+      @on = on
+      @do_ = do_
       @additional_properties = additional_properties
-      @_field_set = { "queries": queries }
+      @_field_set = { "on": on, "do": do_ }
     end
 
-    # Deserialize a JSON object to an instance of AnalyticsQueryDto
+    # Deserialize a JSON object to an instance of Hook
     #
     # @param json_object [String]
-    # @return [Vapi::AnalyticsQueryDto]
+    # @return [Vapi::Hook]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      queries = parsed_json["queries"]&.map do |item|
+      on = parsed_json["on"]
+      do_ = parsed_json["do"]&.map do |item|
         item = item.to_json
-        Vapi::AnalyticsQuery.from_json(json_object: item)
+        Vapi::SayHook.from_json(json_object: item)
       end
-      new(queries: queries, additional_properties: struct)
+      new(
+        on: on,
+        do_: do_,
+        additional_properties: struct
+      )
     end
 
-    # Serialize an instance of AnalyticsQueryDto to a JSON object
+    # Serialize an instance of Hook to a JSON object
     #
     # @return [String]
     def to_json(*_args)
@@ -53,7 +63,8 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.queries.is_a?(Array) != false || raise("Passed value for field obj.queries is not the expected type, validation failed.")
+      obj.on.is_a?(Vapi::HookOn) != false || raise("Passed value for field obj.on is not the expected type, validation failed.")
+      obj.do_.is_a?(Array) != false || raise("Passed value for field obj.do_ is not the expected type, validation failed.")
     end
   end
 end

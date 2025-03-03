@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "format_plan_replacements_item"
+require_relative "format_plan_formatters_enabled_item"
 require "ostruct"
 require "json"
 
@@ -35,6 +36,13 @@ module Vapi
     #  type. Eg. `{ type: 'regex', regex: '\\b[a-zA-Z]{5}\\b', value: 'hi' }`
     #  @default []
     attr_reader :replacements
+    # @return [Array<Vapi::FormatPlanFormattersEnabledItem>] List of formatters to apply. If not provided, all default formatters will be
+    #  applied.
+    #  If provided, only the specified formatters will be applied.
+    #  Note: Some essential formatters like angle bracket removal will always be
+    #  applied.
+    #  @default undefined
+    attr_reader :formatters_enabled
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -69,17 +77,26 @@ module Vapi
     #  - To replace a word or phrase that matches a pattern, use the `RegexReplacement`
     #  type. Eg. `{ type: 'regex', regex: '\\b[a-zA-Z]{5}\\b', value: 'hi' }`
     #  @default []
+    # @param formatters_enabled [Array<Vapi::FormatPlanFormattersEnabledItem>] List of formatters to apply. If not provided, all default formatters will be
+    #  applied.
+    #  If provided, only the specified formatters will be applied.
+    #  Note: Some essential formatters like angle bracket removal will always be
+    #  applied.
+    #  @default undefined
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FormatPlan]
-    def initialize(enabled: OMIT, number_to_digits_cutoff: OMIT, replacements: OMIT, additional_properties: nil)
+    def initialize(enabled: OMIT, number_to_digits_cutoff: OMIT, replacements: OMIT, formatters_enabled: OMIT,
+                   additional_properties: nil)
       @enabled = enabled if enabled != OMIT
       @number_to_digits_cutoff = number_to_digits_cutoff if number_to_digits_cutoff != OMIT
       @replacements = replacements if replacements != OMIT
+      @formatters_enabled = formatters_enabled if formatters_enabled != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "enabled": enabled,
         "numberToDigitsCutoff": number_to_digits_cutoff,
-        "replacements": replacements
+        "replacements": replacements,
+        "formattersEnabled": formatters_enabled
       }.reject do |_k, v|
         v == OMIT
       end
@@ -98,10 +115,12 @@ module Vapi
         item = item.to_json
         Vapi::FormatPlanReplacementsItem.from_json(json_object: item)
       end
+      formatters_enabled = parsed_json["formattersEnabled"]
       new(
         enabled: enabled,
         number_to_digits_cutoff: number_to_digits_cutoff,
         replacements: replacements,
+        formatters_enabled: formatters_enabled,
         additional_properties: struct
       )
     end
@@ -123,6 +142,7 @@ module Vapi
       obj.enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.enabled is not the expected type, validation failed.")
       obj.number_to_digits_cutoff&.is_a?(Float) != false || raise("Passed value for field obj.number_to_digits_cutoff is not the expected type, validation failed.")
       obj.replacements&.is_a?(Array) != false || raise("Passed value for field obj.replacements is not the expected type, validation failed.")
+      obj.formatters_enabled&.is_a?(Array) != false || raise("Passed value for field obj.formatters_enabled is not the expected type, validation failed.")
     end
   end
 end

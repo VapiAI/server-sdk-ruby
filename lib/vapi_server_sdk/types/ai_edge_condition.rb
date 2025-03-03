@@ -4,9 +4,9 @@ require "ostruct"
 require "json"
 
 module Vapi
-  class ProgrammaticEdgeCondition
-    # @return [String]
-    attr_reader :boolean_expression
+  class AiEdgeCondition
+    # @return [Array<String>]
+    attr_reader :matches
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -15,29 +15,27 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param boolean_expression [String]
+    # @param matches [Array<String>]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::ProgrammaticEdgeCondition]
-    def initialize(boolean_expression: OMIT, additional_properties: nil)
-      @boolean_expression = boolean_expression if boolean_expression != OMIT
+    # @return [Vapi::AiEdgeCondition]
+    def initialize(matches:, additional_properties: nil)
+      @matches = matches
       @additional_properties = additional_properties
-      @_field_set = { "booleanExpression": boolean_expression }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "matches": matches }
     end
 
-    # Deserialize a JSON object to an instance of ProgrammaticEdgeCondition
+    # Deserialize a JSON object to an instance of AiEdgeCondition
     #
     # @param json_object [String]
-    # @return [Vapi::ProgrammaticEdgeCondition]
+    # @return [Vapi::AiEdgeCondition]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      boolean_expression = parsed_json["booleanExpression"]
-      new(boolean_expression: boolean_expression, additional_properties: struct)
+      matches = parsed_json["matches"]
+      new(matches: matches, additional_properties: struct)
     end
 
-    # Serialize an instance of ProgrammaticEdgeCondition to a JSON object
+    # Serialize an instance of AiEdgeCondition to a JSON object
     #
     # @return [String]
     def to_json(*_args)
@@ -51,7 +49,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.boolean_expression&.is_a?(String) != false || raise("Passed value for field obj.boolean_expression is not the expected type, validation failed.")
+      obj.matches.is_a?(Array) != false || raise("Passed value for field obj.matches is not the expected type, validation failed.")
     end
   end
 end

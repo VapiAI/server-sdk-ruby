@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "analytics_query_table"
 require_relative "analytics_query_group_by_item"
 require_relative "time_range"
 require_relative "analytics_operation"
@@ -8,7 +9,7 @@ require "json"
 
 module Vapi
   class AnalyticsQuery
-    # @return [String] This is the table you want to query.
+    # @return [Vapi::AnalyticsQueryTable] This is the table you want to query.
     attr_reader :table
     # @return [Array<Vapi::AnalyticsQueryGroupByItem>] This is the list of columns you want to group by.
     attr_reader :group_by
@@ -27,7 +28,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param table [String] This is the table you want to query.
+    # @param table [Vapi::AnalyticsQueryTable] This is the table you want to query.
     # @param group_by [Array<Vapi::AnalyticsQueryGroupByItem>] This is the list of columns you want to group by.
     # @param name [String] This is the name of the query. This will be used to identify the query in the
     #  response.
@@ -97,7 +98,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.table.is_a?(String) != false || raise("Passed value for field obj.table is not the expected type, validation failed.")
+      obj.table.is_a?(Vapi::AnalyticsQueryTable) != false || raise("Passed value for field obj.table is not the expected type, validation failed.")
       obj.group_by&.is_a?(Array) != false || raise("Passed value for field obj.group_by is not the expected type, validation failed.")
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.time_range.nil? || Vapi::TimeRange.validate_raw(obj: obj.time_range)

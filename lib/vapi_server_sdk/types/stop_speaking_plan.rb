@@ -32,6 +32,14 @@ module Vapi
     #  Defaults to 1.
     #  @default 1
     attr_reader :backoff_seconds
+    # @return [Array<String>] These are the phrases that will never interrupt the assistant, even if numWords
+    #  threshold is met.
+    #  These are typically acknowledgement or backchanneling phrases.
+    attr_reader :acknowledgement_phrases
+    # @return [Array<String>] These are the phrases that will always interrupt the assistant immediately,
+    #  regardless of numWords.
+    #  These are typically phrases indicating disagreement or desire to stop.
+    attr_reader :interruption_phrases
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -64,17 +72,28 @@ module Vapi
     #  being interrupted.
     #  Defaults to 1.
     #  @default 1
+    # @param acknowledgement_phrases [Array<String>] These are the phrases that will never interrupt the assistant, even if numWords
+    #  threshold is met.
+    #  These are typically acknowledgement or backchanneling phrases.
+    # @param interruption_phrases [Array<String>] These are the phrases that will always interrupt the assistant immediately,
+    #  regardless of numWords.
+    #  These are typically phrases indicating disagreement or desire to stop.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::StopSpeakingPlan]
-    def initialize(num_words: OMIT, voice_seconds: OMIT, backoff_seconds: OMIT, additional_properties: nil)
+    def initialize(num_words: OMIT, voice_seconds: OMIT, backoff_seconds: OMIT, acknowledgement_phrases: OMIT,
+                   interruption_phrases: OMIT, additional_properties: nil)
       @num_words = num_words if num_words != OMIT
       @voice_seconds = voice_seconds if voice_seconds != OMIT
       @backoff_seconds = backoff_seconds if backoff_seconds != OMIT
+      @acknowledgement_phrases = acknowledgement_phrases if acknowledgement_phrases != OMIT
+      @interruption_phrases = interruption_phrases if interruption_phrases != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "numWords": num_words,
         "voiceSeconds": voice_seconds,
-        "backoffSeconds": backoff_seconds
+        "backoffSeconds": backoff_seconds,
+        "acknowledgementPhrases": acknowledgement_phrases,
+        "interruptionPhrases": interruption_phrases
       }.reject do |_k, v|
         v == OMIT
       end
@@ -90,10 +109,14 @@ module Vapi
       num_words = parsed_json["numWords"]
       voice_seconds = parsed_json["voiceSeconds"]
       backoff_seconds = parsed_json["backoffSeconds"]
+      acknowledgement_phrases = parsed_json["acknowledgementPhrases"]
+      interruption_phrases = parsed_json["interruptionPhrases"]
       new(
         num_words: num_words,
         voice_seconds: voice_seconds,
         backoff_seconds: backoff_seconds,
+        acknowledgement_phrases: acknowledgement_phrases,
+        interruption_phrases: interruption_phrases,
         additional_properties: struct
       )
     end
@@ -115,6 +138,8 @@ module Vapi
       obj.num_words&.is_a?(Float) != false || raise("Passed value for field obj.num_words is not the expected type, validation failed.")
       obj.voice_seconds&.is_a?(Float) != false || raise("Passed value for field obj.voice_seconds is not the expected type, validation failed.")
       obj.backoff_seconds&.is_a?(Float) != false || raise("Passed value for field obj.backoff_seconds is not the expected type, validation failed.")
+      obj.acknowledgement_phrases&.is_a?(Array) != false || raise("Passed value for field obj.acknowledgement_phrases is not the expected type, validation failed.")
+      obj.interruption_phrases&.is_a?(Array) != false || raise("Passed value for field obj.interruption_phrases is not the expected type, validation failed.")
     end
   end
 end

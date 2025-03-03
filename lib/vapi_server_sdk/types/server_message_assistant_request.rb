@@ -15,6 +15,9 @@ module Vapi
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
     attr_reader :phone_number
+    # @return [String] This is the type of the message. "assistant-request" is sent to fetch assistant
+    #  configuration for an incoming call.
+    attr_reader :type
     # @return [String] This is the ISO-8601 formatted timestamp of when the message was sent.
     attr_reader :timestamp
     # @return [Vapi::Artifact] This is a live version of the `call.artifact`.
@@ -52,6 +55,8 @@ module Vapi
     #  This matches one of the following:
     #  - `call.phoneNumber`,
     #  - `call.phoneNumberId`.
+    # @param type [String] This is the type of the message. "assistant-request" is sent to fetch assistant
+    #  configuration for an incoming call.
     # @param timestamp [String] This is the ISO-8601 formatted timestamp of when the message was sent.
     # @param artifact [Vapi::Artifact] This is a live version of the `call.artifact`.
     #  This matches what is stored on `call.artifact` after the call.
@@ -74,9 +79,10 @@ module Vapi
     #  especially after the call is ended, use GET /call/:id.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageAssistantRequest]
-    def initialize(phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT,
-                   additional_properties: nil)
+    def initialize(type:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT,
+                   call: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @timestamp = timestamp if timestamp != OMIT
       @artifact = artifact if artifact != OMIT
       @assistant = assistant if assistant != OMIT
@@ -85,6 +91,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "timestamp": timestamp,
         "artifact": artifact,
         "assistant": assistant,
@@ -108,6 +115,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageAssistantRequestPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["artifact"].nil?
         artifact = nil
@@ -135,6 +143,7 @@ module Vapi
       end
       new(
         phone_number: phone_number,
+        type: type,
         timestamp: timestamp,
         artifact: artifact,
         assistant: assistant,
@@ -159,6 +168,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageAssistantRequestPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.timestamp&.is_a?(String) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)

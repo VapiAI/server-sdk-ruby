@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require "json"
-require_relative "semantic_edge_condition"
-require_relative "programmatic_edge_condition"
+require_relative "ai_edge_condition"
+require_relative "logic_edge_condition"
+require_relative "failed_edge_condition"
 
 module Vapi
   class EdgeCondition
@@ -29,12 +30,14 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       member = case struct.type
-               when "semantic"
-                 Vapi::SemanticEdgeCondition.from_json(json_object: json_object)
-               when "programmatic"
-                 Vapi::ProgrammaticEdgeCondition.from_json(json_object: json_object)
+               when "ai"
+                 Vapi::AiEdgeCondition.from_json(json_object: json_object)
+               when "logic"
+                 Vapi::LogicEdgeCondition.from_json(json_object: json_object)
+               when "failed"
+                 Vapi::FailedEdgeCondition.from_json(json_object: json_object)
                else
-                 Vapi::SemanticEdgeCondition.from_json(json_object: json_object)
+                 Vapi::AiEdgeCondition.from_json(json_object: json_object)
                end
       new(member: member, discriminant: struct.type)
     end
@@ -44,9 +47,11 @@ module Vapi
     # @return [String]
     def to_json(*_args)
       case @discriminant
-      when "semantic"
+      when "ai"
         { **@member.to_json, type: @discriminant }.to_json
-      when "programmatic"
+      when "logic"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "failed"
         { **@member.to_json, type: @discriminant }.to_json
       else
         { "type": @discriminant, value: @member }.to_json
@@ -62,10 +67,12 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.type
-      when "semantic"
-        Vapi::SemanticEdgeCondition.validate_raw(obj: obj)
-      when "programmatic"
-        Vapi::ProgrammaticEdgeCondition.validate_raw(obj: obj)
+      when "ai"
+        Vapi::AiEdgeCondition.validate_raw(obj: obj)
+      when "logic"
+        Vapi::LogicEdgeCondition.validate_raw(obj: obj)
+      when "failed"
+        Vapi::FailedEdgeCondition.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -79,16 +86,22 @@ module Vapi
       @member.is_a?(obj)
     end
 
-    # @param member [Vapi::SemanticEdgeCondition]
+    # @param member [Vapi::AiEdgeCondition]
     # @return [Vapi::EdgeCondition]
-    def self.semantic(member:)
-      new(member: member, discriminant: "semantic")
+    def self.ai(member:)
+      new(member: member, discriminant: "ai")
     end
 
-    # @param member [Vapi::ProgrammaticEdgeCondition]
+    # @param member [Vapi::LogicEdgeCondition]
     # @return [Vapi::EdgeCondition]
-    def self.programmatic(member:)
-      new(member: member, discriminant: "programmatic")
+    def self.logic(member:)
+      new(member: member, discriminant: "logic")
+    end
+
+    # @param member [Vapi::FailedEdgeCondition]
+    # @return [Vapi::EdgeCondition]
+    def self.failed(member:)
+      new(member: member, discriminant: "failed")
     end
   end
 end

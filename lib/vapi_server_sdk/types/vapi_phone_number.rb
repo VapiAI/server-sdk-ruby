@@ -2,6 +2,7 @@
 
 require_relative "vapi_phone_number_fallback_destination"
 require "date"
+require_relative "vapi_phone_number_status"
 require_relative "server"
 require_relative "sip_authentication"
 require "ostruct"
@@ -24,6 +25,10 @@ module Vapi
     attr_reader :created_at
     # @return [DateTime] This is the ISO 8601 date-time string of when the phone number was last updated.
     attr_reader :updated_at
+    # @return [Vapi::VapiPhoneNumberStatus] This is the status of the phone number.
+    attr_reader :status
+    # @return [String] These are the digits of the phone number you purchased from Vapi.
+    attr_reader :number
     # @return [String] This is the name of the phone number. This is just for your own reference.
     attr_reader :name
     # @return [String] This is the assistant that will be used for incoming calls to this phone number.
@@ -43,6 +48,8 @@ module Vapi
     #  2. phoneNumber.server
     #  3. org.server
     attr_reader :server
+    # @return [String] This is the area code of the phone number to purchase.
+    attr_reader :number_desired_area_code
     # @return [String] This is the SIP URI of the phone number. You can SIP INVITE this. The assistant
     #  attached to this number will answer.
     #  This is case-insensitive.
@@ -69,6 +76,8 @@ module Vapi
     # @param org_id [String] This is the unique identifier for the org that this phone number belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the phone number was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the phone number was last updated.
+    # @param status [Vapi::VapiPhoneNumberStatus] This is the status of the phone number.
+    # @param number [String] These are the digits of the phone number you purchased from Vapi.
     # @param name [String] This is the name of the phone number. This is just for your own reference.
     # @param assistant_id [String] This is the assistant that will be used for incoming calls to this phone number.
     #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
@@ -84,6 +93,7 @@ module Vapi
     #  1. assistant.server
     #  2. phoneNumber.server
     #  3. org.server
+    # @param number_desired_area_code [String] This is the area code of the phone number to purchase.
     # @param sip_uri [String] This is the SIP URI of the phone number. You can SIP INVITE this. The assistant
     #  attached to this number will answer.
     #  This is case-insensitive.
@@ -92,18 +102,21 @@ module Vapi
     #  accepted.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VapiPhoneNumber]
-    def initialize(id:, org_id:, created_at:, updated_at:, sip_uri:, fallback_destination: OMIT, name: OMIT, assistant_id: OMIT,
-                   squad_id: OMIT, server: OMIT, authentication: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, created_at:, updated_at:, fallback_destination: OMIT, status: OMIT, number: OMIT,
+                   name: OMIT, assistant_id: OMIT, squad_id: OMIT, server: OMIT, number_desired_area_code: OMIT, sip_uri: OMIT, authentication: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
       @updated_at = updated_at
+      @status = status if status != OMIT
+      @number = number if number != OMIT
       @name = name if name != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
       @squad_id = squad_id if squad_id != OMIT
       @server = server if server != OMIT
-      @sip_uri = sip_uri
+      @number_desired_area_code = number_desired_area_code if number_desired_area_code != OMIT
+      @sip_uri = sip_uri if sip_uri != OMIT
       @authentication = authentication if authentication != OMIT
       @additional_properties = additional_properties
       @_field_set = {
@@ -112,10 +125,13 @@ module Vapi
         "orgId": org_id,
         "createdAt": created_at,
         "updatedAt": updated_at,
+        "status": status,
+        "number": number,
         "name": name,
         "assistantId": assistant_id,
         "squadId": squad_id,
         "server": server,
+        "numberDesiredAreaCode": number_desired_area_code,
         "sipUri": sip_uri,
         "authentication": authentication
       }.reject do |_k, v|
@@ -140,6 +156,8 @@ module Vapi
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
+      status = parsed_json["status"]
+      number = parsed_json["number"]
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]
       squad_id = parsed_json["squadId"]
@@ -149,6 +167,7 @@ module Vapi
         server = parsed_json["server"].to_json
         server = Vapi::Server.from_json(json_object: server)
       end
+      number_desired_area_code = parsed_json["numberDesiredAreaCode"]
       sip_uri = parsed_json["sipUri"]
       if parsed_json["authentication"].nil?
         authentication = nil
@@ -162,10 +181,13 @@ module Vapi
         org_id: org_id,
         created_at: created_at,
         updated_at: updated_at,
+        status: status,
+        number: number,
         name: name,
         assistant_id: assistant_id,
         squad_id: squad_id,
         server: server,
+        number_desired_area_code: number_desired_area_code,
         sip_uri: sip_uri,
         authentication: authentication,
         additional_properties: struct
@@ -191,11 +213,14 @@ module Vapi
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
+      obj.status&.is_a?(Vapi::VapiPhoneNumberStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
+      obj.number&.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
-      obj.sip_uri.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
+      obj.number_desired_area_code&.is_a?(String) != false || raise("Passed value for field obj.number_desired_area_code is not the expected type, validation failed.")
+      obj.sip_uri&.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
       obj.authentication.nil? || Vapi::SipAuthentication.validate_raw(obj: obj.authentication)
     end
   end

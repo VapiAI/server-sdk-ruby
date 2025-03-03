@@ -8,6 +8,8 @@ module Vapi
   class ClientInboundMessageTransfer
     # @return [Vapi::ClientInboundMessageTransferDestination] This is the destination to transfer the call to.
     attr_reader :destination
+    # @return [String] This is the content to say.
+    attr_reader :content
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -17,12 +19,14 @@ module Vapi
     OMIT = Object.new
 
     # @param destination [Vapi::ClientInboundMessageTransferDestination] This is the destination to transfer the call to.
+    # @param content [String] This is the content to say.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientInboundMessageTransfer]
-    def initialize(destination: OMIT, additional_properties: nil)
+    def initialize(destination: OMIT, content: OMIT, additional_properties: nil)
       @destination = destination if destination != OMIT
+      @content = content if content != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "destination": destination }.reject do |_k, v|
+      @_field_set = { "destination": destination, "content": content }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -40,7 +44,12 @@ module Vapi
         destination = parsed_json["destination"].to_json
         destination = Vapi::ClientInboundMessageTransferDestination.from_json(json_object: destination)
       end
-      new(destination: destination, additional_properties: struct)
+      content = parsed_json["content"]
+      new(
+        destination: destination,
+        content: content,
+        additional_properties: struct
+      )
     end
 
     # Serialize an instance of ClientInboundMessageTransfer to a JSON object
@@ -58,6 +67,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.destination.nil? || Vapi::ClientInboundMessageTransferDestination.validate_raw(obj: obj.destination)
+      obj.content&.is_a?(String) != false || raise("Passed value for field obj.content is not the expected type, validation failed.")
     end
   end
 end

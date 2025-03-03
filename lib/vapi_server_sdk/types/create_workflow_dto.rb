@@ -7,8 +7,6 @@ require "json"
 
 module Vapi
   class CreateWorkflowDto
-    # @return [String]
-    attr_reader :type
     # @return [Array<Vapi::CreateWorkflowDtoNodesItem>]
     attr_reader :nodes
     # @return [String]
@@ -23,19 +21,17 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
     # @param nodes [Array<Vapi::CreateWorkflowDtoNodesItem>]
     # @param name [String]
     # @param edges [Array<Vapi::Edge>]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateWorkflowDto]
-    def initialize(type:, nodes:, name:, edges:, additional_properties: nil)
-      @type = type
+    def initialize(nodes:, name:, edges:, additional_properties: nil)
       @nodes = nodes
       @name = name
       @edges = edges
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "nodes": nodes, "name": name, "edges": edges }
+      @_field_set = { "nodes": nodes, "name": name, "edges": edges }
     end
 
     # Deserialize a JSON object to an instance of CreateWorkflowDto
@@ -45,7 +41,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       nodes = parsed_json["nodes"]&.map do |item|
         item = item.to_json
         Vapi::CreateWorkflowDtoNodesItem.from_json(json_object: item)
@@ -56,7 +51,6 @@ module Vapi
         Vapi::Edge.from_json(json_object: item)
       end
       new(
-        type: type,
         nodes: nodes,
         name: name,
         edges: edges,
@@ -78,7 +72,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.nodes.is_a?(Array) != false || raise("Passed value for field obj.nodes is not the expected type, validation failed.")
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.edges.is_a?(Array) != false || raise("Passed value for field obj.edges is not the expected type, validation failed.")

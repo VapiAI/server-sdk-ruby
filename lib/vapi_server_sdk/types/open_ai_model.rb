@@ -30,8 +30,6 @@ module Vapi
     #  shouldn't be specified unless you have a specific reason to do so. Vapi will
     #  automatically find the fastest fallbacks that make sense.
     attr_reader :fallback_models
-    # @return [Boolean]
-    attr_reader :semantic_caching_enabled
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     attr_reader :temperature
@@ -71,7 +69,6 @@ module Vapi
     # @param fallback_models [Array<Vapi::OpenAiModelFallbackModelsItem>] These are the fallback models that will be used if the primary model fails. This
     #  shouldn't be specified unless you have a specific reason to do so. Vapi will
     #  automatically find the fastest fallbacks that make sense.
-    # @param semantic_caching_enabled [Boolean]
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     # @param max_tokens [Float] This is the max number of tokens that the assistant will be allowed to generate
@@ -89,7 +86,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::OpenAiModel]
     def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
-                   fallback_models: OMIT, semantic_caching_enabled: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+                   fallback_models: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
@@ -97,7 +94,6 @@ module Vapi
       @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @model = model
       @fallback_models = fallback_models if fallback_models != OMIT
-      @semantic_caching_enabled = semantic_caching_enabled if semantic_caching_enabled != OMIT
       @temperature = temperature if temperature != OMIT
       @max_tokens = max_tokens if max_tokens != OMIT
       @emotion_recognition_enabled = emotion_recognition_enabled if emotion_recognition_enabled != OMIT
@@ -111,7 +107,6 @@ module Vapi
         "knowledgeBaseId": knowledge_base_id,
         "model": model,
         "fallbackModels": fallback_models,
-        "semanticCachingEnabled": semantic_caching_enabled,
         "temperature": temperature,
         "maxTokens": max_tokens,
         "emotionRecognitionEnabled": emotion_recognition_enabled,
@@ -146,7 +141,6 @@ module Vapi
       knowledge_base_id = parsed_json["knowledgeBaseId"]
       model = parsed_json["model"]
       fallback_models = parsed_json["fallbackModels"]
-      semantic_caching_enabled = parsed_json["semanticCachingEnabled"]
       temperature = parsed_json["temperature"]
       max_tokens = parsed_json["maxTokens"]
       emotion_recognition_enabled = parsed_json["emotionRecognitionEnabled"]
@@ -159,7 +153,6 @@ module Vapi
         knowledge_base_id: knowledge_base_id,
         model: model,
         fallback_models: fallback_models,
-        semantic_caching_enabled: semantic_caching_enabled,
         temperature: temperature,
         max_tokens: max_tokens,
         emotion_recognition_enabled: emotion_recognition_enabled,
@@ -189,7 +182,6 @@ module Vapi
       obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
       obj.model.is_a?(Vapi::OpenAiModelModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.fallback_models&.is_a?(Array) != false || raise("Passed value for field obj.fallback_models is not the expected type, validation failed.")
-      obj.semantic_caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.semantic_caching_enabled is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")
       obj.emotion_recognition_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.emotion_recognition_enabled is not the expected type, validation failed.")

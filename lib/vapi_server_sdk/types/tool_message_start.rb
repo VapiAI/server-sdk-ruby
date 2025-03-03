@@ -16,6 +16,10 @@ module Vapi
     #  be automatically translated to the active language at that moment.
     #  This will override the `content` property.
     attr_reader :contents
+    # @return [Boolean] This is an optional boolean that if true, the tool call will only trigger after
+    #  the message is spoken. Default is false.
+    #  @default false
+    attr_reader :blocking
     # @return [String] This is the content that the assistant says when this message is triggered.
     attr_reader :content
     # @return [Array<Vapi::Condition>] This is an optional array of conditions that the tool call arguments must meet
@@ -37,17 +41,26 @@ module Vapi
     #  - If you don't provide content for a language, the first item in the array will
     #  be automatically translated to the active language at that moment.
     #  This will override the `content` property.
+    # @param blocking [Boolean] This is an optional boolean that if true, the tool call will only trigger after
+    #  the message is spoken. Default is false.
+    #  @default false
     # @param content [String] This is the content that the assistant says when this message is triggered.
     # @param conditions [Array<Vapi::Condition>] This is an optional array of conditions that the tool call arguments must meet
     #  in order for this message to be triggered.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ToolMessageStart]
-    def initialize(contents: OMIT, content: OMIT, conditions: OMIT, additional_properties: nil)
+    def initialize(contents: OMIT, blocking: OMIT, content: OMIT, conditions: OMIT, additional_properties: nil)
       @contents = contents if contents != OMIT
+      @blocking = blocking if blocking != OMIT
       @content = content if content != OMIT
       @conditions = conditions if conditions != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "contents": contents, "content": content, "conditions": conditions }.reject do |_k, v|
+      @_field_set = {
+        "contents": contents,
+        "blocking": blocking,
+        "content": content,
+        "conditions": conditions
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -63,6 +76,7 @@ module Vapi
         item = item.to_json
         Vapi::TextContent.from_json(json_object: item)
       end
+      blocking = parsed_json["blocking"]
       content = parsed_json["content"]
       conditions = parsed_json["conditions"]&.map do |item|
         item = item.to_json
@@ -70,6 +84,7 @@ module Vapi
       end
       new(
         contents: contents,
+        blocking: blocking,
         content: content,
         conditions: conditions,
         additional_properties: struct
@@ -91,6 +106,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.contents&.is_a?(Array) != false || raise("Passed value for field obj.contents is not the expected type, validation failed.")
+      obj.blocking&.is_a?(Boolean) != false || raise("Passed value for field obj.blocking is not the expected type, validation failed.")
       obj.content&.is_a?(String) != false || raise("Passed value for field obj.content is not the expected type, validation failed.")
       obj.conditions&.is_a?(Array) != false || raise("Passed value for field obj.conditions is not the expected type, validation failed.")
     end

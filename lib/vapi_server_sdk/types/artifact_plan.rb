@@ -9,9 +9,10 @@ module Vapi
     # @return [Boolean] This determines whether assistant's calls are recorded. Defaults to true.
     #  Usage:
     #  - If you don't want to record the calls, set this to false.
-    #  - If you want to record the calls when `assistant.hipaaEnabled`, explicity set
-    #  this to true and make sure to provide S3 or GCP credentials on the Provider
-    #  Credentials page in the Dashboard.
+    #  - If you want to record the calls when `assistant.hipaaEnabled` (deprecated) or
+    #  `assistant.compliancePlan.hipaaEnabled` explicity set this to true and make sure
+    #  to provide S3 or GCP credentials on the Provider Credentials page in the
+    #  Dashboard.
     #  You can find the recording at `call.artifact.recordingUrl` and
     #  `call.artifact.stereoRecordingUrl` after the call is ended.
     #  @default true
@@ -22,6 +23,25 @@ module Vapi
     #  call is ended.
     #  @default false
     attr_reader :video_recording_enabled
+    # @return [Boolean] This determines whether the SIP packet capture is enabled. Defaults to true.
+    #  Only relevant for `phone` type calls where phone number's provider is `vapi` or
+    #  `byo-phone-number`.
+    #  You can find the packet capture at `call.artifact.pcapUrl` after the call is
+    #  ended.
+    #  @default true
+    attr_reader :pcap_enabled
+    # @return [String] This is the path where the SIP packet capture will be uploaded. This is only
+    #  used if you have provided S3 or GCP credentials on the Provider Credentials page
+    #  in the Dashboard.
+    #  If credential.s3PathPrefix or credential.bucketPlan.path is set, this will
+    #  append to it.
+    #  Usage:
+    #  - If you want to upload the packet capture to a specific path, set this to the
+    #  path. Example: `/my-assistant-captures`.
+    #  - If you want to upload the packet capture to the root of the bucket, set this
+    #  to `/`.
+    #  @default '/'
+    attr_reader :pcap_s_3_path_prefix
     # @return [Vapi::TranscriptPlan] This is the plan for `call.artifact.transcript`. To disable, set
     #  `transcriptPlan.enabled` to false.
     attr_reader :transcript_plan
@@ -48,9 +68,10 @@ module Vapi
     # @param recording_enabled [Boolean] This determines whether assistant's calls are recorded. Defaults to true.
     #  Usage:
     #  - If you don't want to record the calls, set this to false.
-    #  - If you want to record the calls when `assistant.hipaaEnabled`, explicity set
-    #  this to true and make sure to provide S3 or GCP credentials on the Provider
-    #  Credentials page in the Dashboard.
+    #  - If you want to record the calls when `assistant.hipaaEnabled` (deprecated) or
+    #  `assistant.compliancePlan.hipaaEnabled` explicity set this to true and make sure
+    #  to provide S3 or GCP credentials on the Provider Credentials page in the
+    #  Dashboard.
     #  You can find the recording at `call.artifact.recordingUrl` and
     #  `call.artifact.stereoRecordingUrl` after the call is ended.
     #  @default true
@@ -59,6 +80,23 @@ module Vapi
     #  You can find the video recording at `call.artifact.videoRecordingUrl` after the
     #  call is ended.
     #  @default false
+    # @param pcap_enabled [Boolean] This determines whether the SIP packet capture is enabled. Defaults to true.
+    #  Only relevant for `phone` type calls where phone number's provider is `vapi` or
+    #  `byo-phone-number`.
+    #  You can find the packet capture at `call.artifact.pcapUrl` after the call is
+    #  ended.
+    #  @default true
+    # @param pcap_s_3_path_prefix [String] This is the path where the SIP packet capture will be uploaded. This is only
+    #  used if you have provided S3 or GCP credentials on the Provider Credentials page
+    #  in the Dashboard.
+    #  If credential.s3PathPrefix or credential.bucketPlan.path is set, this will
+    #  append to it.
+    #  Usage:
+    #  - If you want to upload the packet capture to a specific path, set this to the
+    #  path. Example: `/my-assistant-captures`.
+    #  - If you want to upload the packet capture to the root of the bucket, set this
+    #  to `/`.
+    #  @default '/'
     # @param transcript_plan [Vapi::TranscriptPlan] This is the plan for `call.artifact.transcript`. To disable, set
     #  `transcriptPlan.enabled` to false.
     # @param recording_path [String] This is the path where the recording will be uploaded. This is only used if you
@@ -74,16 +112,20 @@ module Vapi
     #  @default '/'
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ArtifactPlan]
-    def initialize(recording_enabled: OMIT, video_recording_enabled: OMIT, transcript_plan: OMIT, recording_path: OMIT,
-                   additional_properties: nil)
+    def initialize(recording_enabled: OMIT, video_recording_enabled: OMIT, pcap_enabled: OMIT,
+                   pcap_s_3_path_prefix: OMIT, transcript_plan: OMIT, recording_path: OMIT, additional_properties: nil)
       @recording_enabled = recording_enabled if recording_enabled != OMIT
       @video_recording_enabled = video_recording_enabled if video_recording_enabled != OMIT
+      @pcap_enabled = pcap_enabled if pcap_enabled != OMIT
+      @pcap_s_3_path_prefix = pcap_s_3_path_prefix if pcap_s_3_path_prefix != OMIT
       @transcript_plan = transcript_plan if transcript_plan != OMIT
       @recording_path = recording_path if recording_path != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "recordingEnabled": recording_enabled,
         "videoRecordingEnabled": video_recording_enabled,
+        "pcapEnabled": pcap_enabled,
+        "pcapS3PathPrefix": pcap_s_3_path_prefix,
         "transcriptPlan": transcript_plan,
         "recordingPath": recording_path
       }.reject do |_k, v|
@@ -100,6 +142,8 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       recording_enabled = parsed_json["recordingEnabled"]
       video_recording_enabled = parsed_json["videoRecordingEnabled"]
+      pcap_enabled = parsed_json["pcapEnabled"]
+      pcap_s_3_path_prefix = parsed_json["pcapS3PathPrefix"]
       if parsed_json["transcriptPlan"].nil?
         transcript_plan = nil
       else
@@ -110,6 +154,8 @@ module Vapi
       new(
         recording_enabled: recording_enabled,
         video_recording_enabled: video_recording_enabled,
+        pcap_enabled: pcap_enabled,
+        pcap_s_3_path_prefix: pcap_s_3_path_prefix,
         transcript_plan: transcript_plan,
         recording_path: recording_path,
         additional_properties: struct
@@ -132,6 +178,8 @@ module Vapi
     def self.validate_raw(obj:)
       obj.recording_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.recording_enabled is not the expected type, validation failed.")
       obj.video_recording_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.video_recording_enabled is not the expected type, validation failed.")
+      obj.pcap_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.pcap_enabled is not the expected type, validation failed.")
+      obj.pcap_s_3_path_prefix&.is_a?(String) != false || raise("Passed value for field obj.pcap_s_3_path_prefix is not the expected type, validation failed.")
       obj.transcript_plan.nil? || Vapi::TranscriptPlan.validate_raw(obj: obj.transcript_plan)
       obj.recording_path&.is_a?(String) != false || raise("Passed value for field obj.recording_path is not the expected type, validation failed.")
     end

@@ -8,8 +8,6 @@ require "json"
 
 module Vapi
   class Workflow
-    # @return [String]
-    attr_reader :type
     # @return [Array<Vapi::WorkflowNodesItem>]
     attr_reader :nodes
     # @return [String]
@@ -32,7 +30,6 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
     # @param nodes [Array<Vapi::WorkflowNodesItem>]
     # @param id [String]
     # @param org_id [String]
@@ -42,8 +39,7 @@ module Vapi
     # @param edges [Array<Vapi::Edge>]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Workflow]
-    def initialize(type:, nodes:, id:, org_id:, created_at:, updated_at:, name:, edges:, additional_properties: nil)
-      @type = type
+    def initialize(nodes:, id:, org_id:, created_at:, updated_at:, name:, edges:, additional_properties: nil)
       @nodes = nodes
       @id = id
       @org_id = org_id
@@ -53,7 +49,6 @@ module Vapi
       @edges = edges
       @additional_properties = additional_properties
       @_field_set = {
-        "type": type,
         "nodes": nodes,
         "id": id,
         "orgId": org_id,
@@ -71,7 +66,6 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      type = parsed_json["type"]
       nodes = parsed_json["nodes"]&.map do |item|
         item = item.to_json
         Vapi::WorkflowNodesItem.from_json(json_object: item)
@@ -86,7 +80,6 @@ module Vapi
         Vapi::Edge.from_json(json_object: item)
       end
       new(
-        type: type,
         nodes: nodes,
         id: id,
         org_id: org_id,
@@ -112,7 +105,6 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.nodes.is_a?(Array) != false || raise("Passed value for field obj.nodes is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

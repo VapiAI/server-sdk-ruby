@@ -10,6 +10,7 @@ require_relative "assistant_overrides_background_sound"
 require_relative "transport_configuration_twilio"
 require_relative "assistant_overrides_credentials_item"
 require_relative "twilio_voicemail_detection"
+require_relative "compliance_plan"
 require_relative "analysis_plan"
 require_relative "artifact_plan"
 require_relative "message_plan"
@@ -17,6 +18,7 @@ require_relative "start_speaking_plan"
 require_relative "stop_speaking_plan"
 require_relative "monitor_plan"
 require_relative "server"
+require_relative "assistant_hooks"
 require "ostruct"
 require "json"
 
@@ -44,10 +46,6 @@ module Vapi
     #  transfer points).
     #  @default 'assistant-speaks-first'
     attr_reader :first_message_mode
-    # @return [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
-    #  the end of the call, you will still receive an end-of-call-report message to
-    #  store on your server. Defaults to false.
-    attr_reader :hipaa_enabled
     # @return [Array<Vapi::AssistantOverridesClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
     #  tatus-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input.
     #  You can check the shape of the messages in ClientMessage schema.
@@ -116,6 +114,8 @@ module Vapi
     # @return [Array<String>] This list contains phrases that, if spoken by the assistant, will trigger the
     #  call to be hung up. Case insensitive.
     attr_reader :end_call_phrases
+    # @return [Vapi::CompliancePlan]
+    attr_reader :compliance_plan
     # @return [Hash{String => Object}] This is for metadata you want to store on the assistant.
     attr_reader :metadata
     # @return [Vapi::AnalysisPlan] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.
@@ -170,6 +170,8 @@ module Vapi
     #  2. phoneNumber.serverUrl
     #  3. org.serverUrl
     attr_reader :server
+    # @return [Array<Vapi::AssistantHooks>] This is a set of actions that will be performed on certain events.
+    attr_reader :hooks
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -195,9 +197,6 @@ module Vapi
     #  state. (`assistant.model.messages` at call start, `call.messages` at squad
     #  transfer points).
     #  @default 'assistant-speaks-first'
-    # @param hipaa_enabled [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
-    #  the end of the call, you will still receive an end-of-call-report message to
-    #  store on your server. Defaults to false.
     # @param client_messages [Array<Vapi::AssistantOverridesClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
     #  tatus-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input.
     #  You can check the shape of the messages in ClientMessage schema.
@@ -251,6 +250,7 @@ module Vapi
     #  If unspecified, it will hang up without saying anything.
     # @param end_call_phrases [Array<String>] This list contains phrases that, if spoken by the assistant, will trigger the
     #  call to be hung up. Case insensitive.
+    # @param compliance_plan [Vapi::CompliancePlan]
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the assistant.
     # @param analysis_plan [Vapi::AnalysisPlan] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.
     # @param artifact_plan [Vapi::ArtifactPlan] This is the plan for artifacts generated during assistant's calls. Stored in
@@ -296,16 +296,16 @@ module Vapi
     #  1. assistant.server.url
     #  2. phoneNumber.serverUrl
     #  3. org.serverUrl
+    # @param hooks [Array<Vapi::AssistantHooks>] This is a set of actions that will be performed on certain events.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AssistantOverrides]
     def initialize(transcriber: OMIT, model: OMIT, voice: OMIT, first_message: OMIT, first_message_mode: OMIT,
-                   hipaa_enabled: OMIT, client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, credentials: OMIT, variable_values: OMIT, name: OMIT, voicemail_detection: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, metadata: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, additional_properties: nil)
+                   client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, credentials: OMIT, variable_values: OMIT, name: OMIT, voicemail_detection: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, compliance_plan: OMIT, metadata: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, hooks: OMIT, additional_properties: nil)
       @transcriber = transcriber if transcriber != OMIT
       @model = model if model != OMIT
       @voice = voice if voice != OMIT
       @first_message = first_message if first_message != OMIT
       @first_message_mode = first_message_mode if first_message_mode != OMIT
-      @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
       @client_messages = client_messages if client_messages != OMIT
       @server_messages = server_messages if server_messages != OMIT
       @silence_timeout_seconds = silence_timeout_seconds if silence_timeout_seconds != OMIT
@@ -321,6 +321,7 @@ module Vapi
       @voicemail_message = voicemail_message if voicemail_message != OMIT
       @end_call_message = end_call_message if end_call_message != OMIT
       @end_call_phrases = end_call_phrases if end_call_phrases != OMIT
+      @compliance_plan = compliance_plan if compliance_plan != OMIT
       @metadata = metadata if metadata != OMIT
       @analysis_plan = analysis_plan if analysis_plan != OMIT
       @artifact_plan = artifact_plan if artifact_plan != OMIT
@@ -330,6 +331,7 @@ module Vapi
       @monitor_plan = monitor_plan if monitor_plan != OMIT
       @credential_ids = credential_ids if credential_ids != OMIT
       @server = server if server != OMIT
+      @hooks = hooks if hooks != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "transcriber": transcriber,
@@ -337,7 +339,6 @@ module Vapi
         "voice": voice,
         "firstMessage": first_message,
         "firstMessageMode": first_message_mode,
-        "hipaaEnabled": hipaa_enabled,
         "clientMessages": client_messages,
         "serverMessages": server_messages,
         "silenceTimeoutSeconds": silence_timeout_seconds,
@@ -353,6 +354,7 @@ module Vapi
         "voicemailMessage": voicemail_message,
         "endCallMessage": end_call_message,
         "endCallPhrases": end_call_phrases,
+        "compliancePlan": compliance_plan,
         "metadata": metadata,
         "analysisPlan": analysis_plan,
         "artifactPlan": artifact_plan,
@@ -361,7 +363,8 @@ module Vapi
         "stopSpeakingPlan": stop_speaking_plan,
         "monitorPlan": monitor_plan,
         "credentialIds": credential_ids,
-        "server": server
+        "server": server,
+        "hooks": hooks
       }.reject do |_k, v|
         v == OMIT
       end
@@ -394,7 +397,6 @@ module Vapi
       end
       first_message = parsed_json["firstMessage"]
       first_message_mode = parsed_json["firstMessageMode"]
-      hipaa_enabled = parsed_json["hipaaEnabled"]
       client_messages = parsed_json["clientMessages"]
       server_messages = parsed_json["serverMessages"]
       silence_timeout_seconds = parsed_json["silenceTimeoutSeconds"]
@@ -421,6 +423,12 @@ module Vapi
       voicemail_message = parsed_json["voicemailMessage"]
       end_call_message = parsed_json["endCallMessage"]
       end_call_phrases = parsed_json["endCallPhrases"]
+      if parsed_json["compliancePlan"].nil?
+        compliance_plan = nil
+      else
+        compliance_plan = parsed_json["compliancePlan"].to_json
+        compliance_plan = Vapi::CompliancePlan.from_json(json_object: compliance_plan)
+      end
       metadata = parsed_json["metadata"]
       if parsed_json["analysisPlan"].nil?
         analysis_plan = nil
@@ -465,13 +473,16 @@ module Vapi
         server = parsed_json["server"].to_json
         server = Vapi::Server.from_json(json_object: server)
       end
+      hooks = parsed_json["hooks"]&.map do |item|
+        item = item.to_json
+        Vapi::AssistantHooks.from_json(json_object: item)
+      end
       new(
         transcriber: transcriber,
         model: model,
         voice: voice,
         first_message: first_message,
         first_message_mode: first_message_mode,
-        hipaa_enabled: hipaa_enabled,
         client_messages: client_messages,
         server_messages: server_messages,
         silence_timeout_seconds: silence_timeout_seconds,
@@ -487,6 +498,7 @@ module Vapi
         voicemail_message: voicemail_message,
         end_call_message: end_call_message,
         end_call_phrases: end_call_phrases,
+        compliance_plan: compliance_plan,
         metadata: metadata,
         analysis_plan: analysis_plan,
         artifact_plan: artifact_plan,
@@ -496,6 +508,7 @@ module Vapi
         monitor_plan: monitor_plan,
         credential_ids: credential_ids,
         server: server,
+        hooks: hooks,
         additional_properties: struct
       )
     end
@@ -519,7 +532,6 @@ module Vapi
       obj.voice.nil? || Vapi::AssistantOverridesVoice.validate_raw(obj: obj.voice)
       obj.first_message&.is_a?(String) != false || raise("Passed value for field obj.first_message is not the expected type, validation failed.")
       obj.first_message_mode&.is_a?(Vapi::AssistantOverridesFirstMessageMode) != false || raise("Passed value for field obj.first_message_mode is not the expected type, validation failed.")
-      obj.hipaa_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.hipaa_enabled is not the expected type, validation failed.")
       obj.client_messages&.is_a?(Array) != false || raise("Passed value for field obj.client_messages is not the expected type, validation failed.")
       obj.server_messages&.is_a?(Array) != false || raise("Passed value for field obj.server_messages is not the expected type, validation failed.")
       obj.silence_timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.silence_timeout_seconds is not the expected type, validation failed.")
@@ -535,6 +547,7 @@ module Vapi
       obj.voicemail_message&.is_a?(String) != false || raise("Passed value for field obj.voicemail_message is not the expected type, validation failed.")
       obj.end_call_message&.is_a?(String) != false || raise("Passed value for field obj.end_call_message is not the expected type, validation failed.")
       obj.end_call_phrases&.is_a?(Array) != false || raise("Passed value for field obj.end_call_phrases is not the expected type, validation failed.")
+      obj.compliance_plan.nil? || Vapi::CompliancePlan.validate_raw(obj: obj.compliance_plan)
       obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")
       obj.analysis_plan.nil? || Vapi::AnalysisPlan.validate_raw(obj: obj.analysis_plan)
       obj.artifact_plan.nil? || Vapi::ArtifactPlan.validate_raw(obj: obj.artifact_plan)
@@ -544,6 +557,7 @@ module Vapi
       obj.monitor_plan.nil? || Vapi::MonitorPlan.validate_raw(obj: obj.monitor_plan)
       obj.credential_ids&.is_a?(Array) != false || raise("Passed value for field obj.credential_ids is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
+      obj.hooks&.is_a?(Array) != false || raise("Passed value for field obj.hooks is not the expected type, validation failed.")
     end
   end
 end
