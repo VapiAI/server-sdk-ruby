@@ -2,7 +2,6 @@
 
 require "json"
 require_relative "transfer_destination_assistant"
-require_relative "transfer_destination_step"
 require_relative "transfer_destination_number"
 require_relative "transfer_destination_sip"
 
@@ -34,8 +33,6 @@ module Vapi
       member = case struct.type
                when "assistant"
                  Vapi::TransferDestinationAssistant.from_json(json_object: json_object)
-               when "step"
-                 Vapi::TransferDestinationStep.from_json(json_object: json_object)
                when "number"
                  Vapi::TransferDestinationNumber.from_json(json_object: json_object)
                when "sip"
@@ -52,8 +49,6 @@ module Vapi
     def to_json(*_args)
       case @discriminant
       when "assistant"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "step"
         { **@member.to_json, type: @discriminant }.to_json
       when "number"
         { **@member.to_json, type: @discriminant }.to_json
@@ -75,8 +70,6 @@ module Vapi
       case obj.type
       when "assistant"
         Vapi::TransferDestinationAssistant.validate_raw(obj: obj)
-      when "step"
-        Vapi::TransferDestinationStep.validate_raw(obj: obj)
       when "number"
         Vapi::TransferDestinationNumber.validate_raw(obj: obj)
       when "sip"
@@ -98,12 +91,6 @@ module Vapi
     # @return [Vapi::CreateTransferCallToolDtoDestinationsItem]
     def self.assistant(member:)
       new(member: member, discriminant: "assistant")
-    end
-
-    # @param member [Vapi::TransferDestinationStep]
-    # @return [Vapi::CreateTransferCallToolDtoDestinationsItem]
-    def self.step(member:)
-      new(member: member, discriminant: "step")
     end
 
     # @param member [Vapi::TransferDestinationNumber]

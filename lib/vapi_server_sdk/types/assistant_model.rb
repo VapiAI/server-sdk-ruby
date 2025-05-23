@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 require "json"
-require_relative "anyscale_model"
 require_relative "anthropic_model"
+require_relative "anyscale_model"
+require_relative "cerebras_model"
 require_relative "custom_llm_model"
 require_relative "deep_infra_model"
+require_relative "deep_seek_model"
 require_relative "google_model"
 require_relative "groq_model"
 require_relative "inflection_ai_model"
-require_relative "deep_seek_model"
 require_relative "open_ai_model"
 require_relative "open_router_model"
 require_relative "perplexity_ai_model"
 require_relative "together_ai_model"
-require_relative "vapi_model"
 require_relative "xai_model"
 
 module Vapi
@@ -42,22 +42,24 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       member = case struct.provider
-               when "anyscale"
-                 Vapi::AnyscaleModel.from_json(json_object: json_object)
                when "anthropic"
                  Vapi::AnthropicModel.from_json(json_object: json_object)
+               when "anyscale"
+                 Vapi::AnyscaleModel.from_json(json_object: json_object)
+               when "cerebras"
+                 Vapi::CerebrasModel.from_json(json_object: json_object)
                when "custom-llm"
                  Vapi::CustomLlmModel.from_json(json_object: json_object)
                when "deepinfra"
                  Vapi::DeepInfraModel.from_json(json_object: json_object)
+               when "deep-seek"
+                 Vapi::DeepSeekModel.from_json(json_object: json_object)
                when "google"
                  Vapi::GoogleModel.from_json(json_object: json_object)
                when "groq"
                  Vapi::GroqModel.from_json(json_object: json_object)
                when "inflection-ai"
                  Vapi::InflectionAiModel.from_json(json_object: json_object)
-               when "deep-seek"
-                 Vapi::DeepSeekModel.from_json(json_object: json_object)
                when "openai"
                  Vapi::OpenAiModel.from_json(json_object: json_object)
                when "openrouter"
@@ -66,12 +68,10 @@ module Vapi
                  Vapi::PerplexityAiModel.from_json(json_object: json_object)
                when "together-ai"
                  Vapi::TogetherAiModel.from_json(json_object: json_object)
-               when "vapi"
-                 Vapi::VapiModel.from_json(json_object: json_object)
                when "xai"
                  Vapi::XaiModel.from_json(json_object: json_object)
                else
-                 Vapi::AnyscaleModel.from_json(json_object: json_object)
+                 Vapi::AnthropicModel.from_json(json_object: json_object)
                end
       new(member: member, discriminant: struct.provider)
     end
@@ -81,21 +81,23 @@ module Vapi
     # @return [String]
     def to_json(*_args)
       case @discriminant
+      when "anthropic"
+        { **@member.to_json, provider: @discriminant }.to_json
       when "anyscale"
         { **@member.to_json, provider: @discriminant }.to_json
-      when "anthropic"
+      when "cerebras"
         { **@member.to_json, provider: @discriminant }.to_json
       when "custom-llm"
         { **@member.to_json, provider: @discriminant }.to_json
       when "deepinfra"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "deep-seek"
         { **@member.to_json, provider: @discriminant }.to_json
       when "google"
         { **@member.to_json, provider: @discriminant }.to_json
       when "groq"
         { **@member.to_json, provider: @discriminant }.to_json
       when "inflection-ai"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "deep-seek"
         { **@member.to_json, provider: @discriminant }.to_json
       when "openai"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -104,8 +106,6 @@ module Vapi
       when "perplexity-ai"
         { **@member.to_json, provider: @discriminant }.to_json
       when "together-ai"
-        { **@member.to_json, provider: @discriminant }.to_json
-      when "vapi"
         { **@member.to_json, provider: @discriminant }.to_json
       when "xai"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -123,22 +123,24 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.provider
-      when "anyscale"
-        Vapi::AnyscaleModel.validate_raw(obj: obj)
       when "anthropic"
         Vapi::AnthropicModel.validate_raw(obj: obj)
+      when "anyscale"
+        Vapi::AnyscaleModel.validate_raw(obj: obj)
+      when "cerebras"
+        Vapi::CerebrasModel.validate_raw(obj: obj)
       when "custom-llm"
         Vapi::CustomLlmModel.validate_raw(obj: obj)
       when "deepinfra"
         Vapi::DeepInfraModel.validate_raw(obj: obj)
+      when "deep-seek"
+        Vapi::DeepSeekModel.validate_raw(obj: obj)
       when "google"
         Vapi::GoogleModel.validate_raw(obj: obj)
       when "groq"
         Vapi::GroqModel.validate_raw(obj: obj)
       when "inflection-ai"
         Vapi::InflectionAiModel.validate_raw(obj: obj)
-      when "deep-seek"
-        Vapi::DeepSeekModel.validate_raw(obj: obj)
       when "openai"
         Vapi::OpenAiModel.validate_raw(obj: obj)
       when "openrouter"
@@ -147,8 +149,6 @@ module Vapi
         Vapi::PerplexityAiModel.validate_raw(obj: obj)
       when "together-ai"
         Vapi::TogetherAiModel.validate_raw(obj: obj)
-      when "vapi"
-        Vapi::VapiModel.validate_raw(obj: obj)
       when "xai"
         Vapi::XaiModel.validate_raw(obj: obj)
       else
@@ -164,16 +164,22 @@ module Vapi
       @member.is_a?(obj)
     end
 
+    # @param member [Vapi::AnthropicModel]
+    # @return [Vapi::AssistantModel]
+    def self.anthropic(member:)
+      new(member: member, discriminant: "anthropic")
+    end
+
     # @param member [Vapi::AnyscaleModel]
     # @return [Vapi::AssistantModel]
     def self.anyscale(member:)
       new(member: member, discriminant: "anyscale")
     end
 
-    # @param member [Vapi::AnthropicModel]
+    # @param member [Vapi::CerebrasModel]
     # @return [Vapi::AssistantModel]
-    def self.anthropic(member:)
-      new(member: member, discriminant: "anthropic")
+    def self.cerebras(member:)
+      new(member: member, discriminant: "cerebras")
     end
 
     # @param member [Vapi::CustomLlmModel]
@@ -186,6 +192,12 @@ module Vapi
     # @return [Vapi::AssistantModel]
     def self.deepinfra(member:)
       new(member: member, discriminant: "deepinfra")
+    end
+
+    # @param member [Vapi::DeepSeekModel]
+    # @return [Vapi::AssistantModel]
+    def self.deep_seek(member:)
+      new(member: member, discriminant: "deep-seek")
     end
 
     # @param member [Vapi::GoogleModel]
@@ -204,12 +216,6 @@ module Vapi
     # @return [Vapi::AssistantModel]
     def self.inflection_ai(member:)
       new(member: member, discriminant: "inflection-ai")
-    end
-
-    # @param member [Vapi::DeepSeekModel]
-    # @return [Vapi::AssistantModel]
-    def self.deep_seek(member:)
-      new(member: member, discriminant: "deep-seek")
     end
 
     # @param member [Vapi::OpenAiModel]
@@ -234,12 +240,6 @@ module Vapi
     # @return [Vapi::AssistantModel]
     def self.together_ai(member:)
       new(member: member, discriminant: "together-ai")
-    end
-
-    # @param member [Vapi::VapiModel]
-    # @return [Vapi::AssistantModel]
-    def self.vapi(member:)
-      new(member: member, discriminant: "vapi")
     end
 
     # @param member [Vapi::XaiModel]

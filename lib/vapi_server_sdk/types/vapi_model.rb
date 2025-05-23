@@ -3,8 +3,7 @@
 require_relative "open_ai_message"
 require_relative "vapi_model_tools_item"
 require_relative "create_custom_knowledge_base_dto"
-require_relative "vapi_model_steps_item"
-require_relative "workflow"
+require_relative "workflow_user_editable"
 require "ostruct"
 require "json"
 
@@ -24,12 +23,12 @@ module Vapi
     attr_reader :knowledge_base
     # @return [String] This is the ID of the knowledge base the model will use.
     attr_reader :knowledge_base_id
-    # @return [Array<Vapi::VapiModelStepsItem>]
-    attr_reader :steps
+    # @return [String]
+    attr_reader :provider
     # @return [String] This is the workflow that will be used for the call. To use a transient
     #  workflow, use `workflow` instead.
     attr_reader :workflow_id
-    # @return [Vapi::Workflow] This is the workflow that will be used for the call. To use an existing
+    # @return [Vapi::WorkflowUserEditable] This is the workflow that will be used for the call. To use an existing
     #  workflow, use `workflowId` instead.
     attr_reader :workflow
     # @return [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
@@ -69,10 +68,10 @@ module Vapi
     #  Both `tools` and `toolIds` can be used together.
     # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
     # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
-    # @param steps [Array<Vapi::VapiModelStepsItem>]
+    # @param provider [String]
     # @param workflow_id [String] This is the workflow that will be used for the call. To use a transient
     #  workflow, use `workflow` instead.
-    # @param workflow [Vapi::Workflow] This is the workflow that will be used for the call. To use an existing
+    # @param workflow [Vapi::WorkflowUserEditable] This is the workflow that will be used for the call. To use an existing
     #  workflow, use `workflowId` instead.
     # @param model [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
@@ -91,14 +90,14 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VapiModel]
-    def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
-                   steps: OMIT, workflow_id: OMIT, workflow: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+    def initialize(provider:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT,
+                   knowledge_base_id: OMIT, workflow_id: OMIT, workflow: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
       @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
-      @steps = steps if steps != OMIT
+      @provider = provider
       @workflow_id = workflow_id if workflow_id != OMIT
       @workflow = workflow if workflow != OMIT
       @model = model
@@ -113,7 +112,7 @@ module Vapi
         "toolIds": tool_ids,
         "knowledgeBase": knowledge_base,
         "knowledgeBaseId": knowledge_base_id,
-        "steps": steps,
+        "provider": provider,
         "workflowId": workflow_id,
         "workflow": workflow,
         "model": model,
@@ -149,16 +148,13 @@ module Vapi
         knowledge_base = Vapi::CreateCustomKnowledgeBaseDto.from_json(json_object: knowledge_base)
       end
       knowledge_base_id = parsed_json["knowledgeBaseId"]
-      steps = parsed_json["steps"]&.map do |item|
-        item = item.to_json
-        Vapi::VapiModelStepsItem.from_json(json_object: item)
-      end
+      provider = parsed_json["provider"]
       workflow_id = parsed_json["workflowId"]
       if parsed_json["workflow"].nil?
         workflow = nil
       else
         workflow = parsed_json["workflow"].to_json
-        workflow = Vapi::Workflow.from_json(json_object: workflow)
+        workflow = Vapi::WorkflowUserEditable.from_json(json_object: workflow)
       end
       model = parsed_json["model"]
       temperature = parsed_json["temperature"]
@@ -171,7 +167,7 @@ module Vapi
         tool_ids: tool_ids,
         knowledge_base: knowledge_base,
         knowledge_base_id: knowledge_base_id,
-        steps: steps,
+        provider: provider,
         workflow_id: workflow_id,
         workflow: workflow,
         model: model,
@@ -202,9 +198,9 @@ module Vapi
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
       obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
       obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
-      obj.steps&.is_a?(Array) != false || raise("Passed value for field obj.steps is not the expected type, validation failed.")
+      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
-      obj.workflow.nil? || Vapi::Workflow.validate_raw(obj: obj.workflow)
+      obj.workflow.nil? || Vapi::WorkflowUserEditable.validate_raw(obj: obj.workflow)
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")

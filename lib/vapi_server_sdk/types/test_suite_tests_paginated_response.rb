@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "test_suite_test_voice"
+require_relative "test_suite_tests_paginated_response_results_item"
 require_relative "pagination_meta"
 require "ostruct"
 require "json"
 
 module Vapi
   class TestSuiteTestsPaginatedResponse
-    # @return [Array<Vapi::TestSuiteTestVoice>] A list of test suite tests.
+    # @return [Array<Vapi::TestSuiteTestsPaginatedResponseResultsItem>] A list of test suite tests.
     attr_reader :results
     # @return [Vapi::PaginationMeta] Metadata about the pagination.
     attr_reader :metadata
@@ -19,7 +19,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param results [Array<Vapi::TestSuiteTestVoice>] A list of test suite tests.
+    # @param results [Array<Vapi::TestSuiteTestsPaginatedResponseResultsItem>] A list of test suite tests.
     # @param metadata [Vapi::PaginationMeta] Metadata about the pagination.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TestSuiteTestsPaginatedResponse]
@@ -39,7 +39,7 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       results = parsed_json["results"]&.map do |item|
         item = item.to_json
-        Vapi::TestSuiteTestVoice.from_json(json_object: item)
+        Vapi::TestSuiteTestsPaginatedResponseResultsItem.from_json(json_object: item)
       end
       if parsed_json["metadata"].nil?
         metadata = nil

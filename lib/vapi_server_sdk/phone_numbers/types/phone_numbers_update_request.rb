@@ -5,6 +5,7 @@ require_relative "../../types/update_byo_phone_number_dto"
 require_relative "../../types/update_twilio_phone_number_dto"
 require_relative "../../types/update_vonage_phone_number_dto"
 require_relative "../../types/update_vapi_phone_number_dto"
+require_relative "../../types/update_telnyx_phone_number_dto"
 
 module Vapi
   class PhoneNumbers
@@ -40,6 +41,8 @@ module Vapi
                    Vapi::UpdateVonagePhoneNumberDto.from_json(json_object: json_object)
                  when "vapi"
                    Vapi::UpdateVapiPhoneNumberDto.from_json(json_object: json_object)
+                 when "telnyx"
+                   Vapi::UpdateTelnyxPhoneNumberDto.from_json(json_object: json_object)
                  else
                    Vapi::UpdateByoPhoneNumberDto.from_json(json_object: json_object)
                  end
@@ -58,6 +61,8 @@ module Vapi
         when "vonage"
           { **@member.to_json, provider: @discriminant }.to_json
         when "vapi"
+          { **@member.to_json, provider: @discriminant }.to_json
+        when "telnyx"
           { **@member.to_json, provider: @discriminant }.to_json
         else
           { "provider": @discriminant, value: @member }.to_json
@@ -81,6 +86,8 @@ module Vapi
           Vapi::UpdateVonagePhoneNumberDto.validate_raw(obj: obj)
         when "vapi"
           Vapi::UpdateVapiPhoneNumberDto.validate_raw(obj: obj)
+        when "telnyx"
+          Vapi::UpdateTelnyxPhoneNumberDto.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -116,6 +123,12 @@ module Vapi
       # @return [Vapi::PhoneNumbers::PhoneNumbersUpdateRequest]
       def self.vapi(member:)
         new(member: member, discriminant: "vapi")
+      end
+
+      # @param member [Vapi::UpdateTelnyxPhoneNumberDto]
+      # @return [Vapi::PhoneNumbers::PhoneNumbersUpdateRequest]
+      def self.telnyx(member:)
+        new(member: member, discriminant: "telnyx")
       end
     end
   end

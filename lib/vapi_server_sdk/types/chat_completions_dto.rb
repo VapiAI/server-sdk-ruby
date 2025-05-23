@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "chat_completion_message"
+require_relative "chat_completion_message_workflows"
 require_relative "create_workflow_dto"
 require "ostruct"
 require "json"
 
 module Vapi
   class ChatCompletionsDto
-    # @return [Array<Vapi::ChatCompletionMessage>]
+    # @return [Array<Vapi::ChatCompletionMessageWorkflows>]
     attr_reader :messages
     # @return [String]
     attr_reader :workflow_id
@@ -21,7 +21,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param messages [Array<Vapi::ChatCompletionMessage>]
+    # @param messages [Array<Vapi::ChatCompletionMessageWorkflows>]
     # @param workflow_id [String]
     # @param workflow [Vapi::CreateWorkflowDto]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
@@ -45,7 +45,7 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       messages = parsed_json["messages"]&.map do |item|
         item = item.to_json
-        Vapi::ChatCompletionMessage.from_json(json_object: item)
+        Vapi::ChatCompletionMessageWorkflows.from_json(json_object: item)
       end
       workflow_id = parsed_json["workflowId"]
       if parsed_json["workflow"].nil?

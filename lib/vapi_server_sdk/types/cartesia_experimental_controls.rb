@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "cartesia_experimental_controls_speed"
+require_relative "cartesia_speed_control"
 require_relative "cartesia_experimental_controls_emotion"
 require "ostruct"
 require "json"
 
 module Vapi
   class CartesiaExperimentalControls
-    # @return [Vapi::CartesiaExperimentalControlsSpeed]
+    # @return [Vapi::CartesiaSpeedControl]
     attr_reader :speed
     # @return [Vapi::CartesiaExperimentalControlsEmotion]
     attr_reader :emotion
@@ -19,7 +19,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param speed [Vapi::CartesiaExperimentalControlsSpeed]
+    # @param speed [Vapi::CartesiaSpeedControl]
     # @param emotion [Vapi::CartesiaExperimentalControlsEmotion]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CartesiaExperimentalControls]
@@ -39,7 +39,12 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      speed = parsed_json["speed"]
+      if parsed_json["speed"].nil?
+        speed = nil
+      else
+        speed = parsed_json["speed"].to_json
+        speed = Vapi::CartesiaSpeedControl.from_json(json_object: speed)
+      end
       emotion = parsed_json["emotion"]
       new(
         speed: speed,
@@ -62,7 +67,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.speed&.is_a?(Vapi::CartesiaExperimentalControlsSpeed) != false || raise("Passed value for field obj.speed is not the expected type, validation failed.")
+      obj.speed.nil? || Vapi::CartesiaSpeedControl.validate_raw(obj: obj.speed)
       obj.emotion&.is_a?(Vapi::CartesiaExperimentalControlsEmotion) != false || raise("Passed value for field obj.emotion is not the expected type, validation failed.")
     end
   end

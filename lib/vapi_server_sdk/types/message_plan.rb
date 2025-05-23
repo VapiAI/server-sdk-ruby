@@ -20,6 +20,10 @@ module Vapi
     #  the call.
     #  @default 3
     attr_reader :idle_message_max_spoken_count
+    # @return [Boolean] This determines whether the idle message count is reset whenever the user
+    #  speaks.
+    #  @default false
+    attr_reader :idle_message_reset_count_on_user_speech_enabled
     # @return [Float] This is the timeout in seconds before a message from `idleMessages` is spoken.
     #  The clock starts when the assistant finishes speaking and remains active until
     #  the user speaks.
@@ -49,6 +53,9 @@ module Vapi
     # @param idle_message_max_spoken_count [Float] This determines the maximum number of times `idleMessages` can be spoken during
     #  the call.
     #  @default 3
+    # @param idle_message_reset_count_on_user_speech_enabled [Boolean] This determines whether the idle message count is reset whenever the user
+    #  speaks.
+    #  @default false
     # @param idle_timeout_seconds [Float] This is the timeout in seconds before a message from `idleMessages` is spoken.
     #  The clock starts when the assistant finishes speaking and remains active until
     #  the user speaks.
@@ -57,16 +64,20 @@ module Vapi
     #  If unspecified, it will hang up without saying anything.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::MessagePlan]
-    def initialize(idle_messages: OMIT, idle_message_max_spoken_count: OMIT, idle_timeout_seconds: OMIT,
-                   silence_timeout_message: OMIT, additional_properties: nil)
+    def initialize(idle_messages: OMIT, idle_message_max_spoken_count: OMIT,
+                   idle_message_reset_count_on_user_speech_enabled: OMIT, idle_timeout_seconds: OMIT, silence_timeout_message: OMIT, additional_properties: nil)
       @idle_messages = idle_messages if idle_messages != OMIT
       @idle_message_max_spoken_count = idle_message_max_spoken_count if idle_message_max_spoken_count != OMIT
+      if idle_message_reset_count_on_user_speech_enabled != OMIT
+        @idle_message_reset_count_on_user_speech_enabled = idle_message_reset_count_on_user_speech_enabled
+      end
       @idle_timeout_seconds = idle_timeout_seconds if idle_timeout_seconds != OMIT
       @silence_timeout_message = silence_timeout_message if silence_timeout_message != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "idleMessages": idle_messages,
         "idleMessageMaxSpokenCount": idle_message_max_spoken_count,
+        "idleMessageResetCountOnUserSpeechEnabled": idle_message_reset_count_on_user_speech_enabled,
         "idleTimeoutSeconds": idle_timeout_seconds,
         "silenceTimeoutMessage": silence_timeout_message
       }.reject do |_k, v|
@@ -83,11 +94,13 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       idle_messages = parsed_json["idleMessages"]
       idle_message_max_spoken_count = parsed_json["idleMessageMaxSpokenCount"]
+      idle_message_reset_count_on_user_speech_enabled = parsed_json["idleMessageResetCountOnUserSpeechEnabled"]
       idle_timeout_seconds = parsed_json["idleTimeoutSeconds"]
       silence_timeout_message = parsed_json["silenceTimeoutMessage"]
       new(
         idle_messages: idle_messages,
         idle_message_max_spoken_count: idle_message_max_spoken_count,
+        idle_message_reset_count_on_user_speech_enabled: idle_message_reset_count_on_user_speech_enabled,
         idle_timeout_seconds: idle_timeout_seconds,
         silence_timeout_message: silence_timeout_message,
         additional_properties: struct
@@ -110,6 +123,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.idle_messages&.is_a?(Array) != false || raise("Passed value for field obj.idle_messages is not the expected type, validation failed.")
       obj.idle_message_max_spoken_count&.is_a?(Float) != false || raise("Passed value for field obj.idle_message_max_spoken_count is not the expected type, validation failed.")
+      obj.idle_message_reset_count_on_user_speech_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.idle_message_reset_count_on_user_speech_enabled is not the expected type, validation failed.")
       obj.idle_timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.idle_timeout_seconds is not the expected type, validation failed.")
       obj.silence_timeout_message&.is_a?(String) != false || raise("Passed value for field obj.silence_timeout_message is not the expected type, validation failed.")
     end

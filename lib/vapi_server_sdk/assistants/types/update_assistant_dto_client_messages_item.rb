@@ -15,9 +15,11 @@ module Vapi
       TRANSCRIPT = "transcript"
       TOOL_CALLS = "tool-calls"
       TOOL_CALLS_RESULT = "tool-calls-result"
+      TOOL_COMPLETED = "tool.completed"
       TRANSFER_UPDATE = "transfer-update"
       USER_INTERRUPTED = "user-interrupted"
       VOICE_INPUT = "voice-input"
+      WORKFLOW_NODE_STARTED = "workflow.node.started"
     end
   end
 end

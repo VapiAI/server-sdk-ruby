@@ -39,7 +39,8 @@ module Vapi
     #  },
     #  {
     #  "role": "user",
-    #  "content": "Here was the system prompt of the call:\n\n{{systemPrompt}}\n\n"
+    #  "content": "Here was the system prompt of the call:\n\n{{systemPrompt}}\n\n.
+    #  Here is the ended reason of the call:\n\n{{endedReason}}\n\n"
     #  }
     #  ]```
     #  You can customize by providing any messages you want.
@@ -47,7 +48,8 @@ module Vapi
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-
     #  {{systemPrompt}}: the system prompt of the call from
     #  `assistant.model.messages[type=system].content`- {{rubric}}: the rubric of the
-    #  success evaluation from `successEvaluationPlan.rubric`
+    #  success evaluation from `successEvaluationPlan.rubric`- {{endedReason}}: the
+    #  ended reason of the call from `call.endedReason`
     attr_reader :messages
     # @return [Boolean] This determines whether a success evaluation is generated and stored in
     #  `call.analysis.successEvaluation`. Defaults to true.
@@ -102,7 +104,8 @@ module Vapi
     #  },
     #  {
     #  "role": "user",
-    #  "content": "Here was the system prompt of the call:\n\n{{systemPrompt}}\n\n"
+    #  "content": "Here was the system prompt of the call:\n\n{{systemPrompt}}\n\n.
+    #  Here is the ended reason of the call:\n\n{{endedReason}}\n\n"
     #  }
     #  ]```
     #  You can customize by providing any messages you want.
@@ -110,7 +113,8 @@ module Vapi
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-
     #  {{systemPrompt}}: the system prompt of the call from
     #  `assistant.model.messages[type=system].content`- {{rubric}}: the rubric of the
-    #  success evaluation from `successEvaluationPlan.rubric`
+    #  success evaluation from `successEvaluationPlan.rubric`- {{endedReason}}: the
+    #  ended reason of the call from `call.endedReason`
     # @param enabled [Boolean] This determines whether a success evaluation is generated and stored in
     #  `call.analysis.successEvaluation`. Defaults to true.
     #  Usage:

@@ -8,8 +8,9 @@ module Vapi
   #  connecting the customer.
   #  Usage:
   #  - Used only when `mode` is `blind-transfer-add-summary-to-sip-header`,
-  #  `warm-transfer-say-message` or
-  #  `warm-transfer-wait-for-operator-to-speak-first-and-then-say-message`.
+  #  `warm-transfer-say-message`,
+  #  `warm-transfer-wait-for-operator-to-speak-first-and-then-say-message`, or
+  #  `warm-transfer-experimental`.
   class TransferPlanMessage
     # Deserialize a JSON object to an instance of TransferPlanMessage
     #

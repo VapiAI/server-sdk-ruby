@@ -29,6 +29,10 @@ module Vapi
     attr_reader :bucket
     # @return [String]
     attr_reader :url
+    # @return [String]
+    attr_reader :parsed_text_url
+    # @return [Float]
+    attr_reader :parsed_text_bytes
     # @return [Hash{String => Object}]
     attr_reader :metadata
     # @return [String] This is the unique identifier for the file.
@@ -58,6 +62,8 @@ module Vapi
     # @param path [String]
     # @param bucket [String]
     # @param url [String]
+    # @param parsed_text_url [String]
+    # @param parsed_text_bytes [Float]
     # @param metadata [Hash{String => Object}]
     # @param id [String] This is the unique identifier for the file.
     # @param org_id [String] This is the unique identifier for the org that this file belongs to.
@@ -66,7 +72,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::File]
     def initialize(id:, org_id:, created_at:, updated_at:, object: OMIT, status: OMIT, name: OMIT, original_name: OMIT, bytes: OMIT, purpose: OMIT,
-                   mimetype: OMIT, key: OMIT, path: OMIT, bucket: OMIT, url: OMIT, metadata: OMIT, additional_properties: nil)
+                   mimetype: OMIT, key: OMIT, path: OMIT, bucket: OMIT, url: OMIT, parsed_text_url: OMIT, parsed_text_bytes: OMIT, metadata: OMIT, additional_properties: nil)
       @object = object if object != OMIT
       @status = status if status != OMIT
       @name = name if name != OMIT
@@ -78,6 +84,8 @@ module Vapi
       @path = path if path != OMIT
       @bucket = bucket if bucket != OMIT
       @url = url if url != OMIT
+      @parsed_text_url = parsed_text_url if parsed_text_url != OMIT
+      @parsed_text_bytes = parsed_text_bytes if parsed_text_bytes != OMIT
       @metadata = metadata if metadata != OMIT
       @id = id
       @org_id = org_id
@@ -96,6 +104,8 @@ module Vapi
         "path": path,
         "bucket": bucket,
         "url": url,
+        "parsedTextUrl": parsed_text_url,
+        "parsedTextBytes": parsed_text_bytes,
         "metadata": metadata,
         "id": id,
         "orgId": org_id,
@@ -124,6 +134,8 @@ module Vapi
       path = parsed_json["path"]
       bucket = parsed_json["bucket"]
       url = parsed_json["url"]
+      parsed_text_url = parsed_json["parsedTextUrl"]
+      parsed_text_bytes = parsed_json["parsedTextBytes"]
       metadata = parsed_json["metadata"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
@@ -141,6 +153,8 @@ module Vapi
         path: path,
         bucket: bucket,
         url: url,
+        parsed_text_url: parsed_text_url,
+        parsed_text_bytes: parsed_text_bytes,
         metadata: metadata,
         id: id,
         org_id: org_id,
@@ -175,6 +189,8 @@ module Vapi
       obj.path&.is_a?(String) != false || raise("Passed value for field obj.path is not the expected type, validation failed.")
       obj.bucket&.is_a?(String) != false || raise("Passed value for field obj.bucket is not the expected type, validation failed.")
       obj.url&.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
+      obj.parsed_text_url&.is_a?(String) != false || raise("Passed value for field obj.parsed_text_url is not the expected type, validation failed.")
+      obj.parsed_text_bytes&.is_a?(Float) != false || raise("Passed value for field obj.parsed_text_bytes is not the expected type, validation failed.")
       obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

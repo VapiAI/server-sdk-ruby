@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "server"
+require_relative "fallback_transcriber_plan"
 require "ostruct"
 require "json"
 
@@ -40,6 +41,9 @@ module Vapi
     #  }
     #  ```
     attr_reader :server
+    # @return [Vapi::FallbackTranscriberPlan] This is the plan for voice provider fallbacks in the event that the primary
+    #  voice provider fails.
+    attr_reader :fallback_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -81,12 +85,17 @@ module Vapi
     #  "channel": "customer" | "assistant"
     #  }
     #  ```
+    # @param fallback_plan [Vapi::FallbackTranscriberPlan] This is the plan for voice provider fallbacks in the event that the primary
+    #  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CustomTranscriber]
-    def initialize(server:, additional_properties: nil)
+    def initialize(server:, fallback_plan: OMIT, additional_properties: nil)
       @server = server
+      @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "server": server }
+      @_field_set = { "server": server, "fallbackPlan": fallback_plan }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of CustomTranscriber
@@ -102,7 +111,17 @@ module Vapi
         server = parsed_json["server"].to_json
         server = Vapi::Server.from_json(json_object: server)
       end
-      new(server: server, additional_properties: struct)
+      if parsed_json["fallbackPlan"].nil?
+        fallback_plan = nil
+      else
+        fallback_plan = parsed_json["fallbackPlan"].to_json
+        fallback_plan = Vapi::FallbackTranscriberPlan.from_json(json_object: fallback_plan)
+      end
+      new(
+        server: server,
+        fallback_plan: fallback_plan,
+        additional_properties: struct
+      )
     end
 
     # Serialize an instance of CustomTranscriber to a JSON object
@@ -120,6 +139,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       Vapi::Server.validate_raw(obj: obj.server)
+      obj.fallback_plan.nil? || Vapi::FallbackTranscriberPlan.validate_raw(obj: obj.fallback_plan)
     end
   end
 end

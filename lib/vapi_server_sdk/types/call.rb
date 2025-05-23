@@ -14,12 +14,13 @@ require_relative "artifact_plan"
 require_relative "analysis"
 require_relative "monitor"
 require_relative "artifact"
-require_relative "transport"
 require_relative "create_assistant_dto"
 require_relative "assistant_overrides"
 require_relative "create_squad_dto"
+require_relative "create_workflow_dto"
 require_relative "import_twilio_phone_number_dto"
 require_relative "create_customer_dto"
+require_relative "schedule_plan"
 require "ostruct"
 require "json"
 
@@ -71,27 +72,59 @@ module Vapi
     # @return [Vapi::Artifact] These are the artifacts created from the call. Configure in
     #  `assistant.artifactPlan`.
     attr_reader :artifact
-    # @return [Vapi::Transport] This is the transport used for the call.
-    attr_reader :transport
     # @return [String] The ID of the call as provided by the phone number service. callSid in Twilio.
-    #  conversationUuid in Vonage.
+    #  conversationUuid in Vonage. callControlId in Telnyx.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
     attr_reader :phone_call_provider_id
-    # @return [String] This is the assistant that will be used for the call. To use a transient
+    # @return [String] This is the assistant ID that will be used for the call. To use a transient
     #  assistant, use `assistant` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistantId` or `assistant`
+    #  - Squad, use `squadId` or `squad`
+    #  - Workflow, use `workflowId` or `workflow`
     attr_reader :assistant_id
     # @return [Vapi::CreateAssistantDto] This is the assistant that will be used for the call. To use an existing
     #  assistant, use `assistantId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant`
+    #  - Squad, use `squad`
+    #  - Workflow, use `workflow`
     attr_reader :assistant
     # @return [Vapi::AssistantOverrides] These are the overrides for the `assistant` or `assistantId`'s settings and
     #  template variables.
     attr_reader :assistant_overrides
     # @return [String] This is the squad that will be used for the call. To use a transient squad, use
     #  `squad` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
     attr_reader :squad_id
     # @return [Vapi::CreateSquadDto] This is a squad that will be used for the call. To use an existing squad, use
     #  `squadId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
     attr_reader :squad
+    # @return [String] [BETA] This feature is in active development. The API and behavior are subject
+    #  to change as we refine it based on user feedback.
+    #  This is the workflow that will be used for the call. To use a transient
+    #  workflow, use `workflow` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
+    attr_reader :workflow_id
+    # @return [Vapi::CreateWorkflowDto] [BETA] This feature is in active development. The API and behavior are subject
+    #  to change as we refine it based on user feedback.
+    #  This is a workflow that will be used for the call. To use an existing workflow,
+    #  use `workflowId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
+    attr_reader :workflow
     # @return [String] This is the phone number that will be used for the call. To use a transient
     #  number, use `phoneNumber` instead.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
@@ -110,6 +143,10 @@ module Vapi
     attr_reader :customer
     # @return [String] This is the name of the call. This is just for your own reference.
     attr_reader :name
+    # @return [Vapi::SchedulePlan] This is the schedule plan of the call.
+    attr_reader :schedule_plan
+    # @return [Hash{String => Object}] This is the transport of the call.
+    attr_reader :transport
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -144,20 +181,51 @@ module Vapi
     # @param monitor [Vapi::Monitor] This is to real-time monitor the call. Configure in `assistant.monitorPlan`.
     # @param artifact [Vapi::Artifact] These are the artifacts created from the call. Configure in
     #  `assistant.artifactPlan`.
-    # @param transport [Vapi::Transport] This is the transport used for the call.
     # @param phone_call_provider_id [String] The ID of the call as provided by the phone number service. callSid in Twilio.
-    #  conversationUuid in Vonage.
+    #  conversationUuid in Vonage. callControlId in Telnyx.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
-    # @param assistant_id [String] This is the assistant that will be used for the call. To use a transient
+    # @param assistant_id [String] This is the assistant ID that will be used for the call. To use a transient
     #  assistant, use `assistant` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistantId` or `assistant`
+    #  - Squad, use `squadId` or `squad`
+    #  - Workflow, use `workflowId` or `workflow`
     # @param assistant [Vapi::CreateAssistantDto] This is the assistant that will be used for the call. To use an existing
     #  assistant, use `assistantId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant`
+    #  - Squad, use `squad`
+    #  - Workflow, use `workflow`
     # @param assistant_overrides [Vapi::AssistantOverrides] These are the overrides for the `assistant` or `assistantId`'s settings and
     #  template variables.
     # @param squad_id [String] This is the squad that will be used for the call. To use a transient squad, use
     #  `squad` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
     # @param squad [Vapi::CreateSquadDto] This is a squad that will be used for the call. To use an existing squad, use
     #  `squadId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
+    # @param workflow_id [String] [BETA] This feature is in active development. The API and behavior are subject
+    #  to change as we refine it based on user feedback.
+    #  This is the workflow that will be used for the call. To use a transient
+    #  workflow, use `workflow` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
+    # @param workflow [Vapi::CreateWorkflowDto] [BETA] This feature is in active development. The API and behavior are subject
+    #  to change as we refine it based on user feedback.
+    #  This is a workflow that will be used for the call. To use an existing workflow,
+    #  use `workflowId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
     # @param phone_number_id [String] This is the phone number that will be used for the call. To use a transient
     #  number, use `phoneNumber` instead.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
@@ -171,10 +239,12 @@ module Vapi
     #  `customerId` instead.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
     # @param name [String] This is the name of the call. This is just for your own reference.
+    # @param schedule_plan [Vapi::SchedulePlan] This is the schedule plan of the call.
+    # @param transport [Hash{String => Object}] This is the transport of the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Call]
     def initialize(id:, org_id:, created_at:, updated_at:, type: OMIT, costs: OMIT, messages: OMIT, phone_call_provider: OMIT, phone_call_transport: OMIT,
-                   status: OMIT, ended_reason: OMIT, destination: OMIT, started_at: OMIT, ended_at: OMIT, cost: OMIT, cost_breakdown: OMIT, artifact_plan: OMIT, analysis: OMIT, monitor: OMIT, artifact: OMIT, transport: OMIT, phone_call_provider_id: OMIT, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, name: OMIT, additional_properties: nil)
+                   status: OMIT, ended_reason: OMIT, destination: OMIT, started_at: OMIT, ended_at: OMIT, cost: OMIT, cost_breakdown: OMIT, artifact_plan: OMIT, analysis: OMIT, monitor: OMIT, artifact: OMIT, phone_call_provider_id: OMIT, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, workflow_id: OMIT, workflow: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, name: OMIT, schedule_plan: OMIT, transport: OMIT, additional_properties: nil)
       @type = type if type != OMIT
       @costs = costs if costs != OMIT
       @messages = messages if messages != OMIT
@@ -195,18 +265,21 @@ module Vapi
       @analysis = analysis if analysis != OMIT
       @monitor = monitor if monitor != OMIT
       @artifact = artifact if artifact != OMIT
-      @transport = transport if transport != OMIT
       @phone_call_provider_id = phone_call_provider_id if phone_call_provider_id != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
       @assistant = assistant if assistant != OMIT
       @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
       @squad_id = squad_id if squad_id != OMIT
       @squad = squad if squad != OMIT
+      @workflow_id = workflow_id if workflow_id != OMIT
+      @workflow = workflow if workflow != OMIT
       @phone_number_id = phone_number_id if phone_number_id != OMIT
       @phone_number = phone_number if phone_number != OMIT
       @customer_id = customer_id if customer_id != OMIT
       @customer = customer if customer != OMIT
       @name = name if name != OMIT
+      @schedule_plan = schedule_plan if schedule_plan != OMIT
+      @transport = transport if transport != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "type": type,
@@ -229,18 +302,21 @@ module Vapi
         "analysis": analysis,
         "monitor": monitor,
         "artifact": artifact,
-        "transport": transport,
         "phoneCallProviderId": phone_call_provider_id,
         "assistantId": assistant_id,
         "assistant": assistant,
         "assistantOverrides": assistant_overrides,
         "squadId": squad_id,
         "squad": squad,
+        "workflowId": workflow_id,
+        "workflow": workflow,
         "phoneNumberId": phone_number_id,
         "phoneNumber": phone_number,
         "customerId": customer_id,
         "customer": customer,
-        "name": name
+        "name": name,
+        "schedulePlan": schedule_plan,
+        "transport": transport
       }.reject do |_k, v|
         v == OMIT
       end
@@ -309,12 +385,6 @@ module Vapi
         artifact = parsed_json["artifact"].to_json
         artifact = Vapi::Artifact.from_json(json_object: artifact)
       end
-      if parsed_json["transport"].nil?
-        transport = nil
-      else
-        transport = parsed_json["transport"].to_json
-        transport = Vapi::Transport.from_json(json_object: transport)
-      end
       phone_call_provider_id = parsed_json["phoneCallProviderId"]
       assistant_id = parsed_json["assistantId"]
       if parsed_json["assistant"].nil?
@@ -336,6 +406,13 @@ module Vapi
         squad = parsed_json["squad"].to_json
         squad = Vapi::CreateSquadDto.from_json(json_object: squad)
       end
+      workflow_id = parsed_json["workflowId"]
+      if parsed_json["workflow"].nil?
+        workflow = nil
+      else
+        workflow = parsed_json["workflow"].to_json
+        workflow = Vapi::CreateWorkflowDto.from_json(json_object: workflow)
+      end
       phone_number_id = parsed_json["phoneNumberId"]
       if parsed_json["phoneNumber"].nil?
         phone_number = nil
@@ -351,6 +428,13 @@ module Vapi
         customer = Vapi::CreateCustomerDto.from_json(json_object: customer)
       end
       name = parsed_json["name"]
+      if parsed_json["schedulePlan"].nil?
+        schedule_plan = nil
+      else
+        schedule_plan = parsed_json["schedulePlan"].to_json
+        schedule_plan = Vapi::SchedulePlan.from_json(json_object: schedule_plan)
+      end
+      transport = parsed_json["transport"]
       new(
         type: type,
         costs: costs,
@@ -372,18 +456,21 @@ module Vapi
         analysis: analysis,
         monitor: monitor,
         artifact: artifact,
-        transport: transport,
         phone_call_provider_id: phone_call_provider_id,
         assistant_id: assistant_id,
         assistant: assistant,
         assistant_overrides: assistant_overrides,
         squad_id: squad_id,
         squad: squad,
+        workflow_id: workflow_id,
+        workflow: workflow,
         phone_number_id: phone_number_id,
         phone_number: phone_number,
         customer_id: customer_id,
         customer: customer,
         name: name,
+        schedule_plan: schedule_plan,
+        transport: transport,
         additional_properties: struct
       )
     end
@@ -422,18 +509,21 @@ module Vapi
       obj.analysis.nil? || Vapi::Analysis.validate_raw(obj: obj.analysis)
       obj.monitor.nil? || Vapi::Monitor.validate_raw(obj: obj.monitor)
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
-      obj.transport.nil? || Vapi::Transport.validate_raw(obj: obj.transport)
       obj.phone_call_provider_id&.is_a?(String) != false || raise("Passed value for field obj.phone_call_provider_id is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
       obj.assistant_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.assistant_overrides)
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
       obj.squad.nil? || Vapi::CreateSquadDto.validate_raw(obj: obj.squad)
+      obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
+      obj.workflow.nil? || Vapi::CreateWorkflowDto.validate_raw(obj: obj.workflow)
       obj.phone_number_id&.is_a?(String) != false || raise("Passed value for field obj.phone_number_id is not the expected type, validation failed.")
       obj.phone_number.nil? || Vapi::ImportTwilioPhoneNumberDto.validate_raw(obj: obj.phone_number)
       obj.customer_id&.is_a?(String) != false || raise("Passed value for field obj.customer_id is not the expected type, validation failed.")
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.schedule_plan.nil? || Vapi::SchedulePlan.validate_raw(obj: obj.schedule_plan)
+      obj.transport&.is_a?(Hash) != false || raise("Passed value for field obj.transport is not the expected type, validation failed.")
     end
   end
 end

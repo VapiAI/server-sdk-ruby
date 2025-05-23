@@ -14,10 +14,7 @@ require "json"
 
 module Vapi
   class ServerMessageEndOfCallReport
-    # @return [Vapi::ServerMessageEndOfCallReportPhoneNumber] This is the phone number associated with the call.
-    #  This matches one of the following:
-    #  - `call.phoneNumber`,
-    #  - `call.phoneNumberId`.
+    # @return [Vapi::ServerMessageEndOfCallReportPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
     # @return [String] This is the type of the message. "end-of-call-report" is sent when the call ends
     #  and post-processing is complete.
@@ -31,30 +28,16 @@ module Vapi
     # @return [Array<Vapi::ServerMessageEndOfCallReportCostsItem>] These are the costs of individual components of the call in USD. This can also
     #  be found at `call.costs` on GET /call/:id.
     attr_reader :costs
-    # @return [String] This is the ISO-8601 formatted timestamp of when the message was sent.
+    # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Artifact] These are the artifacts from the call. This can also be found at `call.artifact`
     #  on GET /call/:id.
     attr_reader :artifact
-    # @return [Vapi::CreateAssistantDto] This is the assistant that is currently active. This is provided for
-    #  convenience.
-    #  This matches one of the following:
-    #  - `call.assistant`,
-    #  - `call.assistantId`,
-    #  - `call.squad[n].assistant`,
-    #  - `call.squad[n].assistantId`,
-    #  - `call.squadId->[n].assistant`,
-    #  - `call.squadId->[n].assistantId`.
+    # @return [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     attr_reader :assistant
-    # @return [Vapi::CreateCustomerDto] This is the customer associated with the call.
-    #  This matches one of the following:
-    #  - `call.customer`,
-    #  - `call.customerId`.
+    # @return [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     attr_reader :customer
-    # @return [Vapi::Call] This is the call object.
-    #  This matches what was returned in POST /call.
-    #  Note: This might get stale during the call. To get the latest call object,
-    #  especially after the call is ended, use GET /call/:id.
+    # @return [Vapi::Call] This is the call that the message is associated with.
     attr_reader :call
     # @return [Vapi::Analysis] This is the analysis of the call. This can also be found at `call.analysis` on
     #  GET /call/:id.
@@ -73,10 +56,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param phone_number [Vapi::ServerMessageEndOfCallReportPhoneNumber] This is the phone number associated with the call.
-    #  This matches one of the following:
-    #  - `call.phoneNumber`,
-    #  - `call.phoneNumberId`.
+    # @param phone_number [Vapi::ServerMessageEndOfCallReportPhoneNumber] This is the phone number that the message is associated with.
     # @param type [String] This is the type of the message. "end-of-call-report" is sent when the call ends
     #  and post-processing is complete.
     # @param ended_reason [Vapi::ServerMessageEndOfCallReportEndedReason] This is the reason the call ended. This can also be found at `call.endedReason`
@@ -85,26 +65,12 @@ module Vapi
     #  GET /call/:id.
     # @param costs [Array<Vapi::ServerMessageEndOfCallReportCostsItem>] These are the costs of individual components of the call in USD. This can also
     #  be found at `call.costs` on GET /call/:id.
-    # @param timestamp [String] This is the ISO-8601 formatted timestamp of when the message was sent.
+    # @param timestamp [Float] This is the timestamp of the message.
     # @param artifact [Vapi::Artifact] These are the artifacts from the call. This can also be found at `call.artifact`
     #  on GET /call/:id.
-    # @param assistant [Vapi::CreateAssistantDto] This is the assistant that is currently active. This is provided for
-    #  convenience.
-    #  This matches one of the following:
-    #  - `call.assistant`,
-    #  - `call.assistantId`,
-    #  - `call.squad[n].assistant`,
-    #  - `call.squad[n].assistantId`,
-    #  - `call.squadId->[n].assistant`,
-    #  - `call.squadId->[n].assistantId`.
-    # @param customer [Vapi::CreateCustomerDto] This is the customer associated with the call.
-    #  This matches one of the following:
-    #  - `call.customer`,
-    #  - `call.customerId`.
-    # @param call [Vapi::Call] This is the call object.
-    #  This matches what was returned in POST /call.
-    #  Note: This might get stale during the call. To get the latest call object,
-    #  especially after the call is ended, use GET /call/:id.
+    # @param assistant [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
+    # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
+    # @param call [Vapi::Call] This is the call that the message is associated with.
     # @param analysis [Vapi::Analysis] This is the analysis of the call. This can also be found at `call.analysis` on
     #  GET /call/:id.
     # @param started_at [DateTime] This is the ISO 8601 date-time string of when the call started. This can also be
@@ -238,7 +204,7 @@ module Vapi
       obj.ended_reason.is_a?(Vapi::ServerMessageEndOfCallReportEndedReason) != false || raise("Passed value for field obj.ended_reason is not the expected type, validation failed.")
       obj.cost&.is_a?(Float) != false || raise("Passed value for field obj.cost is not the expected type, validation failed.")
       obj.costs&.is_a?(Array) != false || raise("Passed value for field obj.costs is not the expected type, validation failed.")
-      obj.timestamp&.is_a?(String) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
+      obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       Vapi::Artifact.validate_raw(obj: obj.artifact)
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)

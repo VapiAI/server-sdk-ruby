@@ -2,6 +2,7 @@
 
 require_relative "artifact_messages_item"
 require_relative "open_ai_message"
+require_relative "recording"
 require "ostruct"
 require "json"
 
@@ -24,6 +25,9 @@ module Vapi
     #  `assistant.artifactPlan.videoRecordingEnabled`. This can be used to align the
     #  playback of the recording with artifact.messages timestamps.
     attr_reader :video_recording_start_delay_seconds
+    # @return [Vapi::Recording] This is the recording url for the call. To enable, set
+    #  `assistant.artifactPlan.recordingEnabled`.
+    attr_reader :recording
     # @return [String] This is the transcript of the call. This is derived from `artifact.messages` but
     #  provided for convenience.
     attr_reader :transcript
@@ -49,6 +53,8 @@ module Vapi
     # @param video_recording_start_delay_seconds [Float] This is video recording start delay in ms. To enable, set
     #  `assistant.artifactPlan.videoRecordingEnabled`. This can be used to align the
     #  playback of the recording with artifact.messages timestamps.
+    # @param recording [Vapi::Recording] This is the recording url for the call. To enable, set
+    #  `assistant.artifactPlan.recordingEnabled`.
     # @param transcript [String] This is the transcript of the call. This is derived from `artifact.messages` but
     #  provided for convenience.
     # @param pcap_url [String] This is the packet capture url for the call. This is only available for `phone`
@@ -56,7 +62,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Artifact]
     def initialize(messages: OMIT, messages_open_ai_formatted: OMIT, recording_url: OMIT, stereo_recording_url: OMIT,
-                   video_recording_url: OMIT, video_recording_start_delay_seconds: OMIT, transcript: OMIT, pcap_url: OMIT, additional_properties: nil)
+                   video_recording_url: OMIT, video_recording_start_delay_seconds: OMIT, recording: OMIT, transcript: OMIT, pcap_url: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @messages_open_ai_formatted = messages_open_ai_formatted if messages_open_ai_formatted != OMIT
       @recording_url = recording_url if recording_url != OMIT
@@ -65,6 +71,7 @@ module Vapi
       if video_recording_start_delay_seconds != OMIT
         @video_recording_start_delay_seconds = video_recording_start_delay_seconds
       end
+      @recording = recording if recording != OMIT
       @transcript = transcript if transcript != OMIT
       @pcap_url = pcap_url if pcap_url != OMIT
       @additional_properties = additional_properties
@@ -75,6 +82,7 @@ module Vapi
         "stereoRecordingUrl": stereo_recording_url,
         "videoRecordingUrl": video_recording_url,
         "videoRecordingStartDelaySeconds": video_recording_start_delay_seconds,
+        "recording": recording,
         "transcript": transcript,
         "pcapUrl": pcap_url
       }.reject do |_k, v|
@@ -101,6 +109,12 @@ module Vapi
       stereo_recording_url = parsed_json["stereoRecordingUrl"]
       video_recording_url = parsed_json["videoRecordingUrl"]
       video_recording_start_delay_seconds = parsed_json["videoRecordingStartDelaySeconds"]
+      if parsed_json["recording"].nil?
+        recording = nil
+      else
+        recording = parsed_json["recording"].to_json
+        recording = Vapi::Recording.from_json(json_object: recording)
+      end
       transcript = parsed_json["transcript"]
       pcap_url = parsed_json["pcapUrl"]
       new(
@@ -110,6 +124,7 @@ module Vapi
         stereo_recording_url: stereo_recording_url,
         video_recording_url: video_recording_url,
         video_recording_start_delay_seconds: video_recording_start_delay_seconds,
+        recording: recording,
         transcript: transcript,
         pcap_url: pcap_url,
         additional_properties: struct
@@ -136,6 +151,7 @@ module Vapi
       obj.stereo_recording_url&.is_a?(String) != false || raise("Passed value for field obj.stereo_recording_url is not the expected type, validation failed.")
       obj.video_recording_url&.is_a?(String) != false || raise("Passed value for field obj.video_recording_url is not the expected type, validation failed.")
       obj.video_recording_start_delay_seconds&.is_a?(Float) != false || raise("Passed value for field obj.video_recording_start_delay_seconds is not the expected type, validation failed.")
+      obj.recording.nil? || Vapi::Recording.validate_raw(obj: obj.recording)
       obj.transcript&.is_a?(String) != false || raise("Passed value for field obj.transcript is not the expected type, validation failed.")
       obj.pcap_url&.is_a?(String) != false || raise("Passed value for field obj.pcap_url is not the expected type, validation failed.")
     end

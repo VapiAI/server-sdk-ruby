@@ -2,7 +2,8 @@
 
 module Vapi
   class FileStatus
-    INDEXED = "indexed"
-    NOT_INDEXED = "not_indexed"
+    PROCESSING = "processing"
+    DONE = "done"
+    FAILED = "failed"
   end
 end

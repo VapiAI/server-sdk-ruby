@@ -18,5 +18,6 @@ module Vapi
     PERCENTAGE = "percentage"
     PHONE_NUMBER = "phoneNumber"
     NUMBER = "number"
+    STRIP_ASTERISK = "stripAsterisk"
   end
 end

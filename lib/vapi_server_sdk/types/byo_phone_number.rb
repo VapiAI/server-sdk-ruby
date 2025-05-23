@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "byo_phone_number_fallback_destination"
+require_relative "phone_number_hook_call_ringing"
 require "date"
 require_relative "byo_phone_number_status"
 require_relative "server"
@@ -16,6 +17,8 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
+    # @return [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
+    attr_reader :hooks
     # @return [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -40,14 +43,22 @@ module Vapi
     # @return [String] This is the name of the phone number. This is just for your own reference.
     attr_reader :name
     # @return [String] This is the assistant that will be used for incoming calls to this phone number.
-    #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
-    #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
-    #  shape of the message and response that is expected.
+    #  If neither `assistantId`, `squadId` nor `workflowId` is set, `assistant-request`
+    #  will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     attr_reader :assistant_id
+    # @return [String] This is the workflow that will be used for incoming calls to this phone number.
+    #  If neither `assistantId`, `squadId`, nor `workflowId` is set,
+    #  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
+    attr_reader :workflow_id
     # @return [String] This is the squad that will be used for incoming calls to this phone number.
-    #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
-    #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
-    #  shape of the message and response that is expected.
+    #  If neither `assistantId`, `squadId`, nor `workflowId` is set,
+    #  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     attr_reader :squad_id
     # @return [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
     #  with their shape in ServerMessage schema.
@@ -77,6 +88,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
+    # @param hooks [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
     # @param number_e_164_check_enabled [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -94,13 +106,20 @@ module Vapi
     # @param status [Vapi::ByoPhoneNumberStatus] This is the status of the phone number.
     # @param name [String] This is the name of the phone number. This is just for your own reference.
     # @param assistant_id [String] This is the assistant that will be used for incoming calls to this phone number.
-    #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
-    #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
-    #  shape of the message and response that is expected.
+    #  If neither `assistantId`, `squadId` nor `workflowId` is set, `assistant-request`
+    #  will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
+    # @param workflow_id [String] This is the workflow that will be used for incoming calls to this phone number.
+    #  If neither `assistantId`, `squadId`, nor `workflowId` is set,
+    #  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     # @param squad_id [String] This is the squad that will be used for incoming calls to this phone number.
-    #  If neither `assistantId` nor `squadId` is set, `assistant-request` will be sent
-    #  to your Server URL. Check `ServerMessage` and `ServerMessageResponse` for the
-    #  shape of the message and response that is expected.
+    #  If neither `assistantId`, `squadId`, nor `workflowId` is set,
+    #  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     # @param server [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
     #  with their shape in ServerMessage schema.
     #  The order of precedence is:
@@ -114,9 +133,10 @@ module Vapi
     #  on the Dashboard to get the credentialId.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ByoPhoneNumber]
-    def initialize(id:, org_id:, created_at:, updated_at:, credential_id:, fallback_destination: OMIT,
-                   number_e_164_check_enabled: OMIT, status: OMIT, name: OMIT, assistant_id: OMIT, squad_id: OMIT, server: OMIT, number: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, created_at:, updated_at:, credential_id:, fallback_destination: OMIT, hooks: OMIT,
+                   number_e_164_check_enabled: OMIT, status: OMIT, name: OMIT, assistant_id: OMIT, workflow_id: OMIT, squad_id: OMIT, server: OMIT, number: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
+      @hooks = hooks if hooks != OMIT
       @number_e_164_check_enabled = number_e_164_check_enabled if number_e_164_check_enabled != OMIT
       @id = id
       @org_id = org_id
@@ -125,6 +145,7 @@ module Vapi
       @status = status if status != OMIT
       @name = name if name != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
+      @workflow_id = workflow_id if workflow_id != OMIT
       @squad_id = squad_id if squad_id != OMIT
       @server = server if server != OMIT
       @number = number if number != OMIT
@@ -132,6 +153,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "fallbackDestination": fallback_destination,
+        "hooks": hooks,
         "numberE164CheckEnabled": number_e_164_check_enabled,
         "id": id,
         "orgId": org_id,
@@ -140,6 +162,7 @@ module Vapi
         "status": status,
         "name": name,
         "assistantId": assistant_id,
+        "workflowId": workflow_id,
         "squadId": squad_id,
         "server": server,
         "number": number,
@@ -162,6 +185,10 @@ module Vapi
         fallback_destination = parsed_json["fallbackDestination"].to_json
         fallback_destination = Vapi::ByoPhoneNumberFallbackDestination.from_json(json_object: fallback_destination)
       end
+      hooks = parsed_json["hooks"]&.map do |item|
+        item = item.to_json
+        Vapi::PhoneNumberHookCallRinging.from_json(json_object: item)
+      end
       number_e_164_check_enabled = parsed_json["numberE164CheckEnabled"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
@@ -170,6 +197,7 @@ module Vapi
       status = parsed_json["status"]
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]
+      workflow_id = parsed_json["workflowId"]
       squad_id = parsed_json["squadId"]
       if parsed_json["server"].nil?
         server = nil
@@ -181,6 +209,7 @@ module Vapi
       credential_id = parsed_json["credentialId"]
       new(
         fallback_destination: fallback_destination,
+        hooks: hooks,
         number_e_164_check_enabled: number_e_164_check_enabled,
         id: id,
         org_id: org_id,
@@ -189,6 +218,7 @@ module Vapi
         status: status,
         name: name,
         assistant_id: assistant_id,
+        workflow_id: workflow_id,
         squad_id: squad_id,
         server: server,
         number: number,
@@ -212,6 +242,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::ByoPhoneNumberFallbackDestination.validate_raw(obj: obj.fallback_destination)
+      obj.hooks&.is_a?(Array) != false || raise("Passed value for field obj.hooks is not the expected type, validation failed.")
       obj.number_e_164_check_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.number_e_164_check_enabled is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
@@ -220,6 +251,7 @@ module Vapi
       obj.status&.is_a?(Vapi::ByoPhoneNumberStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
+      obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
       obj.number&.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")

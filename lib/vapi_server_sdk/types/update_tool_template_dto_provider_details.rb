@@ -4,6 +4,12 @@ require "json"
 require_relative "make_tool_provider_details"
 require_relative "ghl_tool_provider_details"
 require_relative "function_tool_provider_details"
+require_relative "google_calendar_create_event_tool_provider_details"
+require_relative "google_sheets_row_append_tool_provider_details"
+require_relative "go_high_level_calendar_availability_tool_provider_details"
+require_relative "go_high_level_calendar_event_create_tool_provider_details"
+require_relative "go_high_level_contact_create_tool_provider_details"
+require_relative "go_high_level_contact_get_tool_provider_details"
 
 module Vapi
   class UpdateToolTemplateDtoProviderDetails
@@ -36,6 +42,18 @@ module Vapi
                  Vapi::GhlToolProviderDetails.from_json(json_object: json_object)
                when "function"
                  Vapi::FunctionToolProviderDetails.from_json(json_object: json_object)
+               when "google.calendar.event.create"
+                 Vapi::GoogleCalendarCreateEventToolProviderDetails.from_json(json_object: json_object)
+               when "google.sheets.row.append"
+                 Vapi::GoogleSheetsRowAppendToolProviderDetails.from_json(json_object: json_object)
+               when "gohighlevel.calendar.availability.check"
+                 Vapi::GoHighLevelCalendarAvailabilityToolProviderDetails.from_json(json_object: json_object)
+               when "gohighlevel.calendar.event.create"
+                 Vapi::GoHighLevelCalendarEventCreateToolProviderDetails.from_json(json_object: json_object)
+               when "gohighlevel.contact.create"
+                 Vapi::GoHighLevelContactCreateToolProviderDetails.from_json(json_object: json_object)
+               when "gohighlevel.contact.get"
+                 Vapi::GoHighLevelContactGetToolProviderDetails.from_json(json_object: json_object)
                else
                  Vapi::MakeToolProviderDetails.from_json(json_object: json_object)
                end
@@ -52,6 +70,18 @@ module Vapi
       when "ghl"
         { **@member.to_json, type: @discriminant }.to_json
       when "function"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "google.calendar.event.create"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "google.sheets.row.append"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "gohighlevel.calendar.availability.check"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "gohighlevel.calendar.event.create"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "gohighlevel.contact.create"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "gohighlevel.contact.get"
         { **@member.to_json, type: @discriminant }.to_json
       else
         { "type": @discriminant, value: @member }.to_json
@@ -73,6 +103,18 @@ module Vapi
         Vapi::GhlToolProviderDetails.validate_raw(obj: obj)
       when "function"
         Vapi::FunctionToolProviderDetails.validate_raw(obj: obj)
+      when "google.calendar.event.create"
+        Vapi::GoogleCalendarCreateEventToolProviderDetails.validate_raw(obj: obj)
+      when "google.sheets.row.append"
+        Vapi::GoogleSheetsRowAppendToolProviderDetails.validate_raw(obj: obj)
+      when "gohighlevel.calendar.availability.check"
+        Vapi::GoHighLevelCalendarAvailabilityToolProviderDetails.validate_raw(obj: obj)
+      when "gohighlevel.calendar.event.create"
+        Vapi::GoHighLevelCalendarEventCreateToolProviderDetails.validate_raw(obj: obj)
+      when "gohighlevel.contact.create"
+        Vapi::GoHighLevelContactCreateToolProviderDetails.validate_raw(obj: obj)
+      when "gohighlevel.contact.get"
+        Vapi::GoHighLevelContactGetToolProviderDetails.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -102,6 +144,42 @@ module Vapi
     # @return [Vapi::UpdateToolTemplateDtoProviderDetails]
     def self.function(member:)
       new(member: member, discriminant: "function")
+    end
+
+    # @param member [Vapi::GoogleCalendarCreateEventToolProviderDetails]
+    # @return [Vapi::UpdateToolTemplateDtoProviderDetails]
+    def self.google_calendar_event_create(member:)
+      new(member: member, discriminant: "google.calendar.event.create")
+    end
+
+    # @param member [Vapi::GoogleSheetsRowAppendToolProviderDetails]
+    # @return [Vapi::UpdateToolTemplateDtoProviderDetails]
+    def self.google_sheets_row_append(member:)
+      new(member: member, discriminant: "google.sheets.row.append")
+    end
+
+    # @param member [Vapi::GoHighLevelCalendarAvailabilityToolProviderDetails]
+    # @return [Vapi::UpdateToolTemplateDtoProviderDetails]
+    def self.gohighlevel_calendar_availability_check(member:)
+      new(member: member, discriminant: "gohighlevel.calendar.availability.check")
+    end
+
+    # @param member [Vapi::GoHighLevelCalendarEventCreateToolProviderDetails]
+    # @return [Vapi::UpdateToolTemplateDtoProviderDetails]
+    def self.gohighlevel_calendar_event_create(member:)
+      new(member: member, discriminant: "gohighlevel.calendar.event.create")
+    end
+
+    # @param member [Vapi::GoHighLevelContactCreateToolProviderDetails]
+    # @return [Vapi::UpdateToolTemplateDtoProviderDetails]
+    def self.gohighlevel_contact_create(member:)
+      new(member: member, discriminant: "gohighlevel.contact.create")
+    end
+
+    # @param member [Vapi::GoHighLevelContactGetToolProviderDetails]
+    # @return [Vapi::UpdateToolTemplateDtoProviderDetails]
+    def self.gohighlevel_contact_get(member:)
+      new(member: member, discriminant: "gohighlevel.contact.get")
     end
   end
 end

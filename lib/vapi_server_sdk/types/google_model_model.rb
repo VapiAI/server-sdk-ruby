@@ -3,9 +3,12 @@
 module Vapi
   # This is the Google model that will be used.
   class GoogleModelModel
+    GEMINI_25_PRO_PREVIEW_0506 = "gemini-2.5-pro-preview-05-06"
+    GEMINI_25_FLASH_PREVIEW_0417 = "gemini-2.5-flash-preview-04-17"
     GEMINI_20_FLASH_THINKING_EXP = "gemini-2.0-flash-thinking-exp"
     GEMINI_20_PRO_EXP_0205 = "gemini-2.0-pro-exp-02-05"
     GEMINI_20_FLASH = "gemini-2.0-flash"
+    GEMINI_20_FLASH_LITE = "gemini-2.0-flash-lite"
     GEMINI_20_FLASH_LITE_PREVIEW_0205 = "gemini-2.0-flash-lite-preview-02-05"
     GEMINI_20_FLASH_EXP = "gemini-2.0-flash-exp"
     GEMINI_20_FLASH_REALTIME_EXP = "gemini-2.0-flash-realtime-exp"

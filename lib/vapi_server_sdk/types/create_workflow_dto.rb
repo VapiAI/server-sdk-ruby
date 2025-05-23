@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "create_workflow_dto_nodes_item"
+require_relative "create_workflow_dto_model"
 require_relative "edge"
 require "ostruct"
 require "json"
@@ -9,6 +10,8 @@ module Vapi
   class CreateWorkflowDto
     # @return [Array<Vapi::CreateWorkflowDtoNodesItem>]
     attr_reader :nodes
+    # @return [Vapi::CreateWorkflowDtoModel] These are the options for the workflow's LLM.
+    attr_reader :model
     # @return [String]
     attr_reader :name
     # @return [Array<Vapi::Edge>]
@@ -22,16 +25,20 @@ module Vapi
     OMIT = Object.new
 
     # @param nodes [Array<Vapi::CreateWorkflowDtoNodesItem>]
+    # @param model [Vapi::CreateWorkflowDtoModel] These are the options for the workflow's LLM.
     # @param name [String]
     # @param edges [Array<Vapi::Edge>]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateWorkflowDto]
-    def initialize(nodes:, name:, edges:, additional_properties: nil)
+    def initialize(nodes:, name:, edges:, model: OMIT, additional_properties: nil)
       @nodes = nodes
+      @model = model if model != OMIT
       @name = name
       @edges = edges
       @additional_properties = additional_properties
-      @_field_set = { "nodes": nodes, "name": name, "edges": edges }
+      @_field_set = { "nodes": nodes, "model": model, "name": name, "edges": edges }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of CreateWorkflowDto
@@ -45,6 +52,12 @@ module Vapi
         item = item.to_json
         Vapi::CreateWorkflowDtoNodesItem.from_json(json_object: item)
       end
+      if parsed_json["model"].nil?
+        model = nil
+      else
+        model = parsed_json["model"].to_json
+        model = Vapi::CreateWorkflowDtoModel.from_json(json_object: model)
+      end
       name = parsed_json["name"]
       edges = parsed_json["edges"]&.map do |item|
         item = item.to_json
@@ -52,6 +65,7 @@ module Vapi
       end
       new(
         nodes: nodes,
+        model: model,
         name: name,
         edges: edges,
         additional_properties: struct
@@ -73,6 +87,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.nodes.is_a?(Array) != false || raise("Passed value for field obj.nodes is not the expected type, validation failed.")
+      obj.model.nil? || Vapi::CreateWorkflowDtoModel.validate_raw(obj: obj.model)
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.edges.is_a?(Array) != false || raise("Passed value for field obj.edges is not the expected type, validation failed.")
     end

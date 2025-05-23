@@ -17,6 +17,8 @@ module Vapi
     attr_reader :time
     # @return [Float] The number of seconds from the start of the conversation.
     attr_reader :seconds_from_start
+    # @return [Hash{String => Object}] The metadata for the tool call result.
+    attr_reader :metadata
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -31,15 +33,18 @@ module Vapi
     # @param result [String] The result of the tool call in JSON format.
     # @param time [Float] The timestamp when the message was sent.
     # @param seconds_from_start [Float] The number of seconds from the start of the conversation.
+    # @param metadata [Hash{String => Object}] The metadata for the tool call result.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ToolCallResultMessage]
-    def initialize(role:, tool_call_id:, name:, result:, time:, seconds_from_start:, additional_properties: nil)
+    def initialize(role:, tool_call_id:, name:, result:, time:, seconds_from_start:, metadata: OMIT,
+                   additional_properties: nil)
       @role = role
       @tool_call_id = tool_call_id
       @name = name
       @result = result
       @time = time
       @seconds_from_start = seconds_from_start
+      @metadata = metadata if metadata != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "role": role,
@@ -47,8 +52,11 @@ module Vapi
         "name": name,
         "result": result,
         "time": time,
-        "secondsFromStart": seconds_from_start
-      }
+        "secondsFromStart": seconds_from_start,
+        "metadata": metadata
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of ToolCallResultMessage
@@ -64,6 +72,7 @@ module Vapi
       result = parsed_json["result"]
       time = parsed_json["time"]
       seconds_from_start = parsed_json["secondsFromStart"]
+      metadata = parsed_json["metadata"]
       new(
         role: role,
         tool_call_id: tool_call_id,
@@ -71,6 +80,7 @@ module Vapi
         result: result,
         time: time,
         seconds_from_start: seconds_from_start,
+        metadata: metadata,
         additional_properties: struct
       )
     end
@@ -95,6 +105,7 @@ module Vapi
       obj.result.is_a?(String) != false || raise("Passed value for field obj.result is not the expected type, validation failed.")
       obj.time.is_a?(Float) != false || raise("Passed value for field obj.time is not the expected type, validation failed.")
       obj.seconds_from_start.is_a?(Float) != false || raise("Passed value for field obj.seconds_from_start is not the expected type, validation failed.")
+      obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")
     end
   end
 end

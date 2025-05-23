@@ -5,12 +5,10 @@ require_relative "create_byo_phone_number_dto"
 require_relative "create_twilio_phone_number_dto"
 require_relative "create_vonage_phone_number_dto"
 require_relative "create_vapi_phone_number_dto"
+require_relative "create_telnyx_phone_number_dto"
 
 module Vapi
-  # This is the phone number associated with the call.
-  #  This matches one of the following:
-  #  - `call.phoneNumber`,
-  #  - `call.phoneNumberId`.
+  # This is the phone number that the message is associated with.
   class ServerMessageModelOutputPhoneNumber
     # @return [Object]
     attr_reader :member
@@ -43,6 +41,8 @@ module Vapi
                  Vapi::CreateVonagePhoneNumberDto.from_json(json_object: json_object)
                when "vapi"
                  Vapi::CreateVapiPhoneNumberDto.from_json(json_object: json_object)
+               when "telnyx"
+                 Vapi::CreateTelnyxPhoneNumberDto.from_json(json_object: json_object)
                else
                  Vapi::CreateByoPhoneNumberDto.from_json(json_object: json_object)
                end
@@ -61,6 +61,8 @@ module Vapi
       when "vonage"
         { **@member.to_json, provider: @discriminant }.to_json
       when "vapi"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "telnyx"
         { **@member.to_json, provider: @discriminant }.to_json
       else
         { "provider": @discriminant, value: @member }.to_json
@@ -84,6 +86,8 @@ module Vapi
         Vapi::CreateVonagePhoneNumberDto.validate_raw(obj: obj)
       when "vapi"
         Vapi::CreateVapiPhoneNumberDto.validate_raw(obj: obj)
+      when "telnyx"
+        Vapi::CreateTelnyxPhoneNumberDto.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -119,6 +123,12 @@ module Vapi
     # @return [Vapi::ServerMessageModelOutputPhoneNumber]
     def self.vapi(member:)
       new(member: member, discriminant: "vapi")
+    end
+
+    # @param member [Vapi::CreateTelnyxPhoneNumberDto]
+    # @return [Vapi::ServerMessageModelOutputPhoneNumber]
+    def self.telnyx(member:)
+      new(member: member, discriminant: "telnyx")
     end
   end
 end

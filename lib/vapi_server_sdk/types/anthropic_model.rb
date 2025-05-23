@@ -4,6 +4,7 @@ require_relative "open_ai_message"
 require_relative "anthropic_model_tools_item"
 require_relative "create_custom_knowledge_base_dto"
 require_relative "anthropic_model_model"
+require_relative "anthropic_thinking_config"
 require "ostruct"
 require "json"
 
@@ -23,8 +24,12 @@ module Vapi
     attr_reader :knowledge_base
     # @return [String] This is the ID of the knowledge base the model will use.
     attr_reader :knowledge_base_id
-    # @return [Vapi::AnthropicModelModel] This is the Anthropic/Claude models that will be used.
+    # @return [Vapi::AnthropicModelModel] The specific Anthropic/Claude model that will be used.
     attr_reader :model
+    # @return [Vapi::AnthropicThinkingConfig] Optional configuration for Anthropic's thinking feature.
+    #  Only applicable for claude-3-7-sonnet-20250219 model.
+    #  If provided, maxTokens must be greater than thinking.budgetTokens.
+    attr_reader :thinking
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     attr_reader :temperature
@@ -60,7 +65,10 @@ module Vapi
     #  Both `tools` and `toolIds` can be used together.
     # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
     # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
-    # @param model [Vapi::AnthropicModelModel] This is the Anthropic/Claude models that will be used.
+    # @param model [Vapi::AnthropicModelModel] The specific Anthropic/Claude model that will be used.
+    # @param thinking [Vapi::AnthropicThinkingConfig] Optional configuration for Anthropic's thinking feature.
+    #  Only applicable for claude-3-7-sonnet-20250219 model.
+    #  If provided, maxTokens must be greater than thinking.budgetTokens.
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
     # @param max_tokens [Float] This is the max number of tokens that the assistant will be allowed to generate
@@ -78,13 +86,14 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AnthropicModel]
     def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
-                   temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+                   thinking: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
       @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @model = model
+      @thinking = thinking if thinking != OMIT
       @temperature = temperature if temperature != OMIT
       @max_tokens = max_tokens if max_tokens != OMIT
       @emotion_recognition_enabled = emotion_recognition_enabled if emotion_recognition_enabled != OMIT
@@ -97,6 +106,7 @@ module Vapi
         "knowledgeBase": knowledge_base,
         "knowledgeBaseId": knowledge_base_id,
         "model": model,
+        "thinking": thinking,
         "temperature": temperature,
         "maxTokens": max_tokens,
         "emotionRecognitionEnabled": emotion_recognition_enabled,
@@ -130,6 +140,12 @@ module Vapi
       end
       knowledge_base_id = parsed_json["knowledgeBaseId"]
       model = parsed_json["model"]
+      if parsed_json["thinking"].nil?
+        thinking = nil
+      else
+        thinking = parsed_json["thinking"].to_json
+        thinking = Vapi::AnthropicThinkingConfig.from_json(json_object: thinking)
+      end
       temperature = parsed_json["temperature"]
       max_tokens = parsed_json["maxTokens"]
       emotion_recognition_enabled = parsed_json["emotionRecognitionEnabled"]
@@ -141,6 +157,7 @@ module Vapi
         knowledge_base: knowledge_base,
         knowledge_base_id: knowledge_base_id,
         model: model,
+        thinking: thinking,
         temperature: temperature,
         max_tokens: max_tokens,
         emotion_recognition_enabled: emotion_recognition_enabled,
@@ -169,6 +186,7 @@ module Vapi
       obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
       obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
       obj.model.is_a?(Vapi::AnthropicModelModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.thinking.nil? || Vapi::AnthropicThinkingConfig.validate_raw(obj: obj.thinking)
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")
       obj.emotion_recognition_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.emotion_recognition_enabled is not the expected type, validation failed.")

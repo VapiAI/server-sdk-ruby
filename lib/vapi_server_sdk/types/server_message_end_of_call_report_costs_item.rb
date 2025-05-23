@@ -6,7 +6,9 @@ require_relative "transcriber_cost"
 require_relative "model_cost"
 require_relative "voice_cost"
 require_relative "vapi_cost"
+require_relative "voicemail_detection_cost"
 require_relative "analysis_cost"
+require_relative "knowledge_base_cost"
 
 module Vapi
   class ServerMessageEndOfCallReportCostsItem
@@ -44,8 +46,12 @@ module Vapi
                  Vapi::VoiceCost.from_json(json_object: json_object)
                when "vapi"
                  Vapi::VapiCost.from_json(json_object: json_object)
+               when "voicemail-detection"
+                 Vapi::VoicemailDetectionCost.from_json(json_object: json_object)
                when "analysis"
                  Vapi::AnalysisCost.from_json(json_object: json_object)
+               when "knowledge-base"
+                 Vapi::KnowledgeBaseCost.from_json(json_object: json_object)
                else
                  Vapi::TransportCost.from_json(json_object: json_object)
                end
@@ -67,7 +73,11 @@ module Vapi
         { **@member.to_json, type: @discriminant }.to_json
       when "vapi"
         { **@member.to_json, type: @discriminant }.to_json
+      when "voicemail-detection"
+        { **@member.to_json, type: @discriminant }.to_json
       when "analysis"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "knowledge-base"
         { **@member.to_json, type: @discriminant }.to_json
       else
         { "type": @discriminant, value: @member }.to_json
@@ -93,8 +103,12 @@ module Vapi
         Vapi::VoiceCost.validate_raw(obj: obj)
       when "vapi"
         Vapi::VapiCost.validate_raw(obj: obj)
+      when "voicemail-detection"
+        Vapi::VoicemailDetectionCost.validate_raw(obj: obj)
       when "analysis"
         Vapi::AnalysisCost.validate_raw(obj: obj)
+      when "knowledge-base"
+        Vapi::KnowledgeBaseCost.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -138,10 +152,22 @@ module Vapi
       new(member: member, discriminant: "vapi")
     end
 
+    # @param member [Vapi::VoicemailDetectionCost]
+    # @return [Vapi::ServerMessageEndOfCallReportCostsItem]
+    def self.voicemail_detection(member:)
+      new(member: member, discriminant: "voicemail-detection")
+    end
+
     # @param member [Vapi::AnalysisCost]
     # @return [Vapi::ServerMessageEndOfCallReportCostsItem]
     def self.analysis(member:)
       new(member: member, discriminant: "analysis")
+    end
+
+    # @param member [Vapi::KnowledgeBaseCost]
+    # @return [Vapi::ServerMessageEndOfCallReportCostsItem]
+    def self.knowledge_base(member:)
+      new(member: member, discriminant: "knowledge-base")
     end
   end
 end

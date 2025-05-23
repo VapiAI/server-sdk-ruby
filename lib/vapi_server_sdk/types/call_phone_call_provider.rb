@@ -7,5 +7,6 @@ module Vapi
     TWILIO = "twilio"
     VONAGE = "vonage"
     VAPI = "vapi"
+    TELNYX = "telnyx"
   end
 end

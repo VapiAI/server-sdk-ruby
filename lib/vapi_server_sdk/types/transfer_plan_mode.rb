@@ -23,6 +23,11 @@ module Vapi
   #  - `warm-transfer-twiml`: The assistant dials the destination, executes the twiml
   #  instructions on the destination call leg, connects the customer, and leaves the
   #  call.
+  #  - `warm-transfer-experimental`: The assistant puts the customer on hold, dials
+  #  the destination, and if the destination answers (and is human), delivers a
+  #  message or summary before connecting the customer. If the destination is
+  #  unreachable or not human (e.g., with voicemail detection), the assistant
+  #  delivers the `fallbackMessage` to the customer and optionally ends the call.
   #  @default 'blind-transfer'
   class TransferPlanMode
     BLIND_TRANSFER = "blind-transfer"
@@ -32,5 +37,6 @@ module Vapi
     WARM_TRANSFER_TWIML = "warm-transfer-twiml"
     WARM_TRANSFER_WAIT_FOR_OPERATOR_TO_SPEAK_FIRST_AND_THEN_SAY_MESSAGE = "warm-transfer-wait-for-operator-to-speak-first-and-then-say-message"
     WARM_TRANSFER_WAIT_FOR_OPERATOR_TO_SPEAK_FIRST_AND_THEN_SAY_SUMMARY = "warm-transfer-wait-for-operator-to-speak-first-and-then-say-summary"
+    WARM_TRANSFER_EXPERIMENTAL = "warm-transfer-experimental"
   end
 end

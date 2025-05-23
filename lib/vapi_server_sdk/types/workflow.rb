@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "workflow_nodes_item"
+require_relative "workflow_model"
 require "date"
 require_relative "edge"
 require "ostruct"
@@ -10,6 +11,8 @@ module Vapi
   class Workflow
     # @return [Array<Vapi::WorkflowNodesItem>]
     attr_reader :nodes
+    # @return [Vapi::WorkflowModel] These are the options for the workflow's LLM.
+    attr_reader :model
     # @return [String]
     attr_reader :id
     # @return [String]
@@ -31,6 +34,7 @@ module Vapi
     OMIT = Object.new
 
     # @param nodes [Array<Vapi::WorkflowNodesItem>]
+    # @param model [Vapi::WorkflowModel] These are the options for the workflow's LLM.
     # @param id [String]
     # @param org_id [String]
     # @param created_at [DateTime]
@@ -39,8 +43,10 @@ module Vapi
     # @param edges [Array<Vapi::Edge>]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Workflow]
-    def initialize(nodes:, id:, org_id:, created_at:, updated_at:, name:, edges:, additional_properties: nil)
+    def initialize(nodes:, id:, org_id:, created_at:, updated_at:, name:, edges:, model: OMIT,
+                   additional_properties: nil)
       @nodes = nodes
+      @model = model if model != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -50,13 +56,16 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "nodes": nodes,
+        "model": model,
         "id": id,
         "orgId": org_id,
         "createdAt": created_at,
         "updatedAt": updated_at,
         "name": name,
         "edges": edges
-      }
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of Workflow
@@ -70,6 +79,12 @@ module Vapi
         item = item.to_json
         Vapi::WorkflowNodesItem.from_json(json_object: item)
       end
+      if parsed_json["model"].nil?
+        model = nil
+      else
+        model = parsed_json["model"].to_json
+        model = Vapi::WorkflowModel.from_json(json_object: model)
+      end
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
@@ -81,6 +96,7 @@ module Vapi
       end
       new(
         nodes: nodes,
+        model: model,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -106,6 +122,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.nodes.is_a?(Array) != false || raise("Passed value for field obj.nodes is not the expected type, validation failed.")
+      obj.model.nil? || Vapi::WorkflowModel.validate_raw(obj: obj.model)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

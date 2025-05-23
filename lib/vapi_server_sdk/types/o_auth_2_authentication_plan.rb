@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "o_auth_2_authentication_plan_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class OAuth2AuthenticationPlan
-    # @return [String]
+    # @return [Vapi::OAuth2AuthenticationPlanType]
     attr_reader :type
     # @return [String] This is the OAuth2 URL.
     attr_reader :url
@@ -13,6 +14,8 @@ module Vapi
     attr_reader :client_id
     # @return [String] This is the OAuth2 client secret.
     attr_reader :client_secret
+    # @return [String] This is the scope of the OAuth2 token.
+    attr_reader :scope
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -21,19 +24,29 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
+    # @param type [Vapi::OAuth2AuthenticationPlanType]
     # @param url [String] This is the OAuth2 URL.
     # @param client_id [String] This is the OAuth2 client ID.
     # @param client_secret [String] This is the OAuth2 client secret.
+    # @param scope [String] This is the scope of the OAuth2 token.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::OAuth2AuthenticationPlan]
-    def initialize(type:, url:, client_id:, client_secret:, additional_properties: nil)
+    def initialize(type:, url:, client_id:, client_secret:, scope: OMIT, additional_properties: nil)
       @type = type
       @url = url
       @client_id = client_id
       @client_secret = client_secret
+      @scope = scope if scope != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "url": url, "clientId": client_id, "clientSecret": client_secret }
+      @_field_set = {
+        "type": type,
+        "url": url,
+        "clientId": client_id,
+        "clientSecret": client_secret,
+        "scope": scope
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of OAuth2AuthenticationPlan
@@ -47,11 +60,13 @@ module Vapi
       url = parsed_json["url"]
       client_id = parsed_json["clientId"]
       client_secret = parsed_json["clientSecret"]
+      scope = parsed_json["scope"]
       new(
         type: type,
         url: url,
         client_id: client_id,
         client_secret: client_secret,
+        scope: scope,
         additional_properties: struct
       )
     end
@@ -70,10 +85,11 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::OAuth2AuthenticationPlanType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
       obj.client_id.is_a?(String) != false || raise("Passed value for field obj.client_id is not the expected type, validation failed.")
       obj.client_secret.is_a?(String) != false || raise("Passed value for field obj.client_secret is not the expected type, validation failed.")
+      obj.scope&.is_a?(String) != false || raise("Passed value for field obj.scope is not the expected type, validation failed.")
     end
   end
 end

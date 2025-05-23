@@ -10,6 +10,8 @@ module Vapi
     attr_reader :access_token
     # @return [DateTime] This is the OAuth2 access token expiration.
     attr_reader :expires_at
+    # @return [String] This is the OAuth2 refresh token.
+    attr_reader :refresh_token
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -20,13 +22,19 @@ module Vapi
 
     # @param access_token [String] This is the OAuth2 access token.
     # @param expires_at [DateTime] This is the OAuth2 access token expiration.
+    # @param refresh_token [String] This is the OAuth2 refresh token.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Oauth2AuthenticationSession]
-    def initialize(access_token: OMIT, expires_at: OMIT, additional_properties: nil)
+    def initialize(access_token: OMIT, expires_at: OMIT, refresh_token: OMIT, additional_properties: nil)
       @access_token = access_token if access_token != OMIT
       @expires_at = expires_at if expires_at != OMIT
+      @refresh_token = refresh_token if refresh_token != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "accessToken": access_token, "expiresAt": expires_at }.reject do |_k, v|
+      @_field_set = {
+        "accessToken": access_token,
+        "expiresAt": expires_at,
+        "refreshToken": refresh_token
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -40,9 +48,11 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       access_token = parsed_json["accessToken"]
       expires_at = (DateTime.parse(parsed_json["expiresAt"]) unless parsed_json["expiresAt"].nil?)
+      refresh_token = parsed_json["refreshToken"]
       new(
         access_token: access_token,
         expires_at: expires_at,
+        refresh_token: refresh_token,
         additional_properties: struct
       )
     end
@@ -63,6 +73,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.access_token&.is_a?(String) != false || raise("Passed value for field obj.access_token is not the expected type, validation failed.")
       obj.expires_at&.is_a?(DateTime) != false || raise("Passed value for field obj.expires_at is not the expected type, validation failed.")
+      obj.refresh_token&.is_a?(String) != false || raise("Passed value for field obj.refresh_token is not the expected type, validation failed.")
     end
   end
 end

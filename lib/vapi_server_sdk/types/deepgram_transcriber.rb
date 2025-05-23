@@ -2,6 +2,7 @@
 
 require_relative "deepgram_transcriber_model"
 require_relative "deepgram_transcriber_language"
+require_relative "fallback_transcriber_plan"
 require "ostruct"
 require "json"
 
@@ -55,6 +56,14 @@ module Vapi
     #  This will only be used if you are using your own Deepgram API key.
     #  @default false
     attr_reader :mip_opt_out
+    # @return [Boolean] If set to true, this will cause deepgram to convert spoken numbers to literal
+    #  numerals. For example, "my phone number is nine-seven-two..." would become "my
+    #  phone number is 972..."
+    #  @default false
+    attr_reader :numerals
+    # @return [Float] Transcripts below this confidence threshold will be discarded.
+    #  @default 0.4
+    attr_reader :confidence_threshold
     # @return [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
     #  specific words. Anything that may not be a common word, like your company name,
     #  should be added here.
@@ -76,6 +85,9 @@ module Vapi
     #  solution.
     #  @default 10
     attr_reader :endpointing
+    # @return [Vapi::FallbackTranscriberPlan] This is the plan for voice provider fallbacks in the event that the primary
+    #  voice provider fails.
+    attr_reader :fallback_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -127,6 +139,12 @@ module Vapi
     #  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
     #  This will only be used if you are using your own Deepgram API key.
     #  @default false
+    # @param numerals [Boolean] If set to true, this will cause deepgram to convert spoken numbers to literal
+    #  numerals. For example, "my phone number is nine-seven-two..." would become "my
+    #  phone number is 972..."
+    #  @default false
+    # @param confidence_threshold [Float] Transcripts below this confidence threshold will be discarded.
+    #  @default 0.4
     # @param keywords [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
     #  specific words. Anything that may not be a common word, like your company name,
     #  should be added here.
@@ -145,18 +163,23 @@ module Vapi
     #  - If neither 10 nor 300 work, contact support@vapi.ai and we'll find another
     #  solution.
     #  @default 10
+    # @param fallback_plan [Vapi::FallbackTranscriberPlan] This is the plan for voice provider fallbacks in the event that the primary
+    #  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::DeepgramTranscriber]
     def initialize(model: OMIT, language: OMIT, smart_format: OMIT, code_switching_enabled: OMIT, mip_opt_out: OMIT,
-                   keywords: OMIT, keyterm: OMIT, endpointing: OMIT, additional_properties: nil)
+                   numerals: OMIT, confidence_threshold: OMIT, keywords: OMIT, keyterm: OMIT, endpointing: OMIT, fallback_plan: OMIT, additional_properties: nil)
       @model = model if model != OMIT
       @language = language if language != OMIT
       @smart_format = smart_format if smart_format != OMIT
       @code_switching_enabled = code_switching_enabled if code_switching_enabled != OMIT
       @mip_opt_out = mip_opt_out if mip_opt_out != OMIT
+      @numerals = numerals if numerals != OMIT
+      @confidence_threshold = confidence_threshold if confidence_threshold != OMIT
       @keywords = keywords if keywords != OMIT
       @keyterm = keyterm if keyterm != OMIT
       @endpointing = endpointing if endpointing != OMIT
+      @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "model": model,
@@ -164,9 +187,12 @@ module Vapi
         "smartFormat": smart_format,
         "codeSwitchingEnabled": code_switching_enabled,
         "mipOptOut": mip_opt_out,
+        "numerals": numerals,
+        "confidenceThreshold": confidence_threshold,
         "keywords": keywords,
         "keyterm": keyterm,
-        "endpointing": endpointing
+        "endpointing": endpointing,
+        "fallbackPlan": fallback_plan
       }.reject do |_k, v|
         v == OMIT
       end
@@ -184,18 +210,29 @@ module Vapi
       smart_format = parsed_json["smartFormat"]
       code_switching_enabled = parsed_json["codeSwitchingEnabled"]
       mip_opt_out = parsed_json["mipOptOut"]
+      numerals = parsed_json["numerals"]
+      confidence_threshold = parsed_json["confidenceThreshold"]
       keywords = parsed_json["keywords"]
       keyterm = parsed_json["keyterm"]
       endpointing = parsed_json["endpointing"]
+      if parsed_json["fallbackPlan"].nil?
+        fallback_plan = nil
+      else
+        fallback_plan = parsed_json["fallbackPlan"].to_json
+        fallback_plan = Vapi::FallbackTranscriberPlan.from_json(json_object: fallback_plan)
+      end
       new(
         model: model,
         language: language,
         smart_format: smart_format,
         code_switching_enabled: code_switching_enabled,
         mip_opt_out: mip_opt_out,
+        numerals: numerals,
+        confidence_threshold: confidence_threshold,
         keywords: keywords,
         keyterm: keyterm,
         endpointing: endpointing,
+        fallback_plan: fallback_plan,
         additional_properties: struct
       )
     end
@@ -219,9 +256,12 @@ module Vapi
       obj.smart_format&.is_a?(Boolean) != false || raise("Passed value for field obj.smart_format is not the expected type, validation failed.")
       obj.code_switching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.code_switching_enabled is not the expected type, validation failed.")
       obj.mip_opt_out&.is_a?(Boolean) != false || raise("Passed value for field obj.mip_opt_out is not the expected type, validation failed.")
+      obj.numerals&.is_a?(Boolean) != false || raise("Passed value for field obj.numerals is not the expected type, validation failed.")
+      obj.confidence_threshold&.is_a?(Float) != false || raise("Passed value for field obj.confidence_threshold is not the expected type, validation failed.")
       obj.keywords&.is_a?(Array) != false || raise("Passed value for field obj.keywords is not the expected type, validation failed.")
       obj.keyterm&.is_a?(Array) != false || raise("Passed value for field obj.keyterm is not the expected type, validation failed.")
       obj.endpointing&.is_a?(Float) != false || raise("Passed value for field obj.endpointing is not the expected type, validation failed.")
+      obj.fallback_plan.nil? || Vapi::FallbackTranscriberPlan.validate_raw(obj: obj.fallback_plan)
     end
   end
 end

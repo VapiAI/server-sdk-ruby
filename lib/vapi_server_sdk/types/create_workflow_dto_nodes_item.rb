@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 require "json"
-require_relative "say"
-require_relative "gather"
-require_relative "api_request"
-require_relative "hangup"
-require_relative "transfer"
+require_relative "conversation_node"
+require_relative "tool_node"
 
 module Vapi
   class CreateWorkflowDtoNodesItem
@@ -32,18 +29,12 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       member = case struct.type
-               when "say"
-                 Vapi::Say.from_json(json_object: json_object)
-               when "gather"
-                 Vapi::Gather.from_json(json_object: json_object)
-               when "apiRequest"
-                 Vapi::ApiRequest.from_json(json_object: json_object)
-               when "hangup"
-                 Vapi::Hangup.from_json(json_object: json_object)
-               when "transfer"
-                 Vapi::Transfer.from_json(json_object: json_object)
+               when "conversation"
+                 Vapi::ConversationNode.from_json(json_object: json_object)
+               when "tool"
+                 Vapi::ToolNode.from_json(json_object: json_object)
                else
-                 Vapi::Say.from_json(json_object: json_object)
+                 Vapi::ConversationNode.from_json(json_object: json_object)
                end
       new(member: member, discriminant: struct.type)
     end
@@ -53,15 +44,9 @@ module Vapi
     # @return [String]
     def to_json(*_args)
       case @discriminant
-      when "say"
+      when "conversation"
         { **@member.to_json, type: @discriminant }.to_json
-      when "gather"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "apiRequest"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "hangup"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "transfer"
+      when "tool"
         { **@member.to_json, type: @discriminant }.to_json
       else
         { "type": @discriminant, value: @member }.to_json
@@ -77,16 +62,10 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.type
-      when "say"
-        Vapi::Say.validate_raw(obj: obj)
-      when "gather"
-        Vapi::Gather.validate_raw(obj: obj)
-      when "apiRequest"
-        Vapi::ApiRequest.validate_raw(obj: obj)
-      when "hangup"
-        Vapi::Hangup.validate_raw(obj: obj)
-      when "transfer"
-        Vapi::Transfer.validate_raw(obj: obj)
+      when "conversation"
+        Vapi::ConversationNode.validate_raw(obj: obj)
+      when "tool"
+        Vapi::ToolNode.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -100,34 +79,16 @@ module Vapi
       @member.is_a?(obj)
     end
 
-    # @param member [Vapi::Say]
+    # @param member [Vapi::ConversationNode]
     # @return [Vapi::CreateWorkflowDtoNodesItem]
-    def self.say(member:)
-      new(member: member, discriminant: "say")
+    def self.conversation(member:)
+      new(member: member, discriminant: "conversation")
     end
 
-    # @param member [Vapi::Gather]
+    # @param member [Vapi::ToolNode]
     # @return [Vapi::CreateWorkflowDtoNodesItem]
-    def self.gather(member:)
-      new(member: member, discriminant: "gather")
-    end
-
-    # @param member [Vapi::ApiRequest]
-    # @return [Vapi::CreateWorkflowDtoNodesItem]
-    def self.api_request(member:)
-      new(member: member, discriminant: "apiRequest")
-    end
-
-    # @param member [Vapi::Hangup]
-    # @return [Vapi::CreateWorkflowDtoNodesItem]
-    def self.hangup(member:)
-      new(member: member, discriminant: "hangup")
-    end
-
-    # @param member [Vapi::Transfer]
-    # @return [Vapi::CreateWorkflowDtoNodesItem]
-    def self.transfer(member:)
-      new(member: member, discriminant: "transfer")
+    def self.tool(member:)
+      new(member: member, discriminant: "tool")
     end
   end
 end

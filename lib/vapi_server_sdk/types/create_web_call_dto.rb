@@ -3,26 +3,61 @@
 require_relative "create_assistant_dto"
 require_relative "assistant_overrides"
 require_relative "create_squad_dto"
+require_relative "create_workflow_dto"
 require "ostruct"
 require "json"
 
 module Vapi
   class CreateWebCallDto
-    # @return [String] This is the assistant that will be used for the call. To use a transient
+    # @return [String] This is the assistant ID that will be used for the call. To use a transient
     #  assistant, use `assistant` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistantId` or `assistant`
+    #  - Squad, use `squadId` or `squad`
+    #  - Workflow, use `workflowId` or `workflow`
     attr_reader :assistant_id
     # @return [Vapi::CreateAssistantDto] This is the assistant that will be used for the call. To use an existing
     #  assistant, use `assistantId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant`
+    #  - Squad, use `squad`
+    #  - Workflow, use `workflow`
     attr_reader :assistant
     # @return [Vapi::AssistantOverrides] These are the overrides for the `assistant` or `assistantId`'s settings and
     #  template variables.
     attr_reader :assistant_overrides
     # @return [String] This is the squad that will be used for the call. To use a transient squad, use
     #  `squad` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
     attr_reader :squad_id
     # @return [Vapi::CreateSquadDto] This is a squad that will be used for the call. To use an existing squad, use
     #  `squadId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
     attr_reader :squad
+    # @return [String] [BETA] This feature is in active development. The API and behavior are subject
+    #  to change as we refine it based on user feedback.
+    #  This is the workflow that will be used for the call. To use a transient
+    #  workflow, use `workflow` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
+    attr_reader :workflow_id
+    # @return [Vapi::CreateWorkflowDto] [BETA] This feature is in active development. The API and behavior are subject
+    #  to change as we refine it based on user feedback.
+    #  This is a workflow that will be used for the call. To use an existing workflow,
+    #  use `workflowId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
+    attr_reader :workflow
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -31,32 +66,68 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param assistant_id [String] This is the assistant that will be used for the call. To use a transient
+    # @param assistant_id [String] This is the assistant ID that will be used for the call. To use a transient
     #  assistant, use `assistant` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistantId` or `assistant`
+    #  - Squad, use `squadId` or `squad`
+    #  - Workflow, use `workflowId` or `workflow`
     # @param assistant [Vapi::CreateAssistantDto] This is the assistant that will be used for the call. To use an existing
     #  assistant, use `assistantId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant`
+    #  - Squad, use `squad`
+    #  - Workflow, use `workflow`
     # @param assistant_overrides [Vapi::AssistantOverrides] These are the overrides for the `assistant` or `assistantId`'s settings and
     #  template variables.
     # @param squad_id [String] This is the squad that will be used for the call. To use a transient squad, use
     #  `squad` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
     # @param squad [Vapi::CreateSquadDto] This is a squad that will be used for the call. To use an existing squad, use
     #  `squadId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
+    # @param workflow_id [String] [BETA] This feature is in active development. The API and behavior are subject
+    #  to change as we refine it based on user feedback.
+    #  This is the workflow that will be used for the call. To use a transient
+    #  workflow, use `workflow` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
+    # @param workflow [Vapi::CreateWorkflowDto] [BETA] This feature is in active development. The API and behavior are subject
+    #  to change as we refine it based on user feedback.
+    #  This is a workflow that will be used for the call. To use an existing workflow,
+    #  use `workflowId` instead.
+    #  To start a call with:
+    #  - Assistant, use `assistant` or `assistantId`
+    #  - Squad, use `squad` or `squadId`
+    #  - Workflow, use `workflow` or `workflowId`
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateWebCallDto]
     def initialize(assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT,
-                   additional_properties: nil)
+                   workflow_id: OMIT, workflow: OMIT, additional_properties: nil)
       @assistant_id = assistant_id if assistant_id != OMIT
       @assistant = assistant if assistant != OMIT
       @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
       @squad_id = squad_id if squad_id != OMIT
       @squad = squad if squad != OMIT
+      @workflow_id = workflow_id if workflow_id != OMIT
+      @workflow = workflow if workflow != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "assistantId": assistant_id,
         "assistant": assistant,
         "assistantOverrides": assistant_overrides,
         "squadId": squad_id,
-        "squad": squad
+        "squad": squad,
+        "workflowId": workflow_id,
+        "workflow": workflow
       }.reject do |_k, v|
         v == OMIT
       end
@@ -89,12 +160,21 @@ module Vapi
         squad = parsed_json["squad"].to_json
         squad = Vapi::CreateSquadDto.from_json(json_object: squad)
       end
+      workflow_id = parsed_json["workflowId"]
+      if parsed_json["workflow"].nil?
+        workflow = nil
+      else
+        workflow = parsed_json["workflow"].to_json
+        workflow = Vapi::CreateWorkflowDto.from_json(json_object: workflow)
+      end
       new(
         assistant_id: assistant_id,
         assistant: assistant,
         assistant_overrides: assistant_overrides,
         squad_id: squad_id,
         squad: squad,
+        workflow_id: workflow_id,
+        workflow: workflow,
         additional_properties: struct
       )
     end
@@ -118,6 +198,8 @@ module Vapi
       obj.assistant_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.assistant_overrides)
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
       obj.squad.nil? || Vapi::CreateSquadDto.validate_raw(obj: obj.squad)
+      obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
+      obj.workflow.nil? || Vapi::CreateWorkflowDto.validate_raw(obj: obj.workflow)
     end
   end
 end

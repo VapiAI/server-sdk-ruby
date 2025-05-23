@@ -5,6 +5,7 @@ require "date"
 require_relative "org_plan"
 require_relative "org_channel"
 require_relative "server"
+require_relative "compliance_plan"
 require "ostruct"
 require "json"
 
@@ -40,6 +41,8 @@ module Vapi
     attr_reader :stripe_subscription_status
     # @return [Vapi::OrgPlan] This is the plan for the org.
     attr_reader :plan
+    # @return [String] This is the secret key used for signing JWT tokens for the org.
+    attr_reader :jwt_secret
     # @return [String] This is the name of the org. This is just for your own reference.
     attr_reader :name
     # @return [Vapi::OrgChannel] This is the channel of the org. There is the cluster the API traffic for the org
@@ -59,6 +62,18 @@ module Vapi
     #  that can be active at any given time. To go beyond 10, please contact us at
     #  support@vapi.ai.
     attr_reader :concurrency_limit
+    # @return [Vapi::CompliancePlan] Stores the information about the compliance plan enforced at the organization
+    #  level. Currently pciEnabled is supported through this field.
+    #  When this is enabled, any logs, recordings, or transcriptions will be shipped to
+    #  the customer endpoints if provided else lost.
+    #  At the end of the call, you will receive an end-of-call-report message to store
+    #  on your server, if webhook is provided.
+    #  Defaults to false.
+    #  When PCI is enabled, only PCI-compliant Providers will be available for LLM,
+    #  Voice and transcribers.
+    #  This is due to the compliance requirements of PCI. Other providers may not meet
+    #  these requirements.
+    attr_reader :compliance_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -85,6 +100,7 @@ module Vapi
     # @param stripe_subscription_current_period_start [DateTime] This is the subscription's current period start.
     # @param stripe_subscription_status [String] This is the subscription's status.
     # @param plan [Vapi::OrgPlan] This is the plan for the org.
+    # @param jwt_secret [String] This is the secret key used for signing JWT tokens for the org.
     # @param name [String] This is the name of the org. This is just for your own reference.
     # @param channel [Vapi::OrgChannel] This is the channel of the org. There is the cluster the API traffic for the org
     #  will be directed.
@@ -99,10 +115,21 @@ module Vapi
     # @param concurrency_limit [Float] This is the concurrency limit for the org. This is the maximum number of calls
     #  that can be active at any given time. To go beyond 10, please contact us at
     #  support@vapi.ai.
+    # @param compliance_plan [Vapi::CompliancePlan] Stores the information about the compliance plan enforced at the organization
+    #  level. Currently pciEnabled is supported through this field.
+    #  When this is enabled, any logs, recordings, or transcriptions will be shipped to
+    #  the customer endpoints if provided else lost.
+    #  At the end of the call, you will receive an end-of-call-report message to store
+    #  on your server, if webhook is provided.
+    #  Defaults to false.
+    #  When PCI is enabled, only PCI-compliant Providers will be available for LLM,
+    #  Voice and transcribers.
+    #  This is due to the compliance requirements of PCI. Other providers may not meet
+    #  these requirements.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Org]
     def initialize(id:, created_at:, updated_at:, hipaa_enabled: OMIT, subscription: OMIT, subscription_id: OMIT,
-                   stripe_customer_id: OMIT, stripe_subscription_id: OMIT, stripe_subscription_item_id: OMIT, stripe_subscription_current_period_start: OMIT, stripe_subscription_status: OMIT, plan: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT, server: OMIT, concurrency_limit: OMIT, additional_properties: nil)
+                   stripe_customer_id: OMIT, stripe_subscription_id: OMIT, stripe_subscription_item_id: OMIT, stripe_subscription_current_period_start: OMIT, stripe_subscription_status: OMIT, plan: OMIT, jwt_secret: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT, server: OMIT, concurrency_limit: OMIT, compliance_plan: OMIT, additional_properties: nil)
       @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
       @subscription = subscription if subscription != OMIT
       @subscription_id = subscription_id if subscription_id != OMIT
@@ -117,11 +144,13 @@ module Vapi
       end
       @stripe_subscription_status = stripe_subscription_status if stripe_subscription_status != OMIT
       @plan = plan if plan != OMIT
+      @jwt_secret = jwt_secret if jwt_secret != OMIT
       @name = name if name != OMIT
       @channel = channel if channel != OMIT
       @billing_limit = billing_limit if billing_limit != OMIT
       @server = server if server != OMIT
       @concurrency_limit = concurrency_limit if concurrency_limit != OMIT
+      @compliance_plan = compliance_plan if compliance_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "hipaaEnabled": hipaa_enabled,
@@ -136,11 +165,13 @@ module Vapi
         "stripeSubscriptionCurrentPeriodStart": stripe_subscription_current_period_start,
         "stripeSubscriptionStatus": stripe_subscription_status,
         "plan": plan,
+        "jwtSecret": jwt_secret,
         "name": name,
         "channel": channel,
         "billingLimit": billing_limit,
         "server": server,
-        "concurrencyLimit": concurrency_limit
+        "concurrencyLimit": concurrency_limit,
+        "compliancePlan": compliance_plan
       }.reject do |_k, v|
         v == OMIT
       end
@@ -177,6 +208,7 @@ module Vapi
         plan = parsed_json["plan"].to_json
         plan = Vapi::OrgPlan.from_json(json_object: plan)
       end
+      jwt_secret = parsed_json["jwtSecret"]
       name = parsed_json["name"]
       channel = parsed_json["channel"]
       billing_limit = parsed_json["billingLimit"]
@@ -187,6 +219,12 @@ module Vapi
         server = Vapi::Server.from_json(json_object: server)
       end
       concurrency_limit = parsed_json["concurrencyLimit"]
+      if parsed_json["compliancePlan"].nil?
+        compliance_plan = nil
+      else
+        compliance_plan = parsed_json["compliancePlan"].to_json
+        compliance_plan = Vapi::CompliancePlan.from_json(json_object: compliance_plan)
+      end
       new(
         hipaa_enabled: hipaa_enabled,
         subscription: subscription,
@@ -200,11 +238,13 @@ module Vapi
         stripe_subscription_current_period_start: stripe_subscription_current_period_start,
         stripe_subscription_status: stripe_subscription_status,
         plan: plan,
+        jwt_secret: jwt_secret,
         name: name,
         channel: channel,
         billing_limit: billing_limit,
         server: server,
         concurrency_limit: concurrency_limit,
+        compliance_plan: compliance_plan,
         additional_properties: struct
       )
     end
@@ -235,11 +275,13 @@ module Vapi
       obj.stripe_subscription_current_period_start&.is_a?(DateTime) != false || raise("Passed value for field obj.stripe_subscription_current_period_start is not the expected type, validation failed.")
       obj.stripe_subscription_status&.is_a?(String) != false || raise("Passed value for field obj.stripe_subscription_status is not the expected type, validation failed.")
       obj.plan.nil? || Vapi::OrgPlan.validate_raw(obj: obj.plan)
+      obj.jwt_secret&.is_a?(String) != false || raise("Passed value for field obj.jwt_secret is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.channel&.is_a?(Vapi::OrgChannel) != false || raise("Passed value for field obj.channel is not the expected type, validation failed.")
       obj.billing_limit&.is_a?(Float) != false || raise("Passed value for field obj.billing_limit is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
       obj.concurrency_limit&.is_a?(Float) != false || raise("Passed value for field obj.concurrency_limit is not the expected type, validation failed.")
+      obj.compliance_plan.nil? || Vapi::CompliancePlan.validate_raw(obj: obj.compliance_plan)
     end
   end
 end

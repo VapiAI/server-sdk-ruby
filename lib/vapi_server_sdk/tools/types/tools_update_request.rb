@@ -11,6 +11,17 @@ require_relative "../../types/update_output_tool_dto"
 require_relative "../../types/update_bash_tool_dto"
 require_relative "../../types/update_computer_tool_dto"
 require_relative "../../types/update_text_editor_tool_dto"
+require_relative "../../types/update_query_tool_dto"
+require_relative "../../types/update_google_calendar_create_event_tool_dto"
+require_relative "../../types/update_google_sheets_row_append_tool_dto"
+require_relative "../../types/update_google_calendar_check_availability_tool_dto"
+require_relative "../../types/update_slack_send_message_tool_dto"
+require_relative "../../types/update_sms_tool_dto"
+require_relative "../../types/update_mcp_tool_dto"
+require_relative "../../types/update_go_high_level_calendar_availability_tool_dto"
+require_relative "../../types/update_go_high_level_calendar_event_create_tool_dto"
+require_relative "../../types/update_go_high_level_contact_create_tool_dto"
+require_relative "../../types/update_go_high_level_contact_get_tool_dto"
 
 module Vapi
   class Tools
@@ -58,6 +69,28 @@ module Vapi
                    Vapi::UpdateComputerToolDto.from_json(json_object: json_object)
                  when "textEditor"
                    Vapi::UpdateTextEditorToolDto.from_json(json_object: json_object)
+                 when "query"
+                   Vapi::UpdateQueryToolDto.from_json(json_object: json_object)
+                 when "google.calendar.event.create"
+                   Vapi::UpdateGoogleCalendarCreateEventToolDto.from_json(json_object: json_object)
+                 when "google.sheets.row.append"
+                   Vapi::UpdateGoogleSheetsRowAppendToolDto.from_json(json_object: json_object)
+                 when "google.calendar.availability.check"
+                   Vapi::UpdateGoogleCalendarCheckAvailabilityToolDto.from_json(json_object: json_object)
+                 when "slack.message.send"
+                   Vapi::UpdateSlackSendMessageToolDto.from_json(json_object: json_object)
+                 when "sms"
+                   Vapi::UpdateSmsToolDto.from_json(json_object: json_object)
+                 when "mcp"
+                   Vapi::UpdateMcpToolDto.from_json(json_object: json_object)
+                 when "gohighlevel.calendar.availability.check"
+                   Vapi::UpdateGoHighLevelCalendarAvailabilityToolDto.from_json(json_object: json_object)
+                 when "gohighlevel.calendar.event.create"
+                   Vapi::UpdateGoHighLevelCalendarEventCreateToolDto.from_json(json_object: json_object)
+                 when "gohighlevel.contact.create"
+                   Vapi::UpdateGoHighLevelContactCreateToolDto.from_json(json_object: json_object)
+                 when "gohighlevel.contact.get"
+                   Vapi::UpdateGoHighLevelContactGetToolDto.from_json(json_object: json_object)
                  else
                    Vapi::UpdateDtmfToolDto.from_json(json_object: json_object)
                  end
@@ -88,6 +121,28 @@ module Vapi
         when "computer"
           { **@member.to_json, type: @discriminant }.to_json
         when "textEditor"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "query"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "google.calendar.event.create"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "google.sheets.row.append"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "google.calendar.availability.check"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "slack.message.send"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "sms"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "mcp"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "gohighlevel.calendar.availability.check"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "gohighlevel.calendar.event.create"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "gohighlevel.contact.create"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "gohighlevel.contact.get"
           { **@member.to_json, type: @discriminant }.to_json
         else
           { "type": @discriminant, value: @member }.to_json
@@ -123,6 +178,28 @@ module Vapi
           Vapi::UpdateComputerToolDto.validate_raw(obj: obj)
         when "textEditor"
           Vapi::UpdateTextEditorToolDto.validate_raw(obj: obj)
+        when "query"
+          Vapi::UpdateQueryToolDto.validate_raw(obj: obj)
+        when "google.calendar.event.create"
+          Vapi::UpdateGoogleCalendarCreateEventToolDto.validate_raw(obj: obj)
+        when "google.sheets.row.append"
+          Vapi::UpdateGoogleSheetsRowAppendToolDto.validate_raw(obj: obj)
+        when "google.calendar.availability.check"
+          Vapi::UpdateGoogleCalendarCheckAvailabilityToolDto.validate_raw(obj: obj)
+        when "slack.message.send"
+          Vapi::UpdateSlackSendMessageToolDto.validate_raw(obj: obj)
+        when "sms"
+          Vapi::UpdateSmsToolDto.validate_raw(obj: obj)
+        when "mcp"
+          Vapi::UpdateMcpToolDto.validate_raw(obj: obj)
+        when "gohighlevel.calendar.availability.check"
+          Vapi::UpdateGoHighLevelCalendarAvailabilityToolDto.validate_raw(obj: obj)
+        when "gohighlevel.calendar.event.create"
+          Vapi::UpdateGoHighLevelCalendarEventCreateToolDto.validate_raw(obj: obj)
+        when "gohighlevel.contact.create"
+          Vapi::UpdateGoHighLevelContactCreateToolDto.validate_raw(obj: obj)
+        when "gohighlevel.contact.get"
+          Vapi::UpdateGoHighLevelContactGetToolDto.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -194,6 +271,72 @@ module Vapi
       # @return [Vapi::Tools::ToolsUpdateRequest]
       def self.text_editor(member:)
         new(member: member, discriminant: "textEditor")
+      end
+
+      # @param member [Vapi::UpdateQueryToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.query(member:)
+        new(member: member, discriminant: "query")
+      end
+
+      # @param member [Vapi::UpdateGoogleCalendarCreateEventToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.google_calendar_event_create(member:)
+        new(member: member, discriminant: "google.calendar.event.create")
+      end
+
+      # @param member [Vapi::UpdateGoogleSheetsRowAppendToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.google_sheets_row_append(member:)
+        new(member: member, discriminant: "google.sheets.row.append")
+      end
+
+      # @param member [Vapi::UpdateGoogleCalendarCheckAvailabilityToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.google_calendar_availability_check(member:)
+        new(member: member, discriminant: "google.calendar.availability.check")
+      end
+
+      # @param member [Vapi::UpdateSlackSendMessageToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.slack_message_send(member:)
+        new(member: member, discriminant: "slack.message.send")
+      end
+
+      # @param member [Vapi::UpdateSmsToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.sms(member:)
+        new(member: member, discriminant: "sms")
+      end
+
+      # @param member [Vapi::UpdateMcpToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.mcp(member:)
+        new(member: member, discriminant: "mcp")
+      end
+
+      # @param member [Vapi::UpdateGoHighLevelCalendarAvailabilityToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.gohighlevel_calendar_availability_check(member:)
+        new(member: member, discriminant: "gohighlevel.calendar.availability.check")
+      end
+
+      # @param member [Vapi::UpdateGoHighLevelCalendarEventCreateToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.gohighlevel_calendar_event_create(member:)
+        new(member: member, discriminant: "gohighlevel.calendar.event.create")
+      end
+
+      # @param member [Vapi::UpdateGoHighLevelContactCreateToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.gohighlevel_contact_create(member:)
+        new(member: member, discriminant: "gohighlevel.contact.create")
+      end
+
+      # @param member [Vapi::UpdateGoHighLevelContactGetToolDto]
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.gohighlevel_contact_get(member:)
+        new(member: member, discriminant: "gohighlevel.contact.get")
       end
     end
   end

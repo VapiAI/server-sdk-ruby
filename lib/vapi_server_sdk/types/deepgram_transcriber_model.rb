@@ -2,6 +2,9 @@
 
 module Vapi
   class DeepgramTranscriberModel
+    NOVA_3 = "nova-3"
+    NOVA_3_GENERAL = "nova-3-general"
+    NOVA_3_MEDICAL = "nova-3-medical"
     NOVA_2 = "nova-2"
     NOVA_2_GENERAL = "nova-2-general"
     NOVA_2_MEETING = "nova-2-meeting"

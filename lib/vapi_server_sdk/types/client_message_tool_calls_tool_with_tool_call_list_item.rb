@@ -7,6 +7,7 @@ require_relative "make_tool_with_tool_call"
 require_relative "bash_tool_with_tool_call"
 require_relative "computer_tool_with_tool_call"
 require_relative "text_editor_tool_with_tool_call"
+require_relative "google_calendar_create_event_tool_with_tool_call"
 
 module Vapi
   class ClientMessageToolCallsToolWithToolCallListItem
@@ -46,6 +47,8 @@ module Vapi
                  Vapi::ComputerToolWithToolCall.from_json(json_object: json_object)
                when "textEditor"
                  Vapi::TextEditorToolWithToolCall.from_json(json_object: json_object)
+               when "google.calendar.event.create"
+                 Vapi::GoogleCalendarCreateEventToolWithToolCall.from_json(json_object: json_object)
                else
                  Vapi::FunctionToolWithToolCall.from_json(json_object: json_object)
                end
@@ -68,6 +71,8 @@ module Vapi
       when "computer"
         { **@member.to_json, type: @discriminant }.to_json
       when "textEditor"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "google.calendar.event.create"
         { **@member.to_json, type: @discriminant }.to_json
       else
         { "type": @discriminant, value: @member }.to_json
@@ -95,6 +100,8 @@ module Vapi
         Vapi::ComputerToolWithToolCall.validate_raw(obj: obj)
       when "textEditor"
         Vapi::TextEditorToolWithToolCall.validate_raw(obj: obj)
+      when "google.calendar.event.create"
+        Vapi::GoogleCalendarCreateEventToolWithToolCall.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -142,6 +149,12 @@ module Vapi
     # @return [Vapi::ClientMessageToolCallsToolWithToolCallListItem]
     def self.text_editor(member:)
       new(member: member, discriminant: "textEditor")
+    end
+
+    # @param member [Vapi::GoogleCalendarCreateEventToolWithToolCall]
+    # @return [Vapi::ClientMessageToolCallsToolWithToolCallListItem]
+    def self.google_calendar_event_create(member:)
+      new(member: member, discriminant: "google.calendar.event.create")
     end
   end
 end

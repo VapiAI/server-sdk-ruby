@@ -11,6 +11,17 @@ require_relative "../../types/output_tool"
 require_relative "../../types/bash_tool"
 require_relative "../../types/computer_tool"
 require_relative "../../types/text_editor_tool"
+require_relative "../../types/query_tool"
+require_relative "../../types/google_calendar_create_event_tool"
+require_relative "../../types/google_sheets_row_append_tool"
+require_relative "../../types/google_calendar_check_availability_tool"
+require_relative "../../types/slack_send_message_tool"
+require_relative "../../types/sms_tool"
+require_relative "../../types/mcp_tool"
+require_relative "../../types/go_high_level_calendar_availability_tool"
+require_relative "../../types/go_high_level_calendar_event_create_tool"
+require_relative "../../types/go_high_level_contact_create_tool"
+require_relative "../../types/go_high_level_contact_get_tool"
 
 module Vapi
   class Tools
@@ -58,6 +69,28 @@ module Vapi
                    Vapi::ComputerTool.from_json(json_object: json_object)
                  when "textEditor"
                    Vapi::TextEditorTool.from_json(json_object: json_object)
+                 when "query"
+                   Vapi::QueryTool.from_json(json_object: json_object)
+                 when "google.calendar.event.create"
+                   Vapi::GoogleCalendarCreateEventTool.from_json(json_object: json_object)
+                 when "google.sheets.row.append"
+                   Vapi::GoogleSheetsRowAppendTool.from_json(json_object: json_object)
+                 when "google.calendar.availability.check"
+                   Vapi::GoogleCalendarCheckAvailabilityTool.from_json(json_object: json_object)
+                 when "slack.message.send"
+                   Vapi::SlackSendMessageTool.from_json(json_object: json_object)
+                 when "sms"
+                   Vapi::SmsTool.from_json(json_object: json_object)
+                 when "mcp"
+                   Vapi::McpTool.from_json(json_object: json_object)
+                 when "gohighlevel.calendar.availability.check"
+                   Vapi::GoHighLevelCalendarAvailabilityTool.from_json(json_object: json_object)
+                 when "gohighlevel.calendar.event.create"
+                   Vapi::GoHighLevelCalendarEventCreateTool.from_json(json_object: json_object)
+                 when "gohighlevel.contact.create"
+                   Vapi::GoHighLevelContactCreateTool.from_json(json_object: json_object)
+                 when "gohighlevel.contact.get"
+                   Vapi::GoHighLevelContactGetTool.from_json(json_object: json_object)
                  else
                    Vapi::DtmfTool.from_json(json_object: json_object)
                  end
@@ -88,6 +121,28 @@ module Vapi
         when "computer"
           { **@member.to_json, type: @discriminant }.to_json
         when "textEditor"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "query"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "google.calendar.event.create"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "google.sheets.row.append"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "google.calendar.availability.check"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "slack.message.send"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "sms"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "mcp"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "gohighlevel.calendar.availability.check"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "gohighlevel.calendar.event.create"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "gohighlevel.contact.create"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "gohighlevel.contact.get"
           { **@member.to_json, type: @discriminant }.to_json
         else
           { "type": @discriminant, value: @member }.to_json
@@ -123,6 +178,28 @@ module Vapi
           Vapi::ComputerTool.validate_raw(obj: obj)
         when "textEditor"
           Vapi::TextEditorTool.validate_raw(obj: obj)
+        when "query"
+          Vapi::QueryTool.validate_raw(obj: obj)
+        when "google.calendar.event.create"
+          Vapi::GoogleCalendarCreateEventTool.validate_raw(obj: obj)
+        when "google.sheets.row.append"
+          Vapi::GoogleSheetsRowAppendTool.validate_raw(obj: obj)
+        when "google.calendar.availability.check"
+          Vapi::GoogleCalendarCheckAvailabilityTool.validate_raw(obj: obj)
+        when "slack.message.send"
+          Vapi::SlackSendMessageTool.validate_raw(obj: obj)
+        when "sms"
+          Vapi::SmsTool.validate_raw(obj: obj)
+        when "mcp"
+          Vapi::McpTool.validate_raw(obj: obj)
+        when "gohighlevel.calendar.availability.check"
+          Vapi::GoHighLevelCalendarAvailabilityTool.validate_raw(obj: obj)
+        when "gohighlevel.calendar.event.create"
+          Vapi::GoHighLevelCalendarEventCreateTool.validate_raw(obj: obj)
+        when "gohighlevel.contact.create"
+          Vapi::GoHighLevelContactCreateTool.validate_raw(obj: obj)
+        when "gohighlevel.contact.get"
+          Vapi::GoHighLevelContactGetTool.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -194,6 +271,72 @@ module Vapi
       # @return [Vapi::Tools::ToolsUpdateResponse]
       def self.text_editor(member:)
         new(member: member, discriminant: "textEditor")
+      end
+
+      # @param member [Vapi::QueryTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.query(member:)
+        new(member: member, discriminant: "query")
+      end
+
+      # @param member [Vapi::GoogleCalendarCreateEventTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.google_calendar_event_create(member:)
+        new(member: member, discriminant: "google.calendar.event.create")
+      end
+
+      # @param member [Vapi::GoogleSheetsRowAppendTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.google_sheets_row_append(member:)
+        new(member: member, discriminant: "google.sheets.row.append")
+      end
+
+      # @param member [Vapi::GoogleCalendarCheckAvailabilityTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.google_calendar_availability_check(member:)
+        new(member: member, discriminant: "google.calendar.availability.check")
+      end
+
+      # @param member [Vapi::SlackSendMessageTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.slack_message_send(member:)
+        new(member: member, discriminant: "slack.message.send")
+      end
+
+      # @param member [Vapi::SmsTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.sms(member:)
+        new(member: member, discriminant: "sms")
+      end
+
+      # @param member [Vapi::McpTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.mcp(member:)
+        new(member: member, discriminant: "mcp")
+      end
+
+      # @param member [Vapi::GoHighLevelCalendarAvailabilityTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.gohighlevel_calendar_availability_check(member:)
+        new(member: member, discriminant: "gohighlevel.calendar.availability.check")
+      end
+
+      # @param member [Vapi::GoHighLevelCalendarEventCreateTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.gohighlevel_calendar_event_create(member:)
+        new(member: member, discriminant: "gohighlevel.calendar.event.create")
+      end
+
+      # @param member [Vapi::GoHighLevelContactCreateTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.gohighlevel_contact_create(member:)
+        new(member: member, discriminant: "gohighlevel.contact.create")
+      end
+
+      # @param member [Vapi::GoHighLevelContactGetTool]
+      # @return [Vapi::Tools::ToolsUpdateResponse]
+      def self.gohighlevel_contact_get(member:)
+        new(member: member, discriminant: "gohighlevel.contact.get")
       end
     end
   end

@@ -5,6 +5,7 @@ require_relative "byo_phone_number"
 require_relative "twilio_phone_number"
 require_relative "vonage_phone_number"
 require_relative "vapi_phone_number"
+require_relative "telnyx_phone_number"
 
 module Vapi
   class PhoneNumberPaginatedResponseResultsItem
@@ -40,6 +41,8 @@ module Vapi
                  Vapi::VonagePhoneNumber.from_json(json_object: json_object)
                when "vapi"
                  Vapi::VapiPhoneNumber.from_json(json_object: json_object)
+               when "telnyx"
+                 Vapi::TelnyxPhoneNumber.from_json(json_object: json_object)
                else
                  Vapi::ByoPhoneNumber.from_json(json_object: json_object)
                end
@@ -58,6 +61,8 @@ module Vapi
       when "vonage"
         { **@member.to_json, provider: @discriminant }.to_json
       when "vapi"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "telnyx"
         { **@member.to_json, provider: @discriminant }.to_json
       else
         { "provider": @discriminant, value: @member }.to_json
@@ -81,6 +86,8 @@ module Vapi
         Vapi::VonagePhoneNumber.validate_raw(obj: obj)
       when "vapi"
         Vapi::VapiPhoneNumber.validate_raw(obj: obj)
+      when "telnyx"
+        Vapi::TelnyxPhoneNumber.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -116,6 +123,12 @@ module Vapi
     # @return [Vapi::PhoneNumberPaginatedResponseResultsItem]
     def self.vapi(member:)
       new(member: member, discriminant: "vapi")
+    end
+
+    # @param member [Vapi::TelnyxPhoneNumber]
+    # @return [Vapi::PhoneNumberPaginatedResponseResultsItem]
+    def self.telnyx(member:)
+      new(member: member, discriminant: "telnyx")
     end
   end
 end

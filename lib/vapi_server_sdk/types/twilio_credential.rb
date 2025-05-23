@@ -10,6 +10,10 @@ module Vapi
     attr_reader :provider
     # @return [String] This is not returned in the API.
     attr_reader :auth_token
+    # @return [String] This is not returned in the API.
+    attr_reader :api_key
+    # @return [String] This is not returned in the API.
+    attr_reader :api_secret
     # @return [String] This is the unique identifier for the credential.
     attr_reader :id
     # @return [String] This is the unique identifier for the org that this credential belongs to.
@@ -32,6 +36,8 @@ module Vapi
 
     # @param provider [String]
     # @param auth_token [String] This is not returned in the API.
+    # @param api_key [String] This is not returned in the API.
+    # @param api_secret [String] This is not returned in the API.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
@@ -40,10 +46,12 @@ module Vapi
     # @param account_sid [String]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TwilioCredential]
-    def initialize(provider:, auth_token:, id:, org_id:, created_at:, updated_at:, account_sid:, name: OMIT,
-                   additional_properties: nil)
+    def initialize(provider:, id:, org_id:, created_at:, updated_at:, account_sid:, auth_token: OMIT, api_key: OMIT,
+                   api_secret: OMIT, name: OMIT, additional_properties: nil)
       @provider = provider
-      @auth_token = auth_token
+      @auth_token = auth_token if auth_token != OMIT
+      @api_key = api_key if api_key != OMIT
+      @api_secret = api_secret if api_secret != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -54,6 +62,8 @@ module Vapi
       @_field_set = {
         "provider": provider,
         "authToken": auth_token,
+        "apiKey": api_key,
+        "apiSecret": api_secret,
         "id": id,
         "orgId": org_id,
         "createdAt": created_at,
@@ -74,6 +84,8 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       provider = parsed_json["provider"]
       auth_token = parsed_json["authToken"]
+      api_key = parsed_json["apiKey"]
+      api_secret = parsed_json["apiSecret"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
@@ -83,6 +95,8 @@ module Vapi
       new(
         provider: provider,
         auth_token: auth_token,
+        api_key: api_key,
+        api_secret: api_secret,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -108,7 +122,9 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
-      obj.auth_token.is_a?(String) != false || raise("Passed value for field obj.auth_token is not the expected type, validation failed.")
+      obj.auth_token&.is_a?(String) != false || raise("Passed value for field obj.auth_token is not the expected type, validation failed.")
+      obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
+      obj.api_secret&.is_a?(String) != false || raise("Passed value for field obj.api_secret is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

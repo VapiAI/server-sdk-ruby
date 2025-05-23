@@ -2,6 +2,7 @@
 
 require_relative "summary_plan"
 require_relative "structured_data_plan"
+require_relative "structured_data_multi_plan"
 require_relative "success_evaluation_plan"
 require "ostruct"
 require "json"
@@ -14,6 +15,10 @@ module Vapi
     # @return [Vapi::StructuredDataPlan] This is the plan for generating the structured data from the call. This outputs
     #  to `call.analysis.structuredData`.
     attr_reader :structured_data_plan
+    # @return [Array<Vapi::StructuredDataMultiPlan>] This is an array of structured data plan catalogs. Each entry includes a `key`
+    #  and a `plan` for generating the structured data from the call. This outputs to
+    #  `call.analysis.structuredDataMulti`.
+    attr_reader :structured_data_multi_plan
     # @return [Vapi::SuccessEvaluationPlan] This is the plan for generating the success evaluation of the call. This outputs
     #  to `call.analysis.successEvaluation`.
     attr_reader :success_evaluation_plan
@@ -29,19 +34,24 @@ module Vapi
     #  `call.analysis.summary`.
     # @param structured_data_plan [Vapi::StructuredDataPlan] This is the plan for generating the structured data from the call. This outputs
     #  to `call.analysis.structuredData`.
+    # @param structured_data_multi_plan [Array<Vapi::StructuredDataMultiPlan>] This is an array of structured data plan catalogs. Each entry includes a `key`
+    #  and a `plan` for generating the structured data from the call. This outputs to
+    #  `call.analysis.structuredDataMulti`.
     # @param success_evaluation_plan [Vapi::SuccessEvaluationPlan] This is the plan for generating the success evaluation of the call. This outputs
     #  to `call.analysis.successEvaluation`.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AnalysisPlan]
-    def initialize(summary_plan: OMIT, structured_data_plan: OMIT, success_evaluation_plan: OMIT,
-                   additional_properties: nil)
+    def initialize(summary_plan: OMIT, structured_data_plan: OMIT, structured_data_multi_plan: OMIT,
+                   success_evaluation_plan: OMIT, additional_properties: nil)
       @summary_plan = summary_plan if summary_plan != OMIT
       @structured_data_plan = structured_data_plan if structured_data_plan != OMIT
+      @structured_data_multi_plan = structured_data_multi_plan if structured_data_multi_plan != OMIT
       @success_evaluation_plan = success_evaluation_plan if success_evaluation_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "summaryPlan": summary_plan,
         "structuredDataPlan": structured_data_plan,
+        "structuredDataMultiPlan": structured_data_multi_plan,
         "successEvaluationPlan": success_evaluation_plan
       }.reject do |_k, v|
         v == OMIT
@@ -67,6 +77,10 @@ module Vapi
         structured_data_plan = parsed_json["structuredDataPlan"].to_json
         structured_data_plan = Vapi::StructuredDataPlan.from_json(json_object: structured_data_plan)
       end
+      structured_data_multi_plan = parsed_json["structuredDataMultiPlan"]&.map do |item|
+        item = item.to_json
+        Vapi::StructuredDataMultiPlan.from_json(json_object: item)
+      end
       if parsed_json["successEvaluationPlan"].nil?
         success_evaluation_plan = nil
       else
@@ -76,6 +90,7 @@ module Vapi
       new(
         summary_plan: summary_plan,
         structured_data_plan: structured_data_plan,
+        structured_data_multi_plan: structured_data_multi_plan,
         success_evaluation_plan: success_evaluation_plan,
         additional_properties: struct
       )
@@ -97,6 +112,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.summary_plan.nil? || Vapi::SummaryPlan.validate_raw(obj: obj.summary_plan)
       obj.structured_data_plan.nil? || Vapi::StructuredDataPlan.validate_raw(obj: obj.structured_data_plan)
+      obj.structured_data_multi_plan&.is_a?(Array) != false || raise("Passed value for field obj.structured_data_multi_plan is not the expected type, validation failed.")
       obj.success_evaluation_plan.nil? || Vapi::SuccessEvaluationPlan.validate_raw(obj: obj.success_evaluation_plan)
     end
   end

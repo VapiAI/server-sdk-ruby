@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "assistant_overrides"
 require "ostruct"
 require "json"
 
@@ -18,6 +19,11 @@ module Vapi
     attr_reader :number_e_164_check_enabled
     # @return [String] This is the extension that will be dialed after the call is answered.
     attr_reader :extension
+    # @return [Vapi::AssistantOverrides] These are the overrides for the assistant's settings and template variables
+    #  specific to this customer.
+    #  This allows customization of the assistant's behavior for individual customers
+    #  in batch calls.
+    attr_reader :assistant_overrides
     # @return [String] This is the number of the customer.
     attr_reader :number
     # @return [String] This is the SIP URI of the customer.
@@ -45,6 +51,10 @@ module Vapi
     #  characters (regex: `/^\+?[a-zA-Z0-9]+$/`).
     #  @default true (E164 check is enabled)
     # @param extension [String] This is the extension that will be dialed after the call is answered.
+    # @param assistant_overrides [Vapi::AssistantOverrides] These are the overrides for the assistant's settings and template variables
+    #  specific to this customer.
+    #  This allows customization of the assistant's behavior for individual customers
+    #  in batch calls.
     # @param number [String] This is the number of the customer.
     # @param sip_uri [String] This is the SIP URI of the customer.
     # @param name [String] This is the name of the customer. This is just for your own reference.
@@ -52,10 +62,11 @@ module Vapi
     #  `"Display Name" <sip:username@domain>`.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateCustomerDto]
-    def initialize(number_e_164_check_enabled: OMIT, extension: OMIT, number: OMIT, sip_uri: OMIT, name: OMIT,
-                   additional_properties: nil)
+    def initialize(number_e_164_check_enabled: OMIT, extension: OMIT, assistant_overrides: OMIT, number: OMIT,
+                   sip_uri: OMIT, name: OMIT, additional_properties: nil)
       @number_e_164_check_enabled = number_e_164_check_enabled if number_e_164_check_enabled != OMIT
       @extension = extension if extension != OMIT
+      @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
       @number = number if number != OMIT
       @sip_uri = sip_uri if sip_uri != OMIT
       @name = name if name != OMIT
@@ -63,6 +74,7 @@ module Vapi
       @_field_set = {
         "numberE164CheckEnabled": number_e_164_check_enabled,
         "extension": extension,
+        "assistantOverrides": assistant_overrides,
         "number": number,
         "sipUri": sip_uri,
         "name": name
@@ -80,12 +92,19 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       number_e_164_check_enabled = parsed_json["numberE164CheckEnabled"]
       extension = parsed_json["extension"]
+      if parsed_json["assistantOverrides"].nil?
+        assistant_overrides = nil
+      else
+        assistant_overrides = parsed_json["assistantOverrides"].to_json
+        assistant_overrides = Vapi::AssistantOverrides.from_json(json_object: assistant_overrides)
+      end
       number = parsed_json["number"]
       sip_uri = parsed_json["sipUri"]
       name = parsed_json["name"]
       new(
         number_e_164_check_enabled: number_e_164_check_enabled,
         extension: extension,
+        assistant_overrides: assistant_overrides,
         number: number,
         sip_uri: sip_uri,
         name: name,
@@ -109,6 +128,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.number_e_164_check_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.number_e_164_check_enabled is not the expected type, validation failed.")
       obj.extension&.is_a?(String) != false || raise("Passed value for field obj.extension is not the expected type, validation failed.")
+      obj.assistant_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.assistant_overrides)
       obj.number&.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")
       obj.sip_uri&.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")

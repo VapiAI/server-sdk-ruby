@@ -6,6 +6,8 @@ require "json"
 
 module Vapi
   class TrieveKnowledgeBaseCreate
+    # @return [String] This is to create a new dataset on Trieve.
+    attr_reader :type
     # @return [Array<Vapi::TrieveKnowledgeBaseChunkPlan>] These are the chunk plans used to create the dataset.
     attr_reader :chunk_plans
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -16,13 +18,15 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param type [String] This is to create a new dataset on Trieve.
     # @param chunk_plans [Array<Vapi::TrieveKnowledgeBaseChunkPlan>] These are the chunk plans used to create the dataset.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TrieveKnowledgeBaseCreate]
-    def initialize(chunk_plans:, additional_properties: nil)
+    def initialize(type:, chunk_plans:, additional_properties: nil)
+      @type = type
       @chunk_plans = chunk_plans
       @additional_properties = additional_properties
-      @_field_set = { "chunkPlans": chunk_plans }
+      @_field_set = { "type": type, "chunkPlans": chunk_plans }
     end
 
     # Deserialize a JSON object to an instance of TrieveKnowledgeBaseCreate
@@ -32,11 +36,16 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      type = parsed_json["type"]
       chunk_plans = parsed_json["chunkPlans"]&.map do |item|
         item = item.to_json
         Vapi::TrieveKnowledgeBaseChunkPlan.from_json(json_object: item)
       end
-      new(chunk_plans: chunk_plans, additional_properties: struct)
+      new(
+        type: type,
+        chunk_plans: chunk_plans,
+        additional_properties: struct
+      )
     end
 
     # Serialize an instance of TrieveKnowledgeBaseCreate to a JSON object
@@ -53,6 +62,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.chunk_plans.is_a?(Array) != false || raise("Passed value for field obj.chunk_plans is not the expected type, validation failed.")
     end
   end

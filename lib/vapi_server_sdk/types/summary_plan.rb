@@ -16,14 +16,16 @@ module Vapi
     #  },
     #  {
     #  "role": "user",
-    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n"
+    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n. Here is the ended
+    #  reason of the call:\n\n{{endedReason}}\n\n"
     #  }
     #  ]```
     #  You can customize by providing any messages you want.
     #  Here are the template variables available:
     #  - {{transcript}}: The transcript of the call from `call.artifact.transcript`-
     #  {{systemPrompt}}: The system prompt of the call from
-    #  `assistant.model.messages[type=system].content`
+    #  `assistant.model.messages[type=system].content`- {{endedReason}}: The ended
+    #  reason of the call from `call.endedReason`
     attr_reader :messages
     # @return [Boolean] This determines whether a summary is generated and stored in
     #  `call.analysis.summary`. Defaults to true.
@@ -57,14 +59,16 @@ module Vapi
     #  },
     #  {
     #  "role": "user",
-    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n"
+    #  "content": "Here is the transcript:\n\n{{transcript}}\n\n. Here is the ended
+    #  reason of the call:\n\n{{endedReason}}\n\n"
     #  }
     #  ]```
     #  You can customize by providing any messages you want.
     #  Here are the template variables available:
     #  - {{transcript}}: The transcript of the call from `call.artifact.transcript`-
     #  {{systemPrompt}}: The system prompt of the call from
-    #  `assistant.model.messages[type=system].content`
+    #  `assistant.model.messages[type=system].content`- {{endedReason}}: The ended
+    #  reason of the call from `call.endedReason`
     # @param enabled [Boolean] This determines whether a summary is generated and stored in
     #  `call.analysis.summary`. Defaults to true.
     #  Usage:

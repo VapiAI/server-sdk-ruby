@@ -6,7 +6,7 @@ require "json"
 
 module Vapi
   class TestSuiteRunTestAttemptCall
-    # @return [Vapi::Artifact] This is the artifact associated with the call.
+    # @return [Vapi::Artifact] This is the artifact of the call.
     attr_reader :artifact
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -16,7 +16,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param artifact [Vapi::Artifact] This is the artifact associated with the call.
+    # @param artifact [Vapi::Artifact] This is the artifact of the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TestSuiteRunTestAttemptCall]
     def initialize(artifact:, additional_properties: nil)

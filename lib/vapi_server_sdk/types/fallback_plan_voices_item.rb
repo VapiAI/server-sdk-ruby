@@ -3,11 +3,12 @@
 require "json"
 require_relative "fallback_azure_voice"
 require_relative "fallback_cartesia_voice"
+require_relative "fallback_hume_voice"
 require_relative "fallback_custom_voice"
 require_relative "fallback_deepgram_voice"
 require_relative "fallback_eleven_labs_voice"
+require_relative "fallback_vapi_voice"
 require_relative "fallback_lmnt_voice"
-require_relative "fallback_neets_voice"
 require_relative "fallback_open_ai_voice"
 require_relative "fallback_play_ht_voice"
 require_relative "fallback_rime_ai_voice"
@@ -43,16 +44,18 @@ module Vapi
                  Vapi::FallbackAzureVoice.from_json(json_object: json_object)
                when "cartesia"
                  Vapi::FallbackCartesiaVoice.from_json(json_object: json_object)
+               when "hume"
+                 Vapi::FallbackHumeVoice.from_json(json_object: json_object)
                when "custom-voice"
                  Vapi::FallbackCustomVoice.from_json(json_object: json_object)
                when "deepgram"
                  Vapi::FallbackDeepgramVoice.from_json(json_object: json_object)
                when "11labs"
                  Vapi::FallbackElevenLabsVoice.from_json(json_object: json_object)
+               when "vapi"
+                 Vapi::FallbackVapiVoice.from_json(json_object: json_object)
                when "lmnt"
                  Vapi::FallbackLmntVoice.from_json(json_object: json_object)
-               when "neets"
-                 Vapi::FallbackNeetsVoice.from_json(json_object: json_object)
                when "openai"
                  Vapi::FallbackOpenAiVoice.from_json(json_object: json_object)
                when "playht"
@@ -78,15 +81,17 @@ module Vapi
         { **@member.to_json, provider: @discriminant }.to_json
       when "cartesia"
         { **@member.to_json, provider: @discriminant }.to_json
+      when "hume"
+        { **@member.to_json, provider: @discriminant }.to_json
       when "custom-voice"
         { **@member.to_json, provider: @discriminant }.to_json
       when "deepgram"
         { **@member.to_json, provider: @discriminant }.to_json
       when "11labs"
         { **@member.to_json, provider: @discriminant }.to_json
-      when "lmnt"
+      when "vapi"
         { **@member.to_json, provider: @discriminant }.to_json
-      when "neets"
+      when "lmnt"
         { **@member.to_json, provider: @discriminant }.to_json
       when "openai"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -116,16 +121,18 @@ module Vapi
         Vapi::FallbackAzureVoice.validate_raw(obj: obj)
       when "cartesia"
         Vapi::FallbackCartesiaVoice.validate_raw(obj: obj)
+      when "hume"
+        Vapi::FallbackHumeVoice.validate_raw(obj: obj)
       when "custom-voice"
         Vapi::FallbackCustomVoice.validate_raw(obj: obj)
       when "deepgram"
         Vapi::FallbackDeepgramVoice.validate_raw(obj: obj)
       when "11labs"
         Vapi::FallbackElevenLabsVoice.validate_raw(obj: obj)
+      when "vapi"
+        Vapi::FallbackVapiVoice.validate_raw(obj: obj)
       when "lmnt"
         Vapi::FallbackLmntVoice.validate_raw(obj: obj)
-      when "neets"
-        Vapi::FallbackNeetsVoice.validate_raw(obj: obj)
       when "openai"
         Vapi::FallbackOpenAiVoice.validate_raw(obj: obj)
       when "playht"
@@ -161,6 +168,12 @@ module Vapi
       new(member: member, discriminant: "cartesia")
     end
 
+    # @param member [Vapi::FallbackHumeVoice]
+    # @return [Vapi::FallbackPlanVoicesItem]
+    def self.hume(member:)
+      new(member: member, discriminant: "hume")
+    end
+
     # @param member [Vapi::FallbackCustomVoice]
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.custom_voice(member:)
@@ -179,16 +192,16 @@ module Vapi
       new(member: member, discriminant: "11labs")
     end
 
+    # @param member [Vapi::FallbackVapiVoice]
+    # @return [Vapi::FallbackPlanVoicesItem]
+    def self.vapi(member:)
+      new(member: member, discriminant: "vapi")
+    end
+
     # @param member [Vapi::FallbackLmntVoice]
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.lmnt(member:)
       new(member: member, discriminant: "lmnt")
-    end
-
-    # @param member [Vapi::FallbackNeetsVoice]
-    # @return [Vapi::FallbackPlanVoicesItem]
-    def self.neets(member:)
-      new(member: member, discriminant: "neets")
     end
 
     # @param member [Vapi::FallbackOpenAiVoice]

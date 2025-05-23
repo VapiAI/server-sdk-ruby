@@ -8,6 +8,8 @@ require "json"
 
 module Vapi
   class CustomVoice
+    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+    attr_reader :caching_enabled
     # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
     attr_reader :chunk_plan
@@ -42,6 +44,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
     # @param server [Vapi::Server] This is where the voice request will be sent.
@@ -67,12 +70,18 @@ module Vapi
     #  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CustomVoice]
-    def initialize(server:, chunk_plan: OMIT, fallback_plan: OMIT, additional_properties: nil)
+    def initialize(server:, caching_enabled: OMIT, chunk_plan: OMIT, fallback_plan: OMIT, additional_properties: nil)
+      @caching_enabled = caching_enabled if caching_enabled != OMIT
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @server = server
       @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "chunkPlan": chunk_plan, "server": server, "fallbackPlan": fallback_plan }.reject do |_k, v|
+      @_field_set = {
+        "cachingEnabled": caching_enabled,
+        "chunkPlan": chunk_plan,
+        "server": server,
+        "fallbackPlan": fallback_plan
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -84,6 +93,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      caching_enabled = parsed_json["cachingEnabled"]
       if parsed_json["chunkPlan"].nil?
         chunk_plan = nil
       else
@@ -103,6 +113,7 @@ module Vapi
         fallback_plan = Vapi::FallbackPlan.from_json(json_object: fallback_plan)
       end
       new(
+        caching_enabled: caching_enabled,
         chunk_plan: chunk_plan,
         server: server,
         fallback_plan: fallback_plan,
@@ -124,6 +135,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
       Vapi::Server.validate_raw(obj: obj.server)
       obj.fallback_plan.nil? || Vapi::FallbackPlan.validate_raw(obj: obj.fallback_plan)

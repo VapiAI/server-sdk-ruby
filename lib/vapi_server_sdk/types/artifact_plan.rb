@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "artifact_plan_recording_format"
 require_relative "transcript_plan"
 require "ostruct"
 require "json"
@@ -17,6 +18,9 @@ module Vapi
     #  `call.artifact.stereoRecordingUrl` after the call is ended.
     #  @default true
     attr_reader :recording_enabled
+    # @return [Vapi::ArtifactPlanRecordingFormat] This determines the format of the recording. Defaults to `wav;l16`.
+    #  @default 'wav;l16'
+    attr_reader :recording_format
     # @return [Boolean] This determines whether the video is recorded during the call. Defaults to
     #  false. Only relevant for `webCall` type.
     #  You can find the video recording at `call.artifact.videoRecordingUrl` after the
@@ -75,6 +79,8 @@ module Vapi
     #  You can find the recording at `call.artifact.recordingUrl` and
     #  `call.artifact.stereoRecordingUrl` after the call is ended.
     #  @default true
+    # @param recording_format [Vapi::ArtifactPlanRecordingFormat] This determines the format of the recording. Defaults to `wav;l16`.
+    #  @default 'wav;l16'
     # @param video_recording_enabled [Boolean] This determines whether the video is recorded during the call. Defaults to
     #  false. Only relevant for `webCall` type.
     #  You can find the video recording at `call.artifact.videoRecordingUrl` after the
@@ -112,9 +118,10 @@ module Vapi
     #  @default '/'
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ArtifactPlan]
-    def initialize(recording_enabled: OMIT, video_recording_enabled: OMIT, pcap_enabled: OMIT,
+    def initialize(recording_enabled: OMIT, recording_format: OMIT, video_recording_enabled: OMIT, pcap_enabled: OMIT,
                    pcap_s_3_path_prefix: OMIT, transcript_plan: OMIT, recording_path: OMIT, additional_properties: nil)
       @recording_enabled = recording_enabled if recording_enabled != OMIT
+      @recording_format = recording_format if recording_format != OMIT
       @video_recording_enabled = video_recording_enabled if video_recording_enabled != OMIT
       @pcap_enabled = pcap_enabled if pcap_enabled != OMIT
       @pcap_s_3_path_prefix = pcap_s_3_path_prefix if pcap_s_3_path_prefix != OMIT
@@ -123,6 +130,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "recordingEnabled": recording_enabled,
+        "recordingFormat": recording_format,
         "videoRecordingEnabled": video_recording_enabled,
         "pcapEnabled": pcap_enabled,
         "pcapS3PathPrefix": pcap_s_3_path_prefix,
@@ -141,6 +149,7 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       recording_enabled = parsed_json["recordingEnabled"]
+      recording_format = parsed_json["recordingFormat"]
       video_recording_enabled = parsed_json["videoRecordingEnabled"]
       pcap_enabled = parsed_json["pcapEnabled"]
       pcap_s_3_path_prefix = parsed_json["pcapS3PathPrefix"]
@@ -153,6 +162,7 @@ module Vapi
       recording_path = parsed_json["recordingPath"]
       new(
         recording_enabled: recording_enabled,
+        recording_format: recording_format,
         video_recording_enabled: video_recording_enabled,
         pcap_enabled: pcap_enabled,
         pcap_s_3_path_prefix: pcap_s_3_path_prefix,
@@ -177,6 +187,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.recording_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.recording_enabled is not the expected type, validation failed.")
+      obj.recording_format&.is_a?(Vapi::ArtifactPlanRecordingFormat) != false || raise("Passed value for field obj.recording_format is not the expected type, validation failed.")
       obj.video_recording_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.video_recording_enabled is not the expected type, validation failed.")
       obj.pcap_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.pcap_enabled is not the expected type, validation failed.")
       obj.pcap_s_3_path_prefix&.is_a?(String) != false || raise("Passed value for field obj.pcap_s_3_path_prefix is not the expected type, validation failed.")

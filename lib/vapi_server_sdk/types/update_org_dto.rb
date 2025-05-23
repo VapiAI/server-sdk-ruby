@@ -2,6 +2,7 @@
 
 require_relative "update_org_dto_channel"
 require_relative "server"
+require_relative "compliance_plan"
 require "ostruct"
 require "json"
 
@@ -36,6 +37,18 @@ module Vapi
     #  that can be active at any given time. To go beyond 10, please contact us at
     #  support@vapi.ai.
     attr_reader :concurrency_limit
+    # @return [Vapi::CompliancePlan] Stores the information about the compliance plan enforced at the organization
+    #  level. Currently pciEnabled is supported through this field.
+    #  When this is enabled, any logs, recordings, or transcriptions will be shipped to
+    #  the customer endpoints if provided else lost.
+    #  At the end of the call, you will receive an end-of-call-report message to store
+    #  on your server, if webhook is provided.
+    #  Defaults to false.
+    #  When PCI is enabled, only PCI-compliant Providers will be available for LLM,
+    #  Voice and transcribers.
+    #  This is due to the compliance requirements of PCI. Other providers may not meet
+    #  these requirements.
+    attr_reader :compliance_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -66,10 +79,21 @@ module Vapi
     # @param concurrency_limit [Float] This is the concurrency limit for the org. This is the maximum number of calls
     #  that can be active at any given time. To go beyond 10, please contact us at
     #  support@vapi.ai.
+    # @param compliance_plan [Vapi::CompliancePlan] Stores the information about the compliance plan enforced at the organization
+    #  level. Currently pciEnabled is supported through this field.
+    #  When this is enabled, any logs, recordings, or transcriptions will be shipped to
+    #  the customer endpoints if provided else lost.
+    #  At the end of the call, you will receive an end-of-call-report message to store
+    #  on your server, if webhook is provided.
+    #  Defaults to false.
+    #  When PCI is enabled, only PCI-compliant Providers will be available for LLM,
+    #  Voice and transcribers.
+    #  This is due to the compliance requirements of PCI. Other providers may not meet
+    #  these requirements.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateOrgDto]
     def initialize(hipaa_enabled: OMIT, subscription_id: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT,
-                   server: OMIT, concurrency_limit: OMIT, additional_properties: nil)
+                   server: OMIT, concurrency_limit: OMIT, compliance_plan: OMIT, additional_properties: nil)
       @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
       @subscription_id = subscription_id if subscription_id != OMIT
       @name = name if name != OMIT
@@ -77,6 +101,7 @@ module Vapi
       @billing_limit = billing_limit if billing_limit != OMIT
       @server = server if server != OMIT
       @concurrency_limit = concurrency_limit if concurrency_limit != OMIT
+      @compliance_plan = compliance_plan if compliance_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "hipaaEnabled": hipaa_enabled,
@@ -85,7 +110,8 @@ module Vapi
         "channel": channel,
         "billingLimit": billing_limit,
         "server": server,
-        "concurrencyLimit": concurrency_limit
+        "concurrencyLimit": concurrency_limit,
+        "compliancePlan": compliance_plan
       }.reject do |_k, v|
         v == OMIT
       end
@@ -110,6 +136,12 @@ module Vapi
         server = Vapi::Server.from_json(json_object: server)
       end
       concurrency_limit = parsed_json["concurrencyLimit"]
+      if parsed_json["compliancePlan"].nil?
+        compliance_plan = nil
+      else
+        compliance_plan = parsed_json["compliancePlan"].to_json
+        compliance_plan = Vapi::CompliancePlan.from_json(json_object: compliance_plan)
+      end
       new(
         hipaa_enabled: hipaa_enabled,
         subscription_id: subscription_id,
@@ -118,6 +150,7 @@ module Vapi
         billing_limit: billing_limit,
         server: server,
         concurrency_limit: concurrency_limit,
+        compliance_plan: compliance_plan,
         additional_properties: struct
       )
     end
@@ -143,6 +176,7 @@ module Vapi
       obj.billing_limit&.is_a?(Float) != false || raise("Passed value for field obj.billing_limit is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
       obj.concurrency_limit&.is_a?(Float) != false || raise("Passed value for field obj.concurrency_limit is not the expected type, validation failed.")
+      obj.compliance_plan.nil? || Vapi::CompliancePlan.validate_raw(obj: obj.compliance_plan)
     end
   end
 end

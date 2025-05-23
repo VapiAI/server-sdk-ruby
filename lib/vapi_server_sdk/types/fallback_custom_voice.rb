@@ -7,6 +7,8 @@ require "json"
 
 module Vapi
   class FallbackCustomVoice
+    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+    attr_reader :caching_enabled
     # @return [Vapi::Server] This is where the voice request will be sent.
     #  Request Example:
     #  POST https://{server.url}
@@ -38,6 +40,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param server [Vapi::Server] This is where the voice request will be sent.
     #  Request Example:
     #  POST https://{server.url}
@@ -61,11 +64,12 @@ module Vapi
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackCustomVoice]
-    def initialize(server:, chunk_plan: OMIT, additional_properties: nil)
+    def initialize(server:, caching_enabled: OMIT, chunk_plan: OMIT, additional_properties: nil)
+      @caching_enabled = caching_enabled if caching_enabled != OMIT
       @server = server
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "server": server, "chunkPlan": chunk_plan }.reject do |_k, v|
+      @_field_set = { "cachingEnabled": caching_enabled, "server": server, "chunkPlan": chunk_plan }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -77,6 +81,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      caching_enabled = parsed_json["cachingEnabled"]
       if parsed_json["server"].nil?
         server = nil
       else
@@ -90,6 +95,7 @@ module Vapi
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
       end
       new(
+        caching_enabled: caching_enabled,
         server: server,
         chunk_plan: chunk_plan,
         additional_properties: struct
@@ -110,6 +116,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       Vapi::Server.validate_raw(obj: obj.server)
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
     end

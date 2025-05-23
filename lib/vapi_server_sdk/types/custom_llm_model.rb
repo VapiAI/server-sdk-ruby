@@ -36,6 +36,9 @@ module Vapi
     # @return [String] These is the URL we'll use for the OpenAI client's `baseURL`. Ex.
     #  https://openrouter.ai/api/v1
     attr_reader :url
+    # @return [Float] This sets the timeout for the connection to the custom provider without needing
+    #  to stream any tokens back. Default is 20 seconds.
+    attr_reader :timeout_seconds
     # @return [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     attr_reader :model
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
@@ -84,6 +87,8 @@ module Vapi
     #  Default is `variable`.
     # @param url [String] These is the URL we'll use for the OpenAI client's `baseURL`. Ex.
     #  https://openrouter.ai/api/v1
+    # @param timeout_seconds [Float] This sets the timeout for the connection to the custom provider without needing
+    #  to stream any tokens back. Default is 20 seconds.
     # @param model [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
@@ -102,7 +107,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CustomLlmModel]
     def initialize(url:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
-                   metadata_send_mode: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+                   metadata_send_mode: OMIT, timeout_seconds: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
@@ -110,6 +115,7 @@ module Vapi
       @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @metadata_send_mode = metadata_send_mode if metadata_send_mode != OMIT
       @url = url
+      @timeout_seconds = timeout_seconds if timeout_seconds != OMIT
       @model = model
       @temperature = temperature if temperature != OMIT
       @max_tokens = max_tokens if max_tokens != OMIT
@@ -124,6 +130,7 @@ module Vapi
         "knowledgeBaseId": knowledge_base_id,
         "metadataSendMode": metadata_send_mode,
         "url": url,
+        "timeoutSeconds": timeout_seconds,
         "model": model,
         "temperature": temperature,
         "maxTokens": max_tokens,
@@ -159,6 +166,7 @@ module Vapi
       knowledge_base_id = parsed_json["knowledgeBaseId"]
       metadata_send_mode = parsed_json["metadataSendMode"]
       url = parsed_json["url"]
+      timeout_seconds = parsed_json["timeoutSeconds"]
       model = parsed_json["model"]
       temperature = parsed_json["temperature"]
       max_tokens = parsed_json["maxTokens"]
@@ -172,6 +180,7 @@ module Vapi
         knowledge_base_id: knowledge_base_id,
         metadata_send_mode: metadata_send_mode,
         url: url,
+        timeout_seconds: timeout_seconds,
         model: model,
         temperature: temperature,
         max_tokens: max_tokens,
@@ -202,6 +211,7 @@ module Vapi
       obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
       obj.metadata_send_mode&.is_a?(Vapi::CustomLlmModelMetadataSendMode) != false || raise("Passed value for field obj.metadata_send_mode is not the expected type, validation failed.")
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
+      obj.timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.timeout_seconds is not the expected type, validation failed.")
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")

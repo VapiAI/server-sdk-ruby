@@ -2,6 +2,7 @@
 
 require "json"
 require_relative "../../types/update_test_suite_test_voice_dto"
+require_relative "../../types/update_test_suite_test_chat_dto"
 
 module Vapi
   class TestSuiteTests
@@ -30,8 +31,12 @@ module Vapi
         struct = JSON.parse(json_object, object_class: OpenStruct)
         member = case struct.type
                  when "voice"
+                   Vapi::UpdateTestSuiteTestVoiceDto.from_json(json_object: json_object)
+                 when "chat"
+                   Vapi::UpdateTestSuiteTestChatDto.from_json(json_object: json_object)
+                 else
+                   Vapi::UpdateTestSuiteTestVoiceDto.from_json(json_object: json_object)
                  end
-        Vapi::UpdateTestSuiteTestVoiceDto.from_json(json_object: json_object)
         new(member: member, discriminant: struct.type)
       end
 
@@ -41,6 +46,8 @@ module Vapi
       def to_json(*_args)
         case @discriminant
         when "voice"
+          { **@member.to_json, type: @discriminant }.to_json
+        when "chat"
           { **@member.to_json, type: @discriminant }.to_json
         else
           { "type": @discriminant, value: @member }.to_json
@@ -58,6 +65,8 @@ module Vapi
         case obj.type
         when "voice"
           Vapi::UpdateTestSuiteTestVoiceDto.validate_raw(obj: obj)
+        when "chat"
+          Vapi::UpdateTestSuiteTestChatDto.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -75,6 +84,12 @@ module Vapi
       # @return [Vapi::TestSuiteTests::TestSuiteTestControllerUpdateRequest]
       def self.voice(member:)
         new(member: member, discriminant: "voice")
+      end
+
+      # @param member [Vapi::UpdateTestSuiteTestChatDto]
+      # @return [Vapi::TestSuiteTests::TestSuiteTestControllerUpdateRequest]
+      def self.chat(member:)
+        new(member: member, discriminant: "chat")
       end
     end
   end

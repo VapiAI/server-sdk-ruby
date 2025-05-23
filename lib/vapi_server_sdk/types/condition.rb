@@ -10,7 +10,7 @@ module Vapi
     attr_reader :operator
     # @return [String] This is the name of the parameter that you want to check.
     attr_reader :param
-    # @return [Hash{String => Object}] This is the value you want to compare against the parameter.
+    # @return [String] This is the value you want to compare against the parameter.
     attr_reader :value
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -22,7 +22,7 @@ module Vapi
 
     # @param operator [Vapi::ConditionOperator] This is the operator you want to use to compare the parameter and value.
     # @param param [String] This is the name of the parameter that you want to check.
-    # @param value [Hash{String => Object}] This is the value you want to compare against the parameter.
+    # @param value [String] This is the value you want to compare against the parameter.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Condition]
     def initialize(operator:, param:, value:, additional_properties: nil)
@@ -67,7 +67,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.operator.is_a?(Vapi::ConditionOperator) != false || raise("Passed value for field obj.operator is not the expected type, validation failed.")
       obj.param.is_a?(String) != false || raise("Passed value for field obj.param is not the expected type, validation failed.")
-      obj.value.is_a?(Hash) != false || raise("Passed value for field obj.value is not the expected type, validation failed.")
+      obj.value.is_a?(String) != false || raise("Passed value for field obj.value is not the expected type, validation failed.")
     end
   end
 end

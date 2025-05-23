@@ -9,6 +9,8 @@ require "json"
 
 module Vapi
   class FallbackCartesiaVoice
+    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+    attr_reader :caching_enabled
     # @return [String] The ID of the particular voice you want to use.
     attr_reader :voice_id
     # @return [Vapi::FallbackCartesiaVoiceModel] This is the model that will be used. This is optional and will default to the
@@ -30,6 +32,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [String] The ID of the particular voice you want to use.
     # @param model [Vapi::FallbackCartesiaVoiceModel] This is the model that will be used. This is optional and will default to the
     #  correct model for the voiceId.
@@ -40,8 +43,9 @@ module Vapi
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackCartesiaVoice]
-    def initialize(voice_id:, model: OMIT, language: OMIT, experimental_controls: OMIT, chunk_plan: OMIT,
-                   additional_properties: nil)
+    def initialize(voice_id:, caching_enabled: OMIT, model: OMIT, language: OMIT, experimental_controls: OMIT,
+                   chunk_plan: OMIT, additional_properties: nil)
+      @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @model = model if model != OMIT
       @language = language if language != OMIT
@@ -49,6 +53,7 @@ module Vapi
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
+        "cachingEnabled": caching_enabled,
         "voiceId": voice_id,
         "model": model,
         "language": language,
@@ -66,6 +71,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      caching_enabled = parsed_json["cachingEnabled"]
       voice_id = parsed_json["voiceId"]
       model = parsed_json["model"]
       language = parsed_json["language"]
@@ -82,6 +88,7 @@ module Vapi
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
       end
       new(
+        caching_enabled: caching_enabled,
         voice_id: voice_id,
         model: model,
         language: language,
@@ -105,6 +112,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       obj.voice_id.is_a?(String) != false || raise("Passed value for field obj.voice_id is not the expected type, validation failed.")
       obj.model&.is_a?(Vapi::FallbackCartesiaVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::FallbackCartesiaVoiceLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")

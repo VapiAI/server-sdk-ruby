@@ -6,13 +6,16 @@ require_relative "../../types/cartesia_voice"
 require_relative "../../types/custom_voice"
 require_relative "../../types/deepgram_voice"
 require_relative "../../types/eleven_labs_voice"
+require_relative "../../types/hume_voice"
 require_relative "../../types/lmnt_voice"
-require_relative "../../types/neets_voice"
+require_relative "../../types/neuphonic_voice"
 require_relative "../../types/open_ai_voice"
 require_relative "../../types/play_ht_voice"
 require_relative "../../types/rime_ai_voice"
 require_relative "../../types/smallest_ai_voice"
 require_relative "../../types/tavus_voice"
+require_relative "../../types/vapi_voice"
+require_relative "../../types/sesame_voice"
 
 module Vapi
   class Assistants
@@ -51,10 +54,12 @@ module Vapi
                    Vapi::DeepgramVoice.from_json(json_object: json_object)
                  when "11labs"
                    Vapi::ElevenLabsVoice.from_json(json_object: json_object)
+                 when "hume"
+                   Vapi::HumeVoice.from_json(json_object: json_object)
                  when "lmnt"
                    Vapi::LmntVoice.from_json(json_object: json_object)
-                 when "neets"
-                   Vapi::NeetsVoice.from_json(json_object: json_object)
+                 when "neuphonic"
+                   Vapi::NeuphonicVoice.from_json(json_object: json_object)
                  when "openai"
                    Vapi::OpenAiVoice.from_json(json_object: json_object)
                  when "playht"
@@ -65,6 +70,10 @@ module Vapi
                    Vapi::SmallestAiVoice.from_json(json_object: json_object)
                  when "tavus"
                    Vapi::TavusVoice.from_json(json_object: json_object)
+                 when "vapi"
+                   Vapi::VapiVoice.from_json(json_object: json_object)
+                 when "sesame"
+                   Vapi::SesameVoice.from_json(json_object: json_object)
                  else
                    Vapi::AzureVoice.from_json(json_object: json_object)
                  end
@@ -86,9 +95,11 @@ module Vapi
           { **@member.to_json, provider: @discriminant }.to_json
         when "11labs"
           { **@member.to_json, provider: @discriminant }.to_json
+        when "hume"
+          { **@member.to_json, provider: @discriminant }.to_json
         when "lmnt"
           { **@member.to_json, provider: @discriminant }.to_json
-        when "neets"
+        when "neuphonic"
           { **@member.to_json, provider: @discriminant }.to_json
         when "openai"
           { **@member.to_json, provider: @discriminant }.to_json
@@ -99,6 +110,10 @@ module Vapi
         when "smallest-ai"
           { **@member.to_json, provider: @discriminant }.to_json
         when "tavus"
+          { **@member.to_json, provider: @discriminant }.to_json
+        when "vapi"
+          { **@member.to_json, provider: @discriminant }.to_json
+        when "sesame"
           { **@member.to_json, provider: @discriminant }.to_json
         else
           { "provider": @discriminant, value: @member }.to_json
@@ -124,10 +139,12 @@ module Vapi
           Vapi::DeepgramVoice.validate_raw(obj: obj)
         when "11labs"
           Vapi::ElevenLabsVoice.validate_raw(obj: obj)
+        when "hume"
+          Vapi::HumeVoice.validate_raw(obj: obj)
         when "lmnt"
           Vapi::LmntVoice.validate_raw(obj: obj)
-        when "neets"
-          Vapi::NeetsVoice.validate_raw(obj: obj)
+        when "neuphonic"
+          Vapi::NeuphonicVoice.validate_raw(obj: obj)
         when "openai"
           Vapi::OpenAiVoice.validate_raw(obj: obj)
         when "playht"
@@ -138,6 +155,10 @@ module Vapi
           Vapi::SmallestAiVoice.validate_raw(obj: obj)
         when "tavus"
           Vapi::TavusVoice.validate_raw(obj: obj)
+        when "vapi"
+          Vapi::VapiVoice.validate_raw(obj: obj)
+        when "sesame"
+          Vapi::SesameVoice.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -181,16 +202,22 @@ module Vapi
         new(member: member, discriminant: "11labs")
       end
 
+      # @param member [Vapi::HumeVoice]
+      # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
+      def self.hume(member:)
+        new(member: member, discriminant: "hume")
+      end
+
       # @param member [Vapi::LmntVoice]
       # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
       def self.lmnt(member:)
         new(member: member, discriminant: "lmnt")
       end
 
-      # @param member [Vapi::NeetsVoice]
+      # @param member [Vapi::NeuphonicVoice]
       # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
-      def self.neets(member:)
-        new(member: member, discriminant: "neets")
+      def self.neuphonic(member:)
+        new(member: member, discriminant: "neuphonic")
       end
 
       # @param member [Vapi::OpenAiVoice]
@@ -221,6 +248,18 @@ module Vapi
       # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
       def self.tavus(member:)
         new(member: member, discriminant: "tavus")
+      end
+
+      # @param member [Vapi::VapiVoice]
+      # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
+      def self.vapi(member:)
+        new(member: member, discriminant: "vapi")
+      end
+
+      # @param member [Vapi::SesameVoice]
+      # @return [Vapi::Assistants::UpdateAssistantDtoVoice]
+      def self.sesame(member:)
+        new(member: member, discriminant: "sesame")
       end
     end
   end

@@ -5,9 +5,11 @@ require_relative "types/test_suite_test_controller_find_all_paginated_request_so
 require "date"
 require_relative "../types/test_suite_tests_paginated_response"
 require_relative "types/test_suite_test_controller_create_request"
-require_relative "../types/test_suite_test_voice"
+require_relative "types/test_suite_test_controller_create_response"
+require_relative "types/test_suite_test_controller_find_one_response"
 require_relative "types/test_suite_test_controller_remove_response"
 require_relative "types/test_suite_test_controller_update_request"
+require_relative "types/test_suite_test_controller_update_response"
 require "async"
 
 module Vapi
@@ -74,7 +76,7 @@ module Vapi
     # @param test_suite_id [String]
     # @param request [Vapi::TestSuiteTests::TestSuiteTestControllerCreateRequest]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::TestSuiteTestVoice]
+    # @return [Vapi::TestSuiteTests::TestSuiteTestControllerCreateResponse]
     def test_suite_test_controller_create(test_suite_id:, request:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -90,13 +92,13 @@ module Vapi
         req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/test-suite/#{test_suite_id}/test"
       end
-      Vapi::TestSuiteTestVoice.from_json(json_object: response.body)
+      Vapi::TestSuiteTests::TestSuiteTestControllerCreateResponse.from_json(json_object: response.body)
     end
 
     # @param test_suite_id [String]
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::TestSuiteTestVoice]
+    # @return [Vapi::TestSuiteTests::TestSuiteTestControllerFindOneResponse]
     def test_suite_test_controller_find_one(test_suite_id:, id:, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -114,7 +116,7 @@ module Vapi
         end
         req.url "#{@request_client.get_url(request_options: request_options)}/test-suite/#{test_suite_id}/test/#{id}"
       end
-      Vapi::TestSuiteTestVoice.from_json(json_object: response.body)
+      Vapi::TestSuiteTests::TestSuiteTestControllerFindOneResponse.from_json(json_object: response.body)
     end
 
     # @param test_suite_id [String]
@@ -145,7 +147,7 @@ module Vapi
     # @param id [String]
     # @param request [Vapi::TestSuiteTests::TestSuiteTestControllerUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::TestSuiteTestVoice]
+    # @return [Vapi::TestSuiteTests::TestSuiteTestControllerUpdateResponse]
     def test_suite_test_controller_update(test_suite_id:, id:, request:, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -161,7 +163,7 @@ module Vapi
         req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/test-suite/#{test_suite_id}/test/#{id}"
       end
-      Vapi::TestSuiteTestVoice.from_json(json_object: response.body)
+      Vapi::TestSuiteTests::TestSuiteTestControllerUpdateResponse.from_json(json_object: response.body)
     end
   end
 
@@ -230,7 +232,7 @@ module Vapi
     # @param test_suite_id [String]
     # @param request [Vapi::TestSuiteTests::TestSuiteTestControllerCreateRequest]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::TestSuiteTestVoice]
+    # @return [Vapi::TestSuiteTests::TestSuiteTestControllerCreateResponse]
     def test_suite_test_controller_create(test_suite_id:, request:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -247,14 +249,14 @@ module Vapi
           req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/test-suite/#{test_suite_id}/test"
         end
-        Vapi::TestSuiteTestVoice.from_json(json_object: response.body)
+        Vapi::TestSuiteTests::TestSuiteTestControllerCreateResponse.from_json(json_object: response.body)
       end
     end
 
     # @param test_suite_id [String]
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::TestSuiteTestVoice]
+    # @return [Vapi::TestSuiteTests::TestSuiteTestControllerFindOneResponse]
     def test_suite_test_controller_find_one(test_suite_id:, id:, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
@@ -273,7 +275,7 @@ module Vapi
           end
           req.url "#{@request_client.get_url(request_options: request_options)}/test-suite/#{test_suite_id}/test/#{id}"
         end
-        Vapi::TestSuiteTestVoice.from_json(json_object: response.body)
+        Vapi::TestSuiteTests::TestSuiteTestControllerFindOneResponse.from_json(json_object: response.body)
       end
     end
 
@@ -307,7 +309,7 @@ module Vapi
     # @param id [String]
     # @param request [Vapi::TestSuiteTests::TestSuiteTestControllerUpdateRequest]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::TestSuiteTestVoice]
+    # @return [Vapi::TestSuiteTests::TestSuiteTestControllerUpdateResponse]
     def test_suite_test_controller_update(test_suite_id:, id:, request:, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
@@ -324,7 +326,7 @@ module Vapi
           req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/test-suite/#{test_suite_id}/test/#{id}"
         end
-        Vapi::TestSuiteTestVoice.from_json(json_object: response.body)
+        Vapi::TestSuiteTests::TestSuiteTestControllerUpdateResponse.from_json(json_object: response.body)
       end
     end
   end

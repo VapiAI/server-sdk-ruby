@@ -5,14 +5,14 @@ require "json"
 
 module Vapi
   class CompliancePlan
-    # @return [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
-    #  the end of the call, you will still receive an end-of-call-report message to
+    # @return [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored.
+    #  At the end of the call, you will still receive an end-of-call-report message to
     #  store on your server. Defaults to false.
     attr_reader :hipaa_enabled
     # @return [Boolean] When this is enabled, the user will be restricted to use PCI-compliant
-    #  providers, and no logs or transcripts are stored. At the end of the call, you
-    #  will receive an end-of-call-report message to store on your server. Defaults to
-    #  false.
+    #  providers, and no logs or transcripts are stored.
+    #  At the end of the call, you will receive an end-of-call-report message to store
+    #  on your server. Defaults to false.
     attr_reader :pci_enabled
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -22,13 +22,13 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param hipaa_enabled [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
-    #  the end of the call, you will still receive an end-of-call-report message to
+    # @param hipaa_enabled [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored.
+    #  At the end of the call, you will still receive an end-of-call-report message to
     #  store on your server. Defaults to false.
     # @param pci_enabled [Boolean] When this is enabled, the user will be restricted to use PCI-compliant
-    #  providers, and no logs or transcripts are stored. At the end of the call, you
-    #  will receive an end-of-call-report message to store on your server. Defaults to
-    #  false.
+    #  providers, and no logs or transcripts are stored.
+    #  At the end of the call, you will receive an end-of-call-report message to store
+    #  on your server. Defaults to false.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CompliancePlan]
     def initialize(hipaa_enabled: OMIT, pci_enabled: OMIT, additional_properties: nil)

@@ -8,6 +8,8 @@ require "json"
 
 module Vapi
   class AzureVoice
+    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+    attr_reader :caching_enabled
     # @return [Vapi::AzureVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
     # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
@@ -26,6 +28,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [Vapi::AzureVoiceId] This is the provider-specific ID that will be used.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
@@ -34,13 +37,16 @@ module Vapi
     #  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AzureVoice]
-    def initialize(voice_id:, chunk_plan: OMIT, speed: OMIT, fallback_plan: OMIT, additional_properties: nil)
+    def initialize(voice_id:, caching_enabled: OMIT, chunk_plan: OMIT, speed: OMIT, fallback_plan: OMIT,
+                   additional_properties: nil)
+      @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @speed = speed if speed != OMIT
       @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
+        "cachingEnabled": caching_enabled,
         "voiceId": voice_id,
         "chunkPlan": chunk_plan,
         "speed": speed,
@@ -57,6 +63,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      caching_enabled = parsed_json["cachingEnabled"]
       if parsed_json["voiceId"].nil?
         voice_id = nil
       else
@@ -77,6 +84,7 @@ module Vapi
         fallback_plan = Vapi::FallbackPlan.from_json(json_object: fallback_plan)
       end
       new(
+        caching_enabled: caching_enabled,
         voice_id: voice_id,
         chunk_plan: chunk_plan,
         speed: speed,
@@ -99,6 +107,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       Vapi::AzureVoiceId.validate_raw(obj: obj.voice_id)
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
       obj.speed&.is_a?(Float) != false || raise("Passed value for field obj.speed is not the expected type, validation failed.")

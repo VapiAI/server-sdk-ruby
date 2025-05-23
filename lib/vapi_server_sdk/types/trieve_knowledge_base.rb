@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "trieve_knowledge_base_search_plan"
-require_relative "trieve_knowledge_base_create_plan"
+require_relative "trieve_knowledge_base_import"
 require "ostruct"
 require "json"
 
@@ -15,7 +15,7 @@ module Vapi
     #  - Too much unnecessary context is being fed as knowledge base context.
     #  - Not enough relevant context is being fed as knowledge base context.
     attr_reader :search_plan
-    # @return [Vapi::TrieveKnowledgeBaseCreatePlan] This is the plan if you want us to create/import a new vector store using
+    # @return [Vapi::TrieveKnowledgeBaseImport] This is the plan if you want us to create/import a new vector store using
     #  Trieve.
     attr_reader :create_plan
     # @return [String] This is the id of the knowledge base.
@@ -36,7 +36,7 @@ module Vapi
     #  You should configure this if you're running into these issues:
     #  - Too much unnecessary context is being fed as knowledge base context.
     #  - Not enough relevant context is being fed as knowledge base context.
-    # @param create_plan [Vapi::TrieveKnowledgeBaseCreatePlan] This is the plan if you want us to create/import a new vector store using
+    # @param create_plan [Vapi::TrieveKnowledgeBaseImport] This is the plan if you want us to create/import a new vector store using
     #  Trieve.
     # @param id [String] This is the id of the knowledge base.
     # @param org_id [String] This is the org id of the knowledge base.
@@ -78,7 +78,7 @@ module Vapi
         create_plan = nil
       else
         create_plan = parsed_json["createPlan"].to_json
-        create_plan = Vapi::TrieveKnowledgeBaseCreatePlan.from_json(json_object: create_plan)
+        create_plan = Vapi::TrieveKnowledgeBaseImport.from_json(json_object: create_plan)
       end
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
@@ -108,7 +108,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.search_plan.nil? || Vapi::TrieveKnowledgeBaseSearchPlan.validate_raw(obj: obj.search_plan)
-      obj.create_plan.nil? || Vapi::TrieveKnowledgeBaseCreatePlan.validate_raw(obj: obj.create_plan)
+      obj.create_plan.nil? || Vapi::TrieveKnowledgeBaseImport.validate_raw(obj: obj.create_plan)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
     end

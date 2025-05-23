@@ -14,5 +14,6 @@ module Vapi
     COST_BREAKDOWN_LLM_COMPLETION_TOKENS = "costBreakdown.llmCompletionTokens"
     DURATION = "duration"
     CONCURRENCY = "concurrency"
+    MINUTES_USED = "minutesUsed"
   end
 end

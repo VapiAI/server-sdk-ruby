@@ -5,8 +5,8 @@ require "json"
 
 module Vapi
   class AiEdgeCondition
-    # @return [Array<String>]
-    attr_reader :matches
+    # @return [String] This is the prompt for the AI edge condition. It should evaluate to a boolean.
+    attr_reader :prompt
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -15,13 +15,13 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param matches [Array<String>]
+    # @param prompt [String] This is the prompt for the AI edge condition. It should evaluate to a boolean.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AiEdgeCondition]
-    def initialize(matches:, additional_properties: nil)
-      @matches = matches
+    def initialize(prompt:, additional_properties: nil)
+      @prompt = prompt
       @additional_properties = additional_properties
-      @_field_set = { "matches": matches }
+      @_field_set = { "prompt": prompt }
     end
 
     # Deserialize a JSON object to an instance of AiEdgeCondition
@@ -31,8 +31,8 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      matches = parsed_json["matches"]
-      new(matches: matches, additional_properties: struct)
+      prompt = parsed_json["prompt"]
+      new(prompt: prompt, additional_properties: struct)
     end
 
     # Serialize an instance of AiEdgeCondition to a JSON object
@@ -49,7 +49,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.matches.is_a?(Array) != false || raise("Passed value for field obj.matches is not the expected type, validation failed.")
+      obj.prompt.is_a?(String) != false || raise("Passed value for field obj.prompt is not the expected type, validation failed.")
     end
   end
 end

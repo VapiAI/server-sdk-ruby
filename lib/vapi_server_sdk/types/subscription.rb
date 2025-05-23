@@ -4,6 +4,7 @@ require "date"
 require_relative "subscription_type"
 require_relative "subscription_status"
 require_relative "auto_reload_plan"
+require_relative "invoice_plan"
 require "ostruct"
 require "json"
 
@@ -90,6 +91,14 @@ module Vapi
     attr_reader :coupon_ids
     # @return [String] This is the number of credits left obtained from a coupon.
     attr_reader :coupon_usage_left
+    # @return [Vapi::InvoicePlan] This is the invoice plan for the subscription.
+    attr_reader :invoice_plan
+    # @return [Boolean] This is the PCI enabled flag for the subscription. It determines whether orgs
+    #  under this
+    #  subscription have the option to enable PCI compliance.
+    attr_reader :pci_enabled
+    # @return [String] This is the ID for the Common Paper agreement outlining the PCI contract.
+    attr_reader :pci_common_paper_agreement_id
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -146,10 +155,15 @@ module Vapi
     #  at.
     # @param coupon_ids [Array<String>] This is the IDs of the coupons applicable to this subscription.
     # @param coupon_usage_left [String] This is the number of credits left obtained from a coupon.
+    # @param invoice_plan [Vapi::InvoicePlan] This is the invoice plan for the subscription.
+    # @param pci_enabled [Boolean] This is the PCI enabled flag for the subscription. It determines whether orgs
+    #  under this
+    #  subscription have the option to enable PCI compliance.
+    # @param pci_common_paper_agreement_id [String] This is the ID for the Common Paper agreement outlining the PCI contract.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Subscription]
     def initialize(id:, created_at:, updated_at:, type:, status:, credits:, concurrency_counter:,
-                   concurrency_limit_included:, concurrency_limit_purchased:, phone_numbers_counter: OMIT, phone_numbers_included: OMIT, monthly_charge_schedule_id: OMIT, monthly_credit_check_schedule_id: OMIT, stripe_customer_id: OMIT, stripe_payment_method_id: OMIT, slack_support_enabled: OMIT, slack_channel_id: OMIT, hipaa_enabled: OMIT, hipaa_common_paper_agreement_id: OMIT, stripe_payment_method_fingerprint: OMIT, stripe_customer_email: OMIT, referred_by_email: OMIT, auto_reload_plan: OMIT, minutes_included: OMIT, minutes_used: OMIT, minutes_used_next_reset_at: OMIT, minutes_overage_cost: OMIT, providers_included: OMIT, outbound_calls_daily_limit: OMIT, outbound_calls_counter: OMIT, outbound_calls_counter_next_reset_at: OMIT, coupon_ids: OMIT, coupon_usage_left: OMIT, additional_properties: nil)
+                   concurrency_limit_included:, concurrency_limit_purchased:, phone_numbers_counter: OMIT, phone_numbers_included: OMIT, monthly_charge_schedule_id: OMIT, monthly_credit_check_schedule_id: OMIT, stripe_customer_id: OMIT, stripe_payment_method_id: OMIT, slack_support_enabled: OMIT, slack_channel_id: OMIT, hipaa_enabled: OMIT, hipaa_common_paper_agreement_id: OMIT, stripe_payment_method_fingerprint: OMIT, stripe_customer_email: OMIT, referred_by_email: OMIT, auto_reload_plan: OMIT, minutes_included: OMIT, minutes_used: OMIT, minutes_used_next_reset_at: OMIT, minutes_overage_cost: OMIT, providers_included: OMIT, outbound_calls_daily_limit: OMIT, outbound_calls_counter: OMIT, outbound_calls_counter_next_reset_at: OMIT, coupon_ids: OMIT, coupon_usage_left: OMIT, invoice_plan: OMIT, pci_enabled: OMIT, pci_common_paper_agreement_id: OMIT, additional_properties: nil)
       @id = id
       @created_at = created_at
       @updated_at = updated_at
@@ -187,6 +201,9 @@ module Vapi
       end
       @coupon_ids = coupon_ids if coupon_ids != OMIT
       @coupon_usage_left = coupon_usage_left if coupon_usage_left != OMIT
+      @invoice_plan = invoice_plan if invoice_plan != OMIT
+      @pci_enabled = pci_enabled if pci_enabled != OMIT
+      @pci_common_paper_agreement_id = pci_common_paper_agreement_id if pci_common_paper_agreement_id != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "id": id,
@@ -221,7 +238,10 @@ module Vapi
         "outboundCallsCounter": outbound_calls_counter,
         "outboundCallsCounterNextResetAt": outbound_calls_counter_next_reset_at,
         "couponIds": coupon_ids,
-        "couponUsageLeft": coupon_usage_left
+        "couponUsageLeft": coupon_usage_left,
+        "invoicePlan": invoice_plan,
+        "pciEnabled": pci_enabled,
+        "pciCommonPaperAgreementId": pci_common_paper_agreement_id
       }.reject do |_k, v|
         v == OMIT
       end
@@ -276,6 +296,14 @@ module Vapi
                                              end
       coupon_ids = parsed_json["couponIds"]
       coupon_usage_left = parsed_json["couponUsageLeft"]
+      if parsed_json["invoicePlan"].nil?
+        invoice_plan = nil
+      else
+        invoice_plan = parsed_json["invoicePlan"].to_json
+        invoice_plan = Vapi::InvoicePlan.from_json(json_object: invoice_plan)
+      end
+      pci_enabled = parsed_json["pciEnabled"]
+      pci_common_paper_agreement_id = parsed_json["pciCommonPaperAgreementId"]
       new(
         id: id,
         created_at: created_at,
@@ -310,6 +338,9 @@ module Vapi
         outbound_calls_counter_next_reset_at: outbound_calls_counter_next_reset_at,
         coupon_ids: coupon_ids,
         coupon_usage_left: coupon_usage_left,
+        invoice_plan: invoice_plan,
+        pci_enabled: pci_enabled,
+        pci_common_paper_agreement_id: pci_common_paper_agreement_id,
         additional_properties: struct
       )
     end
@@ -361,6 +392,9 @@ module Vapi
       obj.outbound_calls_counter_next_reset_at&.is_a?(DateTime) != false || raise("Passed value for field obj.outbound_calls_counter_next_reset_at is not the expected type, validation failed.")
       obj.coupon_ids&.is_a?(Array) != false || raise("Passed value for field obj.coupon_ids is not the expected type, validation failed.")
       obj.coupon_usage_left&.is_a?(String) != false || raise("Passed value for field obj.coupon_usage_left is not the expected type, validation failed.")
+      obj.invoice_plan.nil? || Vapi::InvoicePlan.validate_raw(obj: obj.invoice_plan)
+      obj.pci_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.pci_enabled is not the expected type, validation failed.")
+      obj.pci_common_paper_agreement_id&.is_a?(String) != false || raise("Passed value for field obj.pci_common_paper_agreement_id is not the expected type, validation failed.")
     end
   end
 end

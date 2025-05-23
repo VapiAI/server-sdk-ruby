@@ -3,6 +3,7 @@
 module Vapi
   # This is the status of the call.
   class ServerMessageStatusUpdateStatus
+    SCHEDULED = "scheduled"
     QUEUED = "queued"
     RINGING = "ringing"
     IN_PROGRESS = "in-progress"

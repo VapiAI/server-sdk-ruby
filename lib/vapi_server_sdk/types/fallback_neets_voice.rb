@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
-require_relative "fallback_neets_voice_id"
-require_relative "chunk_plan"
 require "ostruct"
 require "json"
 
 module Vapi
   class FallbackNeetsVoice
-    # @return [Vapi::FallbackNeetsVoiceId] This is the provider-specific ID that will be used.
+    # @return [Object]
     attr_reader :voice_id
-    # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
-    attr_reader :chunk_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -20,16 +15,13 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param voice_id [Vapi::FallbackNeetsVoiceId] This is the provider-specific ID that will be used.
-    # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
+    # @param voice_id [Object]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackNeetsVoice]
-    def initialize(voice_id:, chunk_plan: OMIT, additional_properties: nil)
-      @voice_id = voice_id
-      @chunk_plan = chunk_plan if chunk_plan != OMIT
+    def initialize(voice_id: OMIT, additional_properties: nil)
+      @voice_id = voice_id if voice_id != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "voiceId": voice_id, "chunkPlan": chunk_plan }.reject do |_k, v|
+      @_field_set = { "voiceId": voice_id }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -41,23 +33,8 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      if parsed_json["voiceId"].nil?
-        voice_id = nil
-      else
-        voice_id = parsed_json["voiceId"].to_json
-        voice_id = Vapi::FallbackNeetsVoiceId.from_json(json_object: voice_id)
-      end
-      if parsed_json["chunkPlan"].nil?
-        chunk_plan = nil
-      else
-        chunk_plan = parsed_json["chunkPlan"].to_json
-        chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
-      end
-      new(
-        voice_id: voice_id,
-        chunk_plan: chunk_plan,
-        additional_properties: struct
-      )
+      voice_id = parsed_json["voiceId"]
+      new(voice_id: voice_id, additional_properties: struct)
     end
 
     # Serialize an instance of FallbackNeetsVoice to a JSON object
@@ -74,8 +51,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      Vapi::FallbackNeetsVoiceId.validate_raw(obj: obj.voice_id)
-      obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
+      obj.voice_id&.is_a?(Object) != false || raise("Passed value for field obj.voice_id is not the expected type, validation failed.")
     end
   end
 end

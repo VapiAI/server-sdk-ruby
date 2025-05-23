@@ -1,0 +1,47 @@
+# frozen_string_literal: true
+
+module Vapi
+  # This is the language code (ISO 639-1) that will be used.
+  #  @default 'en-US'
+  class FallbackVapiVoiceLanguage
+    EN_US = "en-US"
+    EN_GB = "en-GB"
+    EN_AU = "en-AU"
+    EN_CA = "en-CA"
+    JA = "ja"
+    ZH = "zh"
+    DE = "de"
+    HI = "hi"
+    FR_FR = "fr-FR"
+    FR_CA = "fr-CA"
+    KO = "ko"
+    PT_BR = "pt-BR"
+    PT_PT = "pt-PT"
+    IT = "it"
+    ES_ES = "es-ES"
+    ES_MX = "es-MX"
+    ID = "id"
+    NL = "nl"
+    TR = "tr"
+    FIL = "fil"
+    PL = "pl"
+    SV = "sv"
+    BG = "bg"
+    RO = "ro"
+    AR_SA = "ar-SA"
+    AR_AE = "ar-AE"
+    CS = "cs"
+    EL = "el"
+    FI = "fi"
+    HR = "hr"
+    MS = "ms"
+    SK = "sk"
+    DA = "da"
+    TA = "ta"
+    UK = "uk"
+    RU = "ru"
+    HU = "hu"
+    NO = "no"
+    VI = "vi"
+  end
+end

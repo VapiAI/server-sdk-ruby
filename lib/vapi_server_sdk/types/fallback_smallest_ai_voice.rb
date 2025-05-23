@@ -7,6 +7,8 @@ require "json"
 
 module Vapi
   class FallbackSmallestAiVoice
+    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+    attr_reader :caching_enabled
     # @return [Vapi::FallbackSmallestAiVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
     # @return [String] Smallest AI voice model to use. Defaults to 'lightning' when not specified.
@@ -24,6 +26,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [Vapi::FallbackSmallestAiVoiceId] This is the provider-specific ID that will be used.
     # @param model [String] Smallest AI voice model to use. Defaults to 'lightning' when not specified.
     # @param speed [Float] This is the speed multiplier that will be used.
@@ -31,13 +34,21 @@ module Vapi
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackSmallestAiVoice]
-    def initialize(voice_id:, model: OMIT, speed: OMIT, chunk_plan: OMIT, additional_properties: nil)
+    def initialize(voice_id:, caching_enabled: OMIT, model: OMIT, speed: OMIT, chunk_plan: OMIT,
+                   additional_properties: nil)
+      @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @model = model if model != OMIT
       @speed = speed if speed != OMIT
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "voiceId": voice_id, "model": model, "speed": speed, "chunkPlan": chunk_plan }.reject do |_k, v|
+      @_field_set = {
+        "cachingEnabled": caching_enabled,
+        "voiceId": voice_id,
+        "model": model,
+        "speed": speed,
+        "chunkPlan": chunk_plan
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -49,6 +60,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      caching_enabled = parsed_json["cachingEnabled"]
       if parsed_json["voiceId"].nil?
         voice_id = nil
       else
@@ -64,6 +76,7 @@ module Vapi
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
       end
       new(
+        caching_enabled: caching_enabled,
         voice_id: voice_id,
         model: model,
         speed: speed,
@@ -86,6 +99,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       Vapi::FallbackSmallestAiVoiceId.validate_raw(obj: obj.voice_id)
       obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.speed&.is_a?(Float) != false || raise("Passed value for field obj.speed is not the expected type, validation failed.")

@@ -11,6 +11,8 @@ require "json"
 
 module Vapi
   class PlayHtVoice
+    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+    attr_reader :caching_enabled
     # @return [Vapi::PlayHtVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
     # @return [Float] This is the speed multiplier that will be used.
@@ -53,6 +55,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [Vapi::PlayHtVoiceId] This is the provider-specific ID that will be used.
     # @param speed [Float] This is the speed multiplier that will be used.
     # @param temperature [Float] A floating point number between 0, exclusive, and 2, inclusive. If equal to null
@@ -78,8 +81,9 @@ module Vapi
     #  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::PlayHtVoice]
-    def initialize(voice_id:, speed: OMIT, temperature: OMIT, emotion: OMIT, voice_guidance: OMIT,
-                   style_guidance: OMIT, text_guidance: OMIT, model: OMIT, language: OMIT, chunk_plan: OMIT, fallback_plan: OMIT, additional_properties: nil)
+    def initialize(voice_id:, caching_enabled: OMIT, speed: OMIT, temperature: OMIT, emotion: OMIT,
+                   voice_guidance: OMIT, style_guidance: OMIT, text_guidance: OMIT, model: OMIT, language: OMIT, chunk_plan: OMIT, fallback_plan: OMIT, additional_properties: nil)
+      @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @speed = speed if speed != OMIT
       @temperature = temperature if temperature != OMIT
@@ -93,6 +97,7 @@ module Vapi
       @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
+        "cachingEnabled": caching_enabled,
         "voiceId": voice_id,
         "speed": speed,
         "temperature": temperature,
@@ -116,6 +121,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      caching_enabled = parsed_json["cachingEnabled"]
       if parsed_json["voiceId"].nil?
         voice_id = nil
       else
@@ -143,6 +149,7 @@ module Vapi
         fallback_plan = Vapi::FallbackPlan.from_json(json_object: fallback_plan)
       end
       new(
+        caching_enabled: caching_enabled,
         voice_id: voice_id,
         speed: speed,
         temperature: temperature,
@@ -172,6 +179,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       Vapi::PlayHtVoiceId.validate_raw(obj: obj.voice_id)
       obj.speed&.is_a?(Float) != false || raise("Passed value for field obj.speed is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")

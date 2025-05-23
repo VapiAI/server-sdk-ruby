@@ -8,6 +8,8 @@ require "json"
 
 module Vapi
   class FallbackTavusVoice
+    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+    attr_reader :caching_enabled
     # @return [Vapi::FallbackTavusVoiceVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
     # @return [String] This is the unique identifier for the persona that the replica will use in the
@@ -37,6 +39,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [Vapi::FallbackTavusVoiceVoiceId] This is the provider-specific ID that will be used.
     # @param persona_id [String] This is the unique identifier for the persona that the replica will use in the
     #  conversation.
@@ -52,8 +55,9 @@ module Vapi
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackTavusVoice]
-    def initialize(voice_id:, persona_id: OMIT, callback_url: OMIT, conversation_name: OMIT,
+    def initialize(voice_id:, caching_enabled: OMIT, persona_id: OMIT, callback_url: OMIT, conversation_name: OMIT,
                    conversational_context: OMIT, custom_greeting: OMIT, properties: OMIT, chunk_plan: OMIT, additional_properties: nil)
+      @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @persona_id = persona_id if persona_id != OMIT
       @callback_url = callback_url if callback_url != OMIT
@@ -64,6 +68,7 @@ module Vapi
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
+        "cachingEnabled": caching_enabled,
         "voiceId": voice_id,
         "personaId": persona_id,
         "callbackUrl": callback_url,
@@ -84,6 +89,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      caching_enabled = parsed_json["cachingEnabled"]
       if parsed_json["voiceId"].nil?
         voice_id = nil
       else
@@ -108,6 +114,7 @@ module Vapi
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
       end
       new(
+        caching_enabled: caching_enabled,
         voice_id: voice_id,
         persona_id: persona_id,
         callback_url: callback_url,
@@ -134,6 +141,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       Vapi::FallbackTavusVoiceVoiceId.validate_raw(obj: obj.voice_id)
       obj.persona_id&.is_a?(String) != false || raise("Passed value for field obj.persona_id is not the expected type, validation failed.")
       obj.callback_url&.is_a?(String) != false || raise("Passed value for field obj.callback_url is not the expected type, validation failed.")

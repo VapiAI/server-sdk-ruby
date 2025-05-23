@@ -12,10 +12,7 @@ require "json"
 
 module Vapi
   class ServerMessageSpeechUpdate
-    # @return [Vapi::ServerMessageSpeechUpdatePhoneNumber] This is the phone number associated with the call.
-    #  This matches one of the following:
-    #  - `call.phoneNumber`,
-    #  - `call.phoneNumberId`.
+    # @return [Vapi::ServerMessageSpeechUpdatePhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
     # @return [String] This is the type of the message. "speech-update" is sent whenever assistant or
     #  user start or stop speaking.
@@ -24,30 +21,18 @@ module Vapi
     attr_reader :status
     # @return [Vapi::ServerMessageSpeechUpdateRole] This is the role which the speech update is for.
     attr_reader :role
-    # @return [String] This is the ISO-8601 formatted timestamp of when the message was sent.
+    # @return [Float] This is the turn number of the speech update (0-indexed).
+    attr_reader :turn
+    # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Artifact] This is a live version of the `call.artifact`.
     #  This matches what is stored on `call.artifact` after the call.
     attr_reader :artifact
-    # @return [Vapi::CreateAssistantDto] This is the assistant that is currently active. This is provided for
-    #  convenience.
-    #  This matches one of the following:
-    #  - `call.assistant`,
-    #  - `call.assistantId`,
-    #  - `call.squad[n].assistant`,
-    #  - `call.squad[n].assistantId`,
-    #  - `call.squadId->[n].assistant`,
-    #  - `call.squadId->[n].assistantId`.
+    # @return [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     attr_reader :assistant
-    # @return [Vapi::CreateCustomerDto] This is the customer associated with the call.
-    #  This matches one of the following:
-    #  - `call.customer`,
-    #  - `call.customerId`.
+    # @return [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     attr_reader :customer
-    # @return [Vapi::Call] This is the call object.
-    #  This matches what was returned in POST /call.
-    #  Note: This might get stale during the call. To get the latest call object,
-    #  especially after the call is ended, use GET /call/:id.
+    # @return [Vapi::Call] This is the call that the message is associated with.
     attr_reader :call
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -57,42 +42,27 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param phone_number [Vapi::ServerMessageSpeechUpdatePhoneNumber] This is the phone number associated with the call.
-    #  This matches one of the following:
-    #  - `call.phoneNumber`,
-    #  - `call.phoneNumberId`.
+    # @param phone_number [Vapi::ServerMessageSpeechUpdatePhoneNumber] This is the phone number that the message is associated with.
     # @param type [String] This is the type of the message. "speech-update" is sent whenever assistant or
     #  user start or stop speaking.
     # @param status [Vapi::ServerMessageSpeechUpdateStatus] This is the status of the speech update.
     # @param role [Vapi::ServerMessageSpeechUpdateRole] This is the role which the speech update is for.
-    # @param timestamp [String] This is the ISO-8601 formatted timestamp of when the message was sent.
+    # @param turn [Float] This is the turn number of the speech update (0-indexed).
+    # @param timestamp [Float] This is the timestamp of the message.
     # @param artifact [Vapi::Artifact] This is a live version of the `call.artifact`.
     #  This matches what is stored on `call.artifact` after the call.
-    # @param assistant [Vapi::CreateAssistantDto] This is the assistant that is currently active. This is provided for
-    #  convenience.
-    #  This matches one of the following:
-    #  - `call.assistant`,
-    #  - `call.assistantId`,
-    #  - `call.squad[n].assistant`,
-    #  - `call.squad[n].assistantId`,
-    #  - `call.squadId->[n].assistant`,
-    #  - `call.squadId->[n].assistantId`.
-    # @param customer [Vapi::CreateCustomerDto] This is the customer associated with the call.
-    #  This matches one of the following:
-    #  - `call.customer`,
-    #  - `call.customerId`.
-    # @param call [Vapi::Call] This is the call object.
-    #  This matches what was returned in POST /call.
-    #  Note: This might get stale during the call. To get the latest call object,
-    #  especially after the call is ended, use GET /call/:id.
+    # @param assistant [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
+    # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
+    # @param call [Vapi::Call] This is the call that the message is associated with.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageSpeechUpdate]
-    def initialize(type:, status:, role:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT,
-                   customer: OMIT, call: OMIT, additional_properties: nil)
+    def initialize(type:, status:, role:, phone_number: OMIT, turn: OMIT, timestamp: OMIT, artifact: OMIT,
+                   assistant: OMIT, customer: OMIT, call: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
       @type = type
       @status = status
       @role = role
+      @turn = turn if turn != OMIT
       @timestamp = timestamp if timestamp != OMIT
       @artifact = artifact if artifact != OMIT
       @assistant = assistant if assistant != OMIT
@@ -104,6 +74,7 @@ module Vapi
         "type": type,
         "status": status,
         "role": role,
+        "turn": turn,
         "timestamp": timestamp,
         "artifact": artifact,
         "assistant": assistant,
@@ -130,6 +101,7 @@ module Vapi
       type = parsed_json["type"]
       status = parsed_json["status"]
       role = parsed_json["role"]
+      turn = parsed_json["turn"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["artifact"].nil?
         artifact = nil
@@ -160,6 +132,7 @@ module Vapi
         type: type,
         status: status,
         role: role,
+        turn: turn,
         timestamp: timestamp,
         artifact: artifact,
         assistant: assistant,
@@ -187,7 +160,8 @@ module Vapi
       obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.status.is_a?(Vapi::ServerMessageSpeechUpdateStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.role.is_a?(Vapi::ServerMessageSpeechUpdateRole) != false || raise("Passed value for field obj.role is not the expected type, validation failed.")
-      obj.timestamp&.is_a?(String) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
+      obj.turn&.is_a?(Float) != false || raise("Passed value for field obj.turn is not the expected type, validation failed.")
+      obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)

@@ -4,12 +4,14 @@ require_relative "assistant_transcriber"
 require_relative "assistant_model"
 require_relative "assistant_voice"
 require_relative "assistant_first_message_mode"
+require_relative "assistant_voicemail_detection"
 require_relative "assistant_client_messages_item"
 require_relative "assistant_server_messages_item"
 require_relative "assistant_background_sound"
 require_relative "transport_configuration_twilio"
+require_relative "langfuse_observability_plan"
 require_relative "assistant_credentials_item"
-require_relative "twilio_voicemail_detection"
+require_relative "assistant_hooks_item"
 require_relative "compliance_plan"
 require_relative "analysis_plan"
 require_relative "artifact_plan"
@@ -18,7 +20,7 @@ require_relative "start_speaking_plan"
 require_relative "stop_speaking_plan"
 require_relative "monitor_plan"
 require_relative "server"
-require_relative "assistant_hooks"
+require_relative "keypad_input_plan"
 require "date"
 require "ostruct"
 require "json"
@@ -36,6 +38,8 @@ module Vapi
     #  If unspecified, assistant will wait for user to speak and use the model to
     #  respond once they speak.
     attr_reader :first_message
+    # @return [Boolean]
+    attr_reader :first_message_interruptions_enabled
     # @return [Vapi::AssistantFirstMessageMode] This is the mode for the first message. Default is 'assistant-speaks-first'.
     #  Use:
     #  - 'assistant-speaks-first' to have the assistant speak first.
@@ -47,8 +51,16 @@ module Vapi
     #  transfer points).
     #  @default 'assistant-speaks-first'
     attr_reader :first_message_mode
+    # @return [Vapi::AssistantVoicemailDetection] These are the settings to configure or disable voicemail detection.
+    #  Alternatively, voicemail detection can be configured using the
+    #  model.tools=[VoicemailTool].
+    #  This uses Twilio's built-in detection while the VoicemailTool relies on the
+    #  model to detect if a voicemail was reached.
+    #  You can use neither of them, one of them, or both of them. By default, Twilio
+    #  built-in detection is enabled while VoicemailTool is not.
+    attr_reader :voicemail_detection
     # @return [Array<Vapi::AssistantClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
-    #  tatus-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input.
+    #  update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started.
     #  You can check the shape of the messages in ClientMessage schema.
     attr_reader :client_messages
     # @return [Array<Vapi::AssistantServerMessagesItem>] These are the messages that will be sent to your Server URL. Default is
@@ -64,6 +76,7 @@ module Vapi
     attr_reader :max_duration_seconds
     # @return [Vapi::AssistantBackgroundSound] This is the background sound in the call. Default for phone calls is 'office'
     #  and default for web calls is 'off'.
+    #  You can also provide a custom sound by providing a URL to an audio file.
     attr_reader :background_sound
     # @return [Boolean] This enables filtering of noise and background speech while the user is talking.
     #  Default `false` while in beta.
@@ -79,22 +92,19 @@ module Vapi
     #  different transport providers. For a call, only the configuration matching the
     #  call transport provider is used.
     attr_reader :transport_configurations
+    # @return [Vapi::LangfuseObservabilityPlan] This is the plan for observability configuration of assistant's calls.
+    #  Currently supports Langfuse for tracing and monitoring.
+    attr_reader :observability_plan
     # @return [Array<Vapi::AssistantCredentialsItem>] These are dynamic credentials that will be used for the assistant calls. By
     #  default, all the credentials are available for use in the call but you can
     #  supplement an additional credentials using this. Dynamic credentials override
     #  existing credentials.
     attr_reader :credentials
+    # @return [Array<Vapi::AssistantHooksItem>] This is a set of actions that will be performed on certain events.
+    attr_reader :hooks
     # @return [String] This is the name of the assistant.
     #  This is required when you want to transfer between assistants in a call.
     attr_reader :name
-    # @return [Vapi::TwilioVoicemailDetection] These are the settings to configure or disable voicemail detection.
-    #  Alternatively, voicemail detection can be configured using the
-    #  model.tools=[VoicemailTool].
-    #  This uses Twilio's built-in detection while the VoicemailTool relies on the
-    #  model to detect if a voicemail was reached.
-    #  You can use neither of them, one of them, or both of them. By default, Twilio
-    #  built-in detection is enabled while VoicemailTool is not.
-    attr_reader :voicemail_detection
     # @return [String] This is the message that the assistant will say if the call is forwarded to
     #  voicemail.
     #  If unspecified, it will hang up.
@@ -161,8 +171,8 @@ module Vapi
     #  2. phoneNumber.serverUrl
     #  3. org.serverUrl
     attr_reader :server
-    # @return [Array<Vapi::AssistantHooks>] This is a set of actions that will be performed on certain events.
-    attr_reader :hooks
+    # @return [Vapi::KeypadInputPlan]
+    attr_reader :keypad_input_plan
     # @return [String] This is the unique identifier for the assistant.
     attr_reader :id
     # @return [String] This is the unique identifier for the org that this assistant belongs to.
@@ -186,6 +196,7 @@ module Vapi
     #  a containerized audio file (mp3, wav, etc.).
     #  If unspecified, assistant will wait for user to speak and use the model to
     #  respond once they speak.
+    # @param first_message_interruptions_enabled [Boolean]
     # @param first_message_mode [Vapi::AssistantFirstMessageMode] This is the mode for the first message. Default is 'assistant-speaks-first'.
     #  Use:
     #  - 'assistant-speaks-first' to have the assistant speak first.
@@ -196,8 +207,15 @@ module Vapi
     #  state. (`assistant.model.messages` at call start, `call.messages` at squad
     #  transfer points).
     #  @default 'assistant-speaks-first'
+    # @param voicemail_detection [Vapi::AssistantVoicemailDetection] These are the settings to configure or disable voicemail detection.
+    #  Alternatively, voicemail detection can be configured using the
+    #  model.tools=[VoicemailTool].
+    #  This uses Twilio's built-in detection while the VoicemailTool relies on the
+    #  model to detect if a voicemail was reached.
+    #  You can use neither of them, one of them, or both of them. By default, Twilio
+    #  built-in detection is enabled while VoicemailTool is not.
     # @param client_messages [Array<Vapi::AssistantClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
-    #  tatus-update,transfer-update,transcript,tool-calls,user-interrupted,voice-input.
+    #  update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started.
     #  You can check the shape of the messages in ClientMessage schema.
     # @param server_messages [Array<Vapi::AssistantServerMessagesItem>] These are the messages that will be sent to your Server URL. Default is
     #  h-update,status-update,tool-calls,transfer-destination-request,user-interrupted.
@@ -209,6 +227,7 @@ module Vapi
     #  @default 600 (10 minutes)
     # @param background_sound [Vapi::AssistantBackgroundSound] This is the background sound in the call. Default for phone calls is 'office'
     #  and default for web calls is 'off'.
+    #  You can also provide a custom sound by providing a URL to an audio file.
     # @param background_denoising_enabled [Boolean] This enables filtering of noise and background speech while the user is talking.
     #  Default `false` while in beta.
     #  @default false
@@ -220,19 +239,15 @@ module Vapi
     #  assistant's calls, like Twilio. You can store multiple configurations for
     #  different transport providers. For a call, only the configuration matching the
     #  call transport provider is used.
+    # @param observability_plan [Vapi::LangfuseObservabilityPlan] This is the plan for observability configuration of assistant's calls.
+    #  Currently supports Langfuse for tracing and monitoring.
     # @param credentials [Array<Vapi::AssistantCredentialsItem>] These are dynamic credentials that will be used for the assistant calls. By
     #  default, all the credentials are available for use in the call but you can
     #  supplement an additional credentials using this. Dynamic credentials override
     #  existing credentials.
+    # @param hooks [Array<Vapi::AssistantHooksItem>] This is a set of actions that will be performed on certain events.
     # @param name [String] This is the name of the assistant.
     #  This is required when you want to transfer between assistants in a call.
-    # @param voicemail_detection [Vapi::TwilioVoicemailDetection] These are the settings to configure or disable voicemail detection.
-    #  Alternatively, voicemail detection can be configured using the
-    #  model.tools=[VoicemailTool].
-    #  This uses Twilio's built-in detection while the VoicemailTool relies on the
-    #  model to detect if a voicemail was reached.
-    #  You can use neither of them, one of them, or both of them. By default, Twilio
-    #  built-in detection is enabled while VoicemailTool is not.
     # @param voicemail_message [String] This is the message that the assistant will say if the call is forwarded to
     #  voicemail.
     #  If unspecified, it will hang up.
@@ -286,20 +301,24 @@ module Vapi
     #  1. assistant.server.url
     #  2. phoneNumber.serverUrl
     #  3. org.serverUrl
-    # @param hooks [Array<Vapi::AssistantHooks>] This is a set of actions that will be performed on certain events.
+    # @param keypad_input_plan [Vapi::KeypadInputPlan]
     # @param id [String] This is the unique identifier for the assistant.
     # @param org_id [String] This is the unique identifier for the org that this assistant belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the assistant was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Assistant]
-    def initialize(id:, org_id:, created_at:, updated_at:, transcriber: OMIT, model: OMIT, voice: OMIT, first_message: OMIT, first_message_mode: OMIT,
-                   client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, credentials: OMIT, name: OMIT, voicemail_detection: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, compliance_plan: OMIT, metadata: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, hooks: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, created_at:, updated_at:, transcriber: OMIT, model: OMIT, voice: OMIT, first_message: OMIT,
+                   first_message_interruptions_enabled: OMIT, first_message_mode: OMIT, voicemail_detection: OMIT, client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, observability_plan: OMIT, credentials: OMIT, hooks: OMIT, name: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, compliance_plan: OMIT, metadata: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, keypad_input_plan: OMIT, additional_properties: nil)
       @transcriber = transcriber if transcriber != OMIT
       @model = model if model != OMIT
       @voice = voice if voice != OMIT
       @first_message = first_message if first_message != OMIT
+      if first_message_interruptions_enabled != OMIT
+        @first_message_interruptions_enabled = first_message_interruptions_enabled
+      end
       @first_message_mode = first_message_mode if first_message_mode != OMIT
+      @voicemail_detection = voicemail_detection if voicemail_detection != OMIT
       @client_messages = client_messages if client_messages != OMIT
       @server_messages = server_messages if server_messages != OMIT
       @silence_timeout_seconds = silence_timeout_seconds if silence_timeout_seconds != OMIT
@@ -308,9 +327,10 @@ module Vapi
       @background_denoising_enabled = background_denoising_enabled if background_denoising_enabled != OMIT
       @model_output_in_messages_enabled = model_output_in_messages_enabled if model_output_in_messages_enabled != OMIT
       @transport_configurations = transport_configurations if transport_configurations != OMIT
+      @observability_plan = observability_plan if observability_plan != OMIT
       @credentials = credentials if credentials != OMIT
+      @hooks = hooks if hooks != OMIT
       @name = name if name != OMIT
-      @voicemail_detection = voicemail_detection if voicemail_detection != OMIT
       @voicemail_message = voicemail_message if voicemail_message != OMIT
       @end_call_message = end_call_message if end_call_message != OMIT
       @end_call_phrases = end_call_phrases if end_call_phrases != OMIT
@@ -324,7 +344,7 @@ module Vapi
       @monitor_plan = monitor_plan if monitor_plan != OMIT
       @credential_ids = credential_ids if credential_ids != OMIT
       @server = server if server != OMIT
-      @hooks = hooks if hooks != OMIT
+      @keypad_input_plan = keypad_input_plan if keypad_input_plan != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -335,7 +355,9 @@ module Vapi
         "model": model,
         "voice": voice,
         "firstMessage": first_message,
+        "firstMessageInterruptionsEnabled": first_message_interruptions_enabled,
         "firstMessageMode": first_message_mode,
+        "voicemailDetection": voicemail_detection,
         "clientMessages": client_messages,
         "serverMessages": server_messages,
         "silenceTimeoutSeconds": silence_timeout_seconds,
@@ -344,9 +366,10 @@ module Vapi
         "backgroundDenoisingEnabled": background_denoising_enabled,
         "modelOutputInMessagesEnabled": model_output_in_messages_enabled,
         "transportConfigurations": transport_configurations,
+        "observabilityPlan": observability_plan,
         "credentials": credentials,
+        "hooks": hooks,
         "name": name,
-        "voicemailDetection": voicemail_detection,
         "voicemailMessage": voicemail_message,
         "endCallMessage": end_call_message,
         "endCallPhrases": end_call_phrases,
@@ -360,7 +383,7 @@ module Vapi
         "monitorPlan": monitor_plan,
         "credentialIds": credential_ids,
         "server": server,
-        "hooks": hooks,
+        "keypadInputPlan": keypad_input_plan,
         "id": id,
         "orgId": org_id,
         "createdAt": created_at,
@@ -396,29 +419,45 @@ module Vapi
         voice = Vapi::AssistantVoice.from_json(json_object: voice)
       end
       first_message = parsed_json["firstMessage"]
+      first_message_interruptions_enabled = parsed_json["firstMessageInterruptionsEnabled"]
       first_message_mode = parsed_json["firstMessageMode"]
+      if parsed_json["voicemailDetection"].nil?
+        voicemail_detection = nil
+      else
+        voicemail_detection = parsed_json["voicemailDetection"].to_json
+        voicemail_detection = Vapi::AssistantVoicemailDetection.from_json(json_object: voicemail_detection)
+      end
       client_messages = parsed_json["clientMessages"]
       server_messages = parsed_json["serverMessages"]
       silence_timeout_seconds = parsed_json["silenceTimeoutSeconds"]
       max_duration_seconds = parsed_json["maxDurationSeconds"]
-      background_sound = parsed_json["backgroundSound"]
+      if parsed_json["backgroundSound"].nil?
+        background_sound = nil
+      else
+        background_sound = parsed_json["backgroundSound"].to_json
+        background_sound = Vapi::AssistantBackgroundSound.from_json(json_object: background_sound)
+      end
       background_denoising_enabled = parsed_json["backgroundDenoisingEnabled"]
       model_output_in_messages_enabled = parsed_json["modelOutputInMessagesEnabled"]
       transport_configurations = parsed_json["transportConfigurations"]&.map do |item|
         item = item.to_json
         Vapi::TransportConfigurationTwilio.from_json(json_object: item)
       end
+      if parsed_json["observabilityPlan"].nil?
+        observability_plan = nil
+      else
+        observability_plan = parsed_json["observabilityPlan"].to_json
+        observability_plan = Vapi::LangfuseObservabilityPlan.from_json(json_object: observability_plan)
+      end
       credentials = parsed_json["credentials"]&.map do |item|
         item = item.to_json
         Vapi::AssistantCredentialsItem.from_json(json_object: item)
       end
-      name = parsed_json["name"]
-      if parsed_json["voicemailDetection"].nil?
-        voicemail_detection = nil
-      else
-        voicemail_detection = parsed_json["voicemailDetection"].to_json
-        voicemail_detection = Vapi::TwilioVoicemailDetection.from_json(json_object: voicemail_detection)
+      hooks = parsed_json["hooks"]&.map do |item|
+        item = item.to_json
+        Vapi::AssistantHooksItem.from_json(json_object: item)
       end
+      name = parsed_json["name"]
       voicemail_message = parsed_json["voicemailMessage"]
       end_call_message = parsed_json["endCallMessage"]
       end_call_phrases = parsed_json["endCallPhrases"]
@@ -472,9 +511,11 @@ module Vapi
         server = parsed_json["server"].to_json
         server = Vapi::Server.from_json(json_object: server)
       end
-      hooks = parsed_json["hooks"]&.map do |item|
-        item = item.to_json
-        Vapi::AssistantHooks.from_json(json_object: item)
+      if parsed_json["keypadInputPlan"].nil?
+        keypad_input_plan = nil
+      else
+        keypad_input_plan = parsed_json["keypadInputPlan"].to_json
+        keypad_input_plan = Vapi::KeypadInputPlan.from_json(json_object: keypad_input_plan)
       end
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
@@ -485,7 +526,9 @@ module Vapi
         model: model,
         voice: voice,
         first_message: first_message,
+        first_message_interruptions_enabled: first_message_interruptions_enabled,
         first_message_mode: first_message_mode,
+        voicemail_detection: voicemail_detection,
         client_messages: client_messages,
         server_messages: server_messages,
         silence_timeout_seconds: silence_timeout_seconds,
@@ -494,9 +537,10 @@ module Vapi
         background_denoising_enabled: background_denoising_enabled,
         model_output_in_messages_enabled: model_output_in_messages_enabled,
         transport_configurations: transport_configurations,
+        observability_plan: observability_plan,
         credentials: credentials,
+        hooks: hooks,
         name: name,
-        voicemail_detection: voicemail_detection,
         voicemail_message: voicemail_message,
         end_call_message: end_call_message,
         end_call_phrases: end_call_phrases,
@@ -510,7 +554,7 @@ module Vapi
         monitor_plan: monitor_plan,
         credential_ids: credential_ids,
         server: server,
-        hooks: hooks,
+        keypad_input_plan: keypad_input_plan,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -537,18 +581,21 @@ module Vapi
       obj.model.nil? || Vapi::AssistantModel.validate_raw(obj: obj.model)
       obj.voice.nil? || Vapi::AssistantVoice.validate_raw(obj: obj.voice)
       obj.first_message&.is_a?(String) != false || raise("Passed value for field obj.first_message is not the expected type, validation failed.")
+      obj.first_message_interruptions_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.first_message_interruptions_enabled is not the expected type, validation failed.")
       obj.first_message_mode&.is_a?(Vapi::AssistantFirstMessageMode) != false || raise("Passed value for field obj.first_message_mode is not the expected type, validation failed.")
+      obj.voicemail_detection.nil? || Vapi::AssistantVoicemailDetection.validate_raw(obj: obj.voicemail_detection)
       obj.client_messages&.is_a?(Array) != false || raise("Passed value for field obj.client_messages is not the expected type, validation failed.")
       obj.server_messages&.is_a?(Array) != false || raise("Passed value for field obj.server_messages is not the expected type, validation failed.")
       obj.silence_timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.silence_timeout_seconds is not the expected type, validation failed.")
       obj.max_duration_seconds&.is_a?(Float) != false || raise("Passed value for field obj.max_duration_seconds is not the expected type, validation failed.")
-      obj.background_sound&.is_a?(Vapi::AssistantBackgroundSound) != false || raise("Passed value for field obj.background_sound is not the expected type, validation failed.")
+      obj.background_sound.nil? || Vapi::AssistantBackgroundSound.validate_raw(obj: obj.background_sound)
       obj.background_denoising_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.background_denoising_enabled is not the expected type, validation failed.")
       obj.model_output_in_messages_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.model_output_in_messages_enabled is not the expected type, validation failed.")
       obj.transport_configurations&.is_a?(Array) != false || raise("Passed value for field obj.transport_configurations is not the expected type, validation failed.")
+      obj.observability_plan.nil? || Vapi::LangfuseObservabilityPlan.validate_raw(obj: obj.observability_plan)
       obj.credentials&.is_a?(Array) != false || raise("Passed value for field obj.credentials is not the expected type, validation failed.")
+      obj.hooks&.is_a?(Array) != false || raise("Passed value for field obj.hooks is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
-      obj.voicemail_detection.nil? || Vapi::TwilioVoicemailDetection.validate_raw(obj: obj.voicemail_detection)
       obj.voicemail_message&.is_a?(String) != false || raise("Passed value for field obj.voicemail_message is not the expected type, validation failed.")
       obj.end_call_message&.is_a?(String) != false || raise("Passed value for field obj.end_call_message is not the expected type, validation failed.")
       obj.end_call_phrases&.is_a?(Array) != false || raise("Passed value for field obj.end_call_phrases is not the expected type, validation failed.")
@@ -562,7 +609,7 @@ module Vapi
       obj.monitor_plan.nil? || Vapi::MonitorPlan.validate_raw(obj: obj.monitor_plan)
       obj.credential_ids&.is_a?(Array) != false || raise("Passed value for field obj.credential_ids is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
-      obj.hooks&.is_a?(Array) != false || raise("Passed value for field obj.hooks is not the expected type, validation failed.")
+      obj.keypad_input_plan.nil? || Vapi::KeypadInputPlan.validate_raw(obj: obj.keypad_input_plan)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

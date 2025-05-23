@@ -2,8 +2,14 @@
 
 module Vapi
   class OpenAiModelFallbackModelsItem
+    GPT_41 = "gpt-4.1"
+    GPT_41_MINI = "gpt-4.1-mini"
+    GPT_41_NANO = "gpt-4.1-nano"
+    GPT_45_PREVIEW = "gpt-4.5-preview"
     CHATGPT_4_O_LATEST = "chatgpt-4o-latest"
+    O_3 = "o3"
     O_3_MINI = "o3-mini"
+    O_4_MINI = "o4-mini"
     O_1_PREVIEW = "o1-preview"
     O_1_PREVIEW_20240912 = "o1-preview-2024-09-12"
     O_1_MINI = "o1-mini"
@@ -11,8 +17,8 @@ module Vapi
     GPT_4_O_REALTIME_PREVIEW_20241001 = "gpt-4o-realtime-preview-2024-10-01"
     GPT_4_O_REALTIME_PREVIEW_20241217 = "gpt-4o-realtime-preview-2024-12-17"
     GPT_4_O_MINI_REALTIME_PREVIEW_20241217 = "gpt-4o-mini-realtime-preview-2024-12-17"
-    GPT_4_O_MINI = "gpt-4o-mini"
     GPT_4_O_MINI_20240718 = "gpt-4o-mini-2024-07-18"
+    GPT_4_O_MINI = "gpt-4o-mini"
     GPT_4_O = "gpt-4o"
     GPT_4_O_20240513 = "gpt-4o-2024-05-13"
     GPT_4_O_20240806 = "gpt-4o-2024-08-06"
