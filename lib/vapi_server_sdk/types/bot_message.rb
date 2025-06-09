@@ -1,27 +1,26 @@
 # frozen_string_literal: true
-
 require "ostruct"
 require "json"
 
 module Vapi
   class BotMessage
-    # @return [String] The role of the bot in the conversation.
+  # @return [String] The role of the bot in the conversation.
     attr_reader :role
-    # @return [String] The message content from the bot.
+  # @return [String] The message content from the bot.
     attr_reader :message
-    # @return [Float] The timestamp when the message was sent.
+  # @return [Float] The timestamp when the message was sent.
     attr_reader :time
-    # @return [Float] The timestamp when the message ended.
+  # @return [Float] The timestamp when the message ended.
     attr_reader :end_time
-    # @return [Float] The number of seconds from the start of the conversation.
+  # @return [Float] The number of seconds from the start of the conversation.
     attr_reader :seconds_from_start
-    # @return [String] The source of the message.
+  # @return [String] The source of the message.
     attr_reader :source
-    # @return [Float] The duration of the message in seconds.
+  # @return [Float] The duration of the message in seconds.
     attr_reader :duration
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -36,8 +35,7 @@ module Vapi
     # @param duration [Float] The duration of the message in seconds.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::BotMessage]
-    def initialize(role:, message:, time:, end_time:, seconds_from_start:, source: OMIT, duration: OMIT,
-                   additional_properties: nil)
+    def initialize(role:, message:, time:, end_time:, seconds_from_start:, source: OMIT, duration: OMIT, additional_properties: nil)
       @role = role
       @message = message
       @time = time
@@ -46,22 +44,13 @@ module Vapi
       @source = source if source != OMIT
       @duration = duration if duration != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "role": role,
-        "message": message,
-        "time": time,
-        "endTime": end_time,
-        "secondsFromStart": seconds_from_start,
-        "source": source,
-        "duration": duration
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "role": role, "message": message, "time": time, "endTime": end_time, "secondsFromStart": seconds_from_start, "source": source, "duration": duration }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of BotMessage
+# Deserialize a JSON object to an instance of BotMessage
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::BotMessage]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -84,19 +73,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of BotMessage to a JSON object
+# Serialize an instance of BotMessage to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.role.is_a?(String) != false || raise("Passed value for field obj.role is not the expected type, validation failed.")

@@ -2,6 +2,7 @@
 
 module Vapi
   class DeepgramTranscriberLanguage
+
     BG = "bg"
     CA = "ca"
     CS = "cs"
@@ -58,5 +59,6 @@ module Vapi
     ZH_HANS = "zh-Hans"
     ZH_HANT = "zh-Hant"
     ZH_TW = "zh-TW"
+
   end
 end

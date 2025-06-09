@@ -2,6 +2,7 @@
 
 module Vapi
   class CreateAzureOpenAiCredentialDtoModelsItem
+
     GPT_4120250414 = "gpt-4.1-2025-04-14"
     GPT_41_MINI_20250414 = "gpt-4.1-mini-2025-04-14"
     GPT_41_NANO_20250414 = "gpt-4.1-nano-2025-04-14"
@@ -15,5 +16,6 @@ module Vapi
     GPT_40613 = "gpt-4-0613"
     GPT_35_TURBO_0125 = "gpt-35-turbo-0125"
     GPT_35_TURBO_1106 = "gpt-35-turbo-1106"
+
   end
 end

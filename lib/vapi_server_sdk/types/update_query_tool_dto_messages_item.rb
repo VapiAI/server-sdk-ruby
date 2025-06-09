@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require "json"
 require_relative "tool_message_start"
 require_relative "tool_message_complete"
@@ -8,47 +7,45 @@ require_relative "tool_message_delayed"
 
 module Vapi
   class UpdateQueryToolDtoMessagesItem
-    # @return [Object]
+  # @return [Object] 
     attr_reader :member
-    # @return [String]
+  # @return [String] 
     attr_reader :discriminant
 
     private_class_method :new
     alias kind_of? is_a?
 
-    # @param member [Object]
-    # @param discriminant [String]
+    # @param member [Object] 
+    # @param discriminant [String] 
     # @return [Vapi::UpdateQueryToolDtoMessagesItem]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
-
-    # Deserialize a JSON object to an instance of UpdateQueryToolDtoMessagesItem
+# Deserialize a JSON object to an instance of UpdateQueryToolDtoMessagesItem
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::UpdateQueryToolDtoMessagesItem]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      member = case struct.type
-               when "request-start"
-                 Vapi::ToolMessageStart.from_json(json_object: json_object)
-               when "request-complete"
-                 Vapi::ToolMessageComplete.from_json(json_object: json_object)
-               when "request-failed"
-                 Vapi::ToolMessageFailed.from_json(json_object: json_object)
-               when "request-response-delayed"
-                 Vapi::ToolMessageDelayed.from_json(json_object: json_object)
-               else
-                 Vapi::ToolMessageStart.from_json(json_object: json_object)
-               end
+      case struct.type
+      when "request-start"
+        member = Vapi::ToolMessageStart.from_json(json_object: json_object)
+      when "request-complete"
+        member = Vapi::ToolMessageComplete.from_json(json_object: json_object)
+      when "request-failed"
+        member = Vapi::ToolMessageFailed.from_json(json_object: json_object)
+      when "request-response-delayed"
+        member = Vapi::ToolMessageDelayed.from_json(json_object: json_object)
+      else
+        member = Vapi::ToolMessageStart.from_json(json_object: json_object)
+      end
       new(member: member, discriminant: struct.type)
     end
-
-    # For Union Types, to_json functionality is delegated to the wrapped member.
+# For Union Types, to_json functionality is delegated to the wrapped member.
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       case @discriminant
       when "request-start"
         { **@member.to_json, type: @discriminant }.to_json
@@ -63,12 +60,11 @@ module Vapi
       end
       @member.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.type
@@ -84,34 +80,29 @@ module Vapi
         raise("Passed value matched no type within the union, validation failed.")
       end
     end
-
-    # For Union Types, is_a? functionality is delegated to the wrapped member.
+# For Union Types, is_a? functionality is delegated to the wrapped member.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Boolean]
     def is_a?(obj)
       @member.is_a?(obj)
     end
-
-    # @param member [Vapi::ToolMessageStart]
+    # @param member [Vapi::ToolMessageStart] 
     # @return [Vapi::UpdateQueryToolDtoMessagesItem]
     def self.request_start(member:)
       new(member: member, discriminant: "request-start")
     end
-
-    # @param member [Vapi::ToolMessageComplete]
+    # @param member [Vapi::ToolMessageComplete] 
     # @return [Vapi::UpdateQueryToolDtoMessagesItem]
     def self.request_complete(member:)
       new(member: member, discriminant: "request-complete")
     end
-
-    # @param member [Vapi::ToolMessageFailed]
+    # @param member [Vapi::ToolMessageFailed] 
     # @return [Vapi::UpdateQueryToolDtoMessagesItem]
     def self.request_failed(member:)
       new(member: member, discriminant: "request-failed")
     end
-
-    # @param member [Vapi::ToolMessageDelayed]
+    # @param member [Vapi::ToolMessageDelayed] 
     # @return [Vapi::UpdateQueryToolDtoMessagesItem]
     def self.request_response_delayed(member:)
       new(member: member, discriminant: "request-response-delayed")

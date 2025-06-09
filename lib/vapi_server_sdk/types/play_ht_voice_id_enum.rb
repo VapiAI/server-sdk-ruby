@@ -2,6 +2,7 @@
 
 module Vapi
   class PlayHtVoiceIdEnum
+
     JENNIFER = "jennifer"
     MELISSA = "melissa"
     WILL = "will"
@@ -12,5 +13,6 @@ module Vapi
     DAVIS = "davis"
     DONNA = "donna"
     MICHAEL = "michael"
+
   end
 end

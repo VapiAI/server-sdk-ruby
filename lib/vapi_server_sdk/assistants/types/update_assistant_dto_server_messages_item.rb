@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Vapi
-  class Assistants
-
-
+  module Assistants
     class UpdateAssistantDtoServerMessagesItem
 
       CONVERSATION_UPDATE = "conversation-update"

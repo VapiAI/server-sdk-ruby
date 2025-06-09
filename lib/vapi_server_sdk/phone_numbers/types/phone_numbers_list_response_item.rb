@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require "json"
 require_relative "../../types/byo_phone_number"
 require_relative "../../types/twilio_phone_number"
@@ -8,51 +7,49 @@ require_relative "../../types/vapi_phone_number"
 require_relative "../../types/telnyx_phone_number"
 
 module Vapi
-  class PhoneNumbers
+  module PhoneNumbers
     class PhoneNumbersListResponseItem
-      # @return [Object]
+    # @return [Object] 
       attr_reader :member
-      # @return [String]
+    # @return [String] 
       attr_reader :discriminant
 
       private_class_method :new
       alias kind_of? is_a?
 
-      # @param member [Object]
-      # @param discriminant [String]
+      # @param member [Object] 
+      # @param discriminant [String] 
       # @return [Vapi::PhoneNumbers::PhoneNumbersListResponseItem]
       def initialize(member:, discriminant:)
         @member = member
         @discriminant = discriminant
       end
-
-      # Deserialize a JSON object to an instance of PhoneNumbersListResponseItem
+# Deserialize a JSON object to an instance of PhoneNumbersListResponseItem
       #
-      # @param json_object [String]
+      # @param json_object [String] 
       # @return [Vapi::PhoneNumbers::PhoneNumbersListResponseItem]
       def self.from_json(json_object:)
         struct = JSON.parse(json_object, object_class: OpenStruct)
-        member = case struct.provider
-                 when "byo-phone-number"
-                   Vapi::ByoPhoneNumber.from_json(json_object: json_object)
-                 when "twilio"
-                   Vapi::TwilioPhoneNumber.from_json(json_object: json_object)
-                 when "vonage"
-                   Vapi::VonagePhoneNumber.from_json(json_object: json_object)
-                 when "vapi"
-                   Vapi::VapiPhoneNumber.from_json(json_object: json_object)
-                 when "telnyx"
-                   Vapi::TelnyxPhoneNumber.from_json(json_object: json_object)
-                 else
-                   Vapi::ByoPhoneNumber.from_json(json_object: json_object)
-                 end
+        case struct.provider
+        when "byo-phone-number"
+          member = Vapi::ByoPhoneNumber.from_json(json_object: json_object)
+        when "twilio"
+          member = Vapi::TwilioPhoneNumber.from_json(json_object: json_object)
+        when "vonage"
+          member = Vapi::VonagePhoneNumber.from_json(json_object: json_object)
+        when "vapi"
+          member = Vapi::VapiPhoneNumber.from_json(json_object: json_object)
+        when "telnyx"
+          member = Vapi::TelnyxPhoneNumber.from_json(json_object: json_object)
+        else
+          member = Vapi::ByoPhoneNumber.from_json(json_object: json_object)
+        end
         new(member: member, discriminant: struct.provider)
       end
-
-      # For Union Types, to_json functionality is delegated to the wrapped member.
+# For Union Types, to_json functionality is delegated to the wrapped member.
       #
       # @return [String]
-      def to_json(*_args)
+      def to_json
         case @discriminant
         when "byo-phone-number"
           { **@member.to_json, provider: @discriminant }.to_json
@@ -69,12 +66,11 @@ module Vapi
         end
         @member.to_json
       end
-
-      # Leveraged for Union-type generation, validate_raw attempts to parse the given
-      #  hash and check each fields type against the current object's property
-      #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
       #
-      # @param obj [Object]
+      # @param obj [Object] 
       # @return [Void]
       def self.validate_raw(obj:)
         case obj.provider
@@ -92,40 +88,34 @@ module Vapi
           raise("Passed value matched no type within the union, validation failed.")
         end
       end
-
-      # For Union Types, is_a? functionality is delegated to the wrapped member.
+# For Union Types, is_a? functionality is delegated to the wrapped member.
       #
-      # @param obj [Object]
+      # @param obj [Object] 
       # @return [Boolean]
       def is_a?(obj)
         @member.is_a?(obj)
       end
-
-      # @param member [Vapi::ByoPhoneNumber]
+      # @param member [Vapi::ByoPhoneNumber] 
       # @return [Vapi::PhoneNumbers::PhoneNumbersListResponseItem]
       def self.byo_phone_number(member:)
         new(member: member, discriminant: "byo-phone-number")
       end
-
-      # @param member [Vapi::TwilioPhoneNumber]
+      # @param member [Vapi::TwilioPhoneNumber] 
       # @return [Vapi::PhoneNumbers::PhoneNumbersListResponseItem]
       def self.twilio(member:)
         new(member: member, discriminant: "twilio")
       end
-
-      # @param member [Vapi::VonagePhoneNumber]
+      # @param member [Vapi::VonagePhoneNumber] 
       # @return [Vapi::PhoneNumbers::PhoneNumbersListResponseItem]
       def self.vonage(member:)
         new(member: member, discriminant: "vonage")
       end
-
-      # @param member [Vapi::VapiPhoneNumber]
+      # @param member [Vapi::VapiPhoneNumber] 
       # @return [Vapi::PhoneNumbers::PhoneNumbersListResponseItem]
       def self.vapi(member:)
         new(member: member, discriminant: "vapi")
       end
-
-      # @param member [Vapi::TelnyxPhoneNumber]
+      # @param member [Vapi::TelnyxPhoneNumber] 
       # @return [Vapi::PhoneNumbers::PhoneNumbersListResponseItem]
       def self.telnyx(member:)
         new(member: member, discriminant: "telnyx")

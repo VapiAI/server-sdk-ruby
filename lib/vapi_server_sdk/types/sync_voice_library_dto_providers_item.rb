@@ -2,6 +2,7 @@
 
 module Vapi
   class SyncVoiceLibraryDtoProvidersItem
+
     VAPI = "vapi"
     ELEVEN_LABS = "11labs"
     AZURE = "azure"
@@ -17,5 +18,6 @@ module Vapi
     SMALLEST_AI = "smallest-ai"
     TAVUS = "tavus"
     SESAME = "sesame"
+
   end
 end

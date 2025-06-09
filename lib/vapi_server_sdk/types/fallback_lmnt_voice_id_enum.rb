@@ -2,7 +2,9 @@
 
 module Vapi
   class FallbackLmntVoiceIdEnum
+
     LILY = "lily"
     DANIEL = "daniel"
+
   end
 end

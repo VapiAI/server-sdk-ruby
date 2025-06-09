@@ -2,10 +2,12 @@
 
 module Vapi
   class GeminiMultimodalLivePrebuiltVoiceConfigVoiceName
+
     PUCK = "Puck"
     CHARON = "Charon"
     KORE = "Kore"
     FENRIR = "Fenrir"
     AOEDE = "Aoede"
+
   end
 end

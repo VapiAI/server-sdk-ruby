@@ -1,17 +1,16 @@
 # frozen_string_literal: true
-
 require "ostruct"
 require "json"
 
 module Vapi
   class TrieveKnowledgeBaseImport
-    # @return [String] This is to import an existing dataset from Trieve.
+  # @return [String] This is to import an existing dataset from Trieve.
     attr_reader :type
-    # @return [String] This is the `datasetId` of the dataset on your Trieve account.
+  # @return [String] This is the `datasetId` of the dataset on your Trieve account.
     attr_reader :provider_id
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -27,10 +26,9 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = { "type": type, "providerId": provider_id }
     end
-
-    # Deserialize a JSON object to an instance of TrieveKnowledgeBaseImport
+# Deserialize a JSON object to an instance of TrieveKnowledgeBaseImport
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::TrieveKnowledgeBaseImport]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -43,19 +41,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of TrieveKnowledgeBaseImport to a JSON object
+# Serialize an instance of TrieveKnowledgeBaseImport to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")

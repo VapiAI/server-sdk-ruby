@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "server_message_tool_calls_phone_number"
 require_relative "server_message_tool_calls_tool_with_tool_call_list_item"
 require_relative "artifact"
@@ -12,29 +11,29 @@ require "json"
 
 module Vapi
   class ServerMessageToolCalls
-    # @return [Vapi::ServerMessageToolCallsPhoneNumber] This is the phone number that the message is associated with.
+  # @return [Vapi::ServerMessageToolCallsPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
-    # @return [String] This is the type of the message. "tool-calls" is sent to call a tool.
+  # @return [String] This is the type of the message. "tool-calls" is sent to call a tool.
     attr_reader :type
-    # @return [Array<Vapi::ServerMessageToolCallsToolWithToolCallListItem>] This is the list of tools calls that the model is requesting along with the
-    #  original tool configuration.
+  # @return [Array<Vapi::ServerMessageToolCallsToolWithToolCallListItem>] This is the list of tools calls that the model is requesting along with the
+#  original tool configuration.
     attr_reader :tool_with_tool_call_list
-    # @return [Float] This is the timestamp of the message.
+  # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
-    # @return [Vapi::Artifact] This is a live version of the `call.artifact`.
-    #  This matches what is stored on `call.artifact` after the call.
+  # @return [Vapi::Artifact] This is a live version of the `call.artifact`.
+#  This matches what is stored on `call.artifact` after the call.
     attr_reader :artifact
-    # @return [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
+  # @return [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     attr_reader :assistant
-    # @return [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
+  # @return [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     attr_reader :customer
-    # @return [Vapi::Call] This is the call that the message is associated with.
+  # @return [Vapi::Call] This is the call that the message is associated with.
     attr_reader :call
-    # @return [Array<Vapi::ToolCall>] This is the list of tool calls that the model is requesting.
+  # @return [Array<Vapi::ToolCall>] This is the list of tool calls that the model is requesting.
     attr_reader :tool_call_list
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -43,18 +42,17 @@ module Vapi
     # @param phone_number [Vapi::ServerMessageToolCallsPhoneNumber] This is the phone number that the message is associated with.
     # @param type [String] This is the type of the message. "tool-calls" is sent to call a tool.
     # @param tool_with_tool_call_list [Array<Vapi::ServerMessageToolCallsToolWithToolCallListItem>] This is the list of tools calls that the model is requesting along with the
-    #  original tool configuration.
+#  original tool configuration.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param artifact [Vapi::Artifact] This is a live version of the `call.artifact`.
-    #  This matches what is stored on `call.artifact` after the call.
+#  This matches what is stored on `call.artifact` after the call.
     # @param assistant [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     # @param call [Vapi::Call] This is the call that the message is associated with.
     # @param tool_call_list [Array<Vapi::ToolCall>] This is the list of tool calls that the model is requesting.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageToolCalls]
-    def initialize(tool_with_tool_call_list:, tool_call_list:, phone_number: OMIT, type: OMIT, timestamp: OMIT, artifact: OMIT,
-                   assistant: OMIT, customer: OMIT, call: OMIT, additional_properties: nil)
+    def initialize(phone_number: OMIT, type: OMIT, tool_with_tool_call_list:, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, tool_call_list:, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
       @type = type if type != OMIT
       @tool_with_tool_call_list = tool_with_tool_call_list
@@ -65,68 +63,57 @@ module Vapi
       @call = call if call != OMIT
       @tool_call_list = tool_call_list
       @additional_properties = additional_properties
-      @_field_set = {
-        "phoneNumber": phone_number,
-        "type": type,
-        "toolWithToolCallList": tool_with_tool_call_list,
-        "timestamp": timestamp,
-        "artifact": artifact,
-        "assistant": assistant,
-        "customer": customer,
-        "call": call,
-        "toolCallList": tool_call_list
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "phoneNumber": phone_number, "type": type, "toolWithToolCallList": tool_with_tool_call_list, "timestamp": timestamp, "artifact": artifact, "assistant": assistant, "customer": customer, "call": call, "toolCallList": tool_call_list }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of ServerMessageToolCalls
+# Deserialize a JSON object to an instance of ServerMessageToolCalls
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::ServerMessageToolCalls]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      if parsed_json["phoneNumber"].nil?
-        phone_number = nil
-      else
+      unless parsed_json["phoneNumber"].nil?
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageToolCallsPhoneNumber.from_json(json_object: phone_number)
+      else
+        phone_number = nil
       end
       type = parsed_json["type"]
-      tool_with_tool_call_list = parsed_json["toolWithToolCallList"]&.map do |item|
-        item = item.to_json
-        Vapi::ServerMessageToolCallsToolWithToolCallListItem.from_json(json_object: item)
-      end
+      tool_with_tool_call_list = parsed_json["toolWithToolCallList"]&.map do | item |
+  item = item.to_json
+  Vapi::ServerMessageToolCallsToolWithToolCallListItem.from_json(json_object: item)
+end
       timestamp = parsed_json["timestamp"]
-      if parsed_json["artifact"].nil?
-        artifact = nil
-      else
+      unless parsed_json["artifact"].nil?
         artifact = parsed_json["artifact"].to_json
         artifact = Vapi::Artifact.from_json(json_object: artifact)
-      end
-      if parsed_json["assistant"].nil?
-        assistant = nil
       else
+        artifact = nil
+      end
+      unless parsed_json["assistant"].nil?
         assistant = parsed_json["assistant"].to_json
         assistant = Vapi::CreateAssistantDto.from_json(json_object: assistant)
-      end
-      if parsed_json["customer"].nil?
-        customer = nil
       else
+        assistant = nil
+      end
+      unless parsed_json["customer"].nil?
         customer = parsed_json["customer"].to_json
         customer = Vapi::CreateCustomerDto.from_json(json_object: customer)
-      end
-      if parsed_json["call"].nil?
-        call = nil
       else
+        customer = nil
+      end
+      unless parsed_json["call"].nil?
         call = parsed_json["call"].to_json
         call = Vapi::Call.from_json(json_object: call)
+      else
+        call = nil
       end
-      tool_call_list = parsed_json["toolCallList"]&.map do |item|
-        item = item.to_json
-        Vapi::ToolCall.from_json(json_object: item)
-      end
+      tool_call_list = parsed_json["toolCallList"]&.map do | item |
+  item = item.to_json
+  Vapi::ToolCall.from_json(json_object: item)
+end
       new(
         phone_number: phone_number,
         type: type,
@@ -140,19 +127,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of ServerMessageToolCalls to a JSON object
+# Serialize an instance of ServerMessageToolCalls to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageToolCallsPhoneNumber.validate_raw(obj: obj.phone_number)

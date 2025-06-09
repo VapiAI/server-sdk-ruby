@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "log_type"
 require_relative "log_resource"
 require_relative "log_request_http_method"
@@ -9,57 +8,57 @@ require "json"
 
 module Vapi
   class Log
-    # @return [String] This is the timestamp at which the log was written.
+  # @return [String] This is the timestamp at which the log was written.
     attr_reader :time
-    # @return [String] This is the unique identifier for the org that this log belongs to.
+  # @return [String] This is the unique identifier for the org that this log belongs to.
     attr_reader :org_id
-    # @return [Vapi::LogType] This is the type of the log.
+  # @return [Vapi::LogType] This is the type of the log.
     attr_reader :type
-    # @return [String] This is the type of the webhook, given the log is from a webhook.
+  # @return [String] This is the type of the webhook, given the log is from a webhook.
     attr_reader :webhook_type
-    # @return [Vapi::LogResource] This is the specific resource, relevant only to API logs.
+  # @return [Vapi::LogResource] This is the specific resource, relevant only to API logs.
     attr_reader :resource
-    # @return [Float] 'This is how long the request took.
+  # @return [Float] 'This is how long the request took.
     attr_reader :request_duration_seconds
-    # @return [String] This is the timestamp at which the request began.
+  # @return [String] This is the timestamp at which the request began.
     attr_reader :request_started_at
-    # @return [String] This is the timestamp at which the request finished.
+  # @return [String] This is the timestamp at which the request finished.
     attr_reader :request_finished_at
-    # @return [Hash{String => Object}] This is the body of the request.
+  # @return [Hash{String => Object}] This is the body of the request.
     attr_reader :request_body
-    # @return [Vapi::LogRequestHttpMethod] This is the request method.
+  # @return [Vapi::LogRequestHttpMethod] This is the request method.
     attr_reader :request_http_method
-    # @return [String] This is the request URL.
+  # @return [String] This is the request URL.
     attr_reader :request_url
-    # @return [String] This is the request path.
+  # @return [String] This is the request path.
     attr_reader :request_path
-    # @return [String] This is the request query.
+  # @return [String] This is the request query.
     attr_reader :request_query
-    # @return [Float] This the HTTP status code of the response.
+  # @return [Float] This the HTTP status code of the response.
     attr_reader :response_http_code
-    # @return [String] This is the request IP address.
+  # @return [String] This is the request IP address.
     attr_reader :request_ip_address
-    # @return [String] This is the origin of the request
+  # @return [String] This is the origin of the request
     attr_reader :request_origin
-    # @return [Hash{String => Object}] This is the body of the response.
+  # @return [Hash{String => Object}] This is the body of the response.
     attr_reader :response_body
-    # @return [Hash{String => Object}] These are the headers of the request.
+  # @return [Hash{String => Object}] These are the headers of the request.
     attr_reader :request_headers
-    # @return [Vapi::Error] This is the error, if one occurred.
+  # @return [Vapi::Error] This is the error, if one occurred.
     attr_reader :error
-    # @return [String] This is the ID of the assistant.
+  # @return [String] This is the ID of the assistant.
     attr_reader :assistant_id
-    # @return [String] This is the ID of the phone number.
+  # @return [String] This is the ID of the phone number.
     attr_reader :phone_number_id
-    # @return [String] This is the ID of the customer.
+  # @return [String] This is the ID of the customer.
     attr_reader :customer_id
-    # @return [String] This is the ID of the squad.
+  # @return [String] This is the ID of the squad.
     attr_reader :squad_id
-    # @return [String] This is the ID of the call.
+  # @return [String] This is the ID of the call.
     attr_reader :call_id
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -91,8 +90,7 @@ module Vapi
     # @param call_id [String] This is the ID of the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Log]
-    def initialize(time:, org_id:, type:, webhook_type: OMIT, resource: OMIT, request_duration_seconds: OMIT,
-                   request_started_at: OMIT, request_finished_at: OMIT, request_body: OMIT, request_http_method: OMIT, request_url: OMIT, request_path: OMIT, request_query: OMIT, response_http_code: OMIT, request_ip_address: OMIT, request_origin: OMIT, response_body: OMIT, request_headers: OMIT, error: OMIT, assistant_id: OMIT, phone_number_id: OMIT, customer_id: OMIT, squad_id: OMIT, call_id: OMIT, additional_properties: nil)
+    def initialize(time:, org_id:, type:, webhook_type: OMIT, resource: OMIT, request_duration_seconds: OMIT, request_started_at: OMIT, request_finished_at: OMIT, request_body: OMIT, request_http_method: OMIT, request_url: OMIT, request_path: OMIT, request_query: OMIT, response_http_code: OMIT, request_ip_address: OMIT, request_origin: OMIT, response_body: OMIT, request_headers: OMIT, error: OMIT, assistant_id: OMIT, phone_number_id: OMIT, customer_id: OMIT, squad_id: OMIT, call_id: OMIT, additional_properties: nil)
       @time = time
       @org_id = org_id
       @type = type
@@ -118,39 +116,13 @@ module Vapi
       @squad_id = squad_id if squad_id != OMIT
       @call_id = call_id if call_id != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "time": time,
-        "orgId": org_id,
-        "type": type,
-        "webhookType": webhook_type,
-        "resource": resource,
-        "requestDurationSeconds": request_duration_seconds,
-        "requestStartedAt": request_started_at,
-        "requestFinishedAt": request_finished_at,
-        "requestBody": request_body,
-        "requestHttpMethod": request_http_method,
-        "requestUrl": request_url,
-        "requestPath": request_path,
-        "requestQuery": request_query,
-        "responseHttpCode": response_http_code,
-        "requestIpAddress": request_ip_address,
-        "requestOrigin": request_origin,
-        "responseBody": response_body,
-        "requestHeaders": request_headers,
-        "error": error,
-        "assistantId": assistant_id,
-        "phoneNumberId": phone_number_id,
-        "customerId": customer_id,
-        "squadId": squad_id,
-        "callId": call_id
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "time": time, "orgId": org_id, "type": type, "webhookType": webhook_type, "resource": resource, "requestDurationSeconds": request_duration_seconds, "requestStartedAt": request_started_at, "requestFinishedAt": request_finished_at, "requestBody": request_body, "requestHttpMethod": request_http_method, "requestUrl": request_url, "requestPath": request_path, "requestQuery": request_query, "responseHttpCode": response_http_code, "requestIpAddress": request_ip_address, "requestOrigin": request_origin, "responseBody": response_body, "requestHeaders": request_headers, "error": error, "assistantId": assistant_id, "phoneNumberId": phone_number_id, "customerId": customer_id, "squadId": squad_id, "callId": call_id }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of Log
+# Deserialize a JSON object to an instance of Log
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::Log]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -173,11 +145,11 @@ module Vapi
       request_origin = parsed_json["requestOrigin"]
       response_body = parsed_json["responseBody"]
       request_headers = parsed_json["requestHeaders"]
-      if parsed_json["error"].nil?
-        error = nil
-      else
+      unless parsed_json["error"].nil?
         error = parsed_json["error"].to_json
         error = Vapi::Error.from_json(json_object: error)
+      else
+        error = nil
       end
       assistant_id = parsed_json["assistantId"]
       phone_number_id = parsed_json["phoneNumberId"]
@@ -212,19 +184,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of Log to a JSON object
+# Serialize an instance of Log to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.time.is_a?(String) != false || raise("Passed value for field obj.time is not the expected type, validation failed.")

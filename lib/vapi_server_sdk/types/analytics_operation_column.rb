@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Vapi
-  # This is the columns you want to perform the aggregation operation on.
+# This is the columns you want to perform the aggregation operation on.
   class AnalyticsOperationColumn
+
     ID = "id"
     COST = "cost"
     COST_BREAKDOWN_LLM = "costBreakdown.llm"
@@ -15,5 +16,6 @@ module Vapi
     DURATION = "duration"
     CONCURRENCY = "concurrency"
     MINUTES_USED = "minutesUsed"
+
   end
 end

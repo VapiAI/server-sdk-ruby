@@ -1,25 +1,24 @@
 # frozen_string_literal: true
-
 require_relative "create_customer_dto"
 require "ostruct"
 require "json"
 
 module Vapi
   class CallBatchError
-    # @return [Vapi::CreateCustomerDto]
+  # @return [Vapi::CreateCustomerDto] 
     attr_reader :customer
-    # @return [String]
+  # @return [String] 
     attr_reader :error
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
-    # @param customer [Vapi::CreateCustomerDto]
-    # @param error [String]
+    # @param customer [Vapi::CreateCustomerDto] 
+    # @param error [String] 
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CallBatchError]
     def initialize(customer:, error:, additional_properties: nil)
@@ -28,19 +27,18 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = { "customer": customer, "error": error }
     end
-
-    # Deserialize a JSON object to an instance of CallBatchError
+# Deserialize a JSON object to an instance of CallBatchError
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::CallBatchError]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      if parsed_json["customer"].nil?
-        customer = nil
-      else
+      unless parsed_json["customer"].nil?
         customer = parsed_json["customer"].to_json
         customer = Vapi::CreateCustomerDto.from_json(json_object: customer)
+      else
+        customer = nil
       end
       error = parsed_json["error"]
       new(
@@ -49,19 +47,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of CallBatchError to a JSON object
+# Serialize an instance of CallBatchError to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)

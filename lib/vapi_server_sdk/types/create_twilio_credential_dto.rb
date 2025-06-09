@@ -1,23 +1,22 @@
 # frozen_string_literal: true
-
 require "ostruct"
 require "json"
 
 module Vapi
   class CreateTwilioCredentialDto
-    # @return [String] This is not returned in the API.
+  # @return [String] This is not returned in the API.
     attr_reader :auth_token
-    # @return [String] This is not returned in the API.
+  # @return [String] This is not returned in the API.
     attr_reader :api_key
-    # @return [String] This is not returned in the API.
+  # @return [String] This is not returned in the API.
     attr_reader :api_secret
-    # @return [String]
+  # @return [String] 
     attr_reader :account_sid
-    # @return [String] This is the name of credential. This is just for your reference.
+  # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -26,32 +25,24 @@ module Vapi
     # @param auth_token [String] This is not returned in the API.
     # @param api_key [String] This is not returned in the API.
     # @param api_secret [String] This is not returned in the API.
-    # @param account_sid [String]
+    # @param account_sid [String] 
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateTwilioCredentialDto]
-    def initialize(account_sid:, auth_token: OMIT, api_key: OMIT, api_secret: OMIT, name: OMIT,
-                   additional_properties: nil)
+    def initialize(auth_token: OMIT, api_key: OMIT, api_secret: OMIT, account_sid:, name: OMIT, additional_properties: nil)
       @auth_token = auth_token if auth_token != OMIT
       @api_key = api_key if api_key != OMIT
       @api_secret = api_secret if api_secret != OMIT
       @account_sid = account_sid
       @name = name if name != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "authToken": auth_token,
-        "apiKey": api_key,
-        "apiSecret": api_secret,
-        "accountSid": account_sid,
-        "name": name
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "authToken": auth_token, "apiKey": api_key, "apiSecret": api_secret, "accountSid": account_sid, "name": name }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of CreateTwilioCredentialDto
+# Deserialize a JSON object to an instance of CreateTwilioCredentialDto
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::CreateTwilioCredentialDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -70,19 +61,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of CreateTwilioCredentialDto to a JSON object
+# Serialize an instance of CreateTwilioCredentialDto to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.auth_token&.is_a?(String) != false || raise("Passed value for field obj.auth_token is not the expected type, validation failed.")

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "client_message_hang_phone_number"
 require_relative "call"
 require_relative "create_customer_dto"
@@ -9,26 +8,26 @@ require "json"
 
 module Vapi
   class ClientMessageHang
-    # @return [Vapi::ClientMessageHangPhoneNumber] This is the phone number that the message is associated with.
+  # @return [Vapi::ClientMessageHangPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
-    # @return [String] This is the type of the message. "hang" is sent when the assistant is hanging
-    #  due to a delay. The delay can be caused by many factors, such as:
-    #  - the model is too slow to respond
-    #  - the voice is too slow to respond
-    #  - the tool call is still waiting for a response from your server
-    #  - etc.
+  # @return [String] This is the type of the message. "hang" is sent when the assistant is hanging
+#  due to a delay. The delay can be caused by many factors, such as:
+#  - the model is too slow to respond
+#  - the voice is too slow to respond
+#  - the tool call is still waiting for a response from your server
+#  - etc.
     attr_reader :type
-    # @return [Float] This is the timestamp of the message.
+  # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
-    # @return [Vapi::Call] This is the call that the message is associated with.
+  # @return [Vapi::Call] This is the call that the message is associated with.
     attr_reader :call
-    # @return [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
+  # @return [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     attr_reader :customer
-    # @return [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
+  # @return [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     attr_reader :assistant
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -36,19 +35,18 @@ module Vapi
 
     # @param phone_number [Vapi::ClientMessageHangPhoneNumber] This is the phone number that the message is associated with.
     # @param type [String] This is the type of the message. "hang" is sent when the assistant is hanging
-    #  due to a delay. The delay can be caused by many factors, such as:
-    #  - the model is too slow to respond
-    #  - the voice is too slow to respond
-    #  - the tool call is still waiting for a response from your server
-    #  - etc.
+#  due to a delay. The delay can be caused by many factors, such as:
+#  - the model is too slow to respond
+#  - the voice is too slow to respond
+#  - the tool call is still waiting for a response from your server
+#  - etc.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param call [Vapi::Call] This is the call that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     # @param assistant [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageHang]
-    def initialize(type:, phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
-                   additional_properties: nil)
+    def initialize(phone_number: OMIT, type:, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
       @type = type
       @timestamp = timestamp if timestamp != OMIT
@@ -56,50 +54,42 @@ module Vapi
       @customer = customer if customer != OMIT
       @assistant = assistant if assistant != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "phoneNumber": phone_number,
-        "type": type,
-        "timestamp": timestamp,
-        "call": call,
-        "customer": customer,
-        "assistant": assistant
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "phoneNumber": phone_number, "type": type, "timestamp": timestamp, "call": call, "customer": customer, "assistant": assistant }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of ClientMessageHang
+# Deserialize a JSON object to an instance of ClientMessageHang
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::ClientMessageHang]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      if parsed_json["phoneNumber"].nil?
-        phone_number = nil
-      else
+      unless parsed_json["phoneNumber"].nil?
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ClientMessageHangPhoneNumber.from_json(json_object: phone_number)
+      else
+        phone_number = nil
       end
       type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
-      if parsed_json["call"].nil?
-        call = nil
-      else
+      unless parsed_json["call"].nil?
         call = parsed_json["call"].to_json
         call = Vapi::Call.from_json(json_object: call)
-      end
-      if parsed_json["customer"].nil?
-        customer = nil
       else
+        call = nil
+      end
+      unless parsed_json["customer"].nil?
         customer = parsed_json["customer"].to_json
         customer = Vapi::CreateCustomerDto.from_json(json_object: customer)
-      end
-      if parsed_json["assistant"].nil?
-        assistant = nil
       else
+        customer = nil
+      end
+      unless parsed_json["assistant"].nil?
         assistant = parsed_json["assistant"].to_json
         assistant = Vapi::CreateAssistantDto.from_json(json_object: assistant)
+      else
+        assistant = nil
       end
       new(
         phone_number: phone_number,
@@ -111,19 +101,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of ClientMessageHang to a JSON object
+# Serialize an instance of ClientMessageHang to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ClientMessageHangPhoneNumber.validate_raw(obj: obj.phone_number)

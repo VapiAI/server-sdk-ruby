@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require "json"
 require_relative "assembly_ai_transcriber"
 require_relative "azure_speech_transcriber"
@@ -13,61 +12,59 @@ require_relative "talkscriber_transcriber"
 require_relative "open_ai_transcriber"
 
 module Vapi
-  # These are the options for the assistant's transcriber.
+# These are the options for the assistant's transcriber.
   class AssistantTranscriber
-    # @return [Object]
+  # @return [Object] 
     attr_reader :member
-    # @return [String]
+  # @return [String] 
     attr_reader :discriminant
 
     private_class_method :new
     alias kind_of? is_a?
 
-    # @param member [Object]
-    # @param discriminant [String]
+    # @param member [Object] 
+    # @param discriminant [String] 
     # @return [Vapi::AssistantTranscriber]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
-
-    # Deserialize a JSON object to an instance of AssistantTranscriber
+# Deserialize a JSON object to an instance of AssistantTranscriber
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::AssistantTranscriber]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      member = case struct.provider
-               when "assembly-ai"
-                 Vapi::AssemblyAiTranscriber.from_json(json_object: json_object)
-               when "azure"
-                 Vapi::AzureSpeechTranscriber.from_json(json_object: json_object)
-               when "custom-transcriber"
-                 Vapi::CustomTranscriber.from_json(json_object: json_object)
-               when "deepgram"
-                 Vapi::DeepgramTranscriber.from_json(json_object: json_object)
-               when "11labs"
-                 Vapi::ElevenLabsTranscriber.from_json(json_object: json_object)
-               when "gladia"
-                 Vapi::GladiaTranscriber.from_json(json_object: json_object)
-               when "google"
-                 Vapi::GoogleTranscriber.from_json(json_object: json_object)
-               when "speechmatics"
-                 Vapi::SpeechmaticsTranscriber.from_json(json_object: json_object)
-               when "talkscriber"
-                 Vapi::TalkscriberTranscriber.from_json(json_object: json_object)
-               when "openai"
-                 Vapi::OpenAiTranscriber.from_json(json_object: json_object)
-               else
-                 Vapi::AssemblyAiTranscriber.from_json(json_object: json_object)
-               end
+      case struct.provider
+      when "assembly-ai"
+        member = Vapi::AssemblyAiTranscriber.from_json(json_object: json_object)
+      when "azure"
+        member = Vapi::AzureSpeechTranscriber.from_json(json_object: json_object)
+      when "custom-transcriber"
+        member = Vapi::CustomTranscriber.from_json(json_object: json_object)
+      when "deepgram"
+        member = Vapi::DeepgramTranscriber.from_json(json_object: json_object)
+      when "11labs"
+        member = Vapi::ElevenLabsTranscriber.from_json(json_object: json_object)
+      when "gladia"
+        member = Vapi::GladiaTranscriber.from_json(json_object: json_object)
+      when "google"
+        member = Vapi::GoogleTranscriber.from_json(json_object: json_object)
+      when "speechmatics"
+        member = Vapi::SpeechmaticsTranscriber.from_json(json_object: json_object)
+      when "talkscriber"
+        member = Vapi::TalkscriberTranscriber.from_json(json_object: json_object)
+      when "openai"
+        member = Vapi::OpenAiTranscriber.from_json(json_object: json_object)
+      else
+        member = Vapi::AssemblyAiTranscriber.from_json(json_object: json_object)
+      end
       new(member: member, discriminant: struct.provider)
     end
-
-    # For Union Types, to_json functionality is delegated to the wrapped member.
+# For Union Types, to_json functionality is delegated to the wrapped member.
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       case @discriminant
       when "assembly-ai"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -94,12 +91,11 @@ module Vapi
       end
       @member.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.provider
@@ -127,70 +123,59 @@ module Vapi
         raise("Passed value matched no type within the union, validation failed.")
       end
     end
-
-    # For Union Types, is_a? functionality is delegated to the wrapped member.
+# For Union Types, is_a? functionality is delegated to the wrapped member.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Boolean]
     def is_a?(obj)
       @member.is_a?(obj)
     end
-
-    # @param member [Vapi::AssemblyAiTranscriber]
+    # @param member [Vapi::AssemblyAiTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.assembly_ai(member:)
       new(member: member, discriminant: "assembly-ai")
     end
-
-    # @param member [Vapi::AzureSpeechTranscriber]
+    # @param member [Vapi::AzureSpeechTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.azure(member:)
       new(member: member, discriminant: "azure")
     end
-
-    # @param member [Vapi::CustomTranscriber]
+    # @param member [Vapi::CustomTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.custom_transcriber(member:)
       new(member: member, discriminant: "custom-transcriber")
     end
-
-    # @param member [Vapi::DeepgramTranscriber]
+    # @param member [Vapi::DeepgramTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.deepgram(member:)
       new(member: member, discriminant: "deepgram")
     end
-
-    # @param member [Vapi::ElevenLabsTranscriber]
+    # @param member [Vapi::ElevenLabsTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self._11_labs(member:)
       new(member: member, discriminant: "11labs")
     end
-
-    # @param member [Vapi::GladiaTranscriber]
+    # @param member [Vapi::GladiaTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.gladia(member:)
       new(member: member, discriminant: "gladia")
     end
-
-    # @param member [Vapi::GoogleTranscriber]
+    # @param member [Vapi::GoogleTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.google(member:)
       new(member: member, discriminant: "google")
     end
-
-    # @param member [Vapi::SpeechmaticsTranscriber]
+    # @param member [Vapi::SpeechmaticsTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.speechmatics(member:)
       new(member: member, discriminant: "speechmatics")
     end
-
-    # @param member [Vapi::TalkscriberTranscriber]
+    # @param member [Vapi::TalkscriberTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.talkscriber(member:)
       new(member: member, discriminant: "talkscriber")
     end
-
-    # @param member [Vapi::OpenAiTranscriber]
+    # @param member [Vapi::OpenAiTranscriber] 
     # @return [Vapi::AssistantTranscriber]
     def self.openai(member:)
       new(member: member, discriminant: "openai")

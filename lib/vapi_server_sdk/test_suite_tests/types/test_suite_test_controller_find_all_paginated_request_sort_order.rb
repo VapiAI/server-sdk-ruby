@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 module Vapi
-  class TestSuiteTests
+  module TestSuiteTests
     class TestSuiteTestControllerFindAllPaginatedRequestSortOrder
+
       ASC = "ASC"
       DESC = "DESC"
+
     end
   end
 end

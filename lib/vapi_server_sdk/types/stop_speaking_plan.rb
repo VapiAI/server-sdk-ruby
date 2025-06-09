@@ -1,107 +1,98 @@
 # frozen_string_literal: true
-
 require "ostruct"
 require "json"
 
 module Vapi
   class StopSpeakingPlan
-    # @return [Float] This is the number of words that the customer has to say before the assistant
-    #  will stop talking.
-    #  Words like "stop", "actually", "no", etc. will always interrupt immediately
-    #  regardless of this value.
-    #  Words like "okay", "yeah", "right" will never interrupt.
-    #  When set to 0, `voiceSeconds` is used in addition to the transcriptions to
-    #  determine the customer has started speaking.
-    #  Defaults to 0.
-    #  @default 0
+  # @return [Float] This is the number of words that the customer has to say before the assistant
+#  will stop talking.
+#  Words like "stop", "actually", "no", etc. will always interrupt immediately
+#  regardless of this value.
+#  Words like "okay", "yeah", "right" will never interrupt.
+#  When set to 0, `voiceSeconds` is used in addition to the transcriptions to
+#  determine the customer has started speaking.
+#  Defaults to 0.
+#  @default 0
     attr_reader :num_words
-    # @return [Float] This is the seconds customer has to speak before the assistant stops talking.
-    #  This uses the VAD (Voice Activity Detection) spike to determine if the customer
-    #  has started speaking.
-    #  Considerations:
-    #  - A lower value might be more responsive but could potentially pick up
-    #  non-speech sounds.
-    #  - A higher value reduces false positives but might slightly delay the detection
-    #  of speech onset.
-    #  This is only used if `numWords` is set to 0.
-    #  Defaults to 0.2
-    #  @default 0.2
+  # @return [Float] This is the seconds customer has to speak before the assistant stops talking.
+#  This uses the VAD (Voice Activity Detection) spike to determine if the customer
+#  has started speaking.
+#  Considerations:
+#  - A lower value might be more responsive but could potentially pick up
+#  non-speech sounds.
+#  - A higher value reduces false positives but might slightly delay the detection
+#  of speech onset.
+#  This is only used if `numWords` is set to 0.
+#  Defaults to 0.2
+#  @default 0.2
     attr_reader :voice_seconds
-    # @return [Float] This is the seconds to wait before the assistant will start talking again after
-    #  being interrupted.
-    #  Defaults to 1.
-    #  @default 1
+  # @return [Float] This is the seconds to wait before the assistant will start talking again after
+#  being interrupted.
+#  Defaults to 1.
+#  @default 1
     attr_reader :backoff_seconds
-    # @return [Array<String>] These are the phrases that will never interrupt the assistant, even if numWords
-    #  threshold is met.
-    #  These are typically acknowledgement or backchanneling phrases.
+  # @return [Array<String>] These are the phrases that will never interrupt the assistant, even if numWords
+#  threshold is met.
+#  These are typically acknowledgement or backchanneling phrases.
     attr_reader :acknowledgement_phrases
-    # @return [Array<String>] These are the phrases that will always interrupt the assistant immediately,
-    #  regardless of numWords.
-    #  These are typically phrases indicating disagreement or desire to stop.
+  # @return [Array<String>] These are the phrases that will always interrupt the assistant immediately,
+#  regardless of numWords.
+#  These are typically phrases indicating disagreement or desire to stop.
     attr_reader :interruption_phrases
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
     # @param num_words [Float] This is the number of words that the customer has to say before the assistant
-    #  will stop talking.
-    #  Words like "stop", "actually", "no", etc. will always interrupt immediately
-    #  regardless of this value.
-    #  Words like "okay", "yeah", "right" will never interrupt.
-    #  When set to 0, `voiceSeconds` is used in addition to the transcriptions to
-    #  determine the customer has started speaking.
-    #  Defaults to 0.
-    #  @default 0
+#  will stop talking.
+#  Words like "stop", "actually", "no", etc. will always interrupt immediately
+#  regardless of this value.
+#  Words like "okay", "yeah", "right" will never interrupt.
+#  When set to 0, `voiceSeconds` is used in addition to the transcriptions to
+#  determine the customer has started speaking.
+#  Defaults to 0.
+#  @default 0
     # @param voice_seconds [Float] This is the seconds customer has to speak before the assistant stops talking.
-    #  This uses the VAD (Voice Activity Detection) spike to determine if the customer
-    #  has started speaking.
-    #  Considerations:
-    #  - A lower value might be more responsive but could potentially pick up
-    #  non-speech sounds.
-    #  - A higher value reduces false positives but might slightly delay the detection
-    #  of speech onset.
-    #  This is only used if `numWords` is set to 0.
-    #  Defaults to 0.2
-    #  @default 0.2
+#  This uses the VAD (Voice Activity Detection) spike to determine if the customer
+#  has started speaking.
+#  Considerations:
+#  - A lower value might be more responsive but could potentially pick up
+#  non-speech sounds.
+#  - A higher value reduces false positives but might slightly delay the detection
+#  of speech onset.
+#  This is only used if `numWords` is set to 0.
+#  Defaults to 0.2
+#  @default 0.2
     # @param backoff_seconds [Float] This is the seconds to wait before the assistant will start talking again after
-    #  being interrupted.
-    #  Defaults to 1.
-    #  @default 1
+#  being interrupted.
+#  Defaults to 1.
+#  @default 1
     # @param acknowledgement_phrases [Array<String>] These are the phrases that will never interrupt the assistant, even if numWords
-    #  threshold is met.
-    #  These are typically acknowledgement or backchanneling phrases.
+#  threshold is met.
+#  These are typically acknowledgement or backchanneling phrases.
     # @param interruption_phrases [Array<String>] These are the phrases that will always interrupt the assistant immediately,
-    #  regardless of numWords.
-    #  These are typically phrases indicating disagreement or desire to stop.
+#  regardless of numWords.
+#  These are typically phrases indicating disagreement or desire to stop.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::StopSpeakingPlan]
-    def initialize(num_words: OMIT, voice_seconds: OMIT, backoff_seconds: OMIT, acknowledgement_phrases: OMIT,
-                   interruption_phrases: OMIT, additional_properties: nil)
+    def initialize(num_words: OMIT, voice_seconds: OMIT, backoff_seconds: OMIT, acknowledgement_phrases: OMIT, interruption_phrases: OMIT, additional_properties: nil)
       @num_words = num_words if num_words != OMIT
       @voice_seconds = voice_seconds if voice_seconds != OMIT
       @backoff_seconds = backoff_seconds if backoff_seconds != OMIT
       @acknowledgement_phrases = acknowledgement_phrases if acknowledgement_phrases != OMIT
       @interruption_phrases = interruption_phrases if interruption_phrases != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "numWords": num_words,
-        "voiceSeconds": voice_seconds,
-        "backoffSeconds": backoff_seconds,
-        "acknowledgementPhrases": acknowledgement_phrases,
-        "interruptionPhrases": interruption_phrases
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "numWords": num_words, "voiceSeconds": voice_seconds, "backoffSeconds": backoff_seconds, "acknowledgementPhrases": acknowledgement_phrases, "interruptionPhrases": interruption_phrases }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of StopSpeakingPlan
+# Deserialize a JSON object to an instance of StopSpeakingPlan
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::StopSpeakingPlan]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -120,19 +111,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of StopSpeakingPlan to a JSON object
+# Serialize an instance of StopSpeakingPlan to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.num_words&.is_a?(Float) != false || raise("Passed value for field obj.num_words is not the expected type, validation failed.")

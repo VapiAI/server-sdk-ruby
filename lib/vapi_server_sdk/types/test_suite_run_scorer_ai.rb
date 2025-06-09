@@ -1,22 +1,21 @@
 # frozen_string_literal: true
-
 require_relative "test_suite_run_scorer_ai_result"
 require "ostruct"
 require "json"
 
 module Vapi
   class TestSuiteRunScorerAi
-    # @return [String] This is the type of the scorer, which must be AI.
+  # @return [String] This is the type of the scorer, which must be AI.
     attr_reader :type
-    # @return [Vapi::TestSuiteRunScorerAiResult] This is the result of the test suite.
+  # @return [Vapi::TestSuiteRunScorerAiResult] This is the result of the test suite.
     attr_reader :result
-    # @return [String] This is the reasoning provided by the AI scorer.
+  # @return [String] This is the reasoning provided by the AI scorer.
     attr_reader :reasoning
-    # @return [String] This is the rubric used by the AI scorer.
+  # @return [String] This is the rubric used by the AI scorer.
     attr_reader :rubric
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -36,10 +35,9 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = { "type": type, "result": result, "reasoning": reasoning, "rubric": rubric }
     end
-
-    # Deserialize a JSON object to an instance of TestSuiteRunScorerAi
+# Deserialize a JSON object to an instance of TestSuiteRunScorerAi
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::TestSuiteRunScorerAi]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -56,19 +54,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of TestSuiteRunScorerAi to a JSON object
+# Serialize an instance of TestSuiteRunScorerAi to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")

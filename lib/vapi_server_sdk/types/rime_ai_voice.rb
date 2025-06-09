@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "rime_ai_voice_id"
 require_relative "rime_ai_voice_model"
 require_relative "chunk_plan"
@@ -9,38 +8,38 @@ require "json"
 
 module Vapi
   class RimeAiVoice
-    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+  # @return [Boolean] This is the flag to toggle voice caching for the assistant.
     attr_reader :caching_enabled
-    # @return [Vapi::RimeAiVoiceId] This is the provider-specific ID that will be used.
+  # @return [Vapi::RimeAiVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
-    # @return [Vapi::RimeAiVoiceModel] This is the model that will be used. Defaults to 'v1' when not specified.
+  # @return [Vapi::RimeAiVoiceModel] This is the model that will be used. Defaults to 'v1' when not specified.
     attr_reader :model
-    # @return [Float] This is the speed multiplier that will be used.
+  # @return [Float] This is the speed multiplier that will be used.
     attr_reader :speed
-    # @return [Boolean] This is a flag that controls whether to add slight pauses using angle brackets.
-    #  Example: "Hi. <200> I'd love to have a conversation with you." adds a 200ms
-    #  pause between the first and second sentences.
+  # @return [Boolean] This is a flag that controls whether to add slight pauses using angle brackets.
+#  Example: "Hi. <200> I'd love to have a conversation with you." adds a 200ms
+#  pause between the first and second sentences.
     attr_reader :pause_between_brackets
-    # @return [Boolean] This is a flag that controls whether text inside brackets should be phonemized
-    #  (converted to phonetic pronunciation) - Example: "{h'El.o} World" will pronounce
-    #  "Hello" as expected.
+  # @return [Boolean] This is a flag that controls whether text inside brackets should be phonemized
+#  (converted to phonetic pronunciation) - Example: "{h'El.o} World" will pronounce
+#  "Hello" as expected.
     attr_reader :phonemize_between_brackets
-    # @return [Boolean] This is a flag that controls whether to optimize for reduced latency in
-    #  streaming.
-    #  https://docs.rime.ai/api-reference/endpoint/websockets#param-reduce-latency
+  # @return [Boolean] This is a flag that controls whether to optimize for reduced latency in
+#  streaming.
+#  https://docs.rime.ai/api-reference/endpoint/websockets#param-reduce-latency
     attr_reader :reduce_latency
-    # @return [String] This is a string that allows inline speed control using alpha notation.
-    #  https://docs.rime.ai/api-reference/endpoint/websockets#param-inline-speed-alpha
+  # @return [String] This is a string that allows inline speed control using alpha notation.
+#  https://docs.rime.ai/api-reference/endpoint/websockets#param-inline-speed-alpha
     attr_reader :inline_speed_alpha
-    # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
+  # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
+#  provider.
     attr_reader :chunk_plan
-    # @return [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
-    #  voice provider fails.
+  # @return [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
+#  voice provider fails.
     attr_reader :fallback_plan
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -51,24 +50,23 @@ module Vapi
     # @param model [Vapi::RimeAiVoiceModel] This is the model that will be used. Defaults to 'v1' when not specified.
     # @param speed [Float] This is the speed multiplier that will be used.
     # @param pause_between_brackets [Boolean] This is a flag that controls whether to add slight pauses using angle brackets.
-    #  Example: "Hi. <200> I'd love to have a conversation with you." adds a 200ms
-    #  pause between the first and second sentences.
+#  Example: "Hi. <200> I'd love to have a conversation with you." adds a 200ms
+#  pause between the first and second sentences.
     # @param phonemize_between_brackets [Boolean] This is a flag that controls whether text inside brackets should be phonemized
-    #  (converted to phonetic pronunciation) - Example: "{h'El.o} World" will pronounce
-    #  "Hello" as expected.
+#  (converted to phonetic pronunciation) - Example: "{h'El.o} World" will pronounce
+#  "Hello" as expected.
     # @param reduce_latency [Boolean] This is a flag that controls whether to optimize for reduced latency in
-    #  streaming.
-    #  https://docs.rime.ai/api-reference/endpoint/websockets#param-reduce-latency
+#  streaming.
+#  https://docs.rime.ai/api-reference/endpoint/websockets#param-reduce-latency
     # @param inline_speed_alpha [String] This is a string that allows inline speed control using alpha notation.
-    #  https://docs.rime.ai/api-reference/endpoint/websockets#param-inline-speed-alpha
+#  https://docs.rime.ai/api-reference/endpoint/websockets#param-inline-speed-alpha
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
+#  provider.
     # @param fallback_plan [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
-    #  voice provider fails.
+#  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::RimeAiVoice]
-    def initialize(voice_id:, caching_enabled: OMIT, model: OMIT, speed: OMIT, pause_between_brackets: OMIT,
-                   phonemize_between_brackets: OMIT, reduce_latency: OMIT, inline_speed_alpha: OMIT, chunk_plan: OMIT, fallback_plan: OMIT, additional_properties: nil)
+    def initialize(caching_enabled: OMIT, voice_id:, model: OMIT, speed: OMIT, pause_between_brackets: OMIT, phonemize_between_brackets: OMIT, reduce_latency: OMIT, inline_speed_alpha: OMIT, chunk_plan: OMIT, fallback_plan: OMIT, additional_properties: nil)
       @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @model = model if model != OMIT
@@ -80,35 +78,23 @@ module Vapi
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "cachingEnabled": caching_enabled,
-        "voiceId": voice_id,
-        "model": model,
-        "speed": speed,
-        "pauseBetweenBrackets": pause_between_brackets,
-        "phonemizeBetweenBrackets": phonemize_between_brackets,
-        "reduceLatency": reduce_latency,
-        "inlineSpeedAlpha": inline_speed_alpha,
-        "chunkPlan": chunk_plan,
-        "fallbackPlan": fallback_plan
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "cachingEnabled": caching_enabled, "voiceId": voice_id, "model": model, "speed": speed, "pauseBetweenBrackets": pause_between_brackets, "phonemizeBetweenBrackets": phonemize_between_brackets, "reduceLatency": reduce_latency, "inlineSpeedAlpha": inline_speed_alpha, "chunkPlan": chunk_plan, "fallbackPlan": fallback_plan }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of RimeAiVoice
+# Deserialize a JSON object to an instance of RimeAiVoice
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::RimeAiVoice]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       caching_enabled = parsed_json["cachingEnabled"]
-      if parsed_json["voiceId"].nil?
-        voice_id = nil
-      else
+      unless parsed_json["voiceId"].nil?
         voice_id = parsed_json["voiceId"].to_json
         voice_id = Vapi::RimeAiVoiceId.from_json(json_object: voice_id)
+      else
+        voice_id = nil
       end
       model = parsed_json["model"]
       speed = parsed_json["speed"]
@@ -116,17 +102,17 @@ module Vapi
       phonemize_between_brackets = parsed_json["phonemizeBetweenBrackets"]
       reduce_latency = parsed_json["reduceLatency"]
       inline_speed_alpha = parsed_json["inlineSpeedAlpha"]
-      if parsed_json["chunkPlan"].nil?
-        chunk_plan = nil
-      else
+      unless parsed_json["chunkPlan"].nil?
         chunk_plan = parsed_json["chunkPlan"].to_json
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
-      end
-      if parsed_json["fallbackPlan"].nil?
-        fallback_plan = nil
       else
+        chunk_plan = nil
+      end
+      unless parsed_json["fallbackPlan"].nil?
         fallback_plan = parsed_json["fallbackPlan"].to_json
         fallback_plan = Vapi::FallbackPlan.from_json(json_object: fallback_plan)
+      else
+        fallback_plan = nil
       end
       new(
         caching_enabled: caching_enabled,
@@ -142,19 +128,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of RimeAiVoice to a JSON object
+# Serialize an instance of RimeAiVoice to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")

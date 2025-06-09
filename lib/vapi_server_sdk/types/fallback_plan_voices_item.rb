@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require "json"
 require_relative "fallback_azure_voice"
 require_relative "fallback_cartesia_voice"
@@ -17,65 +16,63 @@ require_relative "fallback_tavus_voice"
 
 module Vapi
   class FallbackPlanVoicesItem
-    # @return [Object]
+  # @return [Object] 
     attr_reader :member
-    # @return [String]
+  # @return [String] 
     attr_reader :discriminant
 
     private_class_method :new
     alias kind_of? is_a?
 
-    # @param member [Object]
-    # @param discriminant [String]
+    # @param member [Object] 
+    # @param discriminant [String] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
-
-    # Deserialize a JSON object to an instance of FallbackPlanVoicesItem
+# Deserialize a JSON object to an instance of FallbackPlanVoicesItem
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      member = case struct.provider
-               when "azure"
-                 Vapi::FallbackAzureVoice.from_json(json_object: json_object)
-               when "cartesia"
-                 Vapi::FallbackCartesiaVoice.from_json(json_object: json_object)
-               when "hume"
-                 Vapi::FallbackHumeVoice.from_json(json_object: json_object)
-               when "custom-voice"
-                 Vapi::FallbackCustomVoice.from_json(json_object: json_object)
-               when "deepgram"
-                 Vapi::FallbackDeepgramVoice.from_json(json_object: json_object)
-               when "11labs"
-                 Vapi::FallbackElevenLabsVoice.from_json(json_object: json_object)
-               when "vapi"
-                 Vapi::FallbackVapiVoice.from_json(json_object: json_object)
-               when "lmnt"
-                 Vapi::FallbackLmntVoice.from_json(json_object: json_object)
-               when "openai"
-                 Vapi::FallbackOpenAiVoice.from_json(json_object: json_object)
-               when "playht"
-                 Vapi::FallbackPlayHtVoice.from_json(json_object: json_object)
-               when "rime-ai"
-                 Vapi::FallbackRimeAiVoice.from_json(json_object: json_object)
-               when "smallest-ai"
-                 Vapi::FallbackSmallestAiVoice.from_json(json_object: json_object)
-               when "tavus"
-                 Vapi::FallbackTavusVoice.from_json(json_object: json_object)
-               else
-                 Vapi::FallbackAzureVoice.from_json(json_object: json_object)
-               end
+      case struct.provider
+      when "azure"
+        member = Vapi::FallbackAzureVoice.from_json(json_object: json_object)
+      when "cartesia"
+        member = Vapi::FallbackCartesiaVoice.from_json(json_object: json_object)
+      when "hume"
+        member = Vapi::FallbackHumeVoice.from_json(json_object: json_object)
+      when "custom-voice"
+        member = Vapi::FallbackCustomVoice.from_json(json_object: json_object)
+      when "deepgram"
+        member = Vapi::FallbackDeepgramVoice.from_json(json_object: json_object)
+      when "11labs"
+        member = Vapi::FallbackElevenLabsVoice.from_json(json_object: json_object)
+      when "vapi"
+        member = Vapi::FallbackVapiVoice.from_json(json_object: json_object)
+      when "lmnt"
+        member = Vapi::FallbackLmntVoice.from_json(json_object: json_object)
+      when "openai"
+        member = Vapi::FallbackOpenAiVoice.from_json(json_object: json_object)
+      when "playht"
+        member = Vapi::FallbackPlayHtVoice.from_json(json_object: json_object)
+      when "rime-ai"
+        member = Vapi::FallbackRimeAiVoice.from_json(json_object: json_object)
+      when "smallest-ai"
+        member = Vapi::FallbackSmallestAiVoice.from_json(json_object: json_object)
+      when "tavus"
+        member = Vapi::FallbackTavusVoice.from_json(json_object: json_object)
+      else
+        member = Vapi::FallbackAzureVoice.from_json(json_object: json_object)
+      end
       new(member: member, discriminant: struct.provider)
     end
-
-    # For Union Types, to_json functionality is delegated to the wrapped member.
+# For Union Types, to_json functionality is delegated to the wrapped member.
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       case @discriminant
       when "azure"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -108,12 +105,11 @@ module Vapi
       end
       @member.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.provider
@@ -147,88 +143,74 @@ module Vapi
         raise("Passed value matched no type within the union, validation failed.")
       end
     end
-
-    # For Union Types, is_a? functionality is delegated to the wrapped member.
+# For Union Types, is_a? functionality is delegated to the wrapped member.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Boolean]
     def is_a?(obj)
       @member.is_a?(obj)
     end
-
-    # @param member [Vapi::FallbackAzureVoice]
+    # @param member [Vapi::FallbackAzureVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.azure(member:)
       new(member: member, discriminant: "azure")
     end
-
-    # @param member [Vapi::FallbackCartesiaVoice]
+    # @param member [Vapi::FallbackCartesiaVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.cartesia(member:)
       new(member: member, discriminant: "cartesia")
     end
-
-    # @param member [Vapi::FallbackHumeVoice]
+    # @param member [Vapi::FallbackHumeVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.hume(member:)
       new(member: member, discriminant: "hume")
     end
-
-    # @param member [Vapi::FallbackCustomVoice]
+    # @param member [Vapi::FallbackCustomVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.custom_voice(member:)
       new(member: member, discriminant: "custom-voice")
     end
-
-    # @param member [Vapi::FallbackDeepgramVoice]
+    # @param member [Vapi::FallbackDeepgramVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.deepgram(member:)
       new(member: member, discriminant: "deepgram")
     end
-
-    # @param member [Vapi::FallbackElevenLabsVoice]
+    # @param member [Vapi::FallbackElevenLabsVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self._11_labs(member:)
       new(member: member, discriminant: "11labs")
     end
-
-    # @param member [Vapi::FallbackVapiVoice]
+    # @param member [Vapi::FallbackVapiVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.vapi(member:)
       new(member: member, discriminant: "vapi")
     end
-
-    # @param member [Vapi::FallbackLmntVoice]
+    # @param member [Vapi::FallbackLmntVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.lmnt(member:)
       new(member: member, discriminant: "lmnt")
     end
-
-    # @param member [Vapi::FallbackOpenAiVoice]
+    # @param member [Vapi::FallbackOpenAiVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.openai(member:)
       new(member: member, discriminant: "openai")
     end
-
-    # @param member [Vapi::FallbackPlayHtVoice]
+    # @param member [Vapi::FallbackPlayHtVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.playht(member:)
       new(member: member, discriminant: "playht")
     end
-
-    # @param member [Vapi::FallbackRimeAiVoice]
+    # @param member [Vapi::FallbackRimeAiVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.rime_ai(member:)
       new(member: member, discriminant: "rime-ai")
     end
-
-    # @param member [Vapi::FallbackSmallestAiVoice]
+    # @param member [Vapi::FallbackSmallestAiVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.smallest_ai(member:)
       new(member: member, discriminant: "smallest-ai")
     end
-
-    # @param member [Vapi::FallbackTavusVoice]
+    # @param member [Vapi::FallbackTavusVoice] 
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.tavus(member:)
       new(member: member, discriminant: "tavus")

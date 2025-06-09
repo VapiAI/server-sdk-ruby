@@ -2,6 +2,7 @@
 
 module Vapi
   class CartesiaExperimentalControlsEmotion
+
     ANGER_LOWEST = "anger:lowest"
     ANGER_LOW = "anger:low"
     ANGER_HIGH = "anger:high"
@@ -22,5 +23,6 @@ module Vapi
     CURIOSITY_LOW = "curiosity:low"
     CURIOSITY_HIGH = "curiosity:high"
     CURIOSITY_HIGHEST = "curiosity:highest"
+
   end
 end

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "tavus_voice_voice_id"
 require_relative "chunk_plan"
 require_relative "tavus_conversation_properties"
@@ -9,35 +8,35 @@ require "json"
 
 module Vapi
   class TavusVoice
-    # @return [Boolean] This is the flag to toggle voice caching for the assistant.
+  # @return [Boolean] This is the flag to toggle voice caching for the assistant.
     attr_reader :caching_enabled
-    # @return [Vapi::TavusVoiceVoiceId] This is the provider-specific ID that will be used.
+  # @return [Vapi::TavusVoiceVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
-    # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
+  # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
+#  provider.
     attr_reader :chunk_plan
-    # @return [String] This is the unique identifier for the persona that the replica will use in the
-    #  conversation.
+  # @return [String] This is the unique identifier for the persona that the replica will use in the
+#  conversation.
     attr_reader :persona_id
-    # @return [String] This is the url that will receive webhooks with updates regarding the
-    #  conversation state.
+  # @return [String] This is the url that will receive webhooks with updates regarding the
+#  conversation state.
     attr_reader :callback_url
-    # @return [String] This is the name for the conversation.
+  # @return [String] This is the name for the conversation.
     attr_reader :conversation_name
-    # @return [String] This is the context that will be appended to any context provided in the
-    #  persona, if one is provided.
+  # @return [String] This is the context that will be appended to any context provided in the
+#  persona, if one is provided.
     attr_reader :conversational_context
-    # @return [String] This is the custom greeting that the replica will give once a participant joines
-    #  the conversation.
+  # @return [String] This is the custom greeting that the replica will give once a participant joines
+#  the conversation.
     attr_reader :custom_greeting
-    # @return [Vapi::TavusConversationProperties] These are optional properties used to customize the conversation.
+  # @return [Vapi::TavusConversationProperties] These are optional properties used to customize the conversation.
     attr_reader :properties
-    # @return [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
-    #  voice provider fails.
+  # @return [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
+#  voice provider fails.
     attr_reader :fallback_plan
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -46,23 +45,22 @@ module Vapi
     # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [Vapi::TavusVoiceVoiceId] This is the provider-specific ID that will be used.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
+#  provider.
     # @param persona_id [String] This is the unique identifier for the persona that the replica will use in the
-    #  conversation.
+#  conversation.
     # @param callback_url [String] This is the url that will receive webhooks with updates regarding the
-    #  conversation state.
+#  conversation state.
     # @param conversation_name [String] This is the name for the conversation.
     # @param conversational_context [String] This is the context that will be appended to any context provided in the
-    #  persona, if one is provided.
+#  persona, if one is provided.
     # @param custom_greeting [String] This is the custom greeting that the replica will give once a participant joines
-    #  the conversation.
+#  the conversation.
     # @param properties [Vapi::TavusConversationProperties] These are optional properties used to customize the conversation.
     # @param fallback_plan [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
-    #  voice provider fails.
+#  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TavusVoice]
-    def initialize(voice_id:, caching_enabled: OMIT, chunk_plan: OMIT, persona_id: OMIT, callback_url: OMIT,
-                   conversation_name: OMIT, conversational_context: OMIT, custom_greeting: OMIT, properties: OMIT, fallback_plan: OMIT, additional_properties: nil)
+    def initialize(caching_enabled: OMIT, voice_id:, chunk_plan: OMIT, persona_id: OMIT, callback_url: OMIT, conversation_name: OMIT, conversational_context: OMIT, custom_greeting: OMIT, properties: OMIT, fallback_plan: OMIT, additional_properties: nil)
       @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @chunk_plan = chunk_plan if chunk_plan != OMIT
@@ -74,58 +72,46 @@ module Vapi
       @properties = properties if properties != OMIT
       @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "cachingEnabled": caching_enabled,
-        "voiceId": voice_id,
-        "chunkPlan": chunk_plan,
-        "personaId": persona_id,
-        "callbackUrl": callback_url,
-        "conversationName": conversation_name,
-        "conversationalContext": conversational_context,
-        "customGreeting": custom_greeting,
-        "properties": properties,
-        "fallbackPlan": fallback_plan
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "cachingEnabled": caching_enabled, "voiceId": voice_id, "chunkPlan": chunk_plan, "personaId": persona_id, "callbackUrl": callback_url, "conversationName": conversation_name, "conversationalContext": conversational_context, "customGreeting": custom_greeting, "properties": properties, "fallbackPlan": fallback_plan }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of TavusVoice
+# Deserialize a JSON object to an instance of TavusVoice
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::TavusVoice]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       caching_enabled = parsed_json["cachingEnabled"]
-      if parsed_json["voiceId"].nil?
-        voice_id = nil
-      else
+      unless parsed_json["voiceId"].nil?
         voice_id = parsed_json["voiceId"].to_json
         voice_id = Vapi::TavusVoiceVoiceId.from_json(json_object: voice_id)
-      end
-      if parsed_json["chunkPlan"].nil?
-        chunk_plan = nil
       else
+        voice_id = nil
+      end
+      unless parsed_json["chunkPlan"].nil?
         chunk_plan = parsed_json["chunkPlan"].to_json
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
+      else
+        chunk_plan = nil
       end
       persona_id = parsed_json["personaId"]
       callback_url = parsed_json["callbackUrl"]
       conversation_name = parsed_json["conversationName"]
       conversational_context = parsed_json["conversationalContext"]
       custom_greeting = parsed_json["customGreeting"]
-      if parsed_json["properties"].nil?
-        properties = nil
-      else
+      unless parsed_json["properties"].nil?
         properties = parsed_json["properties"].to_json
         properties = Vapi::TavusConversationProperties.from_json(json_object: properties)
-      end
-      if parsed_json["fallbackPlan"].nil?
-        fallback_plan = nil
       else
+        properties = nil
+      end
+      unless parsed_json["fallbackPlan"].nil?
         fallback_plan = parsed_json["fallbackPlan"].to_json
         fallback_plan = Vapi::FallbackPlan.from_json(json_object: fallback_plan)
+      else
+        fallback_plan = nil
       end
       new(
         caching_enabled: caching_enabled,
@@ -141,19 +127,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of TavusVoice to a JSON object
+# Serialize an instance of TavusVoice to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")

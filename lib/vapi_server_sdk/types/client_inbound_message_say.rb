@@ -1,19 +1,18 @@
 # frozen_string_literal: true
-
 require "ostruct"
 require "json"
 
 module Vapi
   class ClientInboundMessageSay
-    # @return [String] This is the content to say.
+  # @return [String] This is the content to say.
     attr_reader :content
-    # @return [Boolean] This is the flag to end call after content is spoken.
+  # @return [Boolean] This is the flag to end call after content is spoken.
     attr_reader :end_call_after_spoken
-    # @return [Boolean] This is the flag for whether the message is interruptible.
+  # @return [Boolean] This is the flag for whether the message is interruptible.
     attr_reader :interruptions_enabled
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -29,18 +28,13 @@ module Vapi
       @end_call_after_spoken = end_call_after_spoken if end_call_after_spoken != OMIT
       @interruptions_enabled = interruptions_enabled if interruptions_enabled != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "content": content,
-        "endCallAfterSpoken": end_call_after_spoken,
-        "interruptionsEnabled": interruptions_enabled
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "content": content, "endCallAfterSpoken": end_call_after_spoken, "interruptionsEnabled": interruptions_enabled }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of ClientInboundMessageSay
+# Deserialize a JSON object to an instance of ClientInboundMessageSay
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::ClientInboundMessageSay]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -55,19 +49,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of ClientInboundMessageSay to a JSON object
+# Serialize an instance of ClientInboundMessageSay to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.content&.is_a?(String) != false || raise("Passed value for field obj.content is not the expected type, validation failed.")

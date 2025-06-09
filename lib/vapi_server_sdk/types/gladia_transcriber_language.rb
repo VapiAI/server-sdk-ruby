@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 module Vapi
-  # Defines the language to use for the transcription. Required when
-  #  languageBehaviour is 'manual'.
+# Defines the language to use for the transcription. Required when
+#  languageBehaviour is 'manual'.
   class GladiaTranscriberLanguage
+
     AF = "af"
     SQ = "sq"
     AM = "am"
@@ -103,5 +104,6 @@ module Vapi
     CY = "cy"
     YI = "yi"
     YO = "yo"
+
   end
 end

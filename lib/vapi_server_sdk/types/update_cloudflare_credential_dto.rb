@@ -1,24 +1,23 @@
 # frozen_string_literal: true
-
 require_relative "cloudflare_r_2_bucket_plan"
 require "ostruct"
 require "json"
 
 module Vapi
   class UpdateCloudflareCredentialDto
-    # @return [String] Cloudflare Account Id.
+  # @return [String] Cloudflare Account Id.
     attr_reader :account_id
-    # @return [String] Cloudflare API Key / Token.
+  # @return [String] Cloudflare API Key / Token.
     attr_reader :api_key
-    # @return [String] Cloudflare Account Email.
+  # @return [String] Cloudflare Account Email.
     attr_reader :account_email
-    # @return [String] This is the name of credential. This is just for your reference.
+  # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
-    # @return [Vapi::CloudflareR2BucketPlan] This is the bucket plan that can be provided to store call artifacts in R2
+  # @return [Vapi::CloudflareR2BucketPlan] This is the bucket plan that can be provided to store call artifacts in R2
     attr_reader :bucket_plan
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -31,28 +30,20 @@ module Vapi
     # @param bucket_plan [Vapi::CloudflareR2BucketPlan] This is the bucket plan that can be provided to store call artifacts in R2
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateCloudflareCredentialDto]
-    def initialize(account_id: OMIT, api_key: OMIT, account_email: OMIT, name: OMIT, bucket_plan: OMIT,
-                   additional_properties: nil)
+    def initialize(account_id: OMIT, api_key: OMIT, account_email: OMIT, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
       @account_id = account_id if account_id != OMIT
       @api_key = api_key if api_key != OMIT
       @account_email = account_email if account_email != OMIT
       @name = name if name != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "accountId": account_id,
-        "apiKey": api_key,
-        "accountEmail": account_email,
-        "name": name,
-        "bucketPlan": bucket_plan
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "accountId": account_id, "apiKey": api_key, "accountEmail": account_email, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of UpdateCloudflareCredentialDto
+# Deserialize a JSON object to an instance of UpdateCloudflareCredentialDto
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::UpdateCloudflareCredentialDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -61,11 +52,11 @@ module Vapi
       api_key = parsed_json["apiKey"]
       account_email = parsed_json["accountEmail"]
       name = parsed_json["name"]
-      if parsed_json["bucketPlan"].nil?
-        bucket_plan = nil
-      else
+      unless parsed_json["bucketPlan"].nil?
         bucket_plan = parsed_json["bucketPlan"].to_json
         bucket_plan = Vapi::CloudflareR2BucketPlan.from_json(json_object: bucket_plan)
+      else
+        bucket_plan = nil
       end
       new(
         account_id: account_id,
@@ -76,19 +67,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of UpdateCloudflareCredentialDto to a JSON object
+# Serialize an instance of UpdateCloudflareCredentialDto to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.account_id&.is_a?(String) != false || raise("Passed value for field obj.account_id is not the expected type, validation failed.")

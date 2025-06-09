@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 module Vapi
-  class Assistants
+  module Assistants
     class UpdateAssistantDtoBackgroundSoundZero
+
       OFF = "off"
       OFFICE = "office"
+
     end
   end
 end

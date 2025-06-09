@@ -2,6 +2,7 @@
 
 module Vapi
   class RimeAiVoiceIdEnum
+
     ABBIE = "abbie"
     ALLISON = "allison"
     ALLY = "ally"
@@ -85,5 +86,6 @@ module Vapi
     BOULDER = "boulder"
     GYPSUM = "gypsum"
     ZEST = "zest"
+
   end
 end

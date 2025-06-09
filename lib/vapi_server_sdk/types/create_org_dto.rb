@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "create_org_dto_channel"
 require_relative "server"
 require_relative "compliance_plan"
@@ -8,92 +7,91 @@ require "json"
 
 module Vapi
   class CreateOrgDto
-    # @return [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
-    #  the end of the call, you will still receive an end-of-call-report message to
-    #  store on your server. Defaults to false.
-    #  When HIPAA is enabled, only OpenAI/Custom LLM or Azure Providers will be
-    #  available for LLM and Voice respectively.
-    #  This is due to the compliance requirements of HIPAA. Other providers may not
-    #  meet these requirements.
+  # @return [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
+#  the end of the call, you will still receive an end-of-call-report message to
+#  store on your server. Defaults to false.
+#  When HIPAA is enabled, only OpenAI/Custom LLM or Azure Providers will be
+#  available for LLM and Voice respectively.
+#  This is due to the compliance requirements of HIPAA. Other providers may not
+#  meet these requirements.
     attr_reader :hipaa_enabled
-    # @return [String] This is the ID of the subscription the org belongs to.
+  # @return [String] This is the ID of the subscription the org belongs to.
     attr_reader :subscription_id
-    # @return [String] This is the name of the org. This is just for your own reference.
+  # @return [String] This is the name of the org. This is just for your own reference.
     attr_reader :name
-    # @return [Vapi::CreateOrgDtoChannel] This is the channel of the org. There is the cluster the API traffic for the org
-    #  will be directed.
+  # @return [Vapi::CreateOrgDtoChannel] This is the channel of the org. There is the cluster the API traffic for the org
+#  will be directed.
     attr_reader :channel
-    # @return [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
-    #  contact us at support@vapi.ai.
+  # @return [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
+#  contact us at support@vapi.ai.
     attr_reader :billing_limit
-    # @return [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
-    #  with their shape in ServerMessage schema.
-    #  The order of precedence is:
-    #  1. assistant.server
-    #  2. phoneNumber.server
-    #  3. org.server
+  # @return [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
+#  with their shape in ServerMessage schema.
+#  The order of precedence is:
+#  1. assistant.server
+#  2. phoneNumber.server
+#  3. org.server
     attr_reader :server
-    # @return [Float] This is the concurrency limit for the org. This is the maximum number of calls
-    #  that can be active at any given time. To go beyond 10, please contact us at
-    #  support@vapi.ai.
+  # @return [Float] This is the concurrency limit for the org. This is the maximum number of calls
+#  that can be active at any given time. To go beyond 10, please contact us at
+#  support@vapi.ai.
     attr_reader :concurrency_limit
-    # @return [Vapi::CompliancePlan] Stores the information about the compliance plan enforced at the organization
-    #  level. Currently pciEnabled is supported through this field.
-    #  When this is enabled, any logs, recordings, or transcriptions will be shipped to
-    #  the customer endpoints if provided else lost.
-    #  At the end of the call, you will receive an end-of-call-report message to store
-    #  on your server, if webhook is provided.
-    #  Defaults to false.
-    #  When PCI is enabled, only PCI-compliant Providers will be available for LLM,
-    #  Voice and transcribers.
-    #  This is due to the compliance requirements of PCI. Other providers may not meet
-    #  these requirements.
+  # @return [Vapi::CompliancePlan] Stores the information about the compliance plan enforced at the organization
+#  level. Currently pciEnabled is supported through this field.
+#  When this is enabled, any logs, recordings, or transcriptions will be shipped to
+#  the customer endpoints if provided else lost.
+#  At the end of the call, you will receive an end-of-call-report message to store
+#  on your server, if webhook is provided.
+#  Defaults to false.
+#  When PCI is enabled, only PCI-compliant Providers will be available for LLM,
+#  Voice and transcribers.
+#  This is due to the compliance requirements of PCI. Other providers may not meet
+#  these requirements.
     attr_reader :compliance_plan
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
     # @param hipaa_enabled [Boolean] When this is enabled, no logs, recordings, or transcriptions will be stored. At
-    #  the end of the call, you will still receive an end-of-call-report message to
-    #  store on your server. Defaults to false.
-    #  When HIPAA is enabled, only OpenAI/Custom LLM or Azure Providers will be
-    #  available for LLM and Voice respectively.
-    #  This is due to the compliance requirements of HIPAA. Other providers may not
-    #  meet these requirements.
+#  the end of the call, you will still receive an end-of-call-report message to
+#  store on your server. Defaults to false.
+#  When HIPAA is enabled, only OpenAI/Custom LLM or Azure Providers will be
+#  available for LLM and Voice respectively.
+#  This is due to the compliance requirements of HIPAA. Other providers may not
+#  meet these requirements.
     # @param subscription_id [String] This is the ID of the subscription the org belongs to.
     # @param name [String] This is the name of the org. This is just for your own reference.
     # @param channel [Vapi::CreateOrgDtoChannel] This is the channel of the org. There is the cluster the API traffic for the org
-    #  will be directed.
+#  will be directed.
     # @param billing_limit [Float] This is the monthly billing limit for the org. To go beyond $1000/mo, please
-    #  contact us at support@vapi.ai.
+#  contact us at support@vapi.ai.
     # @param server [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
-    #  with their shape in ServerMessage schema.
-    #  The order of precedence is:
-    #  1. assistant.server
-    #  2. phoneNumber.server
-    #  3. org.server
+#  with their shape in ServerMessage schema.
+#  The order of precedence is:
+#  1. assistant.server
+#  2. phoneNumber.server
+#  3. org.server
     # @param concurrency_limit [Float] This is the concurrency limit for the org. This is the maximum number of calls
-    #  that can be active at any given time. To go beyond 10, please contact us at
-    #  support@vapi.ai.
+#  that can be active at any given time. To go beyond 10, please contact us at
+#  support@vapi.ai.
     # @param compliance_plan [Vapi::CompliancePlan] Stores the information about the compliance plan enforced at the organization
-    #  level. Currently pciEnabled is supported through this field.
-    #  When this is enabled, any logs, recordings, or transcriptions will be shipped to
-    #  the customer endpoints if provided else lost.
-    #  At the end of the call, you will receive an end-of-call-report message to store
-    #  on your server, if webhook is provided.
-    #  Defaults to false.
-    #  When PCI is enabled, only PCI-compliant Providers will be available for LLM,
-    #  Voice and transcribers.
-    #  This is due to the compliance requirements of PCI. Other providers may not meet
-    #  these requirements.
+#  level. Currently pciEnabled is supported through this field.
+#  When this is enabled, any logs, recordings, or transcriptions will be shipped to
+#  the customer endpoints if provided else lost.
+#  At the end of the call, you will receive an end-of-call-report message to store
+#  on your server, if webhook is provided.
+#  Defaults to false.
+#  When PCI is enabled, only PCI-compliant Providers will be available for LLM,
+#  Voice and transcribers.
+#  This is due to the compliance requirements of PCI. Other providers may not meet
+#  these requirements.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateOrgDto]
-    def initialize(hipaa_enabled: OMIT, subscription_id: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT,
-                   server: OMIT, concurrency_limit: OMIT, compliance_plan: OMIT, additional_properties: nil)
+    def initialize(hipaa_enabled: OMIT, subscription_id: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT, server: OMIT, concurrency_limit: OMIT, compliance_plan: OMIT, additional_properties: nil)
       @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
       @subscription_id = subscription_id if subscription_id != OMIT
       @name = name if name != OMIT
@@ -103,23 +101,13 @@ module Vapi
       @concurrency_limit = concurrency_limit if concurrency_limit != OMIT
       @compliance_plan = compliance_plan if compliance_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "hipaaEnabled": hipaa_enabled,
-        "subscriptionId": subscription_id,
-        "name": name,
-        "channel": channel,
-        "billingLimit": billing_limit,
-        "server": server,
-        "concurrencyLimit": concurrency_limit,
-        "compliancePlan": compliance_plan
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "hipaaEnabled": hipaa_enabled, "subscriptionId": subscription_id, "name": name, "channel": channel, "billingLimit": billing_limit, "server": server, "concurrencyLimit": concurrency_limit, "compliancePlan": compliance_plan }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of CreateOrgDto
+# Deserialize a JSON object to an instance of CreateOrgDto
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::CreateOrgDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -129,18 +117,18 @@ module Vapi
       name = parsed_json["name"]
       channel = parsed_json["channel"]
       billing_limit = parsed_json["billingLimit"]
-      if parsed_json["server"].nil?
-        server = nil
-      else
+      unless parsed_json["server"].nil?
         server = parsed_json["server"].to_json
         server = Vapi::Server.from_json(json_object: server)
+      else
+        server = nil
       end
       concurrency_limit = parsed_json["concurrencyLimit"]
-      if parsed_json["compliancePlan"].nil?
-        compliance_plan = nil
-      else
+      unless parsed_json["compliancePlan"].nil?
         compliance_plan = parsed_json["compliancePlan"].to_json
         compliance_plan = Vapi::CompliancePlan.from_json(json_object: compliance_plan)
+      else
+        compliance_plan = nil
       end
       new(
         hipaa_enabled: hipaa_enabled,
@@ -154,19 +142,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of CreateOrgDto to a JSON object
+# Serialize an instance of CreateOrgDto to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.hipaa_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.hipaa_enabled is not the expected type, validation failed.")

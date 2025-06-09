@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "update_azure_credential_dto_service"
 require_relative "update_azure_credential_dto_region"
 require_relative "azure_blob_storage_bucket_plan"
@@ -8,20 +7,20 @@ require "json"
 
 module Vapi
   class UpdateAzureCredentialDto
-    # @return [Vapi::UpdateAzureCredentialDtoService] This is the service being used in Azure.
+  # @return [Vapi::UpdateAzureCredentialDtoService] This is the service being used in Azure.
     attr_reader :service
-    # @return [Vapi::UpdateAzureCredentialDtoRegion] This is the region of the Azure resource.
+  # @return [Vapi::UpdateAzureCredentialDtoRegion] This is the region of the Azure resource.
     attr_reader :region
-    # @return [String] This is not returned in the API.
+  # @return [String] This is not returned in the API.
     attr_reader :api_key
-    # @return [String] This is the name of credential. This is just for your reference.
+  # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
-    # @return [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
-    #  Blob Storage.
+  # @return [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
+#  Blob Storage.
     attr_reader :bucket_plan
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -32,31 +31,23 @@ module Vapi
     # @param api_key [String] This is not returned in the API.
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param bucket_plan [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
-    #  Blob Storage.
+#  Blob Storage.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateAzureCredentialDto]
-    def initialize(service: OMIT, region: OMIT, api_key: OMIT, name: OMIT, bucket_plan: OMIT,
-                   additional_properties: nil)
+    def initialize(service: OMIT, region: OMIT, api_key: OMIT, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
       @service = service if service != OMIT
       @region = region if region != OMIT
       @api_key = api_key if api_key != OMIT
       @name = name if name != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "service": service,
-        "region": region,
-        "apiKey": api_key,
-        "name": name,
-        "bucketPlan": bucket_plan
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "service": service, "region": region, "apiKey": api_key, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of UpdateAzureCredentialDto
+# Deserialize a JSON object to an instance of UpdateAzureCredentialDto
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::UpdateAzureCredentialDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -65,11 +56,11 @@ module Vapi
       region = parsed_json["region"]
       api_key = parsed_json["apiKey"]
       name = parsed_json["name"]
-      if parsed_json["bucketPlan"].nil?
-        bucket_plan = nil
-      else
+      unless parsed_json["bucketPlan"].nil?
         bucket_plan = parsed_json["bucketPlan"].to_json
         bucket_plan = Vapi::AzureBlobStorageBucketPlan.from_json(json_object: bucket_plan)
+      else
+        bucket_plan = nil
       end
       new(
         service: service,
@@ -80,19 +71,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of UpdateAzureCredentialDto to a JSON object
+# Serialize an instance of UpdateAzureCredentialDto to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.service&.is_a?(Vapi::UpdateAzureCredentialDtoService) != false || raise("Passed value for field obj.service is not the expected type, validation failed.")

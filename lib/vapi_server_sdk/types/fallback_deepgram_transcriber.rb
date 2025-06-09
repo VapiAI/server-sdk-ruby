@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "deepgram_transcriber_model"
 require_relative "deepgram_transcriber_language"
 require "ostruct"
@@ -7,162 +6,161 @@ require "json"
 
 module Vapi
   class FallbackDeepgramTranscriber
-    # @return [Vapi::DeepgramTranscriberModel] This is the Deepgram model that will be used. A list of models can be found
-    #  here: https://developers.deepgram.com/docs/models-languages-overview
+  # @return [Vapi::DeepgramTranscriberModel] This is the Deepgram model that will be used. A list of models can be found
+#  here: https://developers.deepgram.com/docs/models-languages-overview
     attr_reader :model
-    # @return [Vapi::DeepgramTranscriberLanguage] This is the language that will be set for the transcription. The list of
-    #  languages Deepgram supports can be found here:
-    #  https://developers.deepgram.com/docs/models-languages-overview
+  # @return [Vapi::DeepgramTranscriberLanguage] This is the language that will be set for the transcription. The list of
+#  languages Deepgram supports can be found here:
+#  https://developers.deepgram.com/docs/models-languages-overview
     attr_reader :language
-    # @return [Boolean] This will be use smart format option provided by Deepgram. It's default disabled
-    #  because it can sometimes format numbers as times but it's getting better.
+  # @return [Boolean] This will be use smart format option provided by Deepgram. It's default disabled
+#  because it can sometimes format numbers as times but it's getting better.
     attr_reader :smart_format
-    # @return [Boolean] This automatically switches the transcriber's language when the customer's
-    #  language changes. Defaults to false.
-    #  Usage:
-    #  - If your customers switch languages mid-call, you can set this to true.
-    #  Note:
-    #  - To detect language changes, Vapi uses a custom trained model. Languages
-    #  supported (X = limited support):
-    #  1. Arabic
-    #  2. Bengali
-    #  3. Cantonese
-    #  4. Chinese
-    #  5. Chinese Simplified (X)
-    #  6. Chinese Traditional (X)
-    #  7. English
-    #  8. Farsi (X)
-    #  9. French
-    #  10. German
-    #  11. Haitian Creole (X)
-    #  12. Hindi
-    #  13. Italian
-    #  14. Japanese
-    #  15. Korean
-    #  16. Portuguese
-    #  17. Russian
-    #  18. Spanish
-    #  19. Thai
-    #  20. Urdu
-    #  21. Vietnamese
-    #  - To receive `language-change-detected` webhook events, add it to
-    #  `assistant.serverMessages`.
-    #  @default false
+  # @return [Boolean] This automatically switches the transcriber's language when the customer's
+#  language changes. Defaults to false.
+#  Usage:
+#  - If your customers switch languages mid-call, you can set this to true.
+#  Note:
+#  - To detect language changes, Vapi uses a custom trained model. Languages
+#  supported (X = limited support):
+#  1. Arabic
+#  2. Bengali
+#  3. Cantonese
+#  4. Chinese
+#  5. Chinese Simplified (X)
+#  6. Chinese Traditional (X)
+#  7. English
+#  8. Farsi (X)
+#  9. French
+#  10. German
+#  11. Haitian Creole (X)
+#  12. Hindi
+#  13. Italian
+#  14. Japanese
+#  15. Korean
+#  16. Portuguese
+#  17. Russian
+#  18. Spanish
+#  19. Thai
+#  20. Urdu
+#  21. Vietnamese
+#  - To receive `language-change-detected` webhook events, add it to
+#  `assistant.serverMessages`.
+#  @default false
     attr_reader :code_switching_enabled
-    # @return [Boolean] If set to true, this will add mip_opt_out=true as a query parameter of all API
-    #  requests. See
-    #  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
-    #  This will only be used if you are using your own Deepgram API key.
-    #  @default false
+  # @return [Boolean] If set to true, this will add mip_opt_out=true as a query parameter of all API
+#  requests. See
+#  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
+#  This will only be used if you are using your own Deepgram API key.
+#  @default false
     attr_reader :mip_opt_out
-    # @return [Boolean] If set to true, this will cause deepgram to convert spoken numbers to literal
-    #  numerals. For example, "my phone number is nine-seven-two..." would become "my
-    #  phone number is 972..."
-    #  @default false
+  # @return [Boolean] If set to true, this will cause deepgram to convert spoken numbers to literal
+#  numerals. For example, "my phone number is nine-seven-two..." would become "my
+#  phone number is 972..."
+#  @default false
     attr_reader :numerals
-    # @return [Float] Transcripts below this confidence threshold will be discarded.
-    #  @default 0.4
+  # @return [Float] Transcripts below this confidence threshold will be discarded.
+#  @default 0.4
     attr_reader :confidence_threshold
-    # @return [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
-    #  specific words. Anything that may not be a common word, like your company name,
-    #  should be added here.
+  # @return [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
+#  specific words. Anything that may not be a common word, like your company name,
+#  should be added here.
     attr_reader :keywords
-    # @return [Array<String>] Keyterm Prompting allows you improve Keyword Recall Rate (KRR) for important
-    #  keyterms or phrases up to 90%.
+  # @return [Array<String>] Keyterm Prompting allows you improve Keyword Recall Rate (KRR) for important
+#  keyterms or phrases up to 90%.
     attr_reader :keyterm
-    # @return [Float] This is the timeout after which Deepgram will send transcription on user
-    #  silence. You can read in-depth documentation here:
-    #  https://developers.deepgram.com/docs/endpointing.
-    #  Here are the most important bits:
-    #  - Defaults to 10. This is recommended for most use cases to optimize for
-    #  latency.
-    #  - 10 can cause some missing transcriptions since because of the shorter context.
-    #  This mostly happens for one-word utterances. For those uses cases, it's
-    #  recommended to try 300. It will add a bit of latency but the quality and
-    #  reliability of the experience will be better.
-    #  - If neither 10 nor 300 work, contact support@vapi.ai and we'll find another
-    #  solution.
-    #  @default 10
+  # @return [Float] This is the timeout after which Deepgram will send transcription on user
+#  silence. You can read in-depth documentation here:
+#  https://developers.deepgram.com/docs/endpointing.
+#  Here are the most important bits:
+#  - Defaults to 10. This is recommended for most use cases to optimize for
+#  latency.
+#  - 10 can cause some missing transcriptions since because of the shorter context.
+#  This mostly happens for one-word utterances. For those uses cases, it's
+#  recommended to try 300. It will add a bit of latency but the quality and
+#  reliability of the experience will be better.
+#  - If neither 10 nor 300 work, contact support@vapi.ai and we'll find another
+#  solution.
+#  @default 10
     attr_reader :endpointing
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
     # @param model [Vapi::DeepgramTranscriberModel] This is the Deepgram model that will be used. A list of models can be found
-    #  here: https://developers.deepgram.com/docs/models-languages-overview
+#  here: https://developers.deepgram.com/docs/models-languages-overview
     # @param language [Vapi::DeepgramTranscriberLanguage] This is the language that will be set for the transcription. The list of
-    #  languages Deepgram supports can be found here:
-    #  https://developers.deepgram.com/docs/models-languages-overview
+#  languages Deepgram supports can be found here:
+#  https://developers.deepgram.com/docs/models-languages-overview
     # @param smart_format [Boolean] This will be use smart format option provided by Deepgram. It's default disabled
-    #  because it can sometimes format numbers as times but it's getting better.
+#  because it can sometimes format numbers as times but it's getting better.
     # @param code_switching_enabled [Boolean] This automatically switches the transcriber's language when the customer's
-    #  language changes. Defaults to false.
-    #  Usage:
-    #  - If your customers switch languages mid-call, you can set this to true.
-    #  Note:
-    #  - To detect language changes, Vapi uses a custom trained model. Languages
-    #  supported (X = limited support):
-    #  1. Arabic
-    #  2. Bengali
-    #  3. Cantonese
-    #  4. Chinese
-    #  5. Chinese Simplified (X)
-    #  6. Chinese Traditional (X)
-    #  7. English
-    #  8. Farsi (X)
-    #  9. French
-    #  10. German
-    #  11. Haitian Creole (X)
-    #  12. Hindi
-    #  13. Italian
-    #  14. Japanese
-    #  15. Korean
-    #  16. Portuguese
-    #  17. Russian
-    #  18. Spanish
-    #  19. Thai
-    #  20. Urdu
-    #  21. Vietnamese
-    #  - To receive `language-change-detected` webhook events, add it to
-    #  `assistant.serverMessages`.
-    #  @default false
+#  language changes. Defaults to false.
+#  Usage:
+#  - If your customers switch languages mid-call, you can set this to true.
+#  Note:
+#  - To detect language changes, Vapi uses a custom trained model. Languages
+#  supported (X = limited support):
+#  1. Arabic
+#  2. Bengali
+#  3. Cantonese
+#  4. Chinese
+#  5. Chinese Simplified (X)
+#  6. Chinese Traditional (X)
+#  7. English
+#  8. Farsi (X)
+#  9. French
+#  10. German
+#  11. Haitian Creole (X)
+#  12. Hindi
+#  13. Italian
+#  14. Japanese
+#  15. Korean
+#  16. Portuguese
+#  17. Russian
+#  18. Spanish
+#  19. Thai
+#  20. Urdu
+#  21. Vietnamese
+#  - To receive `language-change-detected` webhook events, add it to
+#  `assistant.serverMessages`.
+#  @default false
     # @param mip_opt_out [Boolean] If set to true, this will add mip_opt_out=true as a query parameter of all API
-    #  requests. See
-    #  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
-    #  This will only be used if you are using your own Deepgram API key.
-    #  @default false
+#  requests. See
+#  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
+#  This will only be used if you are using your own Deepgram API key.
+#  @default false
     # @param numerals [Boolean] If set to true, this will cause deepgram to convert spoken numbers to literal
-    #  numerals. For example, "my phone number is nine-seven-two..." would become "my
-    #  phone number is 972..."
-    #  @default false
+#  numerals. For example, "my phone number is nine-seven-two..." would become "my
+#  phone number is 972..."
+#  @default false
     # @param confidence_threshold [Float] Transcripts below this confidence threshold will be discarded.
-    #  @default 0.4
+#  @default 0.4
     # @param keywords [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
-    #  specific words. Anything that may not be a common word, like your company name,
-    #  should be added here.
+#  specific words. Anything that may not be a common word, like your company name,
+#  should be added here.
     # @param keyterm [Array<String>] Keyterm Prompting allows you improve Keyword Recall Rate (KRR) for important
-    #  keyterms or phrases up to 90%.
+#  keyterms or phrases up to 90%.
     # @param endpointing [Float] This is the timeout after which Deepgram will send transcription on user
-    #  silence. You can read in-depth documentation here:
-    #  https://developers.deepgram.com/docs/endpointing.
-    #  Here are the most important bits:
-    #  - Defaults to 10. This is recommended for most use cases to optimize for
-    #  latency.
-    #  - 10 can cause some missing transcriptions since because of the shorter context.
-    #  This mostly happens for one-word utterances. For those uses cases, it's
-    #  recommended to try 300. It will add a bit of latency but the quality and
-    #  reliability of the experience will be better.
-    #  - If neither 10 nor 300 work, contact support@vapi.ai and we'll find another
-    #  solution.
-    #  @default 10
+#  silence. You can read in-depth documentation here:
+#  https://developers.deepgram.com/docs/endpointing.
+#  Here are the most important bits:
+#  - Defaults to 10. This is recommended for most use cases to optimize for
+#  latency.
+#  - 10 can cause some missing transcriptions since because of the shorter context.
+#  This mostly happens for one-word utterances. For those uses cases, it's
+#  recommended to try 300. It will add a bit of latency but the quality and
+#  reliability of the experience will be better.
+#  - If neither 10 nor 300 work, contact support@vapi.ai and we'll find another
+#  solution.
+#  @default 10
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackDeepgramTranscriber]
-    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, code_switching_enabled: OMIT, mip_opt_out: OMIT,
-                   numerals: OMIT, confidence_threshold: OMIT, keywords: OMIT, keyterm: OMIT, endpointing: OMIT, additional_properties: nil)
+    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, code_switching_enabled: OMIT, mip_opt_out: OMIT, numerals: OMIT, confidence_threshold: OMIT, keywords: OMIT, keyterm: OMIT, endpointing: OMIT, additional_properties: nil)
       @model = model if model != OMIT
       @language = language if language != OMIT
       @smart_format = smart_format if smart_format != OMIT
@@ -174,25 +172,13 @@ module Vapi
       @keyterm = keyterm if keyterm != OMIT
       @endpointing = endpointing if endpointing != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "model": model,
-        "language": language,
-        "smartFormat": smart_format,
-        "codeSwitchingEnabled": code_switching_enabled,
-        "mipOptOut": mip_opt_out,
-        "numerals": numerals,
-        "confidenceThreshold": confidence_threshold,
-        "keywords": keywords,
-        "keyterm": keyterm,
-        "endpointing": endpointing
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "model": model, "language": language, "smartFormat": smart_format, "codeSwitchingEnabled": code_switching_enabled, "mipOptOut": mip_opt_out, "numerals": numerals, "confidenceThreshold": confidence_threshold, "keywords": keywords, "keyterm": keyterm, "endpointing": endpointing }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of FallbackDeepgramTranscriber
+# Deserialize a JSON object to an instance of FallbackDeepgramTranscriber
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::FallbackDeepgramTranscriber]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -221,19 +207,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of FallbackDeepgramTranscriber to a JSON object
+# Serialize an instance of FallbackDeepgramTranscriber to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.model&.is_a?(Vapi::DeepgramTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")

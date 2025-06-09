@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "analytics_query_table"
 require_relative "analytics_query_group_by_item"
 require_relative "time_range"
@@ -9,20 +8,20 @@ require "json"
 
 module Vapi
   class AnalyticsQuery
-    # @return [Vapi::AnalyticsQueryTable] This is the table you want to query.
+  # @return [Vapi::AnalyticsQueryTable] This is the table you want to query.
     attr_reader :table
-    # @return [Array<Vapi::AnalyticsQueryGroupByItem>] This is the list of columns you want to group by.
+  # @return [Array<Vapi::AnalyticsQueryGroupByItem>] This is the list of columns you want to group by.
     attr_reader :group_by
-    # @return [String] This is the name of the query. This will be used to identify the query in the
-    #  response.
+  # @return [String] This is the name of the query. This will be used to identify the query in the
+#  response.
     attr_reader :name
-    # @return [Vapi::TimeRange] This is the time range for the query.
+  # @return [Vapi::TimeRange] This is the time range for the query.
     attr_reader :time_range
-    # @return [Array<Vapi::AnalyticsOperation>] This is the list of operations you want to perform.
+  # @return [Array<Vapi::AnalyticsOperation>] This is the list of operations you want to perform.
     attr_reader :operations
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -31,32 +30,25 @@ module Vapi
     # @param table [Vapi::AnalyticsQueryTable] This is the table you want to query.
     # @param group_by [Array<Vapi::AnalyticsQueryGroupByItem>] This is the list of columns you want to group by.
     # @param name [String] This is the name of the query. This will be used to identify the query in the
-    #  response.
+#  response.
     # @param time_range [Vapi::TimeRange] This is the time range for the query.
     # @param operations [Array<Vapi::AnalyticsOperation>] This is the list of operations you want to perform.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AnalyticsQuery]
-    def initialize(table:, name:, operations:, group_by: OMIT, time_range: OMIT, additional_properties: nil)
+    def initialize(table:, group_by: OMIT, name:, time_range: OMIT, operations:, additional_properties: nil)
       @table = table
       @group_by = group_by if group_by != OMIT
       @name = name
       @time_range = time_range if time_range != OMIT
       @operations = operations
       @additional_properties = additional_properties
-      @_field_set = {
-        "table": table,
-        "groupBy": group_by,
-        "name": name,
-        "timeRange": time_range,
-        "operations": operations
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "table": table, "groupBy": group_by, "name": name, "timeRange": time_range, "operations": operations }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of AnalyticsQuery
+# Deserialize a JSON object to an instance of AnalyticsQuery
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::AnalyticsQuery]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -64,16 +56,16 @@ module Vapi
       table = parsed_json["table"]
       group_by = parsed_json["groupBy"]
       name = parsed_json["name"]
-      if parsed_json["timeRange"].nil?
-        time_range = nil
-      else
+      unless parsed_json["timeRange"].nil?
         time_range = parsed_json["timeRange"].to_json
         time_range = Vapi::TimeRange.from_json(json_object: time_range)
+      else
+        time_range = nil
       end
-      operations = parsed_json["operations"]&.map do |item|
-        item = item.to_json
-        Vapi::AnalyticsOperation.from_json(json_object: item)
-      end
+      operations = parsed_json["operations"]&.map do | item |
+  item = item.to_json
+  Vapi::AnalyticsOperation.from_json(json_object: item)
+end
       new(
         table: table,
         group_by: group_by,
@@ -83,19 +75,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of AnalyticsQuery to a JSON object
+# Serialize an instance of AnalyticsQuery to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.table.is_a?(Vapi::AnalyticsQueryTable) != false || raise("Passed value for field obj.table is not the expected type, validation failed.")

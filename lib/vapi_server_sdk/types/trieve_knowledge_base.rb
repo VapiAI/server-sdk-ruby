@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "trieve_knowledge_base_search_plan"
 require_relative "trieve_knowledge_base_import"
 require "ostruct"
@@ -7,24 +6,24 @@ require "json"
 
 module Vapi
   class TrieveKnowledgeBase
-    # @return [String] This is the name of the knowledge base.
+  # @return [String] This is the name of the knowledge base.
     attr_reader :name
-    # @return [Vapi::TrieveKnowledgeBaseSearchPlan] This is the searching plan used when searching for relevant chunks from the
-    #  vector store.
-    #  You should configure this if you're running into these issues:
-    #  - Too much unnecessary context is being fed as knowledge base context.
-    #  - Not enough relevant context is being fed as knowledge base context.
+  # @return [Vapi::TrieveKnowledgeBaseSearchPlan] This is the searching plan used when searching for relevant chunks from the
+#  vector store.
+#  You should configure this if you're running into these issues:
+#  - Too much unnecessary context is being fed as knowledge base context.
+#  - Not enough relevant context is being fed as knowledge base context.
     attr_reader :search_plan
-    # @return [Vapi::TrieveKnowledgeBaseImport] This is the plan if you want us to create/import a new vector store using
-    #  Trieve.
+  # @return [Vapi::TrieveKnowledgeBaseImport] This is the plan if you want us to create/import a new vector store using
+#  Trieve.
     attr_reader :create_plan
-    # @return [String] This is the id of the knowledge base.
+  # @return [String] This is the id of the knowledge base.
     attr_reader :id
-    # @return [String] This is the org id of the knowledge base.
+  # @return [String] This is the org id of the knowledge base.
     attr_reader :org_id
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -32,53 +31,46 @@ module Vapi
 
     # @param name [String] This is the name of the knowledge base.
     # @param search_plan [Vapi::TrieveKnowledgeBaseSearchPlan] This is the searching plan used when searching for relevant chunks from the
-    #  vector store.
-    #  You should configure this if you're running into these issues:
-    #  - Too much unnecessary context is being fed as knowledge base context.
-    #  - Not enough relevant context is being fed as knowledge base context.
+#  vector store.
+#  You should configure this if you're running into these issues:
+#  - Too much unnecessary context is being fed as knowledge base context.
+#  - Not enough relevant context is being fed as knowledge base context.
     # @param create_plan [Vapi::TrieveKnowledgeBaseImport] This is the plan if you want us to create/import a new vector store using
-    #  Trieve.
+#  Trieve.
     # @param id [String] This is the id of the knowledge base.
     # @param org_id [String] This is the org id of the knowledge base.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TrieveKnowledgeBase]
-    def initialize(id:, org_id:, name: OMIT, search_plan: OMIT, create_plan: OMIT, additional_properties: nil)
+    def initialize(name: OMIT, search_plan: OMIT, create_plan: OMIT, id:, org_id:, additional_properties: nil)
       @name = name if name != OMIT
       @search_plan = search_plan if search_plan != OMIT
       @create_plan = create_plan if create_plan != OMIT
       @id = id
       @org_id = org_id
       @additional_properties = additional_properties
-      @_field_set = {
-        "name": name,
-        "searchPlan": search_plan,
-        "createPlan": create_plan,
-        "id": id,
-        "orgId": org_id
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "name": name, "searchPlan": search_plan, "createPlan": create_plan, "id": id, "orgId": org_id }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of TrieveKnowledgeBase
+# Deserialize a JSON object to an instance of TrieveKnowledgeBase
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::TrieveKnowledgeBase]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       name = parsed_json["name"]
-      if parsed_json["searchPlan"].nil?
-        search_plan = nil
-      else
+      unless parsed_json["searchPlan"].nil?
         search_plan = parsed_json["searchPlan"].to_json
         search_plan = Vapi::TrieveKnowledgeBaseSearchPlan.from_json(json_object: search_plan)
-      end
-      if parsed_json["createPlan"].nil?
-        create_plan = nil
       else
+        search_plan = nil
+      end
+      unless parsed_json["createPlan"].nil?
         create_plan = parsed_json["createPlan"].to_json
         create_plan = Vapi::TrieveKnowledgeBaseImport.from_json(json_object: create_plan)
+      else
+        create_plan = nil
       end
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
@@ -91,19 +83,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of TrieveKnowledgeBase to a JSON object
+# Serialize an instance of TrieveKnowledgeBase to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")

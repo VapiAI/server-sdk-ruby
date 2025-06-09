@@ -1,66 +1,64 @@
 # frozen_string_literal: true
-
 require_relative "regex_option"
 require "ostruct"
 require "json"
 
 module Vapi
   class RegexReplacement
-    # @return [String] This is the regex pattern to replace.
-    #  Note:
-    #  - This works by using the `string.replace` method in Node.JS. Eg. `"hello
-    #  there".replace(/hello/g, "hi")` will return `"hi there"`.
-    #  Hot tip:
-    #  - In JavaScript, escape `\` when sending the regex pattern. Eg. `"hello\sthere"`
-    #  will be sent over the wire as `"hellosthere"`. Send `"hello\\sthere"` instead.
+  # @return [String] This is the regex pattern to replace.
+#  Note:
+#  - This works by using the `string.replace` method in Node.JS. Eg. `"hello
+#  there".replace(/hello/g, "hi")` will return `"hi there"`.
+#  Hot tip:
+#  - In JavaScript, escape `\` when sending the regex pattern. Eg. `"hello\sthere"`
+#  will be sent over the wire as `"hellosthere"`. Send `"hello\\sthere"` instead.
     attr_reader :regex
-    # @return [Array<Vapi::RegexOption>] These are the options for the regex replacement. Defaults to all disabled.
-    #  @default []
+  # @return [Array<Vapi::RegexOption>] These are the options for the regex replacement. Defaults to all disabled.
+#  @default []
     attr_reader :options
-    # @return [String] This is the value that will replace the match.
+  # @return [String] This is the value that will replace the match.
     attr_reader :value
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
     # @param regex [String] This is the regex pattern to replace.
-    #  Note:
-    #  - This works by using the `string.replace` method in Node.JS. Eg. `"hello
-    #  there".replace(/hello/g, "hi")` will return `"hi there"`.
-    #  Hot tip:
-    #  - In JavaScript, escape `\` when sending the regex pattern. Eg. `"hello\sthere"`
-    #  will be sent over the wire as `"hellosthere"`. Send `"hello\\sthere"` instead.
+#  Note:
+#  - This works by using the `string.replace` method in Node.JS. Eg. `"hello
+#  there".replace(/hello/g, "hi")` will return `"hi there"`.
+#  Hot tip:
+#  - In JavaScript, escape `\` when sending the regex pattern. Eg. `"hello\sthere"`
+#  will be sent over the wire as `"hellosthere"`. Send `"hello\\sthere"` instead.
     # @param options [Array<Vapi::RegexOption>] These are the options for the regex replacement. Defaults to all disabled.
-    #  @default []
+#  @default []
     # @param value [String] This is the value that will replace the match.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::RegexReplacement]
-    def initialize(regex:, value:, options: OMIT, additional_properties: nil)
+    def initialize(regex:, options: OMIT, value:, additional_properties: nil)
       @regex = regex
       @options = options if options != OMIT
       @value = value
       @additional_properties = additional_properties
-      @_field_set = { "regex": regex, "options": options, "value": value }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "regex": regex, "options": options, "value": value }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of RegexReplacement
+# Deserialize a JSON object to an instance of RegexReplacement
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::RegexReplacement]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       regex = parsed_json["regex"]
-      options = parsed_json["options"]&.map do |item|
-        item = item.to_json
-        Vapi::RegexOption.from_json(json_object: item)
-      end
+      options = parsed_json["options"]&.map do | item |
+  item = item.to_json
+  Vapi::RegexOption.from_json(json_object: item)
+end
       value = parsed_json["value"]
       new(
         regex: regex,
@@ -69,19 +67,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of RegexReplacement to a JSON object
+# Serialize an instance of RegexReplacement to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.regex.is_a?(String) != false || raise("Passed value for field obj.regex is not the expected type, validation failed.")

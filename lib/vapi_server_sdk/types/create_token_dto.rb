@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative "create_token_dto_tag"
 require_relative "token_restrictions"
 require "ostruct"
@@ -7,15 +6,15 @@ require "json"
 
 module Vapi
   class CreateTokenDto
-    # @return [Vapi::CreateTokenDtoTag] This is the tag for the token. It represents its scope.
+  # @return [Vapi::CreateTokenDtoTag] This is the tag for the token. It represents its scope.
     attr_reader :tag
-    # @return [String] This is the name of the token. This is just for your own reference.
+  # @return [String] This is the name of the token. This is just for your own reference.
     attr_reader :name
-    # @return [Vapi::TokenRestrictions] This are the restrictions for the token.
+  # @return [Vapi::TokenRestrictions] This are the restrictions for the token.
     attr_reader :restrictions
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -31,25 +30,24 @@ module Vapi
       @name = name if name != OMIT
       @restrictions = restrictions if restrictions != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "tag": tag, "name": name, "restrictions": restrictions }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "tag": tag, "name": name, "restrictions": restrictions }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of CreateTokenDto
+# Deserialize a JSON object to an instance of CreateTokenDto
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::CreateTokenDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       tag = parsed_json["tag"]
       name = parsed_json["name"]
-      if parsed_json["restrictions"].nil?
-        restrictions = nil
-      else
+      unless parsed_json["restrictions"].nil?
         restrictions = parsed_json["restrictions"].to_json
         restrictions = Vapi::TokenRestrictions.from_json(json_object: restrictions)
+      else
+        restrictions = nil
       end
       new(
         tag: tag,
@@ -58,19 +56,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of CreateTokenDto to a JSON object
+# Serialize an instance of CreateTokenDto to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.tag&.is_a?(Vapi::CreateTokenDtoTag) != false || raise("Passed value for field obj.tag is not the expected type, validation failed.")

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Vapi
-  # This is the provider-specific ID that will be used.
+# This is the provider-specific ID that will be used.
   class DeepgramVoiceId
+
     ASTERIA = "asteria"
     LUNA = "luna"
     STELLA = "stella"
@@ -48,5 +49,6 @@ module Vapi
     SELENE = "selene"
     THEIA = "theia"
     VESTA = "vesta"
+
   end
 end

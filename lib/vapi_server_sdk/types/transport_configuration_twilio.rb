@@ -1,69 +1,68 @@
 # frozen_string_literal: true
-
 require_relative "transport_configuration_twilio_recording_channels"
 require "ostruct"
 require "json"
 
 module Vapi
   class TransportConfigurationTwilio
-    # @return [String]
+  # @return [String] 
     attr_reader :provider
-    # @return [Float] The integer number of seconds that we should allow the phone to ring before
-    #  assuming there is no answer.
-    #  The default is `60` seconds and the maximum is `600` seconds.
-    #  For some call flows, we will add a 5-second buffer to the timeout value you
-    #  provide.
-    #  For this reason, a timeout value of 10 seconds could result in an actual timeout
-    #  closer to 15 seconds.
-    #  You can set this to a short time, such as `15` seconds, to hang up before
-    #  reaching an answering machine or voicemail.
-    #  @default 60
+  # @return [Float] The integer number of seconds that we should allow the phone to ring before
+#  assuming there is no answer.
+#  The default is `60` seconds and the maximum is `600` seconds.
+#  For some call flows, we will add a 5-second buffer to the timeout value you
+#  provide.
+#  For this reason, a timeout value of 10 seconds could result in an actual timeout
+#  closer to 15 seconds.
+#  You can set this to a short time, such as `15` seconds, to hang up before
+#  reaching an answering machine or voicemail.
+#  @default 60
     attr_reader :timeout
-    # @return [Boolean] Whether to record the call.
-    #  Can be `true` to record the phone call, or `false` to not.
-    #  The default is `false`.
-    #  @default false
+  # @return [Boolean] Whether to record the call.
+#  Can be `true` to record the phone call, or `false` to not.
+#  The default is `false`.
+#  @default false
     attr_reader :record
-    # @return [Vapi::TransportConfigurationTwilioRecordingChannels] The number of channels in the final recording.
-    #  Can be: `mono` or `dual`.
-    #  The default is `mono`.
-    #  `mono` records both legs of the call in a single channel of the recording file.
-    #  `dual` records each leg to a separate channel of the recording file.
-    #  The first channel of a dual-channel recording contains the parent call and the
-    #  second channel contains the child call.
-    #  @default 'mono'
+  # @return [Vapi::TransportConfigurationTwilioRecordingChannels] The number of channels in the final recording.
+#  Can be: `mono` or `dual`.
+#  The default is `mono`.
+#  `mono` records both legs of the call in a single channel of the recording file.
+#  `dual` records each leg to a separate channel of the recording file.
+#  The first channel of a dual-channel recording contains the parent call and the
+#  second channel contains the child call.
+#  @default 'mono'
     attr_reader :recording_channels
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [String] 
     # @param timeout [Float] The integer number of seconds that we should allow the phone to ring before
-    #  assuming there is no answer.
-    #  The default is `60` seconds and the maximum is `600` seconds.
-    #  For some call flows, we will add a 5-second buffer to the timeout value you
-    #  provide.
-    #  For this reason, a timeout value of 10 seconds could result in an actual timeout
-    #  closer to 15 seconds.
-    #  You can set this to a short time, such as `15` seconds, to hang up before
-    #  reaching an answering machine or voicemail.
-    #  @default 60
+#  assuming there is no answer.
+#  The default is `60` seconds and the maximum is `600` seconds.
+#  For some call flows, we will add a 5-second buffer to the timeout value you
+#  provide.
+#  For this reason, a timeout value of 10 seconds could result in an actual timeout
+#  closer to 15 seconds.
+#  You can set this to a short time, such as `15` seconds, to hang up before
+#  reaching an answering machine or voicemail.
+#  @default 60
     # @param record [Boolean] Whether to record the call.
-    #  Can be `true` to record the phone call, or `false` to not.
-    #  The default is `false`.
-    #  @default false
+#  Can be `true` to record the phone call, or `false` to not.
+#  The default is `false`.
+#  @default false
     # @param recording_channels [Vapi::TransportConfigurationTwilioRecordingChannels] The number of channels in the final recording.
-    #  Can be: `mono` or `dual`.
-    #  The default is `mono`.
-    #  `mono` records both legs of the call in a single channel of the recording file.
-    #  `dual` records each leg to a separate channel of the recording file.
-    #  The first channel of a dual-channel recording contains the parent call and the
-    #  second channel contains the child call.
-    #  @default 'mono'
+#  Can be: `mono` or `dual`.
+#  The default is `mono`.
+#  `mono` records both legs of the call in a single channel of the recording file.
+#  `dual` records each leg to a separate channel of the recording file.
+#  The first channel of a dual-channel recording contains the parent call and the
+#  second channel contains the child call.
+#  @default 'mono'
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransportConfigurationTwilio]
     def initialize(provider:, timeout: OMIT, record: OMIT, recording_channels: OMIT, additional_properties: nil)
@@ -72,19 +71,13 @@ module Vapi
       @record = record if record != OMIT
       @recording_channels = recording_channels if recording_channels != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "provider": provider,
-        "timeout": timeout,
-        "record": record,
-        "recordingChannels": recording_channels
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "provider": provider, "timeout": timeout, "record": record, "recordingChannels": recording_channels }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of TransportConfigurationTwilio
+# Deserialize a JSON object to an instance of TransportConfigurationTwilio
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::TransportConfigurationTwilio]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -101,19 +94,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of TransportConfigurationTwilio to a JSON object
+# Serialize an instance of TransportConfigurationTwilio to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")

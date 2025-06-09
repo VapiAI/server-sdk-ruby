@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Vapi
-  # This is the region of the Azure resource.
+# This is the region of the Azure resource.
   class AzureCredentialRegion
+
     AUSTRALIA = "australia"
     CANADAEAST = "canadaeast"
     CANADACENTRAL = "canadacentral"
@@ -21,5 +22,6 @@ module Vapi
     UK = "uk"
     WESTUS = "westus"
     WESTUS_3 = "westus3"
+
   end
 end

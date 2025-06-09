@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-
 require_relative "token_tag"
+require "date"
 require "date"
 require_relative "token_restrictions"
 require "ostruct"
@@ -8,25 +8,25 @@ require "json"
 
 module Vapi
   class Token
-    # @return [Vapi::TokenTag] This is the tag for the token. It represents its scope.
+  # @return [Vapi::TokenTag] This is the tag for the token. It represents its scope.
     attr_reader :tag
-    # @return [String] This is the unique identifier for the token.
+  # @return [String] This is the unique identifier for the token.
     attr_reader :id
-    # @return [String] This is unique identifier for the org that this token belongs to.
+  # @return [String] This is unique identifier for the org that this token belongs to.
     attr_reader :org_id
-    # @return [DateTime] This is the ISO 8601 date-time string of when the token was created.
+  # @return [DateTime] This is the ISO 8601 date-time string of when the token was created.
     attr_reader :created_at
-    # @return [DateTime] This is the ISO 8601 date-time string of when the token was last updated.
+  # @return [DateTime] This is the ISO 8601 date-time string of when the token was last updated.
     attr_reader :updated_at
-    # @return [String] This is the token key.
+  # @return [String] This is the token key.
     attr_reader :value
-    # @return [String] This is the name of the token. This is just for your own reference.
+  # @return [String] This is the name of the token. This is just for your own reference.
     attr_reader :name
-    # @return [Vapi::TokenRestrictions] This are the restrictions for the token.
+  # @return [Vapi::TokenRestrictions] This are the restrictions for the token.
     attr_reader :restrictions
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -42,8 +42,7 @@ module Vapi
     # @param restrictions [Vapi::TokenRestrictions] This are the restrictions for the token.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Token]
-    def initialize(id:, org_id:, created_at:, updated_at:, value:, tag: OMIT, name: OMIT, restrictions: OMIT,
-                   additional_properties: nil)
+    def initialize(tag: OMIT, id:, org_id:, created_at:, updated_at:, value:, name: OMIT, restrictions: OMIT, additional_properties: nil)
       @tag = tag if tag != OMIT
       @id = id
       @org_id = org_id
@@ -53,23 +52,13 @@ module Vapi
       @name = name if name != OMIT
       @restrictions = restrictions if restrictions != OMIT
       @additional_properties = additional_properties
-      @_field_set = {
-        "tag": tag,
-        "id": id,
-        "orgId": org_id,
-        "createdAt": created_at,
-        "updatedAt": updated_at,
-        "value": value,
-        "name": name,
-        "restrictions": restrictions
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "tag": tag, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "value": value, "name": name, "restrictions": restrictions }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of Token
+# Deserialize a JSON object to an instance of Token
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::Token]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -77,15 +66,23 @@ module Vapi
       tag = parsed_json["tag"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
-      created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
-      updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
+      created_at = unless parsed_json["createdAt"].nil?
+  DateTime.parse(parsed_json["createdAt"])
+else
+  nil
+end
+      updated_at = unless parsed_json["updatedAt"].nil?
+  DateTime.parse(parsed_json["updatedAt"])
+else
+  nil
+end
       value = parsed_json["value"]
       name = parsed_json["name"]
-      if parsed_json["restrictions"].nil?
-        restrictions = nil
-      else
+      unless parsed_json["restrictions"].nil?
         restrictions = parsed_json["restrictions"].to_json
         restrictions = Vapi::TokenRestrictions.from_json(json_object: restrictions)
+      else
+        restrictions = nil
       end
       new(
         tag: tag,
@@ -99,19 +96,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of Token to a JSON object
+# Serialize an instance of Token to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.tag&.is_a?(Vapi::TokenTag) != false || raise("Passed value for field obj.tag is not the expected type, validation failed.")

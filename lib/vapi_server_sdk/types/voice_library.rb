@@ -1,53 +1,53 @@
 # frozen_string_literal: true
-
 require_relative "voice_library_gender"
+require "date"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class VoiceLibrary
-    # @return [Hash{String => Object}] This is the voice provider that will be used.
+  # @return [Hash{String => Object}] This is the voice provider that will be used.
     attr_reader :provider
-    # @return [String] The ID of the voice provided by the provider.
+  # @return [String] The ID of the voice provided by the provider.
     attr_reader :provider_id
-    # @return [String] The unique slug of the voice.
+  # @return [String] The unique slug of the voice.
     attr_reader :slug
-    # @return [String] The name of the voice.
+  # @return [String] The name of the voice.
     attr_reader :name
-    # @return [String] The language of the voice.
+  # @return [String] The language of the voice.
     attr_reader :language
-    # @return [String] The language code of the voice.
+  # @return [String] The language code of the voice.
     attr_reader :language_code
-    # @return [String] The model of the voice.
+  # @return [String] The model of the voice.
     attr_reader :model
-    # @return [String] The supported models of the voice.
+  # @return [String] The supported models of the voice.
     attr_reader :supported_models
-    # @return [Vapi::VoiceLibraryGender] The gender of the voice.
+  # @return [Vapi::VoiceLibraryGender] The gender of the voice.
     attr_reader :gender
-    # @return [String] The accent of the voice.
+  # @return [String] The accent of the voice.
     attr_reader :accent
-    # @return [String] The preview URL of the voice.
+  # @return [String] The preview URL of the voice.
     attr_reader :preview_url
-    # @return [String] The description of the voice.
+  # @return [String] The description of the voice.
     attr_reader :description
-    # @return [String] The credential ID of the voice.
+  # @return [String] The credential ID of the voice.
     attr_reader :credential_id
-    # @return [String] The unique identifier for the voice library.
+  # @return [String] The unique identifier for the voice library.
     attr_reader :id
-    # @return [String] The unique identifier for the organization that this voice library belongs to.
+  # @return [String] The unique identifier for the organization that this voice library belongs to.
     attr_reader :org_id
-    # @return [Boolean] The Public voice is shared accross all the organizations.
+  # @return [Boolean] The Public voice is shared accross all the organizations.
     attr_reader :is_public
-    # @return [Boolean] The deletion status of the voice.
+  # @return [Boolean] The deletion status of the voice.
     attr_reader :is_deleted
-    # @return [DateTime] The ISO 8601 date-time string of when the voice library was created.
+  # @return [DateTime] The ISO 8601 date-time string of when the voice library was created.
     attr_reader :created_at
-    # @return [DateTime] The ISO 8601 date-time string of when the voice library was last updated.
+  # @return [DateTime] The ISO 8601 date-time string of when the voice library was last updated.
     attr_reader :updated_at
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -74,8 +74,7 @@ module Vapi
     # @param updated_at [DateTime] The ISO 8601 date-time string of when the voice library was last updated.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VoiceLibrary]
-    def initialize(id:, org_id:, is_public:, is_deleted:, created_at:, updated_at:, provider: OMIT, provider_id: OMIT, slug: OMIT, name: OMIT, language: OMIT, language_code: OMIT,
-                   model: OMIT, supported_models: OMIT, gender: OMIT, accent: OMIT, preview_url: OMIT, description: OMIT, credential_id: OMIT, additional_properties: nil)
+    def initialize(provider: OMIT, provider_id: OMIT, slug: OMIT, name: OMIT, language: OMIT, language_code: OMIT, model: OMIT, supported_models: OMIT, gender: OMIT, accent: OMIT, preview_url: OMIT, description: OMIT, credential_id: OMIT, id:, org_id:, is_public:, is_deleted:, created_at:, updated_at:, additional_properties: nil)
       @provider = provider if provider != OMIT
       @provider_id = provider_id if provider_id != OMIT
       @slug = slug if slug != OMIT
@@ -96,34 +95,13 @@ module Vapi
       @created_at = created_at
       @updated_at = updated_at
       @additional_properties = additional_properties
-      @_field_set = {
-        "provider": provider,
-        "providerId": provider_id,
-        "slug": slug,
-        "name": name,
-        "language": language,
-        "languageCode": language_code,
-        "model": model,
-        "supportedModels": supported_models,
-        "gender": gender,
-        "accent": accent,
-        "previewUrl": preview_url,
-        "description": description,
-        "credentialId": credential_id,
-        "id": id,
-        "orgId": org_id,
-        "isPublic": is_public,
-        "isDeleted": is_deleted,
-        "createdAt": created_at,
-        "updatedAt": updated_at
-      }.reject do |_k, v|
-        v == OMIT
-      end
+      @_field_set = { "provider": provider, "providerId": provider_id, "slug": slug, "name": name, "language": language, "languageCode": language_code, "model": model, "supportedModels": supported_models, "gender": gender, "accent": accent, "previewUrl": preview_url, "description": description, "credentialId": credential_id, "id": id, "orgId": org_id, "isPublic": is_public, "isDeleted": is_deleted, "createdAt": created_at, "updatedAt": updated_at }.reject do | _k, v |
+  v == OMIT
+end
     end
-
-    # Deserialize a JSON object to an instance of VoiceLibrary
+# Deserialize a JSON object to an instance of VoiceLibrary
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::VoiceLibrary]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -145,8 +123,16 @@ module Vapi
       org_id = parsed_json["orgId"]
       is_public = parsed_json["isPublic"]
       is_deleted = parsed_json["isDeleted"]
-      created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
-      updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
+      created_at = unless parsed_json["createdAt"].nil?
+  DateTime.parse(parsed_json["createdAt"])
+else
+  nil
+end
+      updated_at = unless parsed_json["updatedAt"].nil?
+  DateTime.parse(parsed_json["updatedAt"])
+else
+  nil
+end
       new(
         provider: provider,
         provider_id: provider_id,
@@ -170,19 +156,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of VoiceLibrary to a JSON object
+# Serialize an instance of VoiceLibrary to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider&.is_a?(Hash) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")

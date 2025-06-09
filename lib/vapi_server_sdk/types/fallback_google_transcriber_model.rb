@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 module Vapi
-  # This is the model that will be used for the transcription.
+# This is the model that will be used for the transcription.
   class FallbackGoogleTranscriberModel
+
     GEMINI_25_PRO_PREVIEW_0506 = "gemini-2.5-pro-preview-05-06"
+    GEMINI_25_FLASH_PREVIEW_0520 = "gemini-2.5-flash-preview-05-20"
     GEMINI_25_FLASH_PREVIEW_0417 = "gemini-2.5-flash-preview-04-17"
     GEMINI_20_FLASH_THINKING_EXP = "gemini-2.0-flash-thinking-exp"
     GEMINI_20_PRO_EXP_0205 = "gemini-2.0-pro-exp-02-05"
@@ -17,5 +19,6 @@ module Vapi
     GEMINI_15_PRO = "gemini-1.5-pro"
     GEMINI_15_PRO_002 = "gemini-1.5-pro-002"
     GEMINI_10_PRO = "gemini-1.0-pro"
+
   end
 end

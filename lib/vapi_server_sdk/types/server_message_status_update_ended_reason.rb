@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Vapi
-  # This is the reason the call ended. This is only sent if the status is "ended".
+# This is the reason the call ended. This is only sent if the status is "ended".
   class ServerMessageStatusUpdateEndedReason
+
     CALL_START_ERROR_NEITHER_ASSISTANT_NOR_SERVER_SET = "call-start-error-neither-assistant-nor-server-set"
     ASSISTANT_REQUEST_FAILED = "assistant-request-failed"
     ASSISTANT_REQUEST_RETURNED_ERROR = "assistant-request-returned-error"
@@ -96,6 +97,7 @@ module Vapi
     CALL_IN_PROGRESS_ERROR_VAPIFAULT_TRANSPORT_NEVER_CONNECTED = "call.in-progress.error-vapifault-transport-never-connected"
     CALL_IN_PROGRESS_ERROR_VAPIFAULT_TRANSPORT_CONNECTED_BUT_CALL_NOT_ACTIVE = "call.in-progress.error-vapifault-transport-connected-but-call-not-active"
     CALL_IN_PROGRESS_ERROR_VAPIFAULT_CALL_STARTED_BUT_CONNECTION_TO_TRANSPORT_MISSING = "call.in-progress.error-vapifault-call-started-but-connection-to-transport-missing"
+    CALL_IN_PROGRESS_ERROR_VAPIFAULT_WORKER_DIED = "call.in-progress.error-vapifault-worker-died"
     CALL_IN_PROGRESS_ERROR_VAPIFAULT_OPENAI_LLM_FAILED = "call.in-progress.error-vapifault-openai-llm-failed"
     CALL_IN_PROGRESS_ERROR_VAPIFAULT_AZURE_OPENAI_LLM_FAILED = "call.in-progress.error-vapifault-azure-openai-llm-failed"
     CALL_IN_PROGRESS_ERROR_VAPIFAULT_GROQ_LLM_FAILED = "call.in-progress.error-vapifault-groq-llm-failed"
@@ -392,6 +394,7 @@ module Vapi
     PIPELINE_ERROR_ELEVEN_LABS_INVALID_API_KEY = "pipeline-error-eleven-labs-invalid-api-key"
     PIPELINE_ERROR_ELEVEN_LABS_INVALID_VOICE_SAMPLES = "pipeline-error-eleven-labs-invalid-voice-samples"
     PIPELINE_ERROR_ELEVEN_LABS_VOICE_DISABLED_BY_OWNER = "pipeline-error-eleven-labs-voice-disabled-by-owner"
+    PIPELINE_ERROR_ELEVEN_LABS_VAPI_VOICE_DISABLED_BY_OWNER = "pipeline-error-eleven-labs-vapi-voice-disabled-by-owner"
     PIPELINE_ERROR_ELEVEN_LABS_BLOCKED_ACCOUNT_IN_PROBATION = "pipeline-error-eleven-labs-blocked-account-in-probation"
     PIPELINE_ERROR_ELEVEN_LABS_BLOCKED_CONTENT_AGAINST_THEIR_POLICY = "pipeline-error-eleven-labs-blocked-content-against-their-policy"
     PIPELINE_ERROR_ELEVEN_LABS_MISSING_SAMPLES_FOR_VOICE_CLONE = "pipeline-error-eleven-labs-missing-samples-for-voice-clone"
@@ -483,12 +486,20 @@ module Vapi
     PHONE_CALL_PROVIDER_CLOSED_WEBSOCKET = "phone-call-provider-closed-websocket"
     CALL_FORWARDING_OPERATOR_BUSY = "call.forwarding.operator-busy"
     SILENCE_TIMED_OUT = "silence-timed-out"
-    CALL_IN_PROGRESS_ERROR_SIP_TELEPHONY_PROVIDER_FAILED_TO_CONNECT_CALL = "call.in-progress.error-sip-telephony-provider-failed-to-connect-call"
+    CALL_IN_PROGRESS_ERROR_SIP_INBOUND_CALL_FAILED_TO_CONNECT = "call.in-progress.error-sip-inbound-call-failed-to-connect"
+    CALL_IN_PROGRESS_ERROR_PROVIDERFAULT_OUTBOUND_SIP_403_FORBIDDEN = "call.in-progress.error-providerfault-outbound-sip-403-forbidden"
+    CALL_IN_PROGRESS_ERROR_PROVIDERFAULT_OUTBOUND_SIP_407_PROXY_AUTHENTICATION_REQUIRED = "call.in-progress.error-providerfault-outbound-sip-407-proxy-authentication-required"
+    CALL_IN_PROGRESS_ERROR_PROVIDERFAULT_OUTBOUND_SIP_503_SERVICE_UNAVAILABLE = "call.in-progress.error-providerfault-outbound-sip-503-service-unavailable"
+    CALL_IN_PROGRESS_ERROR_PROVIDERFAULT_OUTBOUND_SIP_480_TEMPORARILY_UNAVAILABLE = "call.in-progress.error-providerfault-outbound-sip-480-temporarily-unavailable"
+    CALL_IN_PROGRESS_ERROR_SIP_OUTBOUND_CALL_FAILED_TO_CONNECT = "call.in-progress.error-sip-outbound-call-failed-to-connect"
     CALL_RINGING_HOOK_EXECUTED_SAY = "call.ringing.hook-executed-say"
     CALL_RINGING_HOOK_EXECUTED_TRANSFER = "call.ringing.hook-executed-transfer"
+    CALL_RINGING_SIP_INBOUND_CALLER_HUNGUP_BEFORE_CALL_CONNECT = "call.ringing.sip-inbound-caller-hungup-before-call-connect"
+    CALL_RINGING_ERROR_SIP_INBOUND_CALL_FAILED_TO_CONNECT = "call.ringing.error-sip-inbound-call-failed-to-connect"
     TWILIO_FAILED_TO_CONNECT_CALL = "twilio-failed-to-connect-call"
     TWILIO_REPORTED_CUSTOMER_MISDIALED = "twilio-reported-customer-misdialed"
     VONAGE_REJECTED = "vonage-rejected"
     VOICEMAIL = "voicemail"
+
   end
 end

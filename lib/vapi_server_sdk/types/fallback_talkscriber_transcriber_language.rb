@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module Vapi
-  # This is the language that will be set for the transcription. The list of
-  #  languages Whisper supports can be found here:
-  #  https://github.com/openai/whisper/blob/main/whisper/tokenizer.py
+# This is the language that will be set for the transcription. The list of
+#  languages Whisper supports can be found here:
+#  https://github.com/openai/whisper/blob/main/whisper/tokenizer.py
   class FallbackTalkscriberTranscriberLanguage
+
     EN = "en"
     ZH = "zh"
     DE = "de"
@@ -105,5 +106,6 @@ module Vapi
     JW = "jw"
     SU = "su"
     YUE = "yue"
+
   end
 end

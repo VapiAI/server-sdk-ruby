@@ -2,7 +2,9 @@
 
 module Vapi
   class LmntVoiceIdEnum
+
     LILY = "lily"
     DANIEL = "daniel"
+
   end
 end

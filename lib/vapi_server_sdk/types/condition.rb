@@ -1,20 +1,19 @@
 # frozen_string_literal: true
-
 require_relative "condition_operator"
 require "ostruct"
 require "json"
 
 module Vapi
   class Condition
-    # @return [Vapi::ConditionOperator] This is the operator you want to use to compare the parameter and value.
+  # @return [Vapi::ConditionOperator] This is the operator you want to use to compare the parameter and value.
     attr_reader :operator
-    # @return [String] This is the name of the parameter that you want to check.
+  # @return [String] This is the name of the parameter that you want to check.
     attr_reader :param
-    # @return [String] This is the value you want to compare against the parameter.
+  # @return [String] This is the value you want to compare against the parameter.
     attr_reader :value
-    # @return [OpenStruct] Additional properties unmapped to the current class definition
+  # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-    # @return [Object]
+  # @return [Object] 
     attr_reader :_field_set
     protected :_field_set
 
@@ -32,10 +31,9 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = { "operator": operator, "param": param, "value": value }
     end
-
-    # Deserialize a JSON object to an instance of Condition
+# Deserialize a JSON object to an instance of Condition
     #
-    # @param json_object [String]
+    # @param json_object [String] 
     # @return [Vapi::Condition]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -50,19 +48,17 @@ module Vapi
         additional_properties: struct
       )
     end
-
-    # Serialize an instance of Condition to a JSON object
+# Serialize an instance of Condition to a JSON object
     #
     # @return [String]
-    def to_json(*_args)
+    def to_json
       @_field_set&.to_json
     end
-
-    # Leveraged for Union-type generation, validate_raw attempts to parse the given
-    #  hash and check each fields type against the current object's property
-    #  definitions.
+# Leveraged for Union-type generation, validate_raw attempts to parse the given
+#  hash and check each fields type against the current object's property
+#  definitions.
     #
-    # @param obj [Object]
+    # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
       obj.operator.is_a?(Vapi::ConditionOperator) != false || raise("Passed value for field obj.operator is not the expected type, validation failed.")

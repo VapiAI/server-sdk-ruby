@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Vapi
-  # This is the specific resource, relevant only to API logs.
+# This is the specific resource, relevant only to API logs.
   class LogResource
+
     ORG = "org"
     ASSISTANT = "assistant"
     ANALYTICS = "analytics"
@@ -19,5 +20,6 @@ module Vapi
     FILE = "file"
     METRIC = "metric"
     LOG = "log"
+
   end
 end
