@@ -15,6 +15,7 @@ require_relative "smallest_ai_voice"
 require_relative "tavus_voice"
 require_relative "vapi_voice"
 require_relative "sesame_voice"
+require_relative "inworld_voice"
 
 module Vapi
 # These are the options for the assistant's voice.
@@ -71,6 +72,8 @@ module Vapi
         member = Vapi::VapiVoice.from_json(json_object: json_object)
       when "sesame"
         member = Vapi::SesameVoice.from_json(json_object: json_object)
+      when "inworld"
+        member = Vapi::InworldVoice.from_json(json_object: json_object)
       else
         member = Vapi::AzureVoice.from_json(json_object: json_object)
       end
@@ -110,6 +113,8 @@ module Vapi
       when "vapi"
         { **@member.to_json, provider: @discriminant }.to_json
       when "sesame"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "inworld"
         { **@member.to_json, provider: @discriminant }.to_json
       else
         { "provider": @discriminant, value: @member }.to_json
@@ -154,6 +159,8 @@ module Vapi
         Vapi::VapiVoice.validate_raw(obj: obj)
       when "sesame"
         Vapi::SesameVoice.validate_raw(obj: obj)
+      when "inworld"
+        Vapi::InworldVoice.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -239,6 +246,11 @@ module Vapi
     # @return [Vapi::AssistantVoice]
     def self.sesame(member:)
       new(member: member, discriminant: "sesame")
+    end
+    # @param member [Vapi::InworldVoice] 
+    # @return [Vapi::AssistantVoice]
+    def self.inworld(member:)
+      new(member: member, discriminant: "inworld")
     end
   end
 end

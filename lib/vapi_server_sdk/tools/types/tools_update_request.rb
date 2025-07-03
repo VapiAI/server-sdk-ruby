@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require "json"
+require_relative "../../types/update_api_request_tool_dto"
 require_relative "../../types/update_dtmf_tool_dto"
 require_relative "../../types/update_end_call_tool_dto"
 require_relative "../../types/update_function_tool_dto"
@@ -47,6 +48,8 @@ module Vapi
       def self.from_json(json_object:)
         struct = JSON.parse(json_object, object_class: OpenStruct)
         case struct.type
+        when "apiRequest"
+          member = Vapi::UpdateApiRequestToolDto.from_json(json_object: json_object)
         when "dtmf"
           member = Vapi::UpdateDtmfToolDto.from_json(json_object: json_object)
         when "endCall"
@@ -90,7 +93,7 @@ module Vapi
         when "gohighlevel.contact.get"
           member = Vapi::UpdateGoHighLevelContactGetToolDto.from_json(json_object: json_object)
         else
-          member = Vapi::UpdateDtmfToolDto.from_json(json_object: json_object)
+          member = Vapi::UpdateApiRequestToolDto.from_json(json_object: json_object)
         end
         new(member: member, discriminant: struct.type)
       end
@@ -99,6 +102,8 @@ module Vapi
       # @return [String]
       def to_json
         case @discriminant
+        when "apiRequest"
+          { **@member.to_json, type: @discriminant }.to_json
         when "dtmf"
           { **@member.to_json, type: @discriminant }.to_json
         when "endCall"
@@ -154,6 +159,8 @@ module Vapi
       # @return [Void]
       def self.validate_raw(obj:)
         case obj.type
+        when "apiRequest"
+          Vapi::UpdateApiRequestToolDto.validate_raw(obj: obj)
         when "dtmf"
           Vapi::UpdateDtmfToolDto.validate_raw(obj: obj)
         when "endCall"
@@ -206,6 +213,11 @@ module Vapi
       # @return [Boolean]
       def is_a?(obj)
         @member.is_a?(obj)
+      end
+      # @param member [Vapi::UpdateApiRequestToolDto] 
+      # @return [Vapi::Tools::ToolsUpdateRequest]
+      def self.api_request(member:)
+        new(member: member, discriminant: "apiRequest")
       end
       # @param member [Vapi::UpdateDtmfToolDto] 
       # @return [Vapi::Tools::ToolsUpdateRequest]

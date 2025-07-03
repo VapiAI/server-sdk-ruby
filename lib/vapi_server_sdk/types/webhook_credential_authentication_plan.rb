@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require "json"
-require_relative "ai_edge_condition"
-require_relative "logic_edge_condition"
-require_relative "failed_edge_condition"
+require_relative "o_auth_2_authentication_plan"
+require_relative "hmac_authentication_plan"
 
 module Vapi
-  class EdgeCondition
+# This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
+  class WebhookCredentialAuthenticationPlan
   # @return [Object] 
     attr_reader :member
   # @return [String] 
@@ -16,26 +16,24 @@ module Vapi
 
     # @param member [Object] 
     # @param discriminant [String] 
-    # @return [Vapi::EdgeCondition]
+    # @return [Vapi::WebhookCredentialAuthenticationPlan]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
-# Deserialize a JSON object to an instance of EdgeCondition
+# Deserialize a JSON object to an instance of WebhookCredentialAuthenticationPlan
     #
     # @param json_object [String] 
-    # @return [Vapi::EdgeCondition]
+    # @return [Vapi::WebhookCredentialAuthenticationPlan]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       case struct.type
-      when "ai"
-        member = Vapi::AiEdgeCondition.from_json(json_object: json_object)
-      when "logic"
-        member = Vapi::LogicEdgeCondition.from_json(json_object: json_object)
-      when "failed"
-        member = Vapi::FailedEdgeCondition.from_json(json_object: json_object)
+      when "oauth2"
+        member = Vapi::OAuth2AuthenticationPlan.from_json(json_object: json_object)
+      when "hmac"
+        member = Vapi::HmacAuthenticationPlan.from_json(json_object: json_object)
       else
-        member = Vapi::AiEdgeCondition.from_json(json_object: json_object)
+        member = Vapi::OAuth2AuthenticationPlan.from_json(json_object: json_object)
       end
       new(member: member, discriminant: struct.type)
     end
@@ -44,11 +42,9 @@ module Vapi
     # @return [String]
     def to_json
       case @discriminant
-      when "ai"
+      when "oauth2"
         { **@member.to_json, type: @discriminant }.to_json
-      when "logic"
-        { **@member.to_json, type: @discriminant }.to_json
-      when "failed"
+      when "hmac"
         { **@member.to_json, type: @discriminant }.to_json
       else
         { "type": @discriminant, value: @member }.to_json
@@ -63,12 +59,10 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.type
-      when "ai"
-        Vapi::AiEdgeCondition.validate_raw(obj: obj)
-      when "logic"
-        Vapi::LogicEdgeCondition.validate_raw(obj: obj)
-      when "failed"
-        Vapi::FailedEdgeCondition.validate_raw(obj: obj)
+      when "oauth2"
+        Vapi::OAuth2AuthenticationPlan.validate_raw(obj: obj)
+      when "hmac"
+        Vapi::HmacAuthenticationPlan.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -80,20 +74,15 @@ module Vapi
     def is_a?(obj)
       @member.is_a?(obj)
     end
-    # @param member [Vapi::AiEdgeCondition] 
-    # @return [Vapi::EdgeCondition]
-    def self.ai(member:)
-      new(member: member, discriminant: "ai")
+    # @param member [Vapi::OAuth2AuthenticationPlan] 
+    # @return [Vapi::WebhookCredentialAuthenticationPlan]
+    def self.oauth_2(member:)
+      new(member: member, discriminant: "oauth2")
     end
-    # @param member [Vapi::LogicEdgeCondition] 
-    # @return [Vapi::EdgeCondition]
-    def self.logic(member:)
-      new(member: member, discriminant: "logic")
-    end
-    # @param member [Vapi::FailedEdgeCondition] 
-    # @return [Vapi::EdgeCondition]
-    def self.failed(member:)
-      new(member: member, discriminant: "failed")
+    # @param member [Vapi::HmacAuthenticationPlan] 
+    # @return [Vapi::WebhookCredentialAuthenticationPlan]
+    def self.hmac(member:)
+      new(member: member, discriminant: "hmac")
     end
   end
 end

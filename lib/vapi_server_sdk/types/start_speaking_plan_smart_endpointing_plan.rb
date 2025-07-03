@@ -2,6 +2,7 @@
 require "json"
 require_relative "vapi_smart_endpointing_plan"
 require_relative "livekit_smart_endpointing_plan"
+require_relative "custom_endpointing_model_smart_endpointing_plan"
 
 module Vapi
 # This is the plan for smart endpointing. Pick between Vapi smart endpointing or
@@ -41,6 +42,16 @@ end
       rescue StandardError
         # noop
       end
+      begin
+        Vapi::CustomEndpointingModelSmartEndpointingPlan.validate_raw(obj: struct)
+        unless struct.nil?
+  return Vapi::CustomEndpointingModelSmartEndpointingPlan.from_json(json_object: struct)
+else
+  return nil
+end
+      rescue StandardError
+        # noop
+      end
  return struct
     end
 # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -57,6 +68,11 @@ end
       end
       begin
         return Vapi::LivekitSmartEndpointingPlan.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::CustomEndpointingModelSmartEndpointingPlan.validate_raw(obj: obj)
       rescue StandardError
         # noop
       end

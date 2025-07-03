@@ -15,6 +15,8 @@ module Vapi
     attr_reader :tts
   # @return [Float] This is the cost of Vapi.
     attr_reader :vapi
+  # @return [Float] This is the cost of chat interactions.
+    attr_reader :chat
   # @return [Float] This is the total cost of the call.
     attr_reader :total
   # @return [Float] This is the LLM prompt tokens used for the call.
@@ -38,6 +40,7 @@ module Vapi
     # @param llm [Float] This is the cost of the language model.
     # @param tts [Float] This is the cost of the text-to-speech service.
     # @param vapi [Float] This is the cost of Vapi.
+    # @param chat [Float] This is the cost of chat interactions.
     # @param total [Float] This is the total cost of the call.
     # @param llm_prompt_tokens [Float] This is the LLM prompt tokens used for the call.
     # @param llm_completion_tokens [Float] This is the LLM completion tokens used for the call.
@@ -45,19 +48,20 @@ module Vapi
     # @param analysis_cost_breakdown [Vapi::AnalysisCostBreakdown] This is the cost of the analysis.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CostBreakdown]
-    def initialize(transport: OMIT, stt: OMIT, llm: OMIT, tts: OMIT, vapi: OMIT, total: OMIT, llm_prompt_tokens: OMIT, llm_completion_tokens: OMIT, tts_characters: OMIT, analysis_cost_breakdown: OMIT, additional_properties: nil)
+    def initialize(transport: OMIT, stt: OMIT, llm: OMIT, tts: OMIT, vapi: OMIT, chat: OMIT, total: OMIT, llm_prompt_tokens: OMIT, llm_completion_tokens: OMIT, tts_characters: OMIT, analysis_cost_breakdown: OMIT, additional_properties: nil)
       @transport = transport if transport != OMIT
       @stt = stt if stt != OMIT
       @llm = llm if llm != OMIT
       @tts = tts if tts != OMIT
       @vapi = vapi if vapi != OMIT
+      @chat = chat if chat != OMIT
       @total = total if total != OMIT
       @llm_prompt_tokens = llm_prompt_tokens if llm_prompt_tokens != OMIT
       @llm_completion_tokens = llm_completion_tokens if llm_completion_tokens != OMIT
       @tts_characters = tts_characters if tts_characters != OMIT
       @analysis_cost_breakdown = analysis_cost_breakdown if analysis_cost_breakdown != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "transport": transport, "stt": stt, "llm": llm, "tts": tts, "vapi": vapi, "total": total, "llmPromptTokens": llm_prompt_tokens, "llmCompletionTokens": llm_completion_tokens, "ttsCharacters": tts_characters, "analysisCostBreakdown": analysis_cost_breakdown }.reject do | _k, v |
+      @_field_set = { "transport": transport, "stt": stt, "llm": llm, "tts": tts, "vapi": vapi, "chat": chat, "total": total, "llmPromptTokens": llm_prompt_tokens, "llmCompletionTokens": llm_completion_tokens, "ttsCharacters": tts_characters, "analysisCostBreakdown": analysis_cost_breakdown }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -73,6 +77,7 @@ end
       llm = parsed_json["llm"]
       tts = parsed_json["tts"]
       vapi = parsed_json["vapi"]
+      chat = parsed_json["chat"]
       total = parsed_json["total"]
       llm_prompt_tokens = parsed_json["llmPromptTokens"]
       llm_completion_tokens = parsed_json["llmCompletionTokens"]
@@ -89,6 +94,7 @@ end
         llm: llm,
         tts: tts,
         vapi: vapi,
+        chat: chat,
         total: total,
         llm_prompt_tokens: llm_prompt_tokens,
         llm_completion_tokens: llm_completion_tokens,
@@ -115,6 +121,7 @@ end
       obj.llm&.is_a?(Float) != false || raise("Passed value for field obj.llm is not the expected type, validation failed.")
       obj.tts&.is_a?(Float) != false || raise("Passed value for field obj.tts is not the expected type, validation failed.")
       obj.vapi&.is_a?(Float) != false || raise("Passed value for field obj.vapi is not the expected type, validation failed.")
+      obj.chat&.is_a?(Float) != false || raise("Passed value for field obj.chat is not the expected type, validation failed.")
       obj.total&.is_a?(Float) != false || raise("Passed value for field obj.total is not the expected type, validation failed.")
       obj.llm_prompt_tokens&.is_a?(Float) != false || raise("Passed value for field obj.llm_prompt_tokens is not the expected type, validation failed.")
       obj.llm_completion_tokens&.is_a?(Float) != false || raise("Passed value for field obj.llm_completion_tokens is not the expected type, validation failed.")

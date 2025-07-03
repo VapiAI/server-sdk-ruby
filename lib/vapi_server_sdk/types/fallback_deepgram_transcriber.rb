@@ -16,38 +16,6 @@ module Vapi
   # @return [Boolean] This will be use smart format option provided by Deepgram. It's default disabled
 #  because it can sometimes format numbers as times but it's getting better.
     attr_reader :smart_format
-  # @return [Boolean] This automatically switches the transcriber's language when the customer's
-#  language changes. Defaults to false.
-#  Usage:
-#  - If your customers switch languages mid-call, you can set this to true.
-#  Note:
-#  - To detect language changes, Vapi uses a custom trained model. Languages
-#  supported (X = limited support):
-#  1. Arabic
-#  2. Bengali
-#  3. Cantonese
-#  4. Chinese
-#  5. Chinese Simplified (X)
-#  6. Chinese Traditional (X)
-#  7. English
-#  8. Farsi (X)
-#  9. French
-#  10. German
-#  11. Haitian Creole (X)
-#  12. Hindi
-#  13. Italian
-#  14. Japanese
-#  15. Korean
-#  16. Portuguese
-#  17. Russian
-#  18. Spanish
-#  19. Thai
-#  20. Urdu
-#  21. Vietnamese
-#  - To receive `language-change-detected` webhook events, add it to
-#  `assistant.serverMessages`.
-#  @default false
-    attr_reader :code_switching_enabled
   # @return [Boolean] If set to true, this will add mip_opt_out=true as a query parameter of all API
 #  requests. See
 #  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
@@ -98,37 +66,6 @@ module Vapi
 #  https://developers.deepgram.com/docs/models-languages-overview
     # @param smart_format [Boolean] This will be use smart format option provided by Deepgram. It's default disabled
 #  because it can sometimes format numbers as times but it's getting better.
-    # @param code_switching_enabled [Boolean] This automatically switches the transcriber's language when the customer's
-#  language changes. Defaults to false.
-#  Usage:
-#  - If your customers switch languages mid-call, you can set this to true.
-#  Note:
-#  - To detect language changes, Vapi uses a custom trained model. Languages
-#  supported (X = limited support):
-#  1. Arabic
-#  2. Bengali
-#  3. Cantonese
-#  4. Chinese
-#  5. Chinese Simplified (X)
-#  6. Chinese Traditional (X)
-#  7. English
-#  8. Farsi (X)
-#  9. French
-#  10. German
-#  11. Haitian Creole (X)
-#  12. Hindi
-#  13. Italian
-#  14. Japanese
-#  15. Korean
-#  16. Portuguese
-#  17. Russian
-#  18. Spanish
-#  19. Thai
-#  20. Urdu
-#  21. Vietnamese
-#  - To receive `language-change-detected` webhook events, add it to
-#  `assistant.serverMessages`.
-#  @default false
     # @param mip_opt_out [Boolean] If set to true, this will add mip_opt_out=true as a query parameter of all API
 #  requests. See
 #  gram.com/docs/the-deepgram-model-improvement-partnership-program#want-to-opt-out
@@ -160,11 +97,10 @@ module Vapi
 #  @default 10
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackDeepgramTranscriber]
-    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, code_switching_enabled: OMIT, mip_opt_out: OMIT, numerals: OMIT, confidence_threshold: OMIT, keywords: OMIT, keyterm: OMIT, endpointing: OMIT, additional_properties: nil)
+    def initialize(model: OMIT, language: OMIT, smart_format: OMIT, mip_opt_out: OMIT, numerals: OMIT, confidence_threshold: OMIT, keywords: OMIT, keyterm: OMIT, endpointing: OMIT, additional_properties: nil)
       @model = model if model != OMIT
       @language = language if language != OMIT
       @smart_format = smart_format if smart_format != OMIT
-      @code_switching_enabled = code_switching_enabled if code_switching_enabled != OMIT
       @mip_opt_out = mip_opt_out if mip_opt_out != OMIT
       @numerals = numerals if numerals != OMIT
       @confidence_threshold = confidence_threshold if confidence_threshold != OMIT
@@ -172,7 +108,7 @@ module Vapi
       @keyterm = keyterm if keyterm != OMIT
       @endpointing = endpointing if endpointing != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "model": model, "language": language, "smartFormat": smart_format, "codeSwitchingEnabled": code_switching_enabled, "mipOptOut": mip_opt_out, "numerals": numerals, "confidenceThreshold": confidence_threshold, "keywords": keywords, "keyterm": keyterm, "endpointing": endpointing }.reject do | _k, v |
+      @_field_set = { "model": model, "language": language, "smartFormat": smart_format, "mipOptOut": mip_opt_out, "numerals": numerals, "confidenceThreshold": confidence_threshold, "keywords": keywords, "keyterm": keyterm, "endpointing": endpointing }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -186,7 +122,6 @@ end
       model = parsed_json["model"]
       language = parsed_json["language"]
       smart_format = parsed_json["smartFormat"]
-      code_switching_enabled = parsed_json["codeSwitchingEnabled"]
       mip_opt_out = parsed_json["mipOptOut"]
       numerals = parsed_json["numerals"]
       confidence_threshold = parsed_json["confidenceThreshold"]
@@ -197,7 +132,6 @@ end
         model: model,
         language: language,
         smart_format: smart_format,
-        code_switching_enabled: code_switching_enabled,
         mip_opt_out: mip_opt_out,
         numerals: numerals,
         confidence_threshold: confidence_threshold,
@@ -223,7 +157,6 @@ end
       obj.model&.is_a?(Vapi::DeepgramTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::DeepgramTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.smart_format&.is_a?(Boolean) != false || raise("Passed value for field obj.smart_format is not the expected type, validation failed.")
-      obj.code_switching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.code_switching_enabled is not the expected type, validation failed.")
       obj.mip_opt_out&.is_a?(Boolean) != false || raise("Passed value for field obj.mip_opt_out is not the expected type, validation failed.")
       obj.numerals&.is_a?(Boolean) != false || raise("Passed value for field obj.numerals is not the expected type, validation failed.")
       obj.confidence_threshold&.is_a?(Float) != false || raise("Passed value for field obj.confidence_threshold is not the expected type, validation failed.")

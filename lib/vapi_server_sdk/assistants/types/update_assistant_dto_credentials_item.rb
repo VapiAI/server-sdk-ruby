@@ -170,6 +170,8 @@ module Vapi
           member = Vapi::CreateSlackOAuth2AuthorizationCredentialDto.from_json(json_object: json_object)
         when "ghl.oauth2-authorization"
           member = Vapi::CreateGoHighLevelMcpCredentialDto.from_json(json_object: json_object)
+        when "inworld"
+          member = json_object.value
         else
           member = Vapi::CreateElevenLabsCredentialDto.from_json(json_object: json_object)
         end
@@ -276,6 +278,8 @@ module Vapi
           { **@member.to_json, provider: @discriminant }.to_json
         when "ghl.oauth2-authorization"
           { **@member.to_json, provider: @discriminant }.to_json
+        when "inworld"
+          { "provider": @discriminant, "value": @member }.to_json
         else
           { "provider": @discriminant, value: @member }.to_json
         end
@@ -385,6 +389,8 @@ module Vapi
           Vapi::CreateSlackOAuth2AuthorizationCredentialDto.validate_raw(obj: obj)
         when "ghl.oauth2-authorization"
           Vapi::CreateGoHighLevelMcpCredentialDto.validate_raw(obj: obj)
+        when "inworld"
+          obj.is_a?(Object) != false || raise("Passed value for field obj is not the expected type, validation failed.")
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -635,6 +641,11 @@ module Vapi
       # @return [Vapi::Assistants::UpdateAssistantDtoCredentialsItem]
       def self.ghl_oauth_2_authorization(member:)
         new(member: member, discriminant: "ghl.oauth2-authorization")
+      end
+      # @param member [Object] 
+      # @return [Vapi::Assistants::UpdateAssistantDtoCredentialsItem]
+      def self.inworld(member:)
+        new(member: member, discriminant: "inworld")
       end
     end
   end

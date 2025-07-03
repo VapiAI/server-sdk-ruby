@@ -4,6 +4,7 @@ require_relative "types_export"
 require_relative "requests"
 require_relative "vapi_server_sdk/calls/client"
 require_relative "vapi_server_sdk/chats/client"
+require_relative "vapi_server_sdk/campaigns/client"
 require_relative "vapi_server_sdk/sessions/client"
 require_relative "vapi_server_sdk/assistants/client"
 require_relative "vapi_server_sdk/phone_numbers/client"
@@ -25,6 +26,8 @@ module Vapi
     attr_reader :calls
   # @return [Vapi::ChatsClient] 
     attr_reader :chats
+  # @return [Vapi::CampaignsClient] 
+    attr_reader :campaigns
   # @return [Vapi::SessionsClient] 
     attr_reader :sessions
   # @return [Vapi::AssistantsClient] 
@@ -69,6 +72,7 @@ module Vapi
 )
       @calls = Vapi::CallsClient.new(request_client: @request_client)
       @chats = Vapi::ChatsClient.new(request_client: @request_client)
+      @campaigns = Vapi::CampaignsClient.new(request_client: @request_client)
       @sessions = Vapi::SessionsClient.new(request_client: @request_client)
       @assistants = Vapi::AssistantsClient.new(request_client: @request_client)
       @phone_numbers = Vapi::PhoneNumbersClient.new(request_client: @request_client)
@@ -89,6 +93,8 @@ module Vapi
     attr_reader :calls
   # @return [Vapi::AsyncChatsClient] 
     attr_reader :chats
+  # @return [Vapi::AsyncCampaignsClient] 
+    attr_reader :campaigns
   # @return [Vapi::AsyncSessionsClient] 
     attr_reader :sessions
   # @return [Vapi::AsyncAssistantsClient] 
@@ -133,6 +139,7 @@ module Vapi
 )
       @calls = Vapi::AsyncCallsClient.new(request_client: @async_request_client)
       @chats = Vapi::AsyncChatsClient.new(request_client: @async_request_client)
+      @campaigns = Vapi::AsyncCampaignsClient.new(request_client: @async_request_client)
       @sessions = Vapi::AsyncSessionsClient.new(request_client: @async_request_client)
       @assistants = Vapi::AsyncAssistantsClient.new(request_client: @async_request_client)
       @phone_numbers = Vapi::AsyncPhoneNumbersClient.new(request_client: @async_request_client)

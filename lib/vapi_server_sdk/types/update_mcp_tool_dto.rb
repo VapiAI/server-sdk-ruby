@@ -2,6 +2,7 @@
 require_relative "update_mcp_tool_dto_messages_item"
 require_relative "server"
 require_relative "open_ai_function"
+require_relative "mcp_tool_metadata"
 require "ostruct"
 require "json"
 
@@ -33,6 +34,8 @@ module Vapi
 #  "request-complete" messages. One of these messages will be triggered if the
 #  `messages[].conditions` matches the "reason" argument.
     attr_reader :function
+  # @return [Vapi::McpToolMetadata] 
+    attr_reader :metadata
   # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
   # @return [Object] 
@@ -64,14 +67,16 @@ module Vapi
 #  argument "reason". Then, in `messages` array, you can have many
 #  "request-complete" messages. One of these messages will be triggered if the
 #  `messages[].conditions` matches the "reason" argument.
+    # @param metadata [Vapi::McpToolMetadata] 
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateMcpToolDto]
-    def initialize(messages: OMIT, server: OMIT, function: OMIT, additional_properties: nil)
+    def initialize(messages: OMIT, server: OMIT, function: OMIT, metadata: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @server = server if server != OMIT
       @function = function if function != OMIT
+      @metadata = metadata if metadata != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "messages": messages, "server": server, "function": function }.reject do | _k, v |
+      @_field_set = { "messages": messages, "server": server, "function": function, "metadata": metadata }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -98,10 +103,17 @@ end
       else
         function = nil
       end
+      unless parsed_json["metadata"].nil?
+        metadata = parsed_json["metadata"].to_json
+        metadata = Vapi::McpToolMetadata.from_json(json_object: metadata)
+      else
+        metadata = nil
+      end
       new(
         messages: messages,
         server: server,
         function: function,
+        metadata: metadata,
         additional_properties: struct
       )
     end
@@ -121,6 +133,7 @@ end
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
+      obj.metadata.nil? || Vapi::McpToolMetadata.validate_raw(obj: obj.metadata)
     end
   end
 end

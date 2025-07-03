@@ -17,6 +17,7 @@ require_relative "server_message_user_interrupted"
 require_relative "server_message_language_change_detected"
 require_relative "server_message_voice_input"
 require_relative "server_message_voice_request"
+require_relative "server_message_call_endpointing_request"
 
 module Vapi
 # These are all the messages that can be sent to your server before, after and
@@ -207,6 +208,16 @@ end
       rescue StandardError
         # noop
       end
+      begin
+        Vapi::ServerMessageCallEndpointingRequest.validate_raw(obj: struct)
+        unless struct.nil?
+  return Vapi::ServerMessageCallEndpointingRequest.from_json(json_object: struct)
+else
+  return nil
+end
+      rescue StandardError
+        # noop
+      end
  return struct
     end
 # Leveraged for Union-type generation, validate_raw attempts to parse the given
@@ -298,6 +309,11 @@ end
       end
       begin
         return Vapi::ServerMessageVoiceRequest.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::ServerMessageCallEndpointingRequest.validate_raw(obj: obj)
       rescue StandardError
         # noop
       end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require_relative "server_message_response_transfer_destination_request_destination"
+require_relative "server_message_response_transfer_destination_request_message"
 require "ostruct"
 require "json"
 
@@ -7,6 +8,8 @@ module Vapi
   class ServerMessageResponseTransferDestinationRequest
   # @return [Vapi::ServerMessageResponseTransferDestinationRequestDestination] This is the destination you'd like the call to be transferred to.
     attr_reader :destination
+  # @return [Vapi::ServerMessageResponseTransferDestinationRequestMessage] This is the message that will be spoken to the user as the tool is running.
+    attr_reader :message
   # @return [String] This is the error message if the transfer should not be made.
     attr_reader :error
   # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -18,14 +21,16 @@ module Vapi
     OMIT = Object.new
 
     # @param destination [Vapi::ServerMessageResponseTransferDestinationRequestDestination] This is the destination you'd like the call to be transferred to.
+    # @param message [Vapi::ServerMessageResponseTransferDestinationRequestMessage] This is the message that will be spoken to the user as the tool is running.
     # @param error [String] This is the error message if the transfer should not be made.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageResponseTransferDestinationRequest]
-    def initialize(destination: OMIT, error: OMIT, additional_properties: nil)
+    def initialize(destination: OMIT, message: OMIT, error: OMIT, additional_properties: nil)
       @destination = destination if destination != OMIT
+      @message = message if message != OMIT
       @error = error if error != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "destination": destination, "error": error }.reject do | _k, v |
+      @_field_set = { "destination": destination, "message": message, "error": error }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -43,9 +48,16 @@ end
       else
         destination = nil
       end
+      unless parsed_json["message"].nil?
+        message = parsed_json["message"].to_json
+        message = Vapi::ServerMessageResponseTransferDestinationRequestMessage.from_json(json_object: message)
+      else
+        message = nil
+      end
       error = parsed_json["error"]
       new(
         destination: destination,
+        message: message,
         error: error,
         additional_properties: struct
       )
@@ -65,6 +77,7 @@ end
     # @return [Void]
     def self.validate_raw(obj:)
       obj.destination.nil? || Vapi::ServerMessageResponseTransferDestinationRequestDestination.validate_raw(obj: obj.destination)
+      obj.message.nil? || Vapi::ServerMessageResponseTransferDestinationRequestMessage.validate_raw(obj: obj.message)
       obj.error&.is_a?(String) != false || raise("Passed value for field obj.error is not the expected type, validation failed.")
     end
   end

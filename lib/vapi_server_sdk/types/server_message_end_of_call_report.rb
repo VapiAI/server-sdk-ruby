@@ -6,6 +6,7 @@ require_relative "artifact"
 require_relative "create_assistant_dto"
 require_relative "create_customer_dto"
 require_relative "call"
+require_relative "chat"
 require_relative "analysis"
 require "date"
 require "date"
@@ -39,6 +40,8 @@ module Vapi
     attr_reader :customer
   # @return [Vapi::Call] This is the call that the message is associated with.
     attr_reader :call
+  # @return [Vapi::Chat] This is the chat object.
+    attr_reader :chat
   # @return [Vapi::Analysis] This is the analysis of the call. This can also be found at `call.analysis` on
 #  GET /call/:id.
     attr_reader :analysis
@@ -71,6 +74,7 @@ module Vapi
     # @param assistant [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     # @param call [Vapi::Call] This is the call that the message is associated with.
+    # @param chat [Vapi::Chat] This is the chat object.
     # @param analysis [Vapi::Analysis] This is the analysis of the call. This can also be found at `call.analysis` on
 #  GET /call/:id.
     # @param started_at [DateTime] This is the ISO 8601 date-time string of when the call started. This can also be
@@ -79,7 +83,7 @@ module Vapi
 #  found at `call.endedAt` on GET /call/:id.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageEndOfCallReport]
-    def initialize(phone_number: OMIT, type:, ended_reason:, cost: OMIT, costs: OMIT, timestamp: OMIT, artifact:, assistant: OMIT, customer: OMIT, call: OMIT, analysis:, started_at: OMIT, ended_at: OMIT, additional_properties: nil)
+    def initialize(phone_number: OMIT, type:, ended_reason:, cost: OMIT, costs: OMIT, timestamp: OMIT, artifact:, assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, analysis:, started_at: OMIT, ended_at: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
       @type = type
       @ended_reason = ended_reason
@@ -90,11 +94,12 @@ module Vapi
       @assistant = assistant if assistant != OMIT
       @customer = customer if customer != OMIT
       @call = call if call != OMIT
+      @chat = chat if chat != OMIT
       @analysis = analysis
       @started_at = started_at if started_at != OMIT
       @ended_at = ended_at if ended_at != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "phoneNumber": phone_number, "type": type, "endedReason": ended_reason, "cost": cost, "costs": costs, "timestamp": timestamp, "artifact": artifact, "assistant": assistant, "customer": customer, "call": call, "analysis": analysis, "startedAt": started_at, "endedAt": ended_at }.reject do | _k, v |
+      @_field_set = { "phoneNumber": phone_number, "type": type, "endedReason": ended_reason, "cost": cost, "costs": costs, "timestamp": timestamp, "artifact": artifact, "assistant": assistant, "customer": customer, "call": call, "chat": chat, "analysis": analysis, "startedAt": started_at, "endedAt": ended_at }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -143,6 +148,12 @@ end
       else
         call = nil
       end
+      unless parsed_json["chat"].nil?
+        chat = parsed_json["chat"].to_json
+        chat = Vapi::Chat.from_json(json_object: chat)
+      else
+        chat = nil
+      end
       unless parsed_json["analysis"].nil?
         analysis = parsed_json["analysis"].to_json
         analysis = Vapi::Analysis.from_json(json_object: analysis)
@@ -170,6 +181,7 @@ end
         assistant: assistant,
         customer: customer,
         call: call,
+        chat: chat,
         analysis: analysis,
         started_at: started_at,
         ended_at: ended_at,
@@ -199,6 +211,7 @@ end
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
+      obj.chat.nil? || Vapi::Chat.validate_raw(obj: obj.chat)
       Vapi::Analysis.validate_raw(obj: obj.analysis)
       obj.started_at&.is_a?(DateTime) != false || raise("Passed value for field obj.started_at is not the expected type, validation failed.")
       obj.ended_at&.is_a?(DateTime) != false || raise("Passed value for field obj.ended_at is not the expected type, validation failed.")

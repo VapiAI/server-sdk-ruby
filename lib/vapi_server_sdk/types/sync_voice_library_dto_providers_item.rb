@@ -18,6 +18,7 @@ module Vapi
     SMALLEST_AI = "smallest-ai"
     TAVUS = "tavus"
     SESAME = "sesame"
+    INWORLD = "inworld"
 
   end
 end

@@ -86,6 +86,14 @@ module Vapi
     BOULDER = "boulder"
     GYPSUM = "gypsum"
     ZEST = "zest"
+    LUNA = "luna"
+    CELESTE = "celeste"
+    ORION = "orion"
+    URSA = "ursa"
+    ASTRA = "astra"
+    ESTHER = "esther"
+    ESTELLE = "estelle"
+    ANDROMEDA = "andromeda"
 
   end
 end

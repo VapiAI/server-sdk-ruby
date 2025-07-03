@@ -13,6 +13,9 @@ require_relative "fallback_play_ht_voice"
 require_relative "fallback_rime_ai_voice"
 require_relative "fallback_smallest_ai_voice"
 require_relative "fallback_tavus_voice"
+require_relative "fallback_neuphonic_voice"
+require_relative "fallback_sesame_voice"
+require_relative "fallback_inworld_voice"
 
 module Vapi
   class FallbackPlanVoicesItem
@@ -64,6 +67,12 @@ module Vapi
         member = Vapi::FallbackSmallestAiVoice.from_json(json_object: json_object)
       when "tavus"
         member = Vapi::FallbackTavusVoice.from_json(json_object: json_object)
+      when "neuphonic"
+        member = Vapi::FallbackNeuphonicVoice.from_json(json_object: json_object)
+      when "sesame"
+        member = Vapi::FallbackSesameVoice.from_json(json_object: json_object)
+      when "inworld"
+        member = Vapi::FallbackInworldVoice.from_json(json_object: json_object)
       else
         member = Vapi::FallbackAzureVoice.from_json(json_object: json_object)
       end
@@ -99,6 +108,12 @@ module Vapi
       when "smallest-ai"
         { **@member.to_json, provider: @discriminant }.to_json
       when "tavus"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "neuphonic"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "sesame"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "inworld"
         { **@member.to_json, provider: @discriminant }.to_json
       else
         { "provider": @discriminant, value: @member }.to_json
@@ -139,6 +154,12 @@ module Vapi
         Vapi::FallbackSmallestAiVoice.validate_raw(obj: obj)
       when "tavus"
         Vapi::FallbackTavusVoice.validate_raw(obj: obj)
+      when "neuphonic"
+        Vapi::FallbackNeuphonicVoice.validate_raw(obj: obj)
+      when "sesame"
+        Vapi::FallbackSesameVoice.validate_raw(obj: obj)
+      when "inworld"
+        Vapi::FallbackInworldVoice.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -214,6 +235,21 @@ module Vapi
     # @return [Vapi::FallbackPlanVoicesItem]
     def self.tavus(member:)
       new(member: member, discriminant: "tavus")
+    end
+    # @param member [Vapi::FallbackNeuphonicVoice] 
+    # @return [Vapi::FallbackPlanVoicesItem]
+    def self.neuphonic(member:)
+      new(member: member, discriminant: "neuphonic")
+    end
+    # @param member [Vapi::FallbackSesameVoice] 
+    # @return [Vapi::FallbackPlanVoicesItem]
+    def self.sesame(member:)
+      new(member: member, discriminant: "sesame")
+    end
+    # @param member [Vapi::FallbackInworldVoice] 
+    # @return [Vapi::FallbackPlanVoicesItem]
+    def self.inworld(member:)
+      new(member: member, discriminant: "inworld")
     end
   end
 end

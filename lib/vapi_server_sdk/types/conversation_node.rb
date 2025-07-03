@@ -9,17 +9,62 @@ require "json"
 
 module Vapi
   class ConversationNode
-  # @return [Vapi::ConversationNodeModel] This is the model for the Conversation Task.
+  # @return [Vapi::ConversationNodeModel] This is the model for the node.
+#  This overrides `workflow.model`.
     attr_reader :model
-  # @return [Vapi::ConversationNodeTranscriber] These are the options for the assistant's transcriber.
+  # @return [Vapi::ConversationNodeTranscriber] This is the transcriber for the node.
+#  This overrides `workflow.transcriber`.
     attr_reader :transcriber
-  # @return [Vapi::ConversationNodeVoice] These are the options for the assistant's voice.
+  # @return [Vapi::ConversationNodeVoice] This is the voice for the node.
+#  This overrides `workflow.voice`.
     attr_reader :voice
   # @return [String] 
     attr_reader :prompt
   # @return [Vapi::GlobalNodePlan] This is the plan for the global node.
     attr_reader :global_node_plan
-  # @return [Vapi::VariableExtractionPlan] This is the plan that controls the variable extraction from the user's response.
+  # @return [Vapi::VariableExtractionPlan] This is the plan that controls the variable extraction from the user's
+#  responses.
+#  Usage:
+#  Use `schema` to specify what you want to extract from the user's responses.
+#  ```json
+#  {
+#  "schema": {
+#  "type": "object",
+#  "properties": {
+#  "user": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "string"
+#  },
+#  "age": {
+#  "type": "number"
+#  }
+#  }
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  This will be extracted as `{{ user.name }}` and `{{ user.age }}` respectively.
+#  (Optional) Use `aliases` to create new variables.
+#  ```json
+#  {
+#  "aliases": [
+#  {
+#  "key": "userAge",
+#  "value": "{{user.age}}"
+#  },
+#  {
+#  "key": "userName",
+#  "value": "{{user.name}}"
+#  }
+#  ]
+#  }
+#  ```
+#  This will be extracted as `{{ userAge }}` and `{{ userName }}` respectively.
+#  Note: The `schema` field is required for Conversation nodes if you want to
+#  extract variables from the user's responses. `aliases` is just a convenience.
     attr_reader :variable_extraction_plan
   # @return [String] 
     attr_reader :name
@@ -35,12 +80,57 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param model [Vapi::ConversationNodeModel] This is the model for the Conversation Task.
-    # @param transcriber [Vapi::ConversationNodeTranscriber] These are the options for the assistant's transcriber.
-    # @param voice [Vapi::ConversationNodeVoice] These are the options for the assistant's voice.
+    # @param model [Vapi::ConversationNodeModel] This is the model for the node.
+#  This overrides `workflow.model`.
+    # @param transcriber [Vapi::ConversationNodeTranscriber] This is the transcriber for the node.
+#  This overrides `workflow.transcriber`.
+    # @param voice [Vapi::ConversationNodeVoice] This is the voice for the node.
+#  This overrides `workflow.voice`.
     # @param prompt [String] 
     # @param global_node_plan [Vapi::GlobalNodePlan] This is the plan for the global node.
-    # @param variable_extraction_plan [Vapi::VariableExtractionPlan] This is the plan that controls the variable extraction from the user's response.
+    # @param variable_extraction_plan [Vapi::VariableExtractionPlan] This is the plan that controls the variable extraction from the user's
+#  responses.
+#  Usage:
+#  Use `schema` to specify what you want to extract from the user's responses.
+#  ```json
+#  {
+#  "schema": {
+#  "type": "object",
+#  "properties": {
+#  "user": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "string"
+#  },
+#  "age": {
+#  "type": "number"
+#  }
+#  }
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  This will be extracted as `{{ user.name }}` and `{{ user.age }}` respectively.
+#  (Optional) Use `aliases` to create new variables.
+#  ```json
+#  {
+#  "aliases": [
+#  {
+#  "key": "userAge",
+#  "value": "{{user.age}}"
+#  },
+#  {
+#  "key": "userName",
+#  "value": "{{user.name}}"
+#  }
+#  ]
+#  }
+#  ```
+#  This will be extracted as `{{ userAge }}` and `{{ userName }}` respectively.
+#  Note: The `schema` field is required for Conversation nodes if you want to
+#  extract variables from the user's responses. `aliases` is just a convenience.
     # @param name [String] 
     # @param is_start [Boolean] This is whether or not the node is the start of the workflow.
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the task.

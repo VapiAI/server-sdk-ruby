@@ -17,6 +17,9 @@ module Vapi
     attr_reader :region
   # @return [String] This is not returned in the API.
     attr_reader :api_key
+  # @return [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
+    attr_reader :fallback_index
   # @return [String] This is the unique identifier for the credential.
     attr_reader :id
   # @return [String] This is the unique identifier for the org that this credential belongs to.
@@ -42,6 +45,8 @@ module Vapi
     # @param service [Vapi::AzureCredentialService] This is the service being used in Azure.
     # @param region [Vapi::AzureCredentialRegion] This is the region of the Azure resource.
     # @param api_key [String] This is not returned in the API.
+    # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
@@ -51,11 +56,12 @@ module Vapi
 #  Blob Storage.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AzureCredential]
-    def initialize(provider:, service:, region: OMIT, api_key: OMIT, id:, org_id:, created_at:, updated_at:, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
+    def initialize(provider:, service:, region: OMIT, api_key: OMIT, fallback_index: OMIT, id:, org_id:, created_at:, updated_at:, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
       @provider = provider
       @service = service
       @region = region if region != OMIT
       @api_key = api_key if api_key != OMIT
+      @fallback_index = fallback_index if fallback_index != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -63,7 +69,7 @@ module Vapi
       @name = name if name != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "service": service, "region": region, "apiKey": api_key, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
+      @_field_set = { "provider": provider, "service": service, "region": region, "apiKey": api_key, "fallbackIndex": fallback_index, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -78,6 +84,7 @@ end
       service = parsed_json["service"]
       region = parsed_json["region"]
       api_key = parsed_json["apiKey"]
+      fallback_index = parsed_json["fallbackIndex"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = unless parsed_json["createdAt"].nil?
@@ -102,6 +109,7 @@ end
         service: service,
         region: region,
         api_key: api_key,
+        fallback_index: fallback_index,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -128,6 +136,7 @@ end
       obj.service.is_a?(Vapi::AzureCredentialService) != false || raise("Passed value for field obj.service is not the expected type, validation failed.")
       obj.region&.is_a?(Vapi::AzureCredentialRegion) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
+      obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

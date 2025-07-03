@@ -10,6 +10,7 @@ require_relative "../../types/google_transcriber"
 require_relative "../../types/speechmatics_transcriber"
 require_relative "../../types/talkscriber_transcriber"
 require_relative "../../types/open_ai_transcriber"
+require_relative "../../types/cartesia_transcriber"
 
 module Vapi
   module Assistants
@@ -57,6 +58,8 @@ module Vapi
           member = Vapi::TalkscriberTranscriber.from_json(json_object: json_object)
         when "openai"
           member = Vapi::OpenAiTranscriber.from_json(json_object: json_object)
+        when "cartesia"
+          member = Vapi::CartesiaTranscriber.from_json(json_object: json_object)
         else
           member = Vapi::AssemblyAiTranscriber.from_json(json_object: json_object)
         end
@@ -86,6 +89,8 @@ module Vapi
         when "talkscriber"
           { **@member.to_json, provider: @discriminant }.to_json
         when "openai"
+          { **@member.to_json, provider: @discriminant }.to_json
+        when "cartesia"
           { **@member.to_json, provider: @discriminant }.to_json
         else
           { "provider": @discriminant, value: @member }.to_json
@@ -120,6 +125,8 @@ module Vapi
           Vapi::TalkscriberTranscriber.validate_raw(obj: obj)
         when "openai"
           Vapi::OpenAiTranscriber.validate_raw(obj: obj)
+        when "cartesia"
+          Vapi::CartesiaTranscriber.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -180,6 +187,11 @@ module Vapi
       # @return [Vapi::Assistants::UpdateAssistantDtoTranscriber]
       def self.openai(member:)
         new(member: member, discriminant: "openai")
+      end
+      # @param member [Vapi::CartesiaTranscriber] 
+      # @return [Vapi::Assistants::UpdateAssistantDtoTranscriber]
+      def self.cartesia(member:)
+        new(member: member, discriminant: "cartesia")
       end
     end
   end

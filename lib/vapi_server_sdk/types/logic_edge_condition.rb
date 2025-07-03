@@ -1,51 +1,5 @@
 # frozen_string_literal: true
-require "ostruct"
-require "json"
 
 module Vapi
-  class LogicEdgeCondition
-  # @return [String] 
-    attr_reader :liquid
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
-    attr_reader :additional_properties
-  # @return [Object] 
-    attr_reader :_field_set
-    protected :_field_set
-
-    OMIT = Object.new
-
-    # @param liquid [String] 
-    # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
-    # @return [Vapi::LogicEdgeCondition]
-    def initialize(liquid:, additional_properties: nil)
-      @liquid = liquid
-      @additional_properties = additional_properties
-      @_field_set = { "liquid": liquid }
-    end
-# Deserialize a JSON object to an instance of LogicEdgeCondition
-    #
-    # @param json_object [String] 
-    # @return [Vapi::LogicEdgeCondition]
-    def self.from_json(json_object:)
-      struct = JSON.parse(json_object, object_class: OpenStruct)
-      parsed_json = JSON.parse(json_object)
-      liquid = parsed_json["liquid"]
-      new(liquid: liquid, additional_properties: struct)
-    end
-# Serialize an instance of LogicEdgeCondition to a JSON object
-    #
-    # @return [String]
-    def to_json
-      @_field_set&.to_json
-    end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
-    #
-    # @param obj [Object] 
-    # @return [Void]
-    def self.validate_raw(obj:)
-      obj.liquid.is_a?(String) != false || raise("Passed value for field obj.liquid is not the expected type, validation failed.")
-    end
-  end
+  LOGIC_EDGE_CONDITION = Object
 end

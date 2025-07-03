@@ -36,8 +36,8 @@ module Vapi
     attr_reader :pcap_url
   # @return [Array<Vapi::NodeArtifact>] This is the history of workflow nodes that were executed during the call.
     attr_reader :nodes
-  # @return [Hash{String => Object}] This is the state of variables at the end of the workflow execution.
-    attr_reader :variables
+  # @return [Hash{String => Object}] These are the variable values at the end of the workflow execution.
+    attr_reader :variable_values
   # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
   # @return [Object] 
@@ -64,10 +64,10 @@ module Vapi
     # @param pcap_url [String] This is the packet capture url for the call. This is only available for `phone`
 #  type calls where phone number's provider is `vapi` or `byo-phone-number`.
     # @param nodes [Array<Vapi::NodeArtifact>] This is the history of workflow nodes that were executed during the call.
-    # @param variables [Hash{String => Object}] This is the state of variables at the end of the workflow execution.
+    # @param variable_values [Hash{String => Object}] These are the variable values at the end of the workflow execution.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Artifact]
-    def initialize(messages: OMIT, messages_open_ai_formatted: OMIT, recording_url: OMIT, stereo_recording_url: OMIT, video_recording_url: OMIT, video_recording_start_delay_seconds: OMIT, recording: OMIT, transcript: OMIT, pcap_url: OMIT, nodes: OMIT, variables: OMIT, additional_properties: nil)
+    def initialize(messages: OMIT, messages_open_ai_formatted: OMIT, recording_url: OMIT, stereo_recording_url: OMIT, video_recording_url: OMIT, video_recording_start_delay_seconds: OMIT, recording: OMIT, transcript: OMIT, pcap_url: OMIT, nodes: OMIT, variable_values: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @messages_open_ai_formatted = messages_open_ai_formatted if messages_open_ai_formatted != OMIT
       @recording_url = recording_url if recording_url != OMIT
@@ -78,9 +78,9 @@ module Vapi
       @transcript = transcript if transcript != OMIT
       @pcap_url = pcap_url if pcap_url != OMIT
       @nodes = nodes if nodes != OMIT
-      @variables = variables if variables != OMIT
+      @variable_values = variable_values if variable_values != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "messages": messages, "messagesOpenAIFormatted": messages_open_ai_formatted, "recordingUrl": recording_url, "stereoRecordingUrl": stereo_recording_url, "videoRecordingUrl": video_recording_url, "videoRecordingStartDelaySeconds": video_recording_start_delay_seconds, "recording": recording, "transcript": transcript, "pcapUrl": pcap_url, "nodes": nodes, "variables": variables }.reject do | _k, v |
+      @_field_set = { "messages": messages, "messagesOpenAIFormatted": messages_open_ai_formatted, "recordingUrl": recording_url, "stereoRecordingUrl": stereo_recording_url, "videoRecordingUrl": video_recording_url, "videoRecordingStartDelaySeconds": video_recording_start_delay_seconds, "recording": recording, "transcript": transcript, "pcapUrl": pcap_url, "nodes": nodes, "variableValues": variable_values }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -115,7 +115,7 @@ end
   item = item.to_json
   Vapi::NodeArtifact.from_json(json_object: item)
 end
-      variables = parsed_json["variables"]
+      variable_values = parsed_json["variableValues"]
       new(
         messages: messages,
         messages_open_ai_formatted: messages_open_ai_formatted,
@@ -127,7 +127,7 @@ end
         transcript: transcript,
         pcap_url: pcap_url,
         nodes: nodes,
-        variables: variables,
+        variable_values: variable_values,
         additional_properties: struct
       )
     end
@@ -154,7 +154,7 @@ end
       obj.transcript&.is_a?(String) != false || raise("Passed value for field obj.transcript is not the expected type, validation failed.")
       obj.pcap_url&.is_a?(String) != false || raise("Passed value for field obj.pcap_url is not the expected type, validation failed.")
       obj.nodes&.is_a?(Array) != false || raise("Passed value for field obj.nodes is not the expected type, validation failed.")
-      obj.variables&.is_a?(Hash) != false || raise("Passed value for field obj.variables is not the expected type, validation failed.")
+      obj.variable_values&.is_a?(Hash) != false || raise("Passed value for field obj.variable_values is not the expected type, validation failed.")
     end
   end
 end

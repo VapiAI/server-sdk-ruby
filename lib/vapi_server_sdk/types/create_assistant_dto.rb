@@ -12,6 +12,7 @@ require_relative "langfuse_observability_plan"
 require_relative "create_assistant_dto_credentials_item"
 require_relative "create_assistant_dto_hooks_item"
 require_relative "compliance_plan"
+require_relative "background_speech_denoising_plan"
 require_relative "analysis_plan"
 require_relative "artifact_plan"
 require_relative "message_plan"
@@ -90,8 +91,8 @@ module Vapi
 #  different transport providers. For a call, only the configuration matching the
 #  call transport provider is used.
     attr_reader :transport_configurations
-  # @return [Vapi::LangfuseObservabilityPlan] This is the plan for observability configuration of assistant's calls.
-#  Currently supports Langfuse for tracing and monitoring.
+  # @return [Vapi::LangfuseObservabilityPlan] This is the plan for observability of assistant's calls.
+#  Currently, only Langfuse is supported.
     attr_reader :observability_plan
   # @return [Array<Vapi::CreateAssistantDtoCredentialsItem>] These are dynamic credentials that will be used for the assistant calls. By
 #  default, all the credentials are available for use in the call but you can
@@ -117,12 +118,19 @@ module Vapi
     attr_reader :compliance_plan
   # @return [Hash{String => Object}] This is for metadata you want to store on the assistant.
     attr_reader :metadata
+  # @return [Vapi::BackgroundSpeechDenoisingPlan] This enables filtering of noise and background speech while the user is talking.
+#  Features:
+#  - Smart denoising using Krisp
+#  - Fourier denoising
+#  Smart denoising can be combined with or used independently of Fourier denoising.
+#  Order of precedence:
+#  - Smart denoising
+#  - Fourier denoising
+    attr_reader :background_speech_denoising_plan
   # @return [Vapi::AnalysisPlan] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.
     attr_reader :analysis_plan
   # @return [Vapi::ArtifactPlan] This is the plan for artifacts generated during assistant's calls. Stored in
 #  `call.artifact`.
-#  Note: `recordingEnabled` is currently at the root level. It will be moved to
-#  `artifactPlan` in the future, but will remain backwards compatible.
     attr_reader :artifact_plan
   # @return [Vapi::MessagePlan] This is the plan for static predefined messages that can be spoken by the
 #  assistant during the call, like `idleMessages`.
@@ -154,9 +162,6 @@ module Vapi
 #  `monitorPlan.listenEnabled` to `true`.
 #  - To enable live control of the assistant's calls, set
 #  `monitorPlan.controlEnabled` to `true`.
-#  Note, `serverMessages`, `clientMessages`, `serverUrl` and `serverUrlSecret` are
-#  currently at the root level but will be moved to `monitorPlan` in the future.
-#  Will remain backwards compatible
     attr_reader :monitor_plan
   # @return [Array<String>] These are the credentials that will be used for the assistant calls. By default,
 #  all the credentials are available for use in the call but you can provide a
@@ -229,8 +234,8 @@ module Vapi
 #  assistant's calls, like Twilio. You can store multiple configurations for
 #  different transport providers. For a call, only the configuration matching the
 #  call transport provider is used.
-    # @param observability_plan [Vapi::LangfuseObservabilityPlan] This is the plan for observability configuration of assistant's calls.
-#  Currently supports Langfuse for tracing and monitoring.
+    # @param observability_plan [Vapi::LangfuseObservabilityPlan] This is the plan for observability of assistant's calls.
+#  Currently, only Langfuse is supported.
     # @param credentials [Array<Vapi::CreateAssistantDtoCredentialsItem>] These are dynamic credentials that will be used for the assistant calls. By
 #  default, all the credentials are available for use in the call but you can
 #  supplement an additional credentials using this. Dynamic credentials override
@@ -247,11 +252,17 @@ module Vapi
 #  call to be hung up. Case insensitive.
     # @param compliance_plan [Vapi::CompliancePlan] 
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the assistant.
+    # @param background_speech_denoising_plan [Vapi::BackgroundSpeechDenoisingPlan] This enables filtering of noise and background speech while the user is talking.
+#  Features:
+#  - Smart denoising using Krisp
+#  - Fourier denoising
+#  Smart denoising can be combined with or used independently of Fourier denoising.
+#  Order of precedence:
+#  - Smart denoising
+#  - Fourier denoising
     # @param analysis_plan [Vapi::AnalysisPlan] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.
     # @param artifact_plan [Vapi::ArtifactPlan] This is the plan for artifacts generated during assistant's calls. Stored in
 #  `call.artifact`.
-#  Note: `recordingEnabled` is currently at the root level. It will be moved to
-#  `artifactPlan` in the future, but will remain backwards compatible.
     # @param message_plan [Vapi::MessagePlan] This is the plan for static predefined messages that can be spoken by the
 #  assistant during the call, like `idleMessages`.
 #  Note: `firstMessage`, `voicemailMessage`, and `endCallMessage` are currently at
@@ -279,9 +290,6 @@ module Vapi
 #  `monitorPlan.listenEnabled` to `true`.
 #  - To enable live control of the assistant's calls, set
 #  `monitorPlan.controlEnabled` to `true`.
-#  Note, `serverMessages`, `clientMessages`, `serverUrl` and `serverUrlSecret` are
-#  currently at the root level but will be moved to `monitorPlan` in the future.
-#  Will remain backwards compatible
     # @param credential_ids [Array<String>] These are the credentials that will be used for the assistant calls. By default,
 #  all the credentials are available for use in the call but you can provide a
 #  subset using this.
@@ -294,7 +302,7 @@ module Vapi
     # @param keypad_input_plan [Vapi::KeypadInputPlan] 
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateAssistantDto]
-    def initialize(transcriber: OMIT, model: OMIT, voice: OMIT, first_message: OMIT, first_message_interruptions_enabled: OMIT, first_message_mode: OMIT, voicemail_detection: OMIT, client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, observability_plan: OMIT, credentials: OMIT, hooks: OMIT, name: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, compliance_plan: OMIT, metadata: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, keypad_input_plan: OMIT, additional_properties: nil)
+    def initialize(transcriber: OMIT, model: OMIT, voice: OMIT, first_message: OMIT, first_message_interruptions_enabled: OMIT, first_message_mode: OMIT, voicemail_detection: OMIT, client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, observability_plan: OMIT, credentials: OMIT, hooks: OMIT, name: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, compliance_plan: OMIT, metadata: OMIT, background_speech_denoising_plan: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, keypad_input_plan: OMIT, additional_properties: nil)
       @transcriber = transcriber if transcriber != OMIT
       @model = model if model != OMIT
       @voice = voice if voice != OMIT
@@ -319,6 +327,7 @@ module Vapi
       @end_call_phrases = end_call_phrases if end_call_phrases != OMIT
       @compliance_plan = compliance_plan if compliance_plan != OMIT
       @metadata = metadata if metadata != OMIT
+      @background_speech_denoising_plan = background_speech_denoising_plan if background_speech_denoising_plan != OMIT
       @analysis_plan = analysis_plan if analysis_plan != OMIT
       @artifact_plan = artifact_plan if artifact_plan != OMIT
       @message_plan = message_plan if message_plan != OMIT
@@ -329,7 +338,7 @@ module Vapi
       @server = server if server != OMIT
       @keypad_input_plan = keypad_input_plan if keypad_input_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "transcriber": transcriber, "model": model, "voice": voice, "firstMessage": first_message, "firstMessageInterruptionsEnabled": first_message_interruptions_enabled, "firstMessageMode": first_message_mode, "voicemailDetection": voicemail_detection, "clientMessages": client_messages, "serverMessages": server_messages, "silenceTimeoutSeconds": silence_timeout_seconds, "maxDurationSeconds": max_duration_seconds, "backgroundSound": background_sound, "backgroundDenoisingEnabled": background_denoising_enabled, "modelOutputInMessagesEnabled": model_output_in_messages_enabled, "transportConfigurations": transport_configurations, "observabilityPlan": observability_plan, "credentials": credentials, "hooks": hooks, "name": name, "voicemailMessage": voicemail_message, "endCallMessage": end_call_message, "endCallPhrases": end_call_phrases, "compliancePlan": compliance_plan, "metadata": metadata, "analysisPlan": analysis_plan, "artifactPlan": artifact_plan, "messagePlan": message_plan, "startSpeakingPlan": start_speaking_plan, "stopSpeakingPlan": stop_speaking_plan, "monitorPlan": monitor_plan, "credentialIds": credential_ids, "server": server, "keypadInputPlan": keypad_input_plan }.reject do | _k, v |
+      @_field_set = { "transcriber": transcriber, "model": model, "voice": voice, "firstMessage": first_message, "firstMessageInterruptionsEnabled": first_message_interruptions_enabled, "firstMessageMode": first_message_mode, "voicemailDetection": voicemail_detection, "clientMessages": client_messages, "serverMessages": server_messages, "silenceTimeoutSeconds": silence_timeout_seconds, "maxDurationSeconds": max_duration_seconds, "backgroundSound": background_sound, "backgroundDenoisingEnabled": background_denoising_enabled, "modelOutputInMessagesEnabled": model_output_in_messages_enabled, "transportConfigurations": transport_configurations, "observabilityPlan": observability_plan, "credentials": credentials, "hooks": hooks, "name": name, "voicemailMessage": voicemail_message, "endCallMessage": end_call_message, "endCallPhrases": end_call_phrases, "compliancePlan": compliance_plan, "metadata": metadata, "backgroundSpeechDenoisingPlan": background_speech_denoising_plan, "analysisPlan": analysis_plan, "artifactPlan": artifact_plan, "messagePlan": message_plan, "startSpeakingPlan": start_speaking_plan, "stopSpeakingPlan": stop_speaking_plan, "monitorPlan": monitor_plan, "credentialIds": credential_ids, "server": server, "keypadInputPlan": keypad_input_plan }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -408,6 +417,12 @@ end
         compliance_plan = nil
       end
       metadata = parsed_json["metadata"]
+      unless parsed_json["backgroundSpeechDenoisingPlan"].nil?
+        background_speech_denoising_plan = parsed_json["backgroundSpeechDenoisingPlan"].to_json
+        background_speech_denoising_plan = Vapi::BackgroundSpeechDenoisingPlan.from_json(json_object: background_speech_denoising_plan)
+      else
+        background_speech_denoising_plan = nil
+      end
       unless parsed_json["analysisPlan"].nil?
         analysis_plan = parsed_json["analysisPlan"].to_json
         analysis_plan = Vapi::AnalysisPlan.from_json(json_object: analysis_plan)
@@ -482,6 +497,7 @@ end
         end_call_phrases: end_call_phrases,
         compliance_plan: compliance_plan,
         metadata: metadata,
+        background_speech_denoising_plan: background_speech_denoising_plan,
         analysis_plan: analysis_plan,
         artifact_plan: artifact_plan,
         message_plan: message_plan,
@@ -531,6 +547,7 @@ end
       obj.end_call_phrases&.is_a?(Array) != false || raise("Passed value for field obj.end_call_phrases is not the expected type, validation failed.")
       obj.compliance_plan.nil? || Vapi::CompliancePlan.validate_raw(obj: obj.compliance_plan)
       obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")
+      obj.background_speech_denoising_plan.nil? || Vapi::BackgroundSpeechDenoisingPlan.validate_raw(obj: obj.background_speech_denoising_plan)
       obj.analysis_plan.nil? || Vapi::AnalysisPlan.validate_raw(obj: obj.analysis_plan)
       obj.artifact_plan.nil? || Vapi::ArtifactPlan.validate_raw(obj: obj.artifact_plan)
       obj.message_plan.nil? || Vapi::MessagePlan.validate_raw(obj: obj.message_plan)

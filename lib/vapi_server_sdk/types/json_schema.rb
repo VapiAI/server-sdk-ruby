@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require_relative "json_schema_type"
+require_relative "json_schema_format"
 require "ostruct"
 require "json"
 
@@ -27,16 +28,24 @@ module Vapi
     attr_reader :properties
   # @return [String] This is the description to help the model understand what it needs to output.
     attr_reader :description
+  # @return [String] This is the pattern of the string. This is a regex that will be used to validate
+#  the data in question. To use a common format, use the `format` property instead.
+#  OpenAI documentation:
+#  https://platform.openai.com/docs/guides/structured-outputs#supported-properties
+    attr_reader :pattern
+  # @return [Vapi::JsonSchemaFormat] This is the format of the string. To pass a regex, use the `pattern` property
+#  instead.
+#  OpenAI documentation:
+#  cs/guides/structured-outputs?api-mode=chat&type-restrictions=string-restrictions
+    attr_reader :format
   # @return [Array<String>] This is a list of properties that are required.
 #  This only makes sense if the type is "object".
     attr_reader :required
-  # @return [String] This the value that will be used in filling the property.
-    attr_reader :value
-  # @return [String] This the target variable that will be filled with the value of this property.
-    attr_reader :target
   # @return [Array<String>] This array specifies the allowed values that can be used to restrict the output
 #  of the model.
     attr_reader :enum
+  # @return [String] This is the title of the schema.
+    attr_reader :title
   # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
   # @return [Object] 
@@ -63,25 +72,33 @@ module Vapi
 #  This is a map of string to JsonSchema. However, Swagger doesn't support circular
 #  references.
     # @param description [String] This is the description to help the model understand what it needs to output.
+    # @param pattern [String] This is the pattern of the string. This is a regex that will be used to validate
+#  the data in question. To use a common format, use the `format` property instead.
+#  OpenAI documentation:
+#  https://platform.openai.com/docs/guides/structured-outputs#supported-properties
+    # @param format [Vapi::JsonSchemaFormat] This is the format of the string. To pass a regex, use the `pattern` property
+#  instead.
+#  OpenAI documentation:
+#  cs/guides/structured-outputs?api-mode=chat&type-restrictions=string-restrictions
     # @param required [Array<String>] This is a list of properties that are required.
 #  This only makes sense if the type is "object".
-    # @param value [String] This the value that will be used in filling the property.
-    # @param target [String] This the target variable that will be filled with the value of this property.
     # @param enum [Array<String>] This array specifies the allowed values that can be used to restrict the output
 #  of the model.
+    # @param title [String] This is the title of the schema.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::JsonSchema]
-    def initialize(type:, items: OMIT, properties: OMIT, description: OMIT, required: OMIT, value: OMIT, target: OMIT, enum: OMIT, additional_properties: nil)
+    def initialize(type:, items: OMIT, properties: OMIT, description: OMIT, pattern: OMIT, format: OMIT, required: OMIT, enum: OMIT, title: OMIT, additional_properties: nil)
       @type = type
       @items = items if items != OMIT
       @properties = properties if properties != OMIT
       @description = description if description != OMIT
+      @pattern = pattern if pattern != OMIT
+      @format = format if format != OMIT
       @required = required if required != OMIT
-      @value = value if value != OMIT
-      @target = target if target != OMIT
       @enum = enum if enum != OMIT
+      @title = title if title != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "items": items, "properties": properties, "description": description, "required": required, "value": value, "target": target, "enum": enum }.reject do | _k, v |
+      @_field_set = { "type": type, "items": items, "properties": properties, "description": description, "pattern": pattern, "format": format, "required": required, "enum": enum, "title": title }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -96,19 +113,21 @@ end
       items = parsed_json["items"]
       properties = parsed_json["properties"]
       description = parsed_json["description"]
+      pattern = parsed_json["pattern"]
+      format = parsed_json["format"]
       required = parsed_json["required"]
-      value = parsed_json["value"]
-      target = parsed_json["target"]
       enum = parsed_json["enum"]
+      title = parsed_json["title"]
       new(
         type: type,
         items: items,
         properties: properties,
         description: description,
+        pattern: pattern,
+        format: format,
         required: required,
-        value: value,
-        target: target,
         enum: enum,
+        title: title,
         additional_properties: struct
       )
     end
@@ -129,10 +148,11 @@ end
       obj.items&.is_a?(Hash) != false || raise("Passed value for field obj.items is not the expected type, validation failed.")
       obj.properties&.is_a?(Hash) != false || raise("Passed value for field obj.properties is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")
+      obj.pattern&.is_a?(String) != false || raise("Passed value for field obj.pattern is not the expected type, validation failed.")
+      obj.format&.is_a?(Vapi::JsonSchemaFormat) != false || raise("Passed value for field obj.format is not the expected type, validation failed.")
       obj.required&.is_a?(Array) != false || raise("Passed value for field obj.required is not the expected type, validation failed.")
-      obj.value&.is_a?(String) != false || raise("Passed value for field obj.value is not the expected type, validation failed.")
-      obj.target&.is_a?(String) != false || raise("Passed value for field obj.target is not the expected type, validation failed.")
       obj.enum&.is_a?(Array) != false || raise("Passed value for field obj.enum is not the expected type, validation failed.")
+      obj.title&.is_a?(String) != false || raise("Passed value for field obj.title is not the expected type, validation failed.")
     end
   end
 end

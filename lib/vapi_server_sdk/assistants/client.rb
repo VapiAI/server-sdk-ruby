@@ -24,6 +24,7 @@ require_relative "../types/langfuse_observability_plan"
 require_relative "types/update_assistant_dto_credentials_item"
 require_relative "types/update_assistant_dto_hooks_item"
 require_relative "../types/compliance_plan"
+require_relative "../types/background_speech_denoising_plan"
 require_relative "../types/analysis_plan"
 require_relative "../types/artifact_plan"
 require_relative "../types/message_plan"
@@ -116,6 +117,16 @@ end
     #     * :hipaa_enabled (Boolean) 
     #     * :pci_enabled (Boolean) 
     #   * :metadata (Hash{String => Object}) 
+    #   * :background_speech_denoising_plan (Hash)
+    #     * :smart_denoising_plan (Hash)
+    #       * :enabled (Boolean) 
+    #     * :fourier_denoising_plan (Hash)
+    #       * :enabled (Boolean) 
+    #       * :media_detection_enabled (Boolean) 
+    #       * :static_threshold (Float) 
+    #       * :baseline_offset_db (Float) 
+    #       * :window_size_ms (Float) 
+    #       * :baseline_percentile (Float) 
     #   * :analysis_plan (Hash)
     #     * :min_messages_threshold (Float) 
     #     * :summary_plan (Hash)
@@ -130,10 +141,11 @@ end
     #         * :items (Hash{String => Object}) 
     #         * :properties (Hash{String => Object}) 
     #         * :description (String) 
+    #         * :pattern (String) 
+    #         * :format (Vapi::JsonSchemaFormat) 
     #         * :required (Array<String>) 
-    #         * :value (String) 
-    #         * :target (String) 
     #         * :enum (Array<String>) 
+    #         * :title (String) 
     #       * :timeout_seconds (Float) 
     #     * :structured_data_multi_plan (Array<Vapi::StructuredDataMultiPlan>) 
     #     * :success_evaluation_plan (Hash)
@@ -309,8 +321,8 @@ end
     #   * :timeout (Float) 
     #   * :record (Boolean) 
     #   * :recording_channels (Vapi::TransportConfigurationTwilioRecordingChannels) 
-    # @param observability_plan [Hash] This is the plan for observability configuration of assistant's calls.
-#  Currently supports Langfuse for tracing and monitoring.Request of type Vapi::LangfuseObservabilityPlan, as a Hash
+    # @param observability_plan [Hash] This is the plan for observability of assistant's calls.
+#  Currently, only Langfuse is supported.Request of type Vapi::LangfuseObservabilityPlan, as a Hash
     #   * :provider (String) 
     #   * :tags (Array<String>) 
     #   * :metadata (Hash{String => Object}) 
@@ -332,6 +344,23 @@ end
     #   * :hipaa_enabled (Boolean) 
     #   * :pci_enabled (Boolean) 
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the assistant.
+    # @param background_speech_denoising_plan [Hash] This enables filtering of noise and background speech while the user is talking.
+#  Features:
+#  - Smart denoising using Krisp
+#  - Fourier denoising
+#  Smart denoising can be combined with or used independently of Fourier denoising.
+#  Order of precedence:
+#  - Smart denoising
+#  - Fourier denoisingRequest of type Vapi::BackgroundSpeechDenoisingPlan, as a Hash
+    #   * :smart_denoising_plan (Hash)
+    #     * :enabled (Boolean) 
+    #   * :fourier_denoising_plan (Hash)
+    #     * :enabled (Boolean) 
+    #     * :media_detection_enabled (Boolean) 
+    #     * :static_threshold (Float) 
+    #     * :baseline_offset_db (Float) 
+    #     * :window_size_ms (Float) 
+    #     * :baseline_percentile (Float) 
     # @param analysis_plan [Hash] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.Request of type Vapi::AnalysisPlan, as a Hash
     #   * :min_messages_threshold (Float) 
     #   * :summary_plan (Hash)
@@ -346,10 +375,11 @@ end
     #       * :items (Hash{String => Object}) 
     #       * :properties (Hash{String => Object}) 
     #       * :description (String) 
+    #       * :pattern (String) 
+    #       * :format (Vapi::JsonSchemaFormat) 
     #       * :required (Array<String>) 
-    #       * :value (String) 
-    #       * :target (String) 
     #       * :enum (Array<String>) 
+    #       * :title (String) 
     #     * :timeout_seconds (Float) 
     #   * :structured_data_multi_plan (Array<Vapi::StructuredDataMultiPlan>) 
     #   * :success_evaluation_plan (Hash)
@@ -358,9 +388,7 @@ end
     #     * :enabled (Boolean) 
     #     * :timeout_seconds (Float) 
     # @param artifact_plan [Hash] This is the plan for artifacts generated during assistant's calls. Stored in
-#  `call.artifact`.
-#  Note: `recordingEnabled` is currently at the root level. It will be moved to
-#  `artifactPlan` in the future, but will remain backwards compatible.Request of type Vapi::ArtifactPlan, as a Hash
+#  `call.artifact`.Request of type Vapi::ArtifactPlan, as a Hash
     #   * :recording_enabled (Boolean) 
     #   * :recording_format (Vapi::ArtifactPlanRecordingFormat) 
     #   * :video_recording_enabled (Boolean) 
@@ -415,10 +443,7 @@ end
 #  - To enable live listening of the assistant's calls, set
 #  `monitorPlan.listenEnabled` to `true`.
 #  - To enable live control of the assistant's calls, set
-#  `monitorPlan.controlEnabled` to `true`.
-#  Note, `serverMessages`, `clientMessages`, `serverUrl` and `serverUrlSecret` are
-#  currently at the root level but will be moved to `monitorPlan` in the future.
-#  Will remain backwards compatibleRequest of type Vapi::MonitorPlan, as a Hash
+#  `monitorPlan.controlEnabled` to `true`.Request of type Vapi::MonitorPlan, as a Hash
     #   * :listen_enabled (Boolean) 
     #   * :listen_authentication_enabled (Boolean) 
     #   * :control_enabled (Boolean) 
@@ -445,7 +470,7 @@ end
     #   * :delimiters (Vapi::KeypadInputPlanDelimiters) 
     # @param request_options [Vapi::RequestOptions] 
     # @return [Vapi::Assistant]
-    def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_interruptions_enabled: nil, first_message_mode: nil, voicemail_detection: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, observability_plan: nil, credentials: nil, hooks: nil, name: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, compliance_plan: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, keypad_input_plan: nil, request_options: nil)
+    def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_interruptions_enabled: nil, first_message_mode: nil, voicemail_detection: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, observability_plan: nil, credentials: nil, hooks: nil, name: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, compliance_plan: nil, metadata: nil, background_speech_denoising_plan: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, keypad_input_plan: nil, request_options: nil)
       response = @request_client.conn.patch do | req |
   unless request_options&.timeout_in_seconds.nil?
     req.options.timeout = request_options.timeout_in_seconds
@@ -457,7 +482,7 @@ end
   unless request_options.nil? || request_options&.additional_query_parameters.nil?
     req.params = { **(request_options&.additional_query_parameters || {}) }.compact
   end
-  req.body = { **(request_options&.additional_body_parameters || {}), transcriber: transcriber, model: model, voice: voice, firstMessage: first_message, firstMessageInterruptionsEnabled: first_message_interruptions_enabled, firstMessageMode: first_message_mode, voicemailDetection: voicemail_detection, clientMessages: client_messages, serverMessages: server_messages, silenceTimeoutSeconds: silence_timeout_seconds, maxDurationSeconds: max_duration_seconds, backgroundSound: background_sound, backgroundDenoisingEnabled: background_denoising_enabled, modelOutputInMessagesEnabled: model_output_in_messages_enabled, transportConfigurations: transport_configurations, observabilityPlan: observability_plan, credentials: credentials, hooks: hooks, name: name, voicemailMessage: voicemail_message, endCallMessage: end_call_message, endCallPhrases: end_call_phrases, compliancePlan: compliance_plan, metadata: metadata, analysisPlan: analysis_plan, artifactPlan: artifact_plan, messagePlan: message_plan, startSpeakingPlan: start_speaking_plan, stopSpeakingPlan: stop_speaking_plan, monitorPlan: monitor_plan, credentialIds: credential_ids, server: server, keypadInputPlan: keypad_input_plan }.compact
+  req.body = { **(request_options&.additional_body_parameters || {}), transcriber: transcriber, model: model, voice: voice, firstMessage: first_message, firstMessageInterruptionsEnabled: first_message_interruptions_enabled, firstMessageMode: first_message_mode, voicemailDetection: voicemail_detection, clientMessages: client_messages, serverMessages: server_messages, silenceTimeoutSeconds: silence_timeout_seconds, maxDurationSeconds: max_duration_seconds, backgroundSound: background_sound, backgroundDenoisingEnabled: background_denoising_enabled, modelOutputInMessagesEnabled: model_output_in_messages_enabled, transportConfigurations: transport_configurations, observabilityPlan: observability_plan, credentials: credentials, hooks: hooks, name: name, voicemailMessage: voicemail_message, endCallMessage: end_call_message, endCallPhrases: end_call_phrases, compliancePlan: compliance_plan, metadata: metadata, backgroundSpeechDenoisingPlan: background_speech_denoising_plan, analysisPlan: analysis_plan, artifactPlan: artifact_plan, messagePlan: message_plan, startSpeakingPlan: start_speaking_plan, stopSpeakingPlan: stop_speaking_plan, monitorPlan: monitor_plan, credentialIds: credential_ids, server: server, keypadInputPlan: keypad_input_plan }.compact
   req.url "#{@request_client.get_url(request_options: request_options)}/assistant/#{id}"
 end
       Vapi::Assistant.from_json(json_object: response.body)
@@ -541,6 +566,16 @@ end
     #     * :hipaa_enabled (Boolean) 
     #     * :pci_enabled (Boolean) 
     #   * :metadata (Hash{String => Object}) 
+    #   * :background_speech_denoising_plan (Hash)
+    #     * :smart_denoising_plan (Hash)
+    #       * :enabled (Boolean) 
+    #     * :fourier_denoising_plan (Hash)
+    #       * :enabled (Boolean) 
+    #       * :media_detection_enabled (Boolean) 
+    #       * :static_threshold (Float) 
+    #       * :baseline_offset_db (Float) 
+    #       * :window_size_ms (Float) 
+    #       * :baseline_percentile (Float) 
     #   * :analysis_plan (Hash)
     #     * :min_messages_threshold (Float) 
     #     * :summary_plan (Hash)
@@ -555,10 +590,11 @@ end
     #         * :items (Hash{String => Object}) 
     #         * :properties (Hash{String => Object}) 
     #         * :description (String) 
+    #         * :pattern (String) 
+    #         * :format (Vapi::JsonSchemaFormat) 
     #         * :required (Array<String>) 
-    #         * :value (String) 
-    #         * :target (String) 
     #         * :enum (Array<String>) 
+    #         * :title (String) 
     #       * :timeout_seconds (Float) 
     #     * :structured_data_multi_plan (Array<Vapi::StructuredDataMultiPlan>) 
     #     * :success_evaluation_plan (Hash)
@@ -740,8 +776,8 @@ end
     #   * :timeout (Float) 
     #   * :record (Boolean) 
     #   * :recording_channels (Vapi::TransportConfigurationTwilioRecordingChannels) 
-    # @param observability_plan [Hash] This is the plan for observability configuration of assistant's calls.
-#  Currently supports Langfuse for tracing and monitoring.Request of type Vapi::LangfuseObservabilityPlan, as a Hash
+    # @param observability_plan [Hash] This is the plan for observability of assistant's calls.
+#  Currently, only Langfuse is supported.Request of type Vapi::LangfuseObservabilityPlan, as a Hash
     #   * :provider (String) 
     #   * :tags (Array<String>) 
     #   * :metadata (Hash{String => Object}) 
@@ -763,6 +799,23 @@ end
     #   * :hipaa_enabled (Boolean) 
     #   * :pci_enabled (Boolean) 
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the assistant.
+    # @param background_speech_denoising_plan [Hash] This enables filtering of noise and background speech while the user is talking.
+#  Features:
+#  - Smart denoising using Krisp
+#  - Fourier denoising
+#  Smart denoising can be combined with or used independently of Fourier denoising.
+#  Order of precedence:
+#  - Smart denoising
+#  - Fourier denoisingRequest of type Vapi::BackgroundSpeechDenoisingPlan, as a Hash
+    #   * :smart_denoising_plan (Hash)
+    #     * :enabled (Boolean) 
+    #   * :fourier_denoising_plan (Hash)
+    #     * :enabled (Boolean) 
+    #     * :media_detection_enabled (Boolean) 
+    #     * :static_threshold (Float) 
+    #     * :baseline_offset_db (Float) 
+    #     * :window_size_ms (Float) 
+    #     * :baseline_percentile (Float) 
     # @param analysis_plan [Hash] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.Request of type Vapi::AnalysisPlan, as a Hash
     #   * :min_messages_threshold (Float) 
     #   * :summary_plan (Hash)
@@ -777,10 +830,11 @@ end
     #       * :items (Hash{String => Object}) 
     #       * :properties (Hash{String => Object}) 
     #       * :description (String) 
+    #       * :pattern (String) 
+    #       * :format (Vapi::JsonSchemaFormat) 
     #       * :required (Array<String>) 
-    #       * :value (String) 
-    #       * :target (String) 
     #       * :enum (Array<String>) 
+    #       * :title (String) 
     #     * :timeout_seconds (Float) 
     #   * :structured_data_multi_plan (Array<Vapi::StructuredDataMultiPlan>) 
     #   * :success_evaluation_plan (Hash)
@@ -789,9 +843,7 @@ end
     #     * :enabled (Boolean) 
     #     * :timeout_seconds (Float) 
     # @param artifact_plan [Hash] This is the plan for artifacts generated during assistant's calls. Stored in
-#  `call.artifact`.
-#  Note: `recordingEnabled` is currently at the root level. It will be moved to
-#  `artifactPlan` in the future, but will remain backwards compatible.Request of type Vapi::ArtifactPlan, as a Hash
+#  `call.artifact`.Request of type Vapi::ArtifactPlan, as a Hash
     #   * :recording_enabled (Boolean) 
     #   * :recording_format (Vapi::ArtifactPlanRecordingFormat) 
     #   * :video_recording_enabled (Boolean) 
@@ -846,10 +898,7 @@ end
 #  - To enable live listening of the assistant's calls, set
 #  `monitorPlan.listenEnabled` to `true`.
 #  - To enable live control of the assistant's calls, set
-#  `monitorPlan.controlEnabled` to `true`.
-#  Note, `serverMessages`, `clientMessages`, `serverUrl` and `serverUrlSecret` are
-#  currently at the root level but will be moved to `monitorPlan` in the future.
-#  Will remain backwards compatibleRequest of type Vapi::MonitorPlan, as a Hash
+#  `monitorPlan.controlEnabled` to `true`.Request of type Vapi::MonitorPlan, as a Hash
     #   * :listen_enabled (Boolean) 
     #   * :listen_authentication_enabled (Boolean) 
     #   * :control_enabled (Boolean) 
@@ -876,7 +925,7 @@ end
     #   * :delimiters (Vapi::KeypadInputPlanDelimiters) 
     # @param request_options [Vapi::RequestOptions] 
     # @return [Vapi::Assistant]
-    def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_interruptions_enabled: nil, first_message_mode: nil, voicemail_detection: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, observability_plan: nil, credentials: nil, hooks: nil, name: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, compliance_plan: nil, metadata: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, keypad_input_plan: nil, request_options: nil)
+    def update(id:, transcriber: nil, model: nil, voice: nil, first_message: nil, first_message_interruptions_enabled: nil, first_message_mode: nil, voicemail_detection: nil, client_messages: nil, server_messages: nil, silence_timeout_seconds: nil, max_duration_seconds: nil, background_sound: nil, background_denoising_enabled: nil, model_output_in_messages_enabled: nil, transport_configurations: nil, observability_plan: nil, credentials: nil, hooks: nil, name: nil, voicemail_message: nil, end_call_message: nil, end_call_phrases: nil, compliance_plan: nil, metadata: nil, background_speech_denoising_plan: nil, analysis_plan: nil, artifact_plan: nil, message_plan: nil, start_speaking_plan: nil, stop_speaking_plan: nil, monitor_plan: nil, credential_ids: nil, server: nil, keypad_input_plan: nil, request_options: nil)
       Async do
         response = @request_client.conn.patch do | req |
   unless request_options&.timeout_in_seconds.nil?
@@ -889,7 +938,7 @@ end
   unless request_options.nil? || request_options&.additional_query_parameters.nil?
     req.params = { **(request_options&.additional_query_parameters || {}) }.compact
   end
-  req.body = { **(request_options&.additional_body_parameters || {}), transcriber: transcriber, model: model, voice: voice, firstMessage: first_message, firstMessageInterruptionsEnabled: first_message_interruptions_enabled, firstMessageMode: first_message_mode, voicemailDetection: voicemail_detection, clientMessages: client_messages, serverMessages: server_messages, silenceTimeoutSeconds: silence_timeout_seconds, maxDurationSeconds: max_duration_seconds, backgroundSound: background_sound, backgroundDenoisingEnabled: background_denoising_enabled, modelOutputInMessagesEnabled: model_output_in_messages_enabled, transportConfigurations: transport_configurations, observabilityPlan: observability_plan, credentials: credentials, hooks: hooks, name: name, voicemailMessage: voicemail_message, endCallMessage: end_call_message, endCallPhrases: end_call_phrases, compliancePlan: compliance_plan, metadata: metadata, analysisPlan: analysis_plan, artifactPlan: artifact_plan, messagePlan: message_plan, startSpeakingPlan: start_speaking_plan, stopSpeakingPlan: stop_speaking_plan, monitorPlan: monitor_plan, credentialIds: credential_ids, server: server, keypadInputPlan: keypad_input_plan }.compact
+  req.body = { **(request_options&.additional_body_parameters || {}), transcriber: transcriber, model: model, voice: voice, firstMessage: first_message, firstMessageInterruptionsEnabled: first_message_interruptions_enabled, firstMessageMode: first_message_mode, voicemailDetection: voicemail_detection, clientMessages: client_messages, serverMessages: server_messages, silenceTimeoutSeconds: silence_timeout_seconds, maxDurationSeconds: max_duration_seconds, backgroundSound: background_sound, backgroundDenoisingEnabled: background_denoising_enabled, modelOutputInMessagesEnabled: model_output_in_messages_enabled, transportConfigurations: transport_configurations, observabilityPlan: observability_plan, credentials: credentials, hooks: hooks, name: name, voicemailMessage: voicemail_message, endCallMessage: end_call_message, endCallPhrases: end_call_phrases, compliancePlan: compliance_plan, metadata: metadata, backgroundSpeechDenoisingPlan: background_speech_denoising_plan, analysisPlan: analysis_plan, artifactPlan: artifact_plan, messagePlan: message_plan, startSpeakingPlan: start_speaking_plan, stopSpeakingPlan: stop_speaking_plan, monitorPlan: monitor_plan, credentialIds: credential_ids, server: server, keypadInputPlan: keypad_input_plan }.compact
   req.url "#{@request_client.get_url(request_options: request_options)}/assistant/#{id}"
 end
         Vapi::Assistant.from_json(json_object: response.body)

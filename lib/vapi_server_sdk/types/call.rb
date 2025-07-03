@@ -79,6 +79,8 @@ module Vapi
 #  conversationUuid in Vonage. callControlId in Telnyx.
 #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
     attr_reader :phone_call_provider_id
+  # @return [String] This is the campaign ID that the call belongs to.
+    attr_reader :campaign_id
   # @return [String] This is the assistant ID that will be used for the call. To use a transient
 #  assistant, use `assistant` instead.
 #  To start a call with:
@@ -186,6 +188,7 @@ module Vapi
     # @param phone_call_provider_id [String] The ID of the call as provided by the phone number service. callSid in Twilio.
 #  conversationUuid in Vonage. callControlId in Telnyx.
 #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
+    # @param campaign_id [String] This is the campaign ID that the call belongs to.
     # @param assistant_id [String] This is the assistant ID that will be used for the call. To use a transient
 #  assistant, use `assistant` instead.
 #  To start a call with:
@@ -243,7 +246,7 @@ module Vapi
     # @param transport [Hash{String => Object}] This is the transport of the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Call]
-    def initialize(type: OMIT, costs: OMIT, messages: OMIT, phone_call_provider: OMIT, phone_call_transport: OMIT, status: OMIT, ended_reason: OMIT, destination: OMIT, id:, org_id:, created_at:, updated_at:, started_at: OMIT, ended_at: OMIT, cost: OMIT, cost_breakdown: OMIT, artifact_plan: OMIT, analysis: OMIT, monitor: OMIT, artifact: OMIT, phone_call_provider_id: OMIT, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, workflow_id: OMIT, workflow: OMIT, workflow_overrides: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, name: OMIT, schedule_plan: OMIT, transport: OMIT, additional_properties: nil)
+    def initialize(type: OMIT, costs: OMIT, messages: OMIT, phone_call_provider: OMIT, phone_call_transport: OMIT, status: OMIT, ended_reason: OMIT, destination: OMIT, id:, org_id:, created_at:, updated_at:, started_at: OMIT, ended_at: OMIT, cost: OMIT, cost_breakdown: OMIT, artifact_plan: OMIT, analysis: OMIT, monitor: OMIT, artifact: OMIT, phone_call_provider_id: OMIT, campaign_id: OMIT, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, workflow_id: OMIT, workflow: OMIT, workflow_overrides: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, name: OMIT, schedule_plan: OMIT, transport: OMIT, additional_properties: nil)
       @type = type if type != OMIT
       @costs = costs if costs != OMIT
       @messages = messages if messages != OMIT
@@ -265,6 +268,7 @@ module Vapi
       @monitor = monitor if monitor != OMIT
       @artifact = artifact if artifact != OMIT
       @phone_call_provider_id = phone_call_provider_id if phone_call_provider_id != OMIT
+      @campaign_id = campaign_id if campaign_id != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
       @assistant = assistant if assistant != OMIT
       @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
@@ -281,7 +285,7 @@ module Vapi
       @schedule_plan = schedule_plan if schedule_plan != OMIT
       @transport = transport if transport != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "costs": costs, "messages": messages, "phoneCallProvider": phone_call_provider, "phoneCallTransport": phone_call_transport, "status": status, "endedReason": ended_reason, "destination": destination, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "startedAt": started_at, "endedAt": ended_at, "cost": cost, "costBreakdown": cost_breakdown, "artifactPlan": artifact_plan, "analysis": analysis, "monitor": monitor, "artifact": artifact, "phoneCallProviderId": phone_call_provider_id, "assistantId": assistant_id, "assistant": assistant, "assistantOverrides": assistant_overrides, "squadId": squad_id, "squad": squad, "workflowId": workflow_id, "workflow": workflow, "workflowOverrides": workflow_overrides, "phoneNumberId": phone_number_id, "phoneNumber": phone_number, "customerId": customer_id, "customer": customer, "name": name, "schedulePlan": schedule_plan, "transport": transport }.reject do | _k, v |
+      @_field_set = { "type": type, "costs": costs, "messages": messages, "phoneCallProvider": phone_call_provider, "phoneCallTransport": phone_call_transport, "status": status, "endedReason": ended_reason, "destination": destination, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "startedAt": started_at, "endedAt": ended_at, "cost": cost, "costBreakdown": cost_breakdown, "artifactPlan": artifact_plan, "analysis": analysis, "monitor": monitor, "artifact": artifact, "phoneCallProviderId": phone_call_provider_id, "campaignId": campaign_id, "assistantId": assistant_id, "assistant": assistant, "assistantOverrides": assistant_overrides, "squadId": squad_id, "squad": squad, "workflowId": workflow_id, "workflow": workflow, "workflowOverrides": workflow_overrides, "phoneNumberId": phone_number_id, "phoneNumber": phone_number, "customerId": customer_id, "customer": customer, "name": name, "schedulePlan": schedule_plan, "transport": transport }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -365,6 +369,7 @@ end
         artifact = nil
       end
       phone_call_provider_id = parsed_json["phoneCallProviderId"]
+      campaign_id = parsed_json["campaignId"]
       assistant_id = parsed_json["assistantId"]
       unless parsed_json["assistant"].nil?
         assistant = parsed_json["assistant"].to_json
@@ -442,6 +447,7 @@ end
         monitor: monitor,
         artifact: artifact,
         phone_call_provider_id: phone_call_provider_id,
+        campaign_id: campaign_id,
         assistant_id: assistant_id,
         assistant: assistant,
         assistant_overrides: assistant_overrides,
@@ -494,6 +500,7 @@ end
       obj.monitor.nil? || Vapi::Monitor.validate_raw(obj: obj.monitor)
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
       obj.phone_call_provider_id&.is_a?(String) != false || raise("Passed value for field obj.phone_call_provider_id is not the expected type, validation failed.")
+      obj.campaign_id&.is_a?(String) != false || raise("Passed value for field obj.campaign_id is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
       obj.assistant_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.assistant_overrides)

@@ -5,6 +5,9 @@ require "json"
 
 module Vapi
   class UpdateSupabaseCredentialDto
+  # @return [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
+    attr_reader :fallback_index
   # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
   # @return [Vapi::SupabaseBucketPlan] 
@@ -17,15 +20,18 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param bucket_plan [Vapi::SupabaseBucketPlan] 
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateSupabaseCredentialDto]
-    def initialize(name: OMIT, bucket_plan: OMIT, additional_properties: nil)
+    def initialize(fallback_index: OMIT, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
+      @fallback_index = fallback_index if fallback_index != OMIT
       @name = name if name != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
+      @_field_set = { "fallbackIndex": fallback_index, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -36,6 +42,7 @@ end
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      fallback_index = parsed_json["fallbackIndex"]
       name = parsed_json["name"]
       unless parsed_json["bucketPlan"].nil?
         bucket_plan = parsed_json["bucketPlan"].to_json
@@ -44,6 +51,7 @@ end
         bucket_plan = nil
       end
       new(
+        fallback_index: fallback_index,
         name: name,
         bucket_plan: bucket_plan,
         additional_properties: struct
@@ -62,6 +70,7 @@ end
     # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.bucket_plan.nil? || Vapi::SupabaseBucketPlan.validate_raw(obj: obj.bucket_plan)
     end

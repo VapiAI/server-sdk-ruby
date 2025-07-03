@@ -18,6 +18,9 @@ module Vapi
     attr_reader :s_3_bucket_name
   # @return [String] The path prefix for the uploaded recording. Ex. "recordings/"
     attr_reader :s_3_path_prefix
+  # @return [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
+    attr_reader :fallback_index
   # @return [String] This is the unique identifier for the credential.
     attr_reader :id
   # @return [String] This is the unique identifier for the org that this credential belongs to.
@@ -42,6 +45,8 @@ module Vapi
     # @param region [String] AWS region in which the S3 bucket is located.
     # @param s_3_bucket_name [String] AWS S3 bucket name.
     # @param s_3_path_prefix [String] The path prefix for the uploaded recording. Ex. "recordings/"
+    # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
@@ -49,20 +54,21 @@ module Vapi
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::S3Credential]
-    def initialize(provider:, aws_access_key_id:, aws_secret_access_key:, region:, s_3_bucket_name:, s_3_path_prefix:, id:, org_id:, created_at:, updated_at:, name: OMIT, additional_properties: nil)
+    def initialize(provider:, aws_access_key_id:, aws_secret_access_key:, region:, s_3_bucket_name:, s_3_path_prefix:, fallback_index: OMIT, id:, org_id:, created_at:, updated_at:, name: OMIT, additional_properties: nil)
       @provider = provider
       @aws_access_key_id = aws_access_key_id
       @aws_secret_access_key = aws_secret_access_key
       @region = region
       @s_3_bucket_name = s_3_bucket_name
       @s_3_path_prefix = s_3_path_prefix
+      @fallback_index = fallback_index if fallback_index != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
       @updated_at = updated_at
       @name = name if name != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "awsAccessKeyId": aws_access_key_id, "awsSecretAccessKey": aws_secret_access_key, "region": region, "s3BucketName": s_3_bucket_name, "s3PathPrefix": s_3_path_prefix, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name }.reject do | _k, v |
+      @_field_set = { "provider": provider, "awsAccessKeyId": aws_access_key_id, "awsSecretAccessKey": aws_secret_access_key, "region": region, "s3BucketName": s_3_bucket_name, "s3PathPrefix": s_3_path_prefix, "fallbackIndex": fallback_index, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -79,6 +85,7 @@ end
       region = parsed_json["region"]
       s_3_bucket_name = parsed_json["s3BucketName"]
       s_3_path_prefix = parsed_json["s3PathPrefix"]
+      fallback_index = parsed_json["fallbackIndex"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = unless parsed_json["createdAt"].nil?
@@ -99,6 +106,7 @@ end
         region: region,
         s_3_bucket_name: s_3_bucket_name,
         s_3_path_prefix: s_3_path_prefix,
+        fallback_index: fallback_index,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -126,6 +134,7 @@ end
       obj.region.is_a?(String) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.s_3_bucket_name.is_a?(String) != false || raise("Passed value for field obj.s_3_bucket_name is not the expected type, validation failed.")
       obj.s_3_path_prefix.is_a?(String) != false || raise("Passed value for field obj.s_3_path_prefix is not the expected type, validation failed.")
+      obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

@@ -31,6 +31,10 @@ module Vapi
 #  For SIP inbound calls, this is extracted from the `From` SIP header with format
 #  `"Display Name" <sip:username@domain>`.
     attr_reader :name
+  # @return [String] This is the email of the customer.
+    attr_reader :email
+  # @return [String] This is the external ID of the customer.
+    attr_reader :external_id
   # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
   # @return [Object] 
@@ -59,17 +63,21 @@ module Vapi
     # @param name [String] This is the name of the customer. This is just for your own reference.
 #  For SIP inbound calls, this is extracted from the `From` SIP header with format
 #  `"Display Name" <sip:username@domain>`.
+    # @param email [String] This is the email of the customer.
+    # @param external_id [String] This is the external ID of the customer.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateCustomerDto]
-    def initialize(number_e_164_check_enabled: OMIT, extension: OMIT, assistant_overrides: OMIT, number: OMIT, sip_uri: OMIT, name: OMIT, additional_properties: nil)
+    def initialize(number_e_164_check_enabled: OMIT, extension: OMIT, assistant_overrides: OMIT, number: OMIT, sip_uri: OMIT, name: OMIT, email: OMIT, external_id: OMIT, additional_properties: nil)
       @number_e_164_check_enabled = number_e_164_check_enabled if number_e_164_check_enabled != OMIT
       @extension = extension if extension != OMIT
       @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
       @number = number if number != OMIT
       @sip_uri = sip_uri if sip_uri != OMIT
       @name = name if name != OMIT
+      @email = email if email != OMIT
+      @external_id = external_id if external_id != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "numberE164CheckEnabled": number_e_164_check_enabled, "extension": extension, "assistantOverrides": assistant_overrides, "number": number, "sipUri": sip_uri, "name": name }.reject do | _k, v |
+      @_field_set = { "numberE164CheckEnabled": number_e_164_check_enabled, "extension": extension, "assistantOverrides": assistant_overrides, "number": number, "sipUri": sip_uri, "name": name, "email": email, "externalId": external_id }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -91,6 +99,8 @@ end
       number = parsed_json["number"]
       sip_uri = parsed_json["sipUri"]
       name = parsed_json["name"]
+      email = parsed_json["email"]
+      external_id = parsed_json["externalId"]
       new(
         number_e_164_check_enabled: number_e_164_check_enabled,
         extension: extension,
@@ -98,6 +108,8 @@ end
         number: number,
         sip_uri: sip_uri,
         name: name,
+        email: email,
+        external_id: external_id,
         additional_properties: struct
       )
     end
@@ -120,6 +132,8 @@ end
       obj.number&.is_a?(String) != false || raise("Passed value for field obj.number is not the expected type, validation failed.")
       obj.sip_uri&.is_a?(String) != false || raise("Passed value for field obj.sip_uri is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.email&.is_a?(String) != false || raise("Passed value for field obj.email is not the expected type, validation failed.")
+      obj.external_id&.is_a?(String) != false || raise("Passed value for field obj.external_id is not the expected type, validation failed.")
     end
   end
 end

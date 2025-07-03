@@ -3,6 +3,7 @@ require_relative "create_api_request_tool_dto_messages_item"
 require_relative "create_api_request_tool_dto_method"
 require_relative "json_schema"
 require_relative "backoff_plan"
+require_relative "variable_extraction_plan"
 require_relative "open_ai_function"
 require "ostruct"
 require "json"
@@ -20,6 +21,8 @@ module Vapi
 #  @default 20
     attr_reader :timeout_seconds
   # @return [String] This is the name of the tool. This will be passed to the model.
+#  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
+#  of 40.
     attr_reader :name
   # @return [String] This is the description of the tool. This will be passed to the model.
     attr_reader :description
@@ -33,6 +36,179 @@ module Vapi
 #  request will not be retried).
 #  @default undefined (the request will not be retried)
     attr_reader :backoff_plan
+  # @return [Vapi::VariableExtractionPlan] This is the plan to extract variables from the tool's response. These will be
+#  accessible during the call and stored in `call.artifact.variableValues` after
+#  the call.
+#  Usage:
+#  1. Use `aliases` to extract variables from the tool's response body. (Most
+#  common case)
+#  ```json
+#  {
+#  "aliases": [
+#  {
+#  "key": "customerName",
+#  "value": "{{customer.name}}"
+#  },
+#  {
+#  "key": "customerAge",
+#  "value": "{{customer.age}}"
+#  }
+#  ]
+#  }
+#  ```
+#  The tool response body is made available to the liquid template.
+#  2. Use `aliases` to extract variables from the tool's response body if the
+#  response is an array.
+#  ```json
+#  {
+#  "aliases": [
+#  {
+#  "key": "customerName",
+#  "value": "{{$[0].name}}"
+#  },
+#  {
+#  "key": "customerAge",
+#  "value": "{{$[0].age}}"
+#  }
+#  ]
+#  }
+#  ```
+#  $ is a shorthand for the tool's response body. `$[0]` is the first item in the
+#  array. `$[n]` is the nth item in the array. Note, $ is available regardless of
+#  the response body type (both object and array).
+#  3. Use `aliases` to extract variables from the tool's response headers.
+#  ```json
+#  {
+#  "aliases": [
+#  {
+#  "key": "customerName",
+#  "value": "{{tool.response.headers.customer-name}}"
+#  },
+#  {
+#  "key": "customerAge",
+#  "value": "{{tool.response.headers.customer-age}}"
+#  }
+#  ]
+#  }
+#  ```
+#  `tool.response` is made available to the liquid template. Particularly, both
+#  `tool.response.headers` and `tool.response.body` are available. Note,
+#  `tool.response` is available regardless of the response body type (both object
+#  and array).
+#  4. Use `schema` to extract a large portion of the tool's response body.
+#  4.1. If you hit example.com and it returns `{"name": "John", "age": 30}`, then
+#  you can specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "string"
+#  },
+#  "age": {
+#  "type": "number"
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
+#  "Doe"}}`, then you can specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "object",
+#  "properties": {
+#  "first": {
+#  "type": "string"
+#  },
+#  "last": {
+#  "type": "string"
+#  }
+#  }
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  These will be extracted as `{{ name }}` and `{{ age }}` respectively. To
+#  emphasize, object properties are extracted as direct global variables.
+#  4.3. If you hit example.com and it returns `{"name": {"first": "John", "last":
+#  "Doe"}}`, then you can specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "object",
+#  "properties": {
+#  "first": {
+#  "type": "string"
+#  },
+#  "last": {
+#  "type": "string"
+#  }
+#  }
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  These will be extracted as `{{ name }}`. And, `{{ name.first }}` and `{{
+#  name.last }}` will be accessible.
+#  4.4. If you hit example.com and it returns `["94123", "94124"]`, then you can
+#  specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "array",
+#  "title": "zipCodes",
+#  "items": {
+#  "type": "string"
+#  }
+#  }
+#  }
+#  ```
+#  This will be extracted as `{{ zipCodes }}`. To access the array items, you can
+#  use `{{ zipCodes[0] }}` and `{{ zipCodes[1] }}`.
+#  4.5. If you hit example.com and it returns `[{"name": "John", "age": 30,
+#  "zipCodes": ["94123", "94124"]}, {"name": "Jane", "age": 25, "zipCodes":
+#  ["94125", "94126"]}]`, then you can specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "array",
+#  "title": "people",
+#  "items": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "string"
+#  },
+#  "age": {
+#  "type": "number"
+#  },
+#  "zipCodes": {
+#  "type": "array",
+#  "items": {
+#  "type": "string"
+#  }
+#  }
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  This will be extracted as `{{ people }}`. To access the array items, you can use
+#  `{{ people[n].name }}`, `{{ people[n].age }}`, `{{ people[n].zipCodes }}`, `{{
+#  people[n].zipCodes[0] }}` and `{{ people[n].zipCodes[1] }}`.
+#  Note: Both `aliases` and `schema` can be used together.
+    attr_reader :variable_extraction_plan
   # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
 #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
 #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
@@ -59,6 +235,8 @@ module Vapi
     # @param timeout_seconds [Float] This is the timeout in seconds for the request. Defaults to 20 seconds.
 #  @default 20
     # @param name [String] This is the name of the tool. This will be passed to the model.
+#  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
+#  of 40.
     # @param description [String] This is the description of the tool. This will be passed to the model.
     # @param url [String] This is where the request will be sent.
     # @param body [Vapi::JsonSchema] This is the body of the request.
@@ -66,6 +244,178 @@ module Vapi
     # @param backoff_plan [Vapi::BackoffPlan] This is the backoff plan if the request fails. Defaults to undefined (the
 #  request will not be retried).
 #  @default undefined (the request will not be retried)
+    # @param variable_extraction_plan [Vapi::VariableExtractionPlan] This is the plan to extract variables from the tool's response. These will be
+#  accessible during the call and stored in `call.artifact.variableValues` after
+#  the call.
+#  Usage:
+#  1. Use `aliases` to extract variables from the tool's response body. (Most
+#  common case)
+#  ```json
+#  {
+#  "aliases": [
+#  {
+#  "key": "customerName",
+#  "value": "{{customer.name}}"
+#  },
+#  {
+#  "key": "customerAge",
+#  "value": "{{customer.age}}"
+#  }
+#  ]
+#  }
+#  ```
+#  The tool response body is made available to the liquid template.
+#  2. Use `aliases` to extract variables from the tool's response body if the
+#  response is an array.
+#  ```json
+#  {
+#  "aliases": [
+#  {
+#  "key": "customerName",
+#  "value": "{{$[0].name}}"
+#  },
+#  {
+#  "key": "customerAge",
+#  "value": "{{$[0].age}}"
+#  }
+#  ]
+#  }
+#  ```
+#  $ is a shorthand for the tool's response body. `$[0]` is the first item in the
+#  array. `$[n]` is the nth item in the array. Note, $ is available regardless of
+#  the response body type (both object and array).
+#  3. Use `aliases` to extract variables from the tool's response headers.
+#  ```json
+#  {
+#  "aliases": [
+#  {
+#  "key": "customerName",
+#  "value": "{{tool.response.headers.customer-name}}"
+#  },
+#  {
+#  "key": "customerAge",
+#  "value": "{{tool.response.headers.customer-age}}"
+#  }
+#  ]
+#  }
+#  ```
+#  `tool.response` is made available to the liquid template. Particularly, both
+#  `tool.response.headers` and `tool.response.body` are available. Note,
+#  `tool.response` is available regardless of the response body type (both object
+#  and array).
+#  4. Use `schema` to extract a large portion of the tool's response body.
+#  4.1. If you hit example.com and it returns `{"name": "John", "age": 30}`, then
+#  you can specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "string"
+#  },
+#  "age": {
+#  "type": "number"
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
+#  "Doe"}}`, then you can specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "object",
+#  "properties": {
+#  "first": {
+#  "type": "string"
+#  },
+#  "last": {
+#  "type": "string"
+#  }
+#  }
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  These will be extracted as `{{ name }}` and `{{ age }}` respectively. To
+#  emphasize, object properties are extracted as direct global variables.
+#  4.3. If you hit example.com and it returns `{"name": {"first": "John", "last":
+#  "Doe"}}`, then you can specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "object",
+#  "properties": {
+#  "first": {
+#  "type": "string"
+#  },
+#  "last": {
+#  "type": "string"
+#  }
+#  }
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  These will be extracted as `{{ name }}`. And, `{{ name.first }}` and `{{
+#  name.last }}` will be accessible.
+#  4.4. If you hit example.com and it returns `["94123", "94124"]`, then you can
+#  specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "array",
+#  "title": "zipCodes",
+#  "items": {
+#  "type": "string"
+#  }
+#  }
+#  }
+#  ```
+#  This will be extracted as `{{ zipCodes }}`. To access the array items, you can
+#  use `{{ zipCodes[0] }}` and `{{ zipCodes[1] }}`.
+#  4.5. If you hit example.com and it returns `[{"name": "John", "age": 30,
+#  "zipCodes": ["94123", "94124"]}, {"name": "Jane", "age": 25, "zipCodes":
+#  ["94125", "94126"]}]`, then you can specify the schema as:
+#  ```json
+#  {
+#  "schema": {
+#  "type": "array",
+#  "title": "people",
+#  "items": {
+#  "type": "object",
+#  "properties": {
+#  "name": {
+#  "type": "string"
+#  },
+#  "age": {
+#  "type": "number"
+#  },
+#  "zipCodes": {
+#  "type": "array",
+#  "items": {
+#  "type": "string"
+#  }
+#  }
+#  }
+#  }
+#  }
+#  }
+#  ```
+#  This will be extracted as `{{ people }}`. To access the array items, you can use
+#  `{{ people[n].name }}`, `{{ people[n].age }}`, `{{ people[n].zipCodes }}`, `{{
+#  people[n].zipCodes[0] }}` and `{{ people[n].zipCodes[1] }}`.
+#  Note: Both `aliases` and `schema` can be used together.
     # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
 #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
 #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
@@ -77,7 +427,7 @@ module Vapi
 #  `messages[].conditions` matches the "reason" argument.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateApiRequestToolDto]
-    def initialize(messages: OMIT, method:, timeout_seconds: OMIT, name: OMIT, description: OMIT, url:, body: OMIT, headers: OMIT, backoff_plan: OMIT, function: OMIT, additional_properties: nil)
+    def initialize(messages: OMIT, method:, timeout_seconds: OMIT, name: OMIT, description: OMIT, url:, body: OMIT, headers: OMIT, backoff_plan: OMIT, variable_extraction_plan: OMIT, function: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @method = method
       @timeout_seconds = timeout_seconds if timeout_seconds != OMIT
@@ -87,9 +437,10 @@ module Vapi
       @body = body if body != OMIT
       @headers = headers if headers != OMIT
       @backoff_plan = backoff_plan if backoff_plan != OMIT
+      @variable_extraction_plan = variable_extraction_plan if variable_extraction_plan != OMIT
       @function = function if function != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "messages": messages, "method": method, "timeoutSeconds": timeout_seconds, "name": name, "description": description, "url": url, "body": body, "headers": headers, "backoffPlan": backoff_plan, "function": function }.reject do | _k, v |
+      @_field_set = { "messages": messages, "method": method, "timeoutSeconds": timeout_seconds, "name": name, "description": description, "url": url, "body": body, "headers": headers, "backoffPlan": backoff_plan, "variableExtractionPlan": variable_extraction_plan, "function": function }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -127,6 +478,12 @@ end
       else
         backoff_plan = nil
       end
+      unless parsed_json["variableExtractionPlan"].nil?
+        variable_extraction_plan = parsed_json["variableExtractionPlan"].to_json
+        variable_extraction_plan = Vapi::VariableExtractionPlan.from_json(json_object: variable_extraction_plan)
+      else
+        variable_extraction_plan = nil
+      end
       unless parsed_json["function"].nil?
         function = parsed_json["function"].to_json
         function = Vapi::OpenAiFunction.from_json(json_object: function)
@@ -143,6 +500,7 @@ end
         body: body,
         headers: headers,
         backoff_plan: backoff_plan,
+        variable_extraction_plan: variable_extraction_plan,
         function: function,
         additional_properties: struct
       )
@@ -169,6 +527,7 @@ end
       obj.body.nil? || Vapi::JsonSchema.validate_raw(obj: obj.body)
       obj.headers.nil? || Vapi::JsonSchema.validate_raw(obj: obj.headers)
       obj.backoff_plan.nil? || Vapi::BackoffPlan.validate_raw(obj: obj.backoff_plan)
+      obj.variable_extraction_plan.nil? || Vapi::VariableExtractionPlan.validate_raw(obj: obj.variable_extraction_plan)
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
     end
   end

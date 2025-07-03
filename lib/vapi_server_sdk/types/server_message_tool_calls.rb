@@ -5,6 +5,7 @@ require_relative "artifact"
 require_relative "create_assistant_dto"
 require_relative "create_customer_dto"
 require_relative "call"
+require_relative "chat"
 require_relative "tool_call"
 require "ostruct"
 require "json"
@@ -29,6 +30,8 @@ module Vapi
     attr_reader :customer
   # @return [Vapi::Call] This is the call that the message is associated with.
     attr_reader :call
+  # @return [Vapi::Chat] This is the chat object.
+    attr_reader :chat
   # @return [Array<Vapi::ToolCall>] This is the list of tool calls that the model is requesting.
     attr_reader :tool_call_list
   # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -49,10 +52,11 @@ module Vapi
     # @param assistant [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     # @param call [Vapi::Call] This is the call that the message is associated with.
+    # @param chat [Vapi::Chat] This is the chat object.
     # @param tool_call_list [Array<Vapi::ToolCall>] This is the list of tool calls that the model is requesting.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageToolCalls]
-    def initialize(phone_number: OMIT, type: OMIT, tool_with_tool_call_list:, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, tool_call_list:, additional_properties: nil)
+    def initialize(phone_number: OMIT, type: OMIT, tool_with_tool_call_list:, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, tool_call_list:, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
       @type = type if type != OMIT
       @tool_with_tool_call_list = tool_with_tool_call_list
@@ -61,9 +65,10 @@ module Vapi
       @assistant = assistant if assistant != OMIT
       @customer = customer if customer != OMIT
       @call = call if call != OMIT
+      @chat = chat if chat != OMIT
       @tool_call_list = tool_call_list
       @additional_properties = additional_properties
-      @_field_set = { "phoneNumber": phone_number, "type": type, "toolWithToolCallList": tool_with_tool_call_list, "timestamp": timestamp, "artifact": artifact, "assistant": assistant, "customer": customer, "call": call, "toolCallList": tool_call_list }.reject do | _k, v |
+      @_field_set = { "phoneNumber": phone_number, "type": type, "toolWithToolCallList": tool_with_tool_call_list, "timestamp": timestamp, "artifact": artifact, "assistant": assistant, "customer": customer, "call": call, "chat": chat, "toolCallList": tool_call_list }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -110,6 +115,12 @@ end
       else
         call = nil
       end
+      unless parsed_json["chat"].nil?
+        chat = parsed_json["chat"].to_json
+        chat = Vapi::Chat.from_json(json_object: chat)
+      else
+        chat = nil
+      end
       tool_call_list = parsed_json["toolCallList"]&.map do | item |
   item = item.to_json
   Vapi::ToolCall.from_json(json_object: item)
@@ -123,6 +134,7 @@ end
         assistant: assistant,
         customer: customer,
         call: call,
+        chat: chat,
         tool_call_list: tool_call_list,
         additional_properties: struct
       )
@@ -148,6 +160,7 @@ end
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
+      obj.chat.nil? || Vapi::Chat.validate_raw(obj: obj.chat)
       obj.tool_call_list.is_a?(Array) != false || raise("Passed value for field obj.tool_call_list is not the expected type, validation failed.")
     end
   end

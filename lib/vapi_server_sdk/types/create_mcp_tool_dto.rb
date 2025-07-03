@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require_relative "create_mcp_tool_dto_messages_item"
 require_relative "server"
+require_relative "mcp_tool_metadata"
 require_relative "open_ai_function"
 require "ostruct"
 require "json"
@@ -23,6 +24,8 @@ module Vapi
 #  {{org.server.url}}.
 #  - Webhook expects a response with tool call result.
     attr_reader :server
+  # @return [Vapi::McpToolMetadata] 
+    attr_reader :metadata
   # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
 #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
 #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
@@ -55,6 +58,7 @@ module Vapi
 #  {{tool.server.url}}, {{assistant.server.url}}, {{phoneNumber.server.url}},
 #  {{org.server.url}}.
 #  - Webhook expects a response with tool call result.
+    # @param metadata [Vapi::McpToolMetadata] 
     # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
 #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
 #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
@@ -66,12 +70,13 @@ module Vapi
 #  `messages[].conditions` matches the "reason" argument.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateMcpToolDto]
-    def initialize(messages: OMIT, server: OMIT, function: OMIT, additional_properties: nil)
+    def initialize(messages: OMIT, server: OMIT, metadata: OMIT, function: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @server = server if server != OMIT
+      @metadata = metadata if metadata != OMIT
       @function = function if function != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "messages": messages, "server": server, "function": function }.reject do | _k, v |
+      @_field_set = { "messages": messages, "server": server, "metadata": metadata, "function": function }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -92,6 +97,12 @@ end
       else
         server = nil
       end
+      unless parsed_json["metadata"].nil?
+        metadata = parsed_json["metadata"].to_json
+        metadata = Vapi::McpToolMetadata.from_json(json_object: metadata)
+      else
+        metadata = nil
+      end
       unless parsed_json["function"].nil?
         function = parsed_json["function"].to_json
         function = Vapi::OpenAiFunction.from_json(json_object: function)
@@ -101,6 +112,7 @@ end
       new(
         messages: messages,
         server: server,
+        metadata: metadata,
         function: function,
         additional_properties: struct
       )
@@ -120,6 +132,7 @@ end
     def self.validate_raw(obj:)
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
+      obj.metadata.nil? || Vapi::McpToolMetadata.validate_raw(obj: obj.metadata)
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
     end
   end

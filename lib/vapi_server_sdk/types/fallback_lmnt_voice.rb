@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require_relative "fallback_lmnt_voice_id"
+require_relative "fallback_lmnt_voice_language"
 require_relative "chunk_plan"
 require "ostruct"
 require "json"
@@ -12,6 +13,8 @@ module Vapi
     attr_reader :voice_id
   # @return [Float] This is the speed multiplier that will be used.
     attr_reader :speed
+  # @return [Vapi::FallbackLmntVoiceLanguage] Two letter ISO 639-1 language code. Use "auto" for auto-detection.
+    attr_reader :language
   # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
 #  provider.
     attr_reader :chunk_plan
@@ -26,17 +29,19 @@ module Vapi
     # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [Vapi::FallbackLmntVoiceId] This is the provider-specific ID that will be used.
     # @param speed [Float] This is the speed multiplier that will be used.
+    # @param language [Vapi::FallbackLmntVoiceLanguage] Two letter ISO 639-1 language code. Use "auto" for auto-detection.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
 #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackLmntVoice]
-    def initialize(caching_enabled: OMIT, voice_id:, speed: OMIT, chunk_plan: OMIT, additional_properties: nil)
+    def initialize(caching_enabled: OMIT, voice_id:, speed: OMIT, language: OMIT, chunk_plan: OMIT, additional_properties: nil)
       @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @speed = speed if speed != OMIT
+      @language = language if language != OMIT
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "cachingEnabled": caching_enabled, "voiceId": voice_id, "speed": speed, "chunkPlan": chunk_plan }.reject do | _k, v |
+      @_field_set = { "cachingEnabled": caching_enabled, "voiceId": voice_id, "speed": speed, "language": language, "chunkPlan": chunk_plan }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -55,6 +60,7 @@ end
         voice_id = nil
       end
       speed = parsed_json["speed"]
+      language = parsed_json["language"]
       unless parsed_json["chunkPlan"].nil?
         chunk_plan = parsed_json["chunkPlan"].to_json
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
@@ -65,6 +71,7 @@ end
         caching_enabled: caching_enabled,
         voice_id: voice_id,
         speed: speed,
+        language: language,
         chunk_plan: chunk_plan,
         additional_properties: struct
       )
@@ -85,6 +92,7 @@ end
       obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       Vapi::FallbackLmntVoiceId.validate_raw(obj: obj.voice_id)
       obj.speed&.is_a?(Float) != false || raise("Passed value for field obj.speed is not the expected type, validation failed.")
+      obj.language&.is_a?(Vapi::FallbackLmntVoiceLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
     end
   end

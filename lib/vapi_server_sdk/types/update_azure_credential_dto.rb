@@ -13,6 +13,9 @@ module Vapi
     attr_reader :region
   # @return [String] This is not returned in the API.
     attr_reader :api_key
+  # @return [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
+    attr_reader :fallback_index
   # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
   # @return [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
@@ -29,19 +32,22 @@ module Vapi
     # @param service [Vapi::UpdateAzureCredentialDtoService] This is the service being used in Azure.
     # @param region [Vapi::UpdateAzureCredentialDtoRegion] This is the region of the Azure resource.
     # @param api_key [String] This is not returned in the API.
+    # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param bucket_plan [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
 #  Blob Storage.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateAzureCredentialDto]
-    def initialize(service: OMIT, region: OMIT, api_key: OMIT, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
+    def initialize(service: OMIT, region: OMIT, api_key: OMIT, fallback_index: OMIT, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
       @service = service if service != OMIT
       @region = region if region != OMIT
       @api_key = api_key if api_key != OMIT
+      @fallback_index = fallback_index if fallback_index != OMIT
       @name = name if name != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "service": service, "region": region, "apiKey": api_key, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
+      @_field_set = { "service": service, "region": region, "apiKey": api_key, "fallbackIndex": fallback_index, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -55,6 +61,7 @@ end
       service = parsed_json["service"]
       region = parsed_json["region"]
       api_key = parsed_json["apiKey"]
+      fallback_index = parsed_json["fallbackIndex"]
       name = parsed_json["name"]
       unless parsed_json["bucketPlan"].nil?
         bucket_plan = parsed_json["bucketPlan"].to_json
@@ -66,6 +73,7 @@ end
         service: service,
         region: region,
         api_key: api_key,
+        fallback_index: fallback_index,
         name: name,
         bucket_plan: bucket_plan,
         additional_properties: struct
@@ -87,6 +95,7 @@ end
       obj.service&.is_a?(Vapi::UpdateAzureCredentialDtoService) != false || raise("Passed value for field obj.service is not the expected type, validation failed.")
       obj.region&.is_a?(Vapi::UpdateAzureCredentialDtoRegion) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
+      obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.bucket_plan.nil? || Vapi::AzureBlobStorageBucketPlan.validate_raw(obj: obj.bucket_plan)
     end

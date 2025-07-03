@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require_relative "o_auth_2_authentication_plan"
+require_relative "create_webhook_credential_dto_authentication_plan"
 require "ostruct"
 require "json"
 
 module Vapi
   class CreateWebhookCredentialDto
-  # @return [Vapi::OAuth2AuthenticationPlan] This is the authentication plan. Currently supports OAuth2 RFC 6749.
+  # @return [Vapi::CreateWebhookCredentialDtoAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
     attr_reader :authentication_plan
   # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
@@ -17,7 +17,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param authentication_plan [Vapi::OAuth2AuthenticationPlan] This is the authentication plan. Currently supports OAuth2 RFC 6749.
+    # @param authentication_plan [Vapi::CreateWebhookCredentialDtoAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateWebhookCredentialDto]
@@ -38,7 +38,7 @@ end
       parsed_json = JSON.parse(json_object)
       unless parsed_json["authenticationPlan"].nil?
         authentication_plan = parsed_json["authenticationPlan"].to_json
-        authentication_plan = Vapi::OAuth2AuthenticationPlan.from_json(json_object: authentication_plan)
+        authentication_plan = Vapi::CreateWebhookCredentialDtoAuthenticationPlan.from_json(json_object: authentication_plan)
       else
         authentication_plan = nil
       end
@@ -62,7 +62,7 @@ end
     # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
-      Vapi::OAuth2AuthenticationPlan.validate_raw(obj: obj.authentication_plan)
+      Vapi::CreateWebhookCredentialDtoAuthenticationPlan.validate_raw(obj: obj.authentication_plan)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end
   end

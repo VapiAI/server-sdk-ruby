@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require_relative "edge_condition"
+require_relative "ai_edge_condition"
 require "ostruct"
 require "json"
 
 module Vapi
   class Edge
-  # @return [Vapi::EdgeCondition] 
+  # @return [Vapi::AiEdgeCondition] 
     attr_reader :condition
   # @return [String] 
     attr_reader :from
@@ -21,7 +21,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param condition [Vapi::EdgeCondition] 
+    # @param condition [Vapi::AiEdgeCondition] 
     # @param from [String] 
     # @param to [String] 
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the edge.
@@ -46,7 +46,7 @@ end
       parsed_json = JSON.parse(json_object)
       unless parsed_json["condition"].nil?
         condition = parsed_json["condition"].to_json
-        condition = Vapi::EdgeCondition.from_json(json_object: condition)
+        condition = Vapi::AiEdgeCondition.from_json(json_object: condition)
       else
         condition = nil
       end
@@ -74,7 +74,7 @@ end
     # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.condition.nil? || Vapi::EdgeCondition.validate_raw(obj: obj.condition)
+      obj.condition.nil? || Vapi::AiEdgeCondition.validate_raw(obj: obj.condition)
       obj.from.is_a?(String) != false || raise("Passed value for field obj.from is not the expected type, validation failed.")
       obj.to.is_a?(String) != false || raise("Passed value for field obj.to is not the expected type, validation failed.")
       obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")

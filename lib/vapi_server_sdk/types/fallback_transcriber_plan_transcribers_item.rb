@@ -10,6 +10,7 @@ require_relative "fallback_google_transcriber"
 require_relative "fallback_talkscriber_transcriber"
 require_relative "fallback_speechmatics_transcriber"
 require_relative "fallback_open_ai_transcriber"
+require_relative "fallback_cartesia_transcriber"
 
 module Vapi
   class FallbackTranscriberPlanTranscribersItem
@@ -56,6 +57,8 @@ module Vapi
         member = Vapi::FallbackSpeechmaticsTranscriber.from_json(json_object: json_object)
       when "openai"
         member = Vapi::FallbackOpenAiTranscriber.from_json(json_object: json_object)
+      when "cartesia"
+        member = Vapi::FallbackCartesiaTranscriber.from_json(json_object: json_object)
       else
         member = Vapi::FallbackAssemblyAiTranscriber.from_json(json_object: json_object)
       end
@@ -85,6 +88,8 @@ module Vapi
       when "speechmatics"
         { **@member.to_json, provider: @discriminant }.to_json
       when "openai"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "cartesia"
         { **@member.to_json, provider: @discriminant }.to_json
       else
         { "provider": @discriminant, value: @member }.to_json
@@ -119,6 +124,8 @@ module Vapi
         Vapi::FallbackSpeechmaticsTranscriber.validate_raw(obj: obj)
       when "openai"
         Vapi::FallbackOpenAiTranscriber.validate_raw(obj: obj)
+      when "cartesia"
+        Vapi::FallbackCartesiaTranscriber.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -179,6 +186,11 @@ module Vapi
     # @return [Vapi::FallbackTranscriberPlanTranscribersItem]
     def self.openai(member:)
       new(member: member, discriminant: "openai")
+    end
+    # @param member [Vapi::FallbackCartesiaTranscriber] 
+    # @return [Vapi::FallbackTranscriberPlanTranscribersItem]
+    def self.cartesia(member:)
+      new(member: member, discriminant: "cartesia")
     end
   end
 end

@@ -2,9 +2,12 @@
 require "json"
 require_relative "workflow_open_ai_model"
 require_relative "workflow_anthropic_model"
+require_relative "workflow_google_model"
+require_relative "workflow_custom_model"
 
 module Vapi
-# This is the model for the Conversation Task.
+# This is the model for the node.
+#  This overrides `workflow.model`.
   class ConversationNodeModel
   # @return [Object] 
     attr_reader :member
@@ -32,6 +35,10 @@ module Vapi
         member = Vapi::WorkflowOpenAiModel.from_json(json_object: json_object)
       when "anthropic"
         member = Vapi::WorkflowAnthropicModel.from_json(json_object: json_object)
+      when "google"
+        member = Vapi::WorkflowGoogleModel.from_json(json_object: json_object)
+      when "custom-llm"
+        member = Vapi::WorkflowCustomModel.from_json(json_object: json_object)
       else
         member = Vapi::WorkflowOpenAiModel.from_json(json_object: json_object)
       end
@@ -45,6 +52,10 @@ module Vapi
       when "openai"
         { **@member.to_json, provider: @discriminant }.to_json
       when "anthropic"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "google"
+        { **@member.to_json, provider: @discriminant }.to_json
+      when "custom-llm"
         { **@member.to_json, provider: @discriminant }.to_json
       else
         { "provider": @discriminant, value: @member }.to_json
@@ -63,6 +74,10 @@ module Vapi
         Vapi::WorkflowOpenAiModel.validate_raw(obj: obj)
       when "anthropic"
         Vapi::WorkflowAnthropicModel.validate_raw(obj: obj)
+      when "google"
+        Vapi::WorkflowGoogleModel.validate_raw(obj: obj)
+      when "custom-llm"
+        Vapi::WorkflowCustomModel.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -83,6 +98,16 @@ module Vapi
     # @return [Vapi::ConversationNodeModel]
     def self.anthropic(member:)
       new(member: member, discriminant: "anthropic")
+    end
+    # @param member [Vapi::WorkflowGoogleModel] 
+    # @return [Vapi::ConversationNodeModel]
+    def self.google(member:)
+      new(member: member, discriminant: "google")
+    end
+    # @param member [Vapi::WorkflowCustomModel] 
+    # @return [Vapi::ConversationNodeModel]
+    def self.custom_llm(member:)
+      new(member: member, discriminant: "custom-llm")
     end
   end
 end

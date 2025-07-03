@@ -12,6 +12,7 @@ module Vapi
 #  - If `credential.type` is `gcp`, then this is optional since GCP allows buckets
 #  to be accessed without a region but region is required for data residency
 #  requirements. Read here: https://cloud.google.com/storage/docs/request-endpoints
+#  This overrides the `credential.region` field if it is provided.
     attr_reader :region
   # @return [String] This is the path where call artifacts will be stored.
 #  Usage:
@@ -51,6 +52,7 @@ module Vapi
 #  - If `credential.type` is `gcp`, then this is optional since GCP allows buckets
 #  to be accessed without a region but region is required for data residency
 #  requirements. Read here: https://cloud.google.com/storage/docs/request-endpoints
+#  This overrides the `credential.region` field if it is provided.
     # @param path [String] This is the path where call artifacts will be stored.
 #  Usage:
 #  - To store call artifacts in a specific folder, set this to the full path. Eg.

@@ -14,6 +14,9 @@ module Vapi
     attr_reader :s_3_bucket_name
   # @return [String] The path prefix for the uploaded recording. Ex. "recordings/"
     attr_reader :s_3_path_prefix
+  # @return [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
+    attr_reader :fallback_index
   # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
   # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -29,18 +32,21 @@ module Vapi
     # @param region [String] AWS region in which the S3 bucket is located.
     # @param s_3_bucket_name [String] AWS S3 bucket name.
     # @param s_3_path_prefix [String] The path prefix for the uploaded recording. Ex. "recordings/"
+    # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateS3CredentialDto]
-    def initialize(aws_access_key_id: OMIT, aws_secret_access_key: OMIT, region: OMIT, s_3_bucket_name: OMIT, s_3_path_prefix: OMIT, name: OMIT, additional_properties: nil)
+    def initialize(aws_access_key_id: OMIT, aws_secret_access_key: OMIT, region: OMIT, s_3_bucket_name: OMIT, s_3_path_prefix: OMIT, fallback_index: OMIT, name: OMIT, additional_properties: nil)
       @aws_access_key_id = aws_access_key_id if aws_access_key_id != OMIT
       @aws_secret_access_key = aws_secret_access_key if aws_secret_access_key != OMIT
       @region = region if region != OMIT
       @s_3_bucket_name = s_3_bucket_name if s_3_bucket_name != OMIT
       @s_3_path_prefix = s_3_path_prefix if s_3_path_prefix != OMIT
+      @fallback_index = fallback_index if fallback_index != OMIT
       @name = name if name != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "awsAccessKeyId": aws_access_key_id, "awsSecretAccessKey": aws_secret_access_key, "region": region, "s3BucketName": s_3_bucket_name, "s3PathPrefix": s_3_path_prefix, "name": name }.reject do | _k, v |
+      @_field_set = { "awsAccessKeyId": aws_access_key_id, "awsSecretAccessKey": aws_secret_access_key, "region": region, "s3BucketName": s_3_bucket_name, "s3PathPrefix": s_3_path_prefix, "fallbackIndex": fallback_index, "name": name }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -56,6 +62,7 @@ end
       region = parsed_json["region"]
       s_3_bucket_name = parsed_json["s3BucketName"]
       s_3_path_prefix = parsed_json["s3PathPrefix"]
+      fallback_index = parsed_json["fallbackIndex"]
       name = parsed_json["name"]
       new(
         aws_access_key_id: aws_access_key_id,
@@ -63,6 +70,7 @@ end
         region: region,
         s_3_bucket_name: s_3_bucket_name,
         s_3_path_prefix: s_3_path_prefix,
+        fallback_index: fallback_index,
         name: name,
         additional_properties: struct
       )
@@ -85,6 +93,7 @@ end
       obj.region&.is_a?(String) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.s_3_bucket_name&.is_a?(String) != false || raise("Passed value for field obj.s_3_bucket_name is not the expected type, validation failed.")
       obj.s_3_path_prefix&.is_a?(String) != false || raise("Passed value for field obj.s_3_path_prefix is not the expected type, validation failed.")
+      obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end
   end

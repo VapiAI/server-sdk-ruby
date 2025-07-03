@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative "o_auth_2_authentication_plan"
+require_relative "webhook_credential_authentication_plan"
 require "date"
 require "date"
 require_relative "oauth_2_authentication_session"
@@ -10,7 +10,7 @@ module Vapi
   class WebhookCredential
   # @return [String] 
     attr_reader :provider
-  # @return [Vapi::OAuth2AuthenticationPlan] This is the authentication plan. Currently supports OAuth2 RFC 6749.
+  # @return [Vapi::WebhookCredentialAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
     attr_reader :authentication_plan
   # @return [String] This is the unique identifier for the credential.
     attr_reader :id
@@ -34,7 +34,7 @@ module Vapi
     OMIT = Object.new
 
     # @param provider [String] 
-    # @param authentication_plan [Vapi::OAuth2AuthenticationPlan] This is the authentication plan. Currently supports OAuth2 RFC 6749.
+    # @param authentication_plan [Vapi::WebhookCredentialAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
@@ -68,7 +68,7 @@ end
       provider = parsed_json["provider"]
       unless parsed_json["authenticationPlan"].nil?
         authentication_plan = parsed_json["authenticationPlan"].to_json
-        authentication_plan = Vapi::OAuth2AuthenticationPlan.from_json(json_object: authentication_plan)
+        authentication_plan = Vapi::WebhookCredentialAuthenticationPlan.from_json(json_object: authentication_plan)
       else
         authentication_plan = nil
       end
@@ -117,7 +117,7 @@ end
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
-      Vapi::OAuth2AuthenticationPlan.validate_raw(obj: obj.authentication_plan)
+      Vapi::WebhookCredentialAuthenticationPlan.validate_raw(obj: obj.authentication_plan)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

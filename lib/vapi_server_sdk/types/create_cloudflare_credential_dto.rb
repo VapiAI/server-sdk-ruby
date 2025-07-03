@@ -11,6 +11,9 @@ module Vapi
     attr_reader :api_key
   # @return [String] Cloudflare Account Email.
     attr_reader :account_email
+  # @return [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
+    attr_reader :fallback_index
   # @return [Vapi::CloudflareR2BucketPlan] This is the bucket plan that can be provided to store call artifacts in R2
     attr_reader :bucket_plan
   # @return [String] This is the name of credential. This is just for your reference.
@@ -26,18 +29,21 @@ module Vapi
     # @param account_id [String] Cloudflare Account Id.
     # @param api_key [String] Cloudflare API Key / Token.
     # @param account_email [String] Cloudflare Account Email.
+    # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
     # @param bucket_plan [Vapi::CloudflareR2BucketPlan] This is the bucket plan that can be provided to store call artifacts in R2
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateCloudflareCredentialDto]
-    def initialize(account_id: OMIT, api_key: OMIT, account_email: OMIT, bucket_plan: OMIT, name: OMIT, additional_properties: nil)
+    def initialize(account_id: OMIT, api_key: OMIT, account_email: OMIT, fallback_index: OMIT, bucket_plan: OMIT, name: OMIT, additional_properties: nil)
       @account_id = account_id if account_id != OMIT
       @api_key = api_key if api_key != OMIT
       @account_email = account_email if account_email != OMIT
+      @fallback_index = fallback_index if fallback_index != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @name = name if name != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "accountId": account_id, "apiKey": api_key, "accountEmail": account_email, "bucketPlan": bucket_plan, "name": name }.reject do | _k, v |
+      @_field_set = { "accountId": account_id, "apiKey": api_key, "accountEmail": account_email, "fallbackIndex": fallback_index, "bucketPlan": bucket_plan, "name": name }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -51,6 +57,7 @@ end
       account_id = parsed_json["accountId"]
       api_key = parsed_json["apiKey"]
       account_email = parsed_json["accountEmail"]
+      fallback_index = parsed_json["fallbackIndex"]
       unless parsed_json["bucketPlan"].nil?
         bucket_plan = parsed_json["bucketPlan"].to_json
         bucket_plan = Vapi::CloudflareR2BucketPlan.from_json(json_object: bucket_plan)
@@ -62,6 +69,7 @@ end
         account_id: account_id,
         api_key: api_key,
         account_email: account_email,
+        fallback_index: fallback_index,
         bucket_plan: bucket_plan,
         name: name,
         additional_properties: struct
@@ -83,6 +91,7 @@ end
       obj.account_id&.is_a?(String) != false || raise("Passed value for field obj.account_id is not the expected type, validation failed.")
       obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.account_email&.is_a?(String) != false || raise("Passed value for field obj.account_email is not the expected type, validation failed.")
+      obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.bucket_plan.nil? || Vapi::CloudflareR2BucketPlan.validate_raw(obj: obj.bucket_plan)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
     end

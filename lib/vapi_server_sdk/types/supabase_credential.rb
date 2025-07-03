@@ -9,6 +9,9 @@ module Vapi
   class SupabaseCredential
   # @return [String] This is for supabase storage.
     attr_reader :provider
+  # @return [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
+    attr_reader :fallback_index
   # @return [String] This is the unique identifier for the credential.
     attr_reader :id
   # @return [String] This is the unique identifier for the org that this credential belongs to.
@@ -30,6 +33,8 @@ module Vapi
     OMIT = Object.new
 
     # @param provider [String] This is for supabase storage.
+    # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
@@ -38,8 +43,9 @@ module Vapi
     # @param bucket_plan [Vapi::SupabaseBucketPlan] 
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::SupabaseCredential]
-    def initialize(provider:, id:, org_id:, created_at:, updated_at:, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
+    def initialize(provider:, fallback_index: OMIT, id:, org_id:, created_at:, updated_at:, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
       @provider = provider
+      @fallback_index = fallback_index if fallback_index != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -47,7 +53,7 @@ module Vapi
       @name = name if name != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
+      @_field_set = { "provider": provider, "fallbackIndex": fallback_index, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -59,6 +65,7 @@ end
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       provider = parsed_json["provider"]
+      fallback_index = parsed_json["fallbackIndex"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = unless parsed_json["createdAt"].nil?
@@ -80,6 +87,7 @@ end
       end
       new(
         provider: provider,
+        fallback_index: fallback_index,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -103,6 +111,7 @@ end
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

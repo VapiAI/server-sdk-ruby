@@ -4,6 +4,7 @@ require_relative "server"
 require "date"
 require "date"
 require_relative "open_ai_function"
+require_relative "mcp_tool_metadata"
 require "ostruct"
 require "json"
 
@@ -43,6 +44,8 @@ module Vapi
 #  "request-complete" messages. One of these messages will be triggered if the
 #  `messages[].conditions` matches the "reason" argument.
     attr_reader :function
+  # @return [Vapi::McpToolMetadata] 
+    attr_reader :metadata
   # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
   # @return [Object] 
@@ -78,9 +81,10 @@ module Vapi
 #  argument "reason". Then, in `messages` array, you can have many
 #  "request-complete" messages. One of these messages will be triggered if the
 #  `messages[].conditions` matches the "reason" argument.
+    # @param metadata [Vapi::McpToolMetadata] 
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::McpTool]
-    def initialize(messages: OMIT, server: OMIT, id:, org_id:, created_at:, updated_at:, function: OMIT, additional_properties: nil)
+    def initialize(messages: OMIT, server: OMIT, id:, org_id:, created_at:, updated_at:, function: OMIT, metadata: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @server = server if server != OMIT
       @id = id
@@ -88,8 +92,9 @@ module Vapi
       @created_at = created_at
       @updated_at = updated_at
       @function = function if function != OMIT
+      @metadata = metadata if metadata != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "messages": messages, "server": server, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "function": function }.reject do | _k, v |
+      @_field_set = { "messages": messages, "server": server, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "function": function, "metadata": metadata }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -128,6 +133,12 @@ end
       else
         function = nil
       end
+      unless parsed_json["metadata"].nil?
+        metadata = parsed_json["metadata"].to_json
+        metadata = Vapi::McpToolMetadata.from_json(json_object: metadata)
+      else
+        metadata = nil
+      end
       new(
         messages: messages,
         server: server,
@@ -136,6 +147,7 @@ end
         created_at: created_at,
         updated_at: updated_at,
         function: function,
+        metadata: metadata,
         additional_properties: struct
       )
     end
@@ -159,6 +171,7 @@ end
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
+      obj.metadata.nil? || Vapi::McpToolMetadata.validate_raw(obj: obj.metadata)
     end
   end
 end

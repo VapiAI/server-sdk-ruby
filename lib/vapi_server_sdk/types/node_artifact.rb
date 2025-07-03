@@ -1,15 +1,16 @@
 # frozen_string_literal: true
+require_relative "node_artifact_messages_item"
 require "ostruct"
 require "json"
 
 module Vapi
   class NodeArtifact
-  # @return [String] This is the node id.
-    attr_reader :node_name
-  # @return [Array<Hash{String => Object}>] This is the messages that were spoken during the node.
+  # @return [Array<Vapi::NodeArtifactMessagesItem>] These are the messages that were spoken during the node.
     attr_reader :messages
-  # @return [Hash{String => Object}] This is the object containing the variables extracted from the node.
-    attr_reader :variables
+  # @return [String] This is the node name.
+    attr_reader :node_name
+  # @return [Hash{String => Object}] These are the variable values that were extracted from the node.
+    attr_reader :variable_values
   # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
   # @return [Object] 
@@ -18,17 +19,17 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param node_name [String] This is the node id.
-    # @param messages [Array<Hash{String => Object}>] This is the messages that were spoken during the node.
-    # @param variables [Hash{String => Object}] This is the object containing the variables extracted from the node.
+    # @param messages [Array<Vapi::NodeArtifactMessagesItem>] These are the messages that were spoken during the node.
+    # @param node_name [String] This is the node name.
+    # @param variable_values [Hash{String => Object}] These are the variable values that were extracted from the node.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::NodeArtifact]
-    def initialize(node_name: OMIT, messages: OMIT, variables: OMIT, additional_properties: nil)
-      @node_name = node_name if node_name != OMIT
+    def initialize(messages: OMIT, node_name: OMIT, variable_values: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
-      @variables = variables if variables != OMIT
+      @node_name = node_name if node_name != OMIT
+      @variable_values = variable_values if variable_values != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "nodeName": node_name, "messages": messages, "variables": variables }.reject do | _k, v |
+      @_field_set = { "messages": messages, "nodeName": node_name, "variableValues": variable_values }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -39,13 +40,16 @@ end
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      messages = parsed_json["messages"]&.map do | item |
+  item = item.to_json
+  Vapi::NodeArtifactMessagesItem.from_json(json_object: item)
+end
       node_name = parsed_json["nodeName"]
-      messages = parsed_json["messages"]
-      variables = parsed_json["variables"]
+      variable_values = parsed_json["variableValues"]
       new(
-        node_name: node_name,
         messages: messages,
-        variables: variables,
+        node_name: node_name,
+        variable_values: variable_values,
         additional_properties: struct
       )
     end
@@ -62,9 +66,9 @@ end
     # @param obj [Object] 
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.node_name&.is_a?(String) != false || raise("Passed value for field obj.node_name is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
-      obj.variables&.is_a?(Hash) != false || raise("Passed value for field obj.variables is not the expected type, validation failed.")
+      obj.node_name&.is_a?(String) != false || raise("Passed value for field obj.node_name is not the expected type, validation failed.")
+      obj.variable_values&.is_a?(Hash) != false || raise("Passed value for field obj.variable_values is not the expected type, validation failed.")
     end
   end
 end

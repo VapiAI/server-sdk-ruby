@@ -6,6 +6,7 @@ module Vapi
 
     VAPI = "vapi"
     LIVEKIT = "livekit"
+    CUSTOM_ENDPOINTING_MODEL = "custom-endpointing-model"
 
   end
 end

@@ -4,6 +4,7 @@ require_relative "artifact"
 require_relative "create_assistant_dto"
 require_relative "create_customer_dto"
 require_relative "call"
+require_relative "chat"
 require "ostruct"
 require "json"
 
@@ -25,6 +26,8 @@ module Vapi
     attr_reader :customer
   # @return [Vapi::Call] This is the call that the message is associated with.
     attr_reader :call
+  # @return [Vapi::Chat] This is the chat object.
+    attr_reader :chat
   # @return [String] This is the voice input content
     attr_reader :input
   # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -44,10 +47,11 @@ module Vapi
     # @param assistant [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     # @param call [Vapi::Call] This is the call that the message is associated with.
+    # @param chat [Vapi::Chat] This is the chat object.
     # @param input [String] This is the voice input content
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageVoiceInput]
-    def initialize(phone_number: OMIT, type:, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, input:, additional_properties: nil)
+    def initialize(phone_number: OMIT, type:, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, input:, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
       @type = type
       @timestamp = timestamp if timestamp != OMIT
@@ -55,9 +59,10 @@ module Vapi
       @assistant = assistant if assistant != OMIT
       @customer = customer if customer != OMIT
       @call = call if call != OMIT
+      @chat = chat if chat != OMIT
       @input = input
       @additional_properties = additional_properties
-      @_field_set = { "phoneNumber": phone_number, "type": type, "timestamp": timestamp, "artifact": artifact, "assistant": assistant, "customer": customer, "call": call, "input": input }.reject do | _k, v |
+      @_field_set = { "phoneNumber": phone_number, "type": type, "timestamp": timestamp, "artifact": artifact, "assistant": assistant, "customer": customer, "call": call, "chat": chat, "input": input }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -100,6 +105,12 @@ end
       else
         call = nil
       end
+      unless parsed_json["chat"].nil?
+        chat = parsed_json["chat"].to_json
+        chat = Vapi::Chat.from_json(json_object: chat)
+      else
+        chat = nil
+      end
       input = parsed_json["input"]
       new(
         phone_number: phone_number,
@@ -109,6 +120,7 @@ end
         assistant: assistant,
         customer: customer,
         call: call,
+        chat: chat,
         input: input,
         additional_properties: struct
       )
@@ -133,6 +145,7 @@ end
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
+      obj.chat.nil? || Vapi::Chat.validate_raw(obj: obj.chat)
       obj.input.is_a?(String) != false || raise("Passed value for field obj.input is not the expected type, validation failed.")
     end
   end

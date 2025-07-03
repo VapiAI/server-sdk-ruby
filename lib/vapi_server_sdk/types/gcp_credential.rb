@@ -10,6 +10,9 @@ module Vapi
   class GcpCredential
   # @return [String] 
     attr_reader :provider
+  # @return [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
+    attr_reader :fallback_index
   # @return [String] This is the unique identifier for the credential.
     attr_reader :id
   # @return [String] This is the unique identifier for the org that this credential belongs to.
@@ -25,7 +28,9 @@ module Vapi
 #  le.cloud.google.com/iam-admin/serviceaccounts/details/<service-account-id>/keys.
 #  The schema is identical to the JSON that GCP outputs.
     attr_reader :gcp_key
-  # @return [Vapi::BucketPlan] This is the bucket plan that can be provided to store call artifacts in GCP.
+  # @return [String] This is the region of the GCP resource.
+    attr_reader :region
+  # @return [Vapi::BucketPlan] 
     attr_reader :bucket_plan
   # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -36,6 +41,8 @@ module Vapi
     OMIT = Object.new
 
     # @param provider [String] 
+    # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
+#  Lower numbers are tried first in increasing order.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
@@ -45,20 +52,23 @@ module Vapi
 #  Console at
 #  le.cloud.google.com/iam-admin/serviceaccounts/details/<service-account-id>/keys.
 #  The schema is identical to the JSON that GCP outputs.
-    # @param bucket_plan [Vapi::BucketPlan] This is the bucket plan that can be provided to store call artifacts in GCP.
+    # @param region [String] This is the region of the GCP resource.
+    # @param bucket_plan [Vapi::BucketPlan] 
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::GcpCredential]
-    def initialize(provider:, id:, org_id:, created_at:, updated_at:, name: OMIT, gcp_key:, bucket_plan: OMIT, additional_properties: nil)
+    def initialize(provider:, fallback_index: OMIT, id:, org_id:, created_at:, updated_at:, name: OMIT, gcp_key:, region: OMIT, bucket_plan: OMIT, additional_properties: nil)
       @provider = provider
+      @fallback_index = fallback_index if fallback_index != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
       @updated_at = updated_at
       @name = name if name != OMIT
       @gcp_key = gcp_key
+      @region = region if region != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name, "gcpKey": gcp_key, "bucketPlan": bucket_plan }.reject do | _k, v |
+      @_field_set = { "provider": provider, "fallbackIndex": fallback_index, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name, "gcpKey": gcp_key, "region": region, "bucketPlan": bucket_plan }.reject do | _k, v |
   v == OMIT
 end
     end
@@ -70,6 +80,7 @@ end
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       provider = parsed_json["provider"]
+      fallback_index = parsed_json["fallbackIndex"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = unless parsed_json["createdAt"].nil?
@@ -89,6 +100,7 @@ end
       else
         gcp_key = nil
       end
+      region = parsed_json["region"]
       unless parsed_json["bucketPlan"].nil?
         bucket_plan = parsed_json["bucketPlan"].to_json
         bucket_plan = Vapi::BucketPlan.from_json(json_object: bucket_plan)
@@ -97,12 +109,14 @@ end
       end
       new(
         provider: provider,
+        fallback_index: fallback_index,
         id: id,
         org_id: org_id,
         created_at: created_at,
         updated_at: updated_at,
         name: name,
         gcp_key: gcp_key,
+        region: region,
         bucket_plan: bucket_plan,
         additional_properties: struct
       )
@@ -121,12 +135,14 @@ end
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       Vapi::GcpKey.validate_raw(obj: obj.gcp_key)
+      obj.region&.is_a?(String) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.bucket_plan.nil? || Vapi::BucketPlan.validate_raw(obj: obj.bucket_plan)
     end
   end
