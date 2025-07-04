@@ -2,9 +2,7 @@
 
 module Vapi
   class WorkflowBackgroundSoundZero
-
     OFF = "off"
     OFFICE = "office"
-
   end
 end

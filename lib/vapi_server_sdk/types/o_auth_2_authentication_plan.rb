@@ -1,20 +1,21 @@
 # frozen_string_literal: true
+
 require "ostruct"
 require "json"
 
 module Vapi
   class OAuth2AuthenticationPlan
-  # @return [String] This is the OAuth2 URL.
+    # @return [String] This is the OAuth2 URL.
     attr_reader :url
-  # @return [String] This is the OAuth2 client ID.
+    # @return [String] This is the OAuth2 client ID.
     attr_reader :client_id
-  # @return [String] This is the OAuth2 client secret.
+    # @return [String] This is the OAuth2 client secret.
     attr_reader :client_secret
-  # @return [String] This is the scope of the OAuth2 token.
+    # @return [String] This is the scope of the OAuth2 token.
     attr_reader :scope
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
@@ -32,13 +33,19 @@ module Vapi
       @client_secret = client_secret
       @scope = scope if scope != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "url": url, "clientId": client_id, "clientSecret": client_secret, "scope": scope }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "url": url,
+        "clientId": client_id,
+        "clientSecret": client_secret,
+        "scope": scope
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of OAuth2AuthenticationPlan
+
+    # Deserialize a JSON object to an instance of OAuth2AuthenticationPlan
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::OAuth2AuthenticationPlan]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -55,17 +62,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of OAuth2AuthenticationPlan to a JSON object
+
+    # Serialize an instance of OAuth2AuthenticationPlan to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")

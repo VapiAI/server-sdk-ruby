@@ -2,7 +2,6 @@
 
 module Vapi
   class FormatPlanFormattersEnabledItem
-
     MARKDOWN = "markdown"
     ASTERISK = "asterisk"
     QUOTE = "quote"
@@ -20,6 +19,5 @@ module Vapi
     PHONE_NUMBER = "phoneNumber"
     NUMBER = "number"
     STRIP_ASTERISK = "stripAsterisk"
-
   end
 end

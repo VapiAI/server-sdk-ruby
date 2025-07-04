@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# The voices provided by Vapi
+  # The voices provided by Vapi
   class FallbackVapiVoiceVoiceId
-
     ELLIOT = "Elliot"
     KYLIE = "Kylie"
     ROHAN = "Rohan"
@@ -15,6 +14,5 @@ module Vapi
     HARRY = "Harry"
     PAIGE = "Paige"
     SPENCER = "Spencer"
-
   end
 end

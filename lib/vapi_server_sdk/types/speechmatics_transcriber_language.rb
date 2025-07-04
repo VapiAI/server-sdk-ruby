@@ -2,7 +2,6 @@
 
 module Vapi
   class SpeechmaticsTranscriberLanguage
-
     AUTO = "auto"
     AR = "ar"
     BA = "ba"
@@ -59,6 +58,5 @@ module Vapi
     UG = "ug"
     VI = "vi"
     CY = "cy"
-
   end
 end

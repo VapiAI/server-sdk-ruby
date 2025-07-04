@@ -2,7 +2,6 @@
 
 module Vapi
   class FallbackRimeAiVoiceIdEnum
-
     ABBIE = "abbie"
     ALLISON = "allison"
     ALLY = "ally"
@@ -94,6 +93,5 @@ module Vapi
     ESTHER = "esther"
     ESTELLE = "estelle"
     ANDROMEDA = "andromeda"
-
   end
 end

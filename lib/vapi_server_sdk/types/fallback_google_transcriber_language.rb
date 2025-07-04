@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the language that will be set for the transcription.
+  # This is the language that will be set for the transcription.
   class FallbackGoogleTranscriberLanguage
-
     MULTILINGUAL = "Multilingual"
     ARABIC = "Arabic"
     BENGALI = "Bengali"
@@ -43,6 +42,5 @@ module Vapi
     TURKISH = "Turkish"
     UKRAINIAN = "Ukrainian"
     VIETNAMESE = "Vietnamese"
-
   end
 end

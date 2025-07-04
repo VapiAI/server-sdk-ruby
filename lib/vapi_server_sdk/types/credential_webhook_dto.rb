@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "credential_webhook_dto_type"
 require_relative "credential_webhook_dto_operation"
 require_relative "credential_webhook_dto_auth_mode"
@@ -9,50 +10,51 @@ require "json"
 
 module Vapi
   class CredentialWebhookDto
-  # @return [Vapi::CredentialWebhookDtoType] 
+    # @return [Vapi::CredentialWebhookDtoType]
     attr_reader :type
-  # @return [Vapi::CredentialWebhookDtoOperation] 
+    # @return [Vapi::CredentialWebhookDtoOperation]
     attr_reader :operation
-  # @return [String] 
+    # @return [String]
     attr_reader :from
-  # @return [String] 
+    # @return [String]
     attr_reader :connection_id
-  # @return [Vapi::CredentialWebhookDtoAuthMode] 
+    # @return [Vapi::CredentialWebhookDtoAuthMode]
     attr_reader :auth_mode
-  # @return [String] 
+    # @return [String]
     attr_reader :provider_config_key
-  # @return [String] 
+    # @return [String]
     attr_reader :provider
-  # @return [String] 
+    # @return [String]
     attr_reader :environment
-  # @return [Boolean] 
+    # @return [Boolean]
     attr_reader :success
-  # @return [Vapi::CredentialEndUser] 
+    # @return [Vapi::CredentialEndUser]
     attr_reader :end_user
-  # @return [Vapi::CredentialSessionError] 
+    # @return [Vapi::CredentialSessionError]
     attr_reader :error
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
-    # @param type [Vapi::CredentialWebhookDtoType] 
-    # @param operation [Vapi::CredentialWebhookDtoOperation] 
-    # @param from [String] 
-    # @param connection_id [String] 
-    # @param auth_mode [Vapi::CredentialWebhookDtoAuthMode] 
-    # @param provider_config_key [String] 
-    # @param provider [String] 
-    # @param environment [String] 
-    # @param success [Boolean] 
-    # @param end_user [Vapi::CredentialEndUser] 
-    # @param error [Vapi::CredentialSessionError] 
+    # @param type [Vapi::CredentialWebhookDtoType]
+    # @param operation [Vapi::CredentialWebhookDtoOperation]
+    # @param from [String]
+    # @param connection_id [String]
+    # @param auth_mode [Vapi::CredentialWebhookDtoAuthMode]
+    # @param provider_config_key [String]
+    # @param provider [String]
+    # @param environment [String]
+    # @param success [Boolean]
+    # @param end_user [Vapi::CredentialEndUser]
+    # @param error [Vapi::CredentialSessionError]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CredentialWebhookDto]
-    def initialize(type:, operation:, from:, connection_id:, auth_mode:, provider_config_key:, provider:, environment:, success:, end_user:, error: OMIT, additional_properties: nil)
+    def initialize(type:, operation:, from:, connection_id:, auth_mode:, provider_config_key:, provider:, environment:,
+                   success:, end_user:, error: OMIT, additional_properties: nil)
       @type = type
       @operation = operation
       @from = from
@@ -65,13 +67,26 @@ module Vapi
       @end_user = end_user
       @error = error if error != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "operation": operation, "from": from, "connectionId": connection_id, "authMode": auth_mode, "providerConfigKey": provider_config_key, "provider": provider, "environment": environment, "success": success, "endUser": end_user, "error": error }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "type": type,
+        "operation": operation,
+        "from": from,
+        "connectionId": connection_id,
+        "authMode": auth_mode,
+        "providerConfigKey": provider_config_key,
+        "provider": provider,
+        "environment": environment,
+        "success": success,
+        "endUser": end_user,
+        "error": error
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of CredentialWebhookDto
+
+    # Deserialize a JSON object to an instance of CredentialWebhookDto
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::CredentialWebhookDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -85,17 +100,17 @@ end
       provider = parsed_json["provider"]
       environment = parsed_json["environment"]
       success = parsed_json["success"]
-      unless parsed_json["endUser"].nil?
+      if parsed_json["endUser"].nil?
+        end_user = nil
+      else
         end_user = parsed_json["endUser"].to_json
         end_user = Vapi::CredentialEndUser.from_json(json_object: end_user)
-      else
-        end_user = nil
       end
-      unless parsed_json["error"].nil?
+      if parsed_json["error"].nil?
+        error = nil
+      else
         error = parsed_json["error"].to_json
         error = Vapi::CredentialSessionError.from_json(json_object: error)
-      else
-        error = nil
       end
       new(
         type: type,
@@ -112,17 +127,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of CredentialWebhookDto to a JSON object
+
+    # Serialize an instance of CredentialWebhookDto to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.type.is_a?(Vapi::CredentialWebhookDtoType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")

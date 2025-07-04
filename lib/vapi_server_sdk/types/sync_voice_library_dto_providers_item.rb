@@ -2,7 +2,6 @@
 
 module Vapi
   class SyncVoiceLibraryDtoProvidersItem
-
     VAPI = "vapi"
     ELEVEN_LABS = "11labs"
     AZURE = "azure"
@@ -19,6 +18,5 @@ module Vapi
     TAVUS = "tavus"
     SESAME = "sesame"
     INWORLD = "inworld"
-
   end
 end

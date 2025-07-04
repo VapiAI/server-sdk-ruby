@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-  module Assistants
+  class Assistants
     class UpdateAssistantDtoClientMessagesItem
-
       CONVERSATION_UPDATE = "conversation-update"
       FUNCTION_CALL = "function-call"
       FUNCTION_CALL_RESULT = "function-call-result"
@@ -21,7 +20,6 @@ module Vapi
       USER_INTERRUPTED = "user-interrupted"
       VOICE_INPUT = "voice-input"
       WORKFLOW_NODE_STARTED = "workflow.node.started"
-
     end
   end
 end

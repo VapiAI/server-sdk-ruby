@@ -2,7 +2,6 @@
 
 module Vapi
   class FallbackElevenLabsTranscriberLanguage
-
     AA = "aa"
     AB = "ab"
     AE = "ae"
@@ -188,6 +187,5 @@ module Vapi
     ZA = "za"
     ZH = "zh"
     ZU = "zu"
-
   end
 end

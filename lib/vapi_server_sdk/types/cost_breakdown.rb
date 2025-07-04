@@ -1,35 +1,36 @@
 # frozen_string_literal: true
+
 require_relative "analysis_cost_breakdown"
 require "ostruct"
 require "json"
 
 module Vapi
   class CostBreakdown
-  # @return [Float] This is the cost of the transport provider, like Twilio or Vonage.
+    # @return [Float] This is the cost of the transport provider, like Twilio or Vonage.
     attr_reader :transport
-  # @return [Float] This is the cost of the speech-to-text service.
+    # @return [Float] This is the cost of the speech-to-text service.
     attr_reader :stt
-  # @return [Float] This is the cost of the language model.
+    # @return [Float] This is the cost of the language model.
     attr_reader :llm
-  # @return [Float] This is the cost of the text-to-speech service.
+    # @return [Float] This is the cost of the text-to-speech service.
     attr_reader :tts
-  # @return [Float] This is the cost of Vapi.
+    # @return [Float] This is the cost of Vapi.
     attr_reader :vapi
-  # @return [Float] This is the cost of chat interactions.
+    # @return [Float] This is the cost of chat interactions.
     attr_reader :chat
-  # @return [Float] This is the total cost of the call.
+    # @return [Float] This is the total cost of the call.
     attr_reader :total
-  # @return [Float] This is the LLM prompt tokens used for the call.
+    # @return [Float] This is the LLM prompt tokens used for the call.
     attr_reader :llm_prompt_tokens
-  # @return [Float] This is the LLM completion tokens used for the call.
+    # @return [Float] This is the LLM completion tokens used for the call.
     attr_reader :llm_completion_tokens
-  # @return [Float] This is the TTS characters used for the call.
+    # @return [Float] This is the TTS characters used for the call.
     attr_reader :tts_characters
-  # @return [Vapi::AnalysisCostBreakdown] This is the cost of the analysis.
+    # @return [Vapi::AnalysisCostBreakdown] This is the cost of the analysis.
     attr_reader :analysis_cost_breakdown
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
@@ -48,7 +49,8 @@ module Vapi
     # @param analysis_cost_breakdown [Vapi::AnalysisCostBreakdown] This is the cost of the analysis.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CostBreakdown]
-    def initialize(transport: OMIT, stt: OMIT, llm: OMIT, tts: OMIT, vapi: OMIT, chat: OMIT, total: OMIT, llm_prompt_tokens: OMIT, llm_completion_tokens: OMIT, tts_characters: OMIT, analysis_cost_breakdown: OMIT, additional_properties: nil)
+    def initialize(transport: OMIT, stt: OMIT, llm: OMIT, tts: OMIT, vapi: OMIT, chat: OMIT, total: OMIT,
+                   llm_prompt_tokens: OMIT, llm_completion_tokens: OMIT, tts_characters: OMIT, analysis_cost_breakdown: OMIT, additional_properties: nil)
       @transport = transport if transport != OMIT
       @stt = stt if stt != OMIT
       @llm = llm if llm != OMIT
@@ -61,13 +63,26 @@ module Vapi
       @tts_characters = tts_characters if tts_characters != OMIT
       @analysis_cost_breakdown = analysis_cost_breakdown if analysis_cost_breakdown != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "transport": transport, "stt": stt, "llm": llm, "tts": tts, "vapi": vapi, "chat": chat, "total": total, "llmPromptTokens": llm_prompt_tokens, "llmCompletionTokens": llm_completion_tokens, "ttsCharacters": tts_characters, "analysisCostBreakdown": analysis_cost_breakdown }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "transport": transport,
+        "stt": stt,
+        "llm": llm,
+        "tts": tts,
+        "vapi": vapi,
+        "chat": chat,
+        "total": total,
+        "llmPromptTokens": llm_prompt_tokens,
+        "llmCompletionTokens": llm_completion_tokens,
+        "ttsCharacters": tts_characters,
+        "analysisCostBreakdown": analysis_cost_breakdown
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of CostBreakdown
+
+    # Deserialize a JSON object to an instance of CostBreakdown
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::CostBreakdown]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -82,11 +97,11 @@ end
       llm_prompt_tokens = parsed_json["llmPromptTokens"]
       llm_completion_tokens = parsed_json["llmCompletionTokens"]
       tts_characters = parsed_json["ttsCharacters"]
-      unless parsed_json["analysisCostBreakdown"].nil?
+      if parsed_json["analysisCostBreakdown"].nil?
+        analysis_cost_breakdown = nil
+      else
         analysis_cost_breakdown = parsed_json["analysisCostBreakdown"].to_json
         analysis_cost_breakdown = Vapi::AnalysisCostBreakdown.from_json(json_object: analysis_cost_breakdown)
-      else
-        analysis_cost_breakdown = nil
       end
       new(
         transport: transport,
@@ -103,17 +118,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of CostBreakdown to a JSON object
+
+    # Serialize an instance of CostBreakdown to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.transport&.is_a?(Float) != false || raise("Passed value for field obj.transport is not the expected type, validation failed.")

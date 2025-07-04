@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# Language code for Inworld TTS synthesis
+  # Language code for Inworld TTS synthesis
   class FallbackInworldVoiceLanguageCode
-
     EN = "en"
     ZH = "zh"
     KO = "ko"
@@ -15,6 +14,5 @@ module Vapi
     IT = "it"
     PL = "pl"
     PT = "pt"
-
   end
 end

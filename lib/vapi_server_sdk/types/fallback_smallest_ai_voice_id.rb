@@ -1,44 +1,40 @@
 # frozen_string_literal: true
+
 require "json"
 
 module Vapi
-# This is the provider-specific ID that will be used.
+  # This is the provider-specific ID that will be used.
   class FallbackSmallestAiVoiceId
-
-
-# Deserialize a JSON object to an instance of FallbackSmallestAiVoiceId
+    # Deserialize a JSON object to an instance of FallbackSmallestAiVoiceId
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::FallbackSmallestAiVoiceId]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       begin
         struct.is_a?(Vapi::FallbackSmallestAiVoiceIdEnum) != false || raise("Passed value for field struct is not the expected type, validation failed.")
-        unless struct.nil?
-  return struct
-else
-  return nil
-end
+        return struct unless struct.nil?
+
+        return nil
       rescue StandardError
         # noop
       end
       begin
         struct.is_a?(String) != false || raise("Passed value for field struct is not the expected type, validation failed.")
-        unless struct.nil?
-  return struct
-else
-  return nil
-end
+        return struct unless struct.nil?
+
+        return nil
       rescue StandardError
         # noop
       end
- return struct
+      struct
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       begin

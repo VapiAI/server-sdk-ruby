@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "json"
 require_relative "../../types/response_object"
 require_relative "../../types/response_text_delta_event"
@@ -7,73 +8,62 @@ require_relative "../../types/response_completed_event"
 require_relative "../../types/response_error_event"
 
 module Vapi
-  module Chats
+  class Chats
     class ChatsCreateResponseResponse
-
-
-# Deserialize a JSON object to an instance of ChatsCreateResponseResponse
+      # Deserialize a JSON object to an instance of ChatsCreateResponseResponse
       #
-      # @param json_object [String] 
+      # @param json_object [String]
       # @return [Vapi::Chats::ChatsCreateResponseResponse]
       def self.from_json(json_object:)
         struct = JSON.parse(json_object, object_class: OpenStruct)
         begin
           Vapi::ResponseObject.validate_raw(obj: struct)
-          unless struct.nil?
-  return Vapi::ResponseObject.from_json(json_object: struct)
-else
-  return nil
-end
+          return Vapi::ResponseObject.from_json(json_object: struct) unless struct.nil?
+
+          return nil
         rescue StandardError
           # noop
         end
         begin
           Vapi::ResponseTextDeltaEvent.validate_raw(obj: struct)
-          unless struct.nil?
-  return Vapi::ResponseTextDeltaEvent.from_json(json_object: struct)
-else
-  return nil
-end
+          return Vapi::ResponseTextDeltaEvent.from_json(json_object: struct) unless struct.nil?
+
+          return nil
         rescue StandardError
           # noop
         end
         begin
           Vapi::ResponseTextDoneEvent.validate_raw(obj: struct)
-          unless struct.nil?
-  return Vapi::ResponseTextDoneEvent.from_json(json_object: struct)
-else
-  return nil
-end
+          return Vapi::ResponseTextDoneEvent.from_json(json_object: struct) unless struct.nil?
+
+          return nil
         rescue StandardError
           # noop
         end
         begin
           Vapi::ResponseCompletedEvent.validate_raw(obj: struct)
-          unless struct.nil?
-  return Vapi::ResponseCompletedEvent.from_json(json_object: struct)
-else
-  return nil
-end
+          return Vapi::ResponseCompletedEvent.from_json(json_object: struct) unless struct.nil?
+
+          return nil
         rescue StandardError
           # noop
         end
         begin
           Vapi::ResponseErrorEvent.validate_raw(obj: struct)
-          unless struct.nil?
-  return Vapi::ResponseErrorEvent.from_json(json_object: struct)
-else
-  return nil
-end
+          return Vapi::ResponseErrorEvent.from_json(json_object: struct) unless struct.nil?
+
+          return nil
         rescue StandardError
           # noop
         end
- return struct
+        struct
       end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+      # Leveraged for Union-type generation, validate_raw attempts to parse the given
+      #  hash and check each fields type against the current object's property
+      #  definitions.
       #
-      # @param obj [Object] 
+      # @param obj [Object]
       # @return [Void]
       def self.validate_raw(obj:)
         begin

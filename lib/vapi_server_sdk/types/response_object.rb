@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "response_object_status"
 require_relative "response_output_message"
 require "ostruct"
@@ -6,21 +7,21 @@ require "json"
 
 module Vapi
   class ResponseObject
-  # @return [String] Unique identifier for this Response
+    # @return [String] Unique identifier for this Response
     attr_reader :id
-  # @return [String] The object type
+    # @return [String] The object type
     attr_reader :object
-  # @return [Float] Unix timestamp (in seconds) of when this Response was created
+    # @return [Float] Unix timestamp (in seconds) of when this Response was created
     attr_reader :created_at
-  # @return [Vapi::ResponseObjectStatus] Status of the response
+    # @return [Vapi::ResponseObjectStatus] Status of the response
     attr_reader :status
-  # @return [String] Error message if the response failed
+    # @return [String] Error message if the response failed
     attr_reader :error
-  # @return [Array<Vapi::ResponseOutputMessage>] Output messages from the model
+    # @return [Array<Vapi::ResponseOutputMessage>] Output messages from the model
     attr_reader :output
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
@@ -34,7 +35,7 @@ module Vapi
     # @param output [Array<Vapi::ResponseOutputMessage>] Output messages from the model
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ResponseObject]
-    def initialize(id:, object:, created_at:, status:, error: OMIT, output:, additional_properties: nil)
+    def initialize(id:, object:, created_at:, status:, output:, error: OMIT, additional_properties: nil)
       @id = id
       @object = object
       @created_at = created_at
@@ -42,13 +43,21 @@ module Vapi
       @error = error if error != OMIT
       @output = output
       @additional_properties = additional_properties
-      @_field_set = { "id": id, "object": object, "created_at": created_at, "status": status, "error": error, "output": output }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "id": id,
+        "object": object,
+        "created_at": created_at,
+        "status": status,
+        "error": error,
+        "output": output
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of ResponseObject
+
+    # Deserialize a JSON object to an instance of ResponseObject
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::ResponseObject]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -58,10 +67,10 @@ end
       created_at = parsed_json["created_at"]
       status = parsed_json["status"]
       error = parsed_json["error"]
-      output = parsed_json["output"]&.map do | item |
-  item = item.to_json
-  Vapi::ResponseOutputMessage.from_json(json_object: item)
-end
+      output = parsed_json["output"]&.map do |item|
+        item = item.to_json
+        Vapi::ResponseOutputMessage.from_json(json_object: item)
+      end
       new(
         id: id,
         object: object,
@@ -72,17 +81,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of ResponseObject to a JSON object
+
+    # Serialize an instance of ResponseObject to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")

@@ -2,10 +2,8 @@
 
 module Vapi
   class CredentialWebhookDtoOperation
-
     CREATION = "creation"
     OVERRIDE = "override"
     REFRESH = "refresh"
-
   end
 end

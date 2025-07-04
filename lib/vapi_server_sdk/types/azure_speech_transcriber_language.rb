@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the language that will be set for the transcription. The list of
-#  languages Azure supports can be found here:
-#  n.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt
+  # This is the language that will be set for the transcription. The list of
+  #  languages Azure supports can be found here:
+  #  n.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt
   class AzureSpeechTranscriberLanguage
-
     AF_ZA = "af-ZA"
     AM_ET = "am-ET"
     AR_AE = "ar-AE"
@@ -149,6 +148,5 @@ module Vapi
     ZH_HK = "zh-HK"
     ZH_TW = "zh-TW"
     ZU_ZA = "zu-ZA"
-
   end
 end

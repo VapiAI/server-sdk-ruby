@@ -2,9 +2,7 @@
 
 module Vapi
   class ApiRequestToolMethod
-
     POST = "POST"
     GET = "GET"
-
   end
 end

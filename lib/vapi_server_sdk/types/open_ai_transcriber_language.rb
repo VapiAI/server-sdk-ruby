@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the language that will be set for the transcription.
+  # This is the language that will be set for the transcription.
   class OpenAiTranscriberLanguage
-
     AF = "af"
     AR = "ar"
     HY = "hy"
@@ -61,6 +60,5 @@ module Vapi
     UR = "ur"
     VI = "vi"
     CY = "cy"
-
   end
 end

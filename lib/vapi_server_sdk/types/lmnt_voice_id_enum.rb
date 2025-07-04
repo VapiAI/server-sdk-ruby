@@ -2,7 +2,6 @@
 
 module Vapi
   class LmntVoiceIdEnum
-
     AMY = "amy"
     ANSEL = "ansel"
     AUTUMN = "autumn"
@@ -45,6 +44,5 @@ module Vapi
     ZAIN = "zain"
     ZEKE = "zeke"
     ZOE = "zoe"
-
   end
 end

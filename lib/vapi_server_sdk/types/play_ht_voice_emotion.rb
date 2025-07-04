@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# An emotion to be applied to the speech.
+  # An emotion to be applied to the speech.
   class PlayHtVoiceEmotion
-
     FEMALE_HAPPY = "female_happy"
     FEMALE_SAD = "female_sad"
     FEMALE_ANGRY = "female_angry"
@@ -16,6 +15,5 @@ module Vapi
     MALE_FEARFUL = "male_fearful"
     MALE_DISGUST = "male_disgust"
     MALE_SURPRISED = "male_surprised"
-
   end
 end

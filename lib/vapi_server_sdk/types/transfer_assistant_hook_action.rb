@@ -1,58 +1,62 @@
 # frozen_string_literal: true
+
 require_relative "transfer_assistant_hook_action_destination"
 require "ostruct"
 require "json"
 
 module Vapi
   class TransferAssistantHookAction
-  # @return [Vapi::TransferAssistantHookActionDestination] This is the destination details for the transfer - can be a phone number or SIP
-#  URI
+    # @return [Vapi::TransferAssistantHookActionDestination] This is the destination details for the transfer - can be a phone number or SIP
+    #  URI
     attr_reader :destination
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
     # @param destination [Vapi::TransferAssistantHookActionDestination] This is the destination details for the transfer - can be a phone number or SIP
-#  URI
+    #  URI
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferAssistantHookAction]
     def initialize(destination: OMIT, additional_properties: nil)
       @destination = destination if destination != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "destination": destination }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = { "destination": destination }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of TransferAssistantHookAction
+
+    # Deserialize a JSON object to an instance of TransferAssistantHookAction
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::TransferAssistantHookAction]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      unless parsed_json["destination"].nil?
+      if parsed_json["destination"].nil?
+        destination = nil
+      else
         destination = parsed_json["destination"].to_json
         destination = Vapi::TransferAssistantHookActionDestination.from_json(json_object: destination)
-      else
-        destination = nil
       end
       new(destination: destination, additional_properties: struct)
     end
-# Serialize an instance of TransferAssistantHookAction to a JSON object
+
+    # Serialize an instance of TransferAssistantHookAction to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.destination.nil? || Vapi::TransferAssistantHookActionDestination.validate_raw(obj: obj.destination)

@@ -1,23 +1,24 @@
 # frozen_string_literal: true
+
 require_relative "analysis_cost_analysis_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class AnalysisCost
-  # @return [Vapi::AnalysisCostAnalysisType] This is the type of analysis performed.
+    # @return [Vapi::AnalysisCostAnalysisType] This is the type of analysis performed.
     attr_reader :analysis_type
-  # @return [Hash{String => Object}] This is the model that was used to perform the analysis.
+    # @return [Hash{String => Object}] This is the model that was used to perform the analysis.
     attr_reader :model
-  # @return [Float] This is the number of prompt tokens used in the analysis.
+    # @return [Float] This is the number of prompt tokens used in the analysis.
     attr_reader :prompt_tokens
-  # @return [Float] This is the number of completion tokens generated in the analysis.
+    # @return [Float] This is the number of completion tokens generated in the analysis.
     attr_reader :completion_tokens
-  # @return [Float] This is the cost of the component in USD.
+    # @return [Float] This is the cost of the component in USD.
     attr_reader :cost
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
@@ -37,11 +38,18 @@ module Vapi
       @completion_tokens = completion_tokens
       @cost = cost
       @additional_properties = additional_properties
-      @_field_set = { "analysisType": analysis_type, "model": model, "promptTokens": prompt_tokens, "completionTokens": completion_tokens, "cost": cost }
+      @_field_set = {
+        "analysisType": analysis_type,
+        "model": model,
+        "promptTokens": prompt_tokens,
+        "completionTokens": completion_tokens,
+        "cost": cost
+      }
     end
-# Deserialize a JSON object to an instance of AnalysisCost
+
+    # Deserialize a JSON object to an instance of AnalysisCost
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::AnalysisCost]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -60,17 +68,19 @@ module Vapi
         additional_properties: struct
       )
     end
-# Serialize an instance of AnalysisCost to a JSON object
+
+    # Serialize an instance of AnalysisCost to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.analysis_type.is_a?(Vapi::AnalysisCostAnalysisType) != false || raise("Passed value for field obj.analysis_type is not the expected type, validation failed.")

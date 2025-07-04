@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# The language to use for the speech.
+  # The language to use for the speech.
   class PlayHtVoiceLanguage
-
     AFRIKAANS = "afrikaans"
     ALBANIAN = "albanian"
     AMHARIC = "amharic"
@@ -41,6 +40,5 @@ module Vapi
     UKRAINIAN = "ukrainian"
     URDU = "urdu"
     XHOSA = "xhosa"
-
   end
 end

@@ -2,7 +2,6 @@
 
 module Vapi
   class FallbackSmallestAiVoiceIdEnum
-
     EMILY = "emily"
     JASMINE = "jasmine"
     ARMAN = "arman"
@@ -28,6 +27,5 @@ module Vapi
     POOJA = "pooja"
     SAINA = "saina"
     SANYA = "sanya"
-
   end
 end

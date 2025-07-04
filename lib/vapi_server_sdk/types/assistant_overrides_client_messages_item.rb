@@ -2,7 +2,6 @@
 
 module Vapi
   class AssistantOverridesClientMessagesItem
-
     CONVERSATION_UPDATE = "conversation-update"
     FUNCTION_CALL = "function-call"
     FUNCTION_CALL_RESULT = "function-call-result"
@@ -20,6 +19,5 @@ module Vapi
     USER_INTERRUPTED = "user-interrupted"
     VOICE_INPUT = "voice-input"
     WORKFLOW_NODE_STARTED = "workflow.node.started"
-
   end
 end

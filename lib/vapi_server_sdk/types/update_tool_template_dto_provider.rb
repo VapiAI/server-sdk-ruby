@@ -2,10 +2,8 @@
 
 module Vapi
   class UpdateToolTemplateDtoProvider
-
     MAKE = "make"
     GOHIGHLEVEL = "gohighlevel"
     FUNCTION = "function"
-
   end
 end

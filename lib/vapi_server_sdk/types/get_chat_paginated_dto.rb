@@ -1,53 +1,47 @@
 # frozen_string_literal: true
+
 require_relative "get_chat_paginated_dto_sort_order"
-require "date"
-require "date"
-require "date"
-require "date"
-require "date"
-require "date"
-require "date"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class GetChatPaginatedDto
-  # @return [String] This is the unique identifier for the assistant that will be used for the chat.
+    # @return [String] This is the unique identifier for the assistant that will be used for the chat.
     attr_reader :assistant_id
-  # @return [String] This is the unique identifier for the workflow that will be used for the chat.
+    # @return [String] This is the unique identifier for the workflow that will be used for the chat.
     attr_reader :workflow_id
-  # @return [String] This is the unique identifier for the session that will be used for the chat.
+    # @return [String] This is the unique identifier for the session that will be used for the chat.
     attr_reader :session_id
-  # @return [Float] This is the page number to return. Defaults to 1.
+    # @return [Float] This is the page number to return. Defaults to 1.
     attr_reader :page
-  # @return [Vapi::GetChatPaginatedDtoSortOrder] This is the sort order for pagination. Defaults to 'DESC'.
+    # @return [Vapi::GetChatPaginatedDtoSortOrder] This is the sort order for pagination. Defaults to 'DESC'.
     attr_reader :sort_order
-  # @return [Float] This is the maximum number of items to return. Defaults to 100.
+    # @return [Float] This is the maximum number of items to return. Defaults to 100.
     attr_reader :limit
-  # @return [DateTime] This will return items where the createdAt is greater than the specified value.
+    # @return [DateTime] This will return items where the createdAt is greater than the specified value.
     attr_reader :created_at_gt
-  # @return [DateTime] This will return items where the createdAt is less than the specified value.
+    # @return [DateTime] This will return items where the createdAt is less than the specified value.
     attr_reader :created_at_lt
-  # @return [DateTime] This will return items where the createdAt is greater than or equal to the
-#  specified value.
+    # @return [DateTime] This will return items where the createdAt is greater than or equal to the
+    #  specified value.
     attr_reader :created_at_ge
-  # @return [DateTime] This will return items where the createdAt is less than or equal to the
-#  specified value.
+    # @return [DateTime] This will return items where the createdAt is less than or equal to the
+    #  specified value.
     attr_reader :created_at_le
-  # @return [DateTime] This will return items where the updatedAt is greater than the specified value.
+    # @return [DateTime] This will return items where the updatedAt is greater than the specified value.
     attr_reader :updated_at_gt
-  # @return [DateTime] This will return items where the updatedAt is less than the specified value.
+    # @return [DateTime] This will return items where the updatedAt is less than the specified value.
     attr_reader :updated_at_lt
-  # @return [DateTime] This will return items where the updatedAt is greater than or equal to the
-#  specified value.
+    # @return [DateTime] This will return items where the updatedAt is greater than or equal to the
+    #  specified value.
     attr_reader :updated_at_ge
-  # @return [DateTime] This will return items where the updatedAt is less than or equal to the
-#  specified value.
+    # @return [DateTime] This will return items where the updatedAt is less than or equal to the
+    #  specified value.
     attr_reader :updated_at_le
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
@@ -62,18 +56,19 @@ module Vapi
     # @param created_at_gt [DateTime] This will return items where the createdAt is greater than the specified value.
     # @param created_at_lt [DateTime] This will return items where the createdAt is less than the specified value.
     # @param created_at_ge [DateTime] This will return items where the createdAt is greater than or equal to the
-#  specified value.
+    #  specified value.
     # @param created_at_le [DateTime] This will return items where the createdAt is less than or equal to the
-#  specified value.
+    #  specified value.
     # @param updated_at_gt [DateTime] This will return items where the updatedAt is greater than the specified value.
     # @param updated_at_lt [DateTime] This will return items where the updatedAt is less than the specified value.
     # @param updated_at_ge [DateTime] This will return items where the updatedAt is greater than or equal to the
-#  specified value.
+    #  specified value.
     # @param updated_at_le [DateTime] This will return items where the updatedAt is less than or equal to the
-#  specified value.
+    #  specified value.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::GetChatPaginatedDto]
-    def initialize(assistant_id: OMIT, workflow_id: OMIT, session_id: OMIT, page: OMIT, sort_order: OMIT, limit: OMIT, created_at_gt: OMIT, created_at_lt: OMIT, created_at_ge: OMIT, created_at_le: OMIT, updated_at_gt: OMIT, updated_at_lt: OMIT, updated_at_ge: OMIT, updated_at_le: OMIT, additional_properties: nil)
+    def initialize(assistant_id: OMIT, workflow_id: OMIT, session_id: OMIT, page: OMIT, sort_order: OMIT, limit: OMIT,
+                   created_at_gt: OMIT, created_at_lt: OMIT, created_at_ge: OMIT, created_at_le: OMIT, updated_at_gt: OMIT, updated_at_lt: OMIT, updated_at_ge: OMIT, updated_at_le: OMIT, additional_properties: nil)
       @assistant_id = assistant_id if assistant_id != OMIT
       @workflow_id = workflow_id if workflow_id != OMIT
       @session_id = session_id if session_id != OMIT
@@ -89,13 +84,29 @@ module Vapi
       @updated_at_ge = updated_at_ge if updated_at_ge != OMIT
       @updated_at_le = updated_at_le if updated_at_le != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "assistantId": assistant_id, "workflowId": workflow_id, "sessionId": session_id, "page": page, "sortOrder": sort_order, "limit": limit, "createdAtGt": created_at_gt, "createdAtLt": created_at_lt, "createdAtGe": created_at_ge, "createdAtLe": created_at_le, "updatedAtGt": updated_at_gt, "updatedAtLt": updated_at_lt, "updatedAtGe": updated_at_ge, "updatedAtLe": updated_at_le }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "assistantId": assistant_id,
+        "workflowId": workflow_id,
+        "sessionId": session_id,
+        "page": page,
+        "sortOrder": sort_order,
+        "limit": limit,
+        "createdAtGt": created_at_gt,
+        "createdAtLt": created_at_lt,
+        "createdAtGe": created_at_ge,
+        "createdAtLe": created_at_le,
+        "updatedAtGt": updated_at_gt,
+        "updatedAtLt": updated_at_lt,
+        "updatedAtGe": updated_at_ge,
+        "updatedAtLe": updated_at_le
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of GetChatPaginatedDto
+
+    # Deserialize a JSON object to an instance of GetChatPaginatedDto
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::GetChatPaginatedDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -106,46 +117,14 @@ end
       page = parsed_json["page"]
       sort_order = parsed_json["sortOrder"]
       limit = parsed_json["limit"]
-      created_at_gt = unless parsed_json["createdAtGt"].nil?
-  DateTime.parse(parsed_json["createdAtGt"])
-else
-  nil
-end
-      created_at_lt = unless parsed_json["createdAtLt"].nil?
-  DateTime.parse(parsed_json["createdAtLt"])
-else
-  nil
-end
-      created_at_ge = unless parsed_json["createdAtGe"].nil?
-  DateTime.parse(parsed_json["createdAtGe"])
-else
-  nil
-end
-      created_at_le = unless parsed_json["createdAtLe"].nil?
-  DateTime.parse(parsed_json["createdAtLe"])
-else
-  nil
-end
-      updated_at_gt = unless parsed_json["updatedAtGt"].nil?
-  DateTime.parse(parsed_json["updatedAtGt"])
-else
-  nil
-end
-      updated_at_lt = unless parsed_json["updatedAtLt"].nil?
-  DateTime.parse(parsed_json["updatedAtLt"])
-else
-  nil
-end
-      updated_at_ge = unless parsed_json["updatedAtGe"].nil?
-  DateTime.parse(parsed_json["updatedAtGe"])
-else
-  nil
-end
-      updated_at_le = unless parsed_json["updatedAtLe"].nil?
-  DateTime.parse(parsed_json["updatedAtLe"])
-else
-  nil
-end
+      created_at_gt = (DateTime.parse(parsed_json["createdAtGt"]) unless parsed_json["createdAtGt"].nil?)
+      created_at_lt = (DateTime.parse(parsed_json["createdAtLt"]) unless parsed_json["createdAtLt"].nil?)
+      created_at_ge = (DateTime.parse(parsed_json["createdAtGe"]) unless parsed_json["createdAtGe"].nil?)
+      created_at_le = (DateTime.parse(parsed_json["createdAtLe"]) unless parsed_json["createdAtLe"].nil?)
+      updated_at_gt = (DateTime.parse(parsed_json["updatedAtGt"]) unless parsed_json["updatedAtGt"].nil?)
+      updated_at_lt = (DateTime.parse(parsed_json["updatedAtLt"]) unless parsed_json["updatedAtLt"].nil?)
+      updated_at_ge = (DateTime.parse(parsed_json["updatedAtGe"]) unless parsed_json["updatedAtGe"].nil?)
+      updated_at_le = (DateTime.parse(parsed_json["updatedAtLe"]) unless parsed_json["updatedAtLe"].nil?)
       new(
         assistant_id: assistant_id,
         workflow_id: workflow_id,
@@ -164,17 +143,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of GetChatPaginatedDto to a JSON object
+
+    # Serialize an instance of GetChatPaginatedDto to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")

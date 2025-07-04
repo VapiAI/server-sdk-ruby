@@ -1,7 +1,7 @@
 # frozen_string_literal: true
+
 require_relative "azure_credential_service"
 require_relative "azure_credential_region"
-require "date"
 require "date"
 require_relative "azure_blob_storage_bucket_plan"
 require "ostruct"
@@ -9,54 +9,55 @@ require "json"
 
 module Vapi
   class AzureCredential
-  # @return [String] 
+    # @return [String]
     attr_reader :provider
-  # @return [Vapi::AzureCredentialService] This is the service being used in Azure.
+    # @return [Vapi::AzureCredentialService] This is the service being used in Azure.
     attr_reader :service
-  # @return [Vapi::AzureCredentialRegion] This is the region of the Azure resource.
+    # @return [Vapi::AzureCredentialRegion] This is the region of the Azure resource.
     attr_reader :region
-  # @return [String] This is not returned in the API.
+    # @return [String] This is not returned in the API.
     attr_reader :api_key
-  # @return [Float] This is the order in which this storage provider is tried during upload retries.
-#  Lower numbers are tried first in increasing order.
+    # @return [Float] This is the order in which this storage provider is tried during upload retries.
+    #  Lower numbers are tried first in increasing order.
     attr_reader :fallback_index
-  # @return [String] This is the unique identifier for the credential.
+    # @return [String] This is the unique identifier for the credential.
     attr_reader :id
-  # @return [String] This is the unique identifier for the org that this credential belongs to.
+    # @return [String] This is the unique identifier for the org that this credential belongs to.
     attr_reader :org_id
-  # @return [DateTime] This is the ISO 8601 date-time string of when the credential was created.
+    # @return [DateTime] This is the ISO 8601 date-time string of when the credential was created.
     attr_reader :created_at
-  # @return [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
+    # @return [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     attr_reader :updated_at
-  # @return [String] This is the name of credential. This is just for your reference.
+    # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
-  # @return [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
-#  Blob Storage.
+    # @return [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
+    #  Blob Storage.
     attr_reader :bucket_plan
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
-    # @param provider [String] 
+    # @param provider [String]
     # @param service [Vapi::AzureCredentialService] This is the service being used in Azure.
     # @param region [Vapi::AzureCredentialRegion] This is the region of the Azure resource.
     # @param api_key [String] This is not returned in the API.
     # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
-#  Lower numbers are tried first in increasing order.
+    #  Lower numbers are tried first in increasing order.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param bucket_plan [Vapi::AzureBlobStorageBucketPlan] This is the bucket plan that can be provided to store call artifacts in Azure
-#  Blob Storage.
+    #  Blob Storage.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AzureCredential]
-    def initialize(provider:, service:, region: OMIT, api_key: OMIT, fallback_index: OMIT, id:, org_id:, created_at:, updated_at:, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
+    def initialize(provider:, service:, id:, org_id:, created_at:, updated_at:, region: OMIT, api_key: OMIT,
+                   fallback_index: OMIT, name: OMIT, bucket_plan: OMIT, additional_properties: nil)
       @provider = provider
       @service = service
       @region = region if region != OMIT
@@ -69,13 +70,26 @@ module Vapi
       @name = name if name != OMIT
       @bucket_plan = bucket_plan if bucket_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "service": service, "region": region, "apiKey": api_key, "fallbackIndex": fallback_index, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name, "bucketPlan": bucket_plan }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "provider": provider,
+        "service": service,
+        "region": region,
+        "apiKey": api_key,
+        "fallbackIndex": fallback_index,
+        "id": id,
+        "orgId": org_id,
+        "createdAt": created_at,
+        "updatedAt": updated_at,
+        "name": name,
+        "bucketPlan": bucket_plan
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of AzureCredential
+
+    # Deserialize a JSON object to an instance of AzureCredential
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::AzureCredential]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -87,22 +101,14 @@ end
       fallback_index = parsed_json["fallbackIndex"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
-      created_at = unless parsed_json["createdAt"].nil?
-  DateTime.parse(parsed_json["createdAt"])
-else
-  nil
-end
-      updated_at = unless parsed_json["updatedAt"].nil?
-  DateTime.parse(parsed_json["updatedAt"])
-else
-  nil
-end
+      created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
+      updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
       name = parsed_json["name"]
-      unless parsed_json["bucketPlan"].nil?
+      if parsed_json["bucketPlan"].nil?
+        bucket_plan = nil
+      else
         bucket_plan = parsed_json["bucketPlan"].to_json
         bucket_plan = Vapi::AzureBlobStorageBucketPlan.from_json(json_object: bucket_plan)
-      else
-        bucket_plan = nil
       end
       new(
         provider: provider,
@@ -119,17 +125,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of AzureCredential to a JSON object
+
+    # Serialize an instance of AzureCredential to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")

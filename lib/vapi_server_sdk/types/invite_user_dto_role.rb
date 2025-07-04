@@ -2,10 +2,8 @@
 
 module Vapi
   class InviteUserDtoRole
-
     ADMIN = "admin"
     EDITOR = "editor"
     VIEWER = "viewer"
-
   end
 end

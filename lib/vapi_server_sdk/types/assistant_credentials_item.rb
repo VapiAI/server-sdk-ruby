@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "json"
 require_relative "create_eleven_labs_credential_dto"
 require_relative "create_anthropic_credential_dto"
@@ -51,135 +52,137 @@ require_relative "create_go_high_level_mcp_credential_dto"
 
 module Vapi
   class AssistantCredentialsItem
-  # @return [Object] 
+    # @return [Object]
     attr_reader :member
-  # @return [String] 
+    # @return [String]
     attr_reader :discriminant
 
     private_class_method :new
     alias kind_of? is_a?
 
-    # @param member [Object] 
-    # @param discriminant [String] 
+    # @param member [Object]
+    # @param discriminant [String]
     # @return [Vapi::AssistantCredentialsItem]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
-# Deserialize a JSON object to an instance of AssistantCredentialsItem
+
+    # Deserialize a JSON object to an instance of AssistantCredentialsItem
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::AssistantCredentialsItem]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      case struct.provider
-      when "11labs"
-        member = Vapi::CreateElevenLabsCredentialDto.from_json(json_object: json_object)
-      when "anthropic"
-        member = Vapi::CreateAnthropicCredentialDto.from_json(json_object: json_object)
-      when "anyscale"
-        member = Vapi::CreateAnyscaleCredentialDto.from_json(json_object: json_object)
-      when "assembly-ai"
-        member = Vapi::CreateAssemblyAiCredentialDto.from_json(json_object: json_object)
-      when "azure-openai"
-        member = Vapi::CreateAzureOpenAiCredentialDto.from_json(json_object: json_object)
-      when "azure"
-        member = Vapi::CreateAzureCredentialDto.from_json(json_object: json_object)
-      when "byo-sip-trunk"
-        member = Vapi::CreateByoSipTrunkCredentialDto.from_json(json_object: json_object)
-      when "cartesia"
-        member = Vapi::CreateCartesiaCredentialDto.from_json(json_object: json_object)
-      when "cerebras"
-        member = Vapi::CreateCerebrasCredentialDto.from_json(json_object: json_object)
-      when "cloudflare"
-        member = Vapi::CreateCloudflareCredentialDto.from_json(json_object: json_object)
-      when "custom-llm"
-        member = Vapi::CreateCustomLlmCredentialDto.from_json(json_object: json_object)
-      when "deepgram"
-        member = Vapi::CreateDeepgramCredentialDto.from_json(json_object: json_object)
-      when "deepinfra"
-        member = Vapi::CreateDeepInfraCredentialDto.from_json(json_object: json_object)
-      when "deep-seek"
-        member = Vapi::CreateDeepSeekCredentialDto.from_json(json_object: json_object)
-      when "gcp"
-        member = Vapi::CreateGcpCredentialDto.from_json(json_object: json_object)
-      when "gladia"
-        member = Vapi::CreateGladiaCredentialDto.from_json(json_object: json_object)
-      when "gohighlevel"
-        member = Vapi::CreateGoHighLevelCredentialDto.from_json(json_object: json_object)
-      when "google"
-        member = Vapi::CreateGoogleCredentialDto.from_json(json_object: json_object)
-      when "groq"
-        member = Vapi::CreateGroqCredentialDto.from_json(json_object: json_object)
-      when "inflection-ai"
-        member = Vapi::CreateInflectionAiCredentialDto.from_json(json_object: json_object)
-      when "langfuse"
-        member = Vapi::CreateLangfuseCredentialDto.from_json(json_object: json_object)
-      when "lmnt"
-        member = Vapi::CreateLmntCredentialDto.from_json(json_object: json_object)
-      when "make"
-        member = Vapi::CreateMakeCredentialDto.from_json(json_object: json_object)
-      when "openai"
-        member = Vapi::CreateOpenAiCredentialDto.from_json(json_object: json_object)
-      when "openrouter"
-        member = Vapi::CreateOpenRouterCredentialDto.from_json(json_object: json_object)
-      when "perplexity-ai"
-        member = Vapi::CreatePerplexityAiCredentialDto.from_json(json_object: json_object)
-      when "playht"
-        member = Vapi::CreatePlayHtCredentialDto.from_json(json_object: json_object)
-      when "rime-ai"
-        member = Vapi::CreateRimeAiCredentialDto.from_json(json_object: json_object)
-      when "runpod"
-        member = Vapi::CreateRunpodCredentialDto.from_json(json_object: json_object)
-      when "s3"
-        member = Vapi::CreateS3CredentialDto.from_json(json_object: json_object)
-      when "supabase"
-        member = Vapi::CreateSupabaseCredentialDto.from_json(json_object: json_object)
-      when "smallest-ai"
-        member = Vapi::CreateSmallestAiCredentialDto.from_json(json_object: json_object)
-      when "tavus"
-        member = Vapi::CreateTavusCredentialDto.from_json(json_object: json_object)
-      when "together-ai"
-        member = Vapi::CreateTogetherAiCredentialDto.from_json(json_object: json_object)
-      when "twilio"
-        member = Vapi::CreateTwilioCredentialDto.from_json(json_object: json_object)
-      when "vonage"
-        member = Vapi::CreateVonageCredentialDto.from_json(json_object: json_object)
-      when "webhook"
-        member = Vapi::CreateWebhookCredentialDto.from_json(json_object: json_object)
-      when "xai"
-        member = Vapi::CreateXAiCredentialDto.from_json(json_object: json_object)
-      when "neuphonic"
-        member = Vapi::CreateNeuphonicCredentialDto.from_json(json_object: json_object)
-      when "hume"
-        member = Vapi::CreateHumeCredentialDto.from_json(json_object: json_object)
-      when "mistral"
-        member = Vapi::CreateMistralCredentialDto.from_json(json_object: json_object)
-      when "speechmatics"
-        member = Vapi::CreateSpeechmaticsCredentialDto.from_json(json_object: json_object)
-      when "trieve"
-        member = Vapi::CreateTrieveCredentialDto.from_json(json_object: json_object)
-      when "google.calendar.oauth2-client"
-        member = Vapi::CreateGoogleCalendarOAuth2ClientCredentialDto.from_json(json_object: json_object)
-      when "google.calendar.oauth2-authorization"
-        member = Vapi::CreateGoogleCalendarOAuth2AuthorizationCredentialDto.from_json(json_object: json_object)
-      when "google.sheets.oauth2-authorization"
-        member = Vapi::CreateGoogleSheetsOAuth2AuthorizationCredentialDto.from_json(json_object: json_object)
-      when "slack.oauth2-authorization"
-        member = Vapi::CreateSlackOAuth2AuthorizationCredentialDto.from_json(json_object: json_object)
-      when "ghl.oauth2-authorization"
-        member = Vapi::CreateGoHighLevelMcpCredentialDto.from_json(json_object: json_object)
-      when "inworld"
-        member = json_object.value
-      else
-        member = Vapi::CreateElevenLabsCredentialDto.from_json(json_object: json_object)
-      end
+      member = case struct.provider
+               when "11labs"
+                 Vapi::CreateElevenLabsCredentialDto.from_json(json_object: json_object)
+               when "anthropic"
+                 Vapi::CreateAnthropicCredentialDto.from_json(json_object: json_object)
+               when "anyscale"
+                 Vapi::CreateAnyscaleCredentialDto.from_json(json_object: json_object)
+               when "assembly-ai"
+                 Vapi::CreateAssemblyAiCredentialDto.from_json(json_object: json_object)
+               when "azure-openai"
+                 Vapi::CreateAzureOpenAiCredentialDto.from_json(json_object: json_object)
+               when "azure"
+                 Vapi::CreateAzureCredentialDto.from_json(json_object: json_object)
+               when "byo-sip-trunk"
+                 Vapi::CreateByoSipTrunkCredentialDto.from_json(json_object: json_object)
+               when "cartesia"
+                 Vapi::CreateCartesiaCredentialDto.from_json(json_object: json_object)
+               when "cerebras"
+                 Vapi::CreateCerebrasCredentialDto.from_json(json_object: json_object)
+               when "cloudflare"
+                 Vapi::CreateCloudflareCredentialDto.from_json(json_object: json_object)
+               when "custom-llm"
+                 Vapi::CreateCustomLlmCredentialDto.from_json(json_object: json_object)
+               when "deepgram"
+                 Vapi::CreateDeepgramCredentialDto.from_json(json_object: json_object)
+               when "deepinfra"
+                 Vapi::CreateDeepInfraCredentialDto.from_json(json_object: json_object)
+               when "deep-seek"
+                 Vapi::CreateDeepSeekCredentialDto.from_json(json_object: json_object)
+               when "gcp"
+                 Vapi::CreateGcpCredentialDto.from_json(json_object: json_object)
+               when "gladia"
+                 Vapi::CreateGladiaCredentialDto.from_json(json_object: json_object)
+               when "gohighlevel"
+                 Vapi::CreateGoHighLevelCredentialDto.from_json(json_object: json_object)
+               when "google"
+                 Vapi::CreateGoogleCredentialDto.from_json(json_object: json_object)
+               when "groq"
+                 Vapi::CreateGroqCredentialDto.from_json(json_object: json_object)
+               when "inflection-ai"
+                 Vapi::CreateInflectionAiCredentialDto.from_json(json_object: json_object)
+               when "langfuse"
+                 Vapi::CreateLangfuseCredentialDto.from_json(json_object: json_object)
+               when "lmnt"
+                 Vapi::CreateLmntCredentialDto.from_json(json_object: json_object)
+               when "make"
+                 Vapi::CreateMakeCredentialDto.from_json(json_object: json_object)
+               when "openai"
+                 Vapi::CreateOpenAiCredentialDto.from_json(json_object: json_object)
+               when "openrouter"
+                 Vapi::CreateOpenRouterCredentialDto.from_json(json_object: json_object)
+               when "perplexity-ai"
+                 Vapi::CreatePerplexityAiCredentialDto.from_json(json_object: json_object)
+               when "playht"
+                 Vapi::CreatePlayHtCredentialDto.from_json(json_object: json_object)
+               when "rime-ai"
+                 Vapi::CreateRimeAiCredentialDto.from_json(json_object: json_object)
+               when "runpod"
+                 Vapi::CreateRunpodCredentialDto.from_json(json_object: json_object)
+               when "s3"
+                 Vapi::CreateS3CredentialDto.from_json(json_object: json_object)
+               when "supabase"
+                 Vapi::CreateSupabaseCredentialDto.from_json(json_object: json_object)
+               when "smallest-ai"
+                 Vapi::CreateSmallestAiCredentialDto.from_json(json_object: json_object)
+               when "tavus"
+                 Vapi::CreateTavusCredentialDto.from_json(json_object: json_object)
+               when "together-ai"
+                 Vapi::CreateTogetherAiCredentialDto.from_json(json_object: json_object)
+               when "twilio"
+                 Vapi::CreateTwilioCredentialDto.from_json(json_object: json_object)
+               when "vonage"
+                 Vapi::CreateVonageCredentialDto.from_json(json_object: json_object)
+               when "webhook"
+                 Vapi::CreateWebhookCredentialDto.from_json(json_object: json_object)
+               when "xai"
+                 Vapi::CreateXAiCredentialDto.from_json(json_object: json_object)
+               when "neuphonic"
+                 Vapi::CreateNeuphonicCredentialDto.from_json(json_object: json_object)
+               when "hume"
+                 Vapi::CreateHumeCredentialDto.from_json(json_object: json_object)
+               when "mistral"
+                 Vapi::CreateMistralCredentialDto.from_json(json_object: json_object)
+               when "speechmatics"
+                 Vapi::CreateSpeechmaticsCredentialDto.from_json(json_object: json_object)
+               when "trieve"
+                 Vapi::CreateTrieveCredentialDto.from_json(json_object: json_object)
+               when "google.calendar.oauth2-client"
+                 Vapi::CreateGoogleCalendarOAuth2ClientCredentialDto.from_json(json_object: json_object)
+               when "google.calendar.oauth2-authorization"
+                 Vapi::CreateGoogleCalendarOAuth2AuthorizationCredentialDto.from_json(json_object: json_object)
+               when "google.sheets.oauth2-authorization"
+                 Vapi::CreateGoogleSheetsOAuth2AuthorizationCredentialDto.from_json(json_object: json_object)
+               when "slack.oauth2-authorization"
+                 Vapi::CreateSlackOAuth2AuthorizationCredentialDto.from_json(json_object: json_object)
+               when "ghl.oauth2-authorization"
+                 Vapi::CreateGoHighLevelMcpCredentialDto.from_json(json_object: json_object)
+               when "inworld"
+                 json_object.value
+               else
+                 Vapi::CreateElevenLabsCredentialDto.from_json(json_object: json_object)
+               end
       new(member: member, discriminant: struct.provider)
     end
-# For Union Types, to_json functionality is delegated to the wrapped member.
+
+    # For Union Types, to_json functionality is delegated to the wrapped member.
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       case @discriminant
       when "11labs"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -284,11 +287,12 @@ module Vapi
       end
       @member.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.provider
@@ -394,254 +398,304 @@ module Vapi
         raise("Passed value matched no type within the union, validation failed.")
       end
     end
-# For Union Types, is_a? functionality is delegated to the wrapped member.
+
+    # For Union Types, is_a? functionality is delegated to the wrapped member.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Boolean]
     def is_a?(obj)
       @member.is_a?(obj)
     end
-    # @param member [Vapi::CreateElevenLabsCredentialDto] 
+
+    # @param member [Vapi::CreateElevenLabsCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self._11_labs(member:)
       new(member: member, discriminant: "11labs")
     end
-    # @param member [Vapi::CreateAnthropicCredentialDto] 
+
+    # @param member [Vapi::CreateAnthropicCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.anthropic(member:)
       new(member: member, discriminant: "anthropic")
     end
-    # @param member [Vapi::CreateAnyscaleCredentialDto] 
+
+    # @param member [Vapi::CreateAnyscaleCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.anyscale(member:)
       new(member: member, discriminant: "anyscale")
     end
-    # @param member [Vapi::CreateAssemblyAiCredentialDto] 
+
+    # @param member [Vapi::CreateAssemblyAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.assembly_ai(member:)
       new(member: member, discriminant: "assembly-ai")
     end
-    # @param member [Vapi::CreateAzureOpenAiCredentialDto] 
+
+    # @param member [Vapi::CreateAzureOpenAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.azure_openai(member:)
       new(member: member, discriminant: "azure-openai")
     end
-    # @param member [Vapi::CreateAzureCredentialDto] 
+
+    # @param member [Vapi::CreateAzureCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.azure(member:)
       new(member: member, discriminant: "azure")
     end
-    # @param member [Vapi::CreateByoSipTrunkCredentialDto] 
+
+    # @param member [Vapi::CreateByoSipTrunkCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.byo_sip_trunk(member:)
       new(member: member, discriminant: "byo-sip-trunk")
     end
-    # @param member [Vapi::CreateCartesiaCredentialDto] 
+
+    # @param member [Vapi::CreateCartesiaCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.cartesia(member:)
       new(member: member, discriminant: "cartesia")
     end
-    # @param member [Vapi::CreateCerebrasCredentialDto] 
+
+    # @param member [Vapi::CreateCerebrasCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.cerebras(member:)
       new(member: member, discriminant: "cerebras")
     end
-    # @param member [Vapi::CreateCloudflareCredentialDto] 
+
+    # @param member [Vapi::CreateCloudflareCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.cloudflare(member:)
       new(member: member, discriminant: "cloudflare")
     end
-    # @param member [Vapi::CreateCustomLlmCredentialDto] 
+
+    # @param member [Vapi::CreateCustomLlmCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.custom_llm(member:)
       new(member: member, discriminant: "custom-llm")
     end
-    # @param member [Vapi::CreateDeepgramCredentialDto] 
+
+    # @param member [Vapi::CreateDeepgramCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.deepgram(member:)
       new(member: member, discriminant: "deepgram")
     end
-    # @param member [Vapi::CreateDeepInfraCredentialDto] 
+
+    # @param member [Vapi::CreateDeepInfraCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.deepinfra(member:)
       new(member: member, discriminant: "deepinfra")
     end
-    # @param member [Vapi::CreateDeepSeekCredentialDto] 
+
+    # @param member [Vapi::CreateDeepSeekCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.deep_seek(member:)
       new(member: member, discriminant: "deep-seek")
     end
-    # @param member [Vapi::CreateGcpCredentialDto] 
+
+    # @param member [Vapi::CreateGcpCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.gcp(member:)
       new(member: member, discriminant: "gcp")
     end
-    # @param member [Vapi::CreateGladiaCredentialDto] 
+
+    # @param member [Vapi::CreateGladiaCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.gladia(member:)
       new(member: member, discriminant: "gladia")
     end
-    # @param member [Vapi::CreateGoHighLevelCredentialDto] 
+
+    # @param member [Vapi::CreateGoHighLevelCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.gohighlevel(member:)
       new(member: member, discriminant: "gohighlevel")
     end
-    # @param member [Vapi::CreateGoogleCredentialDto] 
+
+    # @param member [Vapi::CreateGoogleCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.google(member:)
       new(member: member, discriminant: "google")
     end
-    # @param member [Vapi::CreateGroqCredentialDto] 
+
+    # @param member [Vapi::CreateGroqCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.groq(member:)
       new(member: member, discriminant: "groq")
     end
-    # @param member [Vapi::CreateInflectionAiCredentialDto] 
+
+    # @param member [Vapi::CreateInflectionAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.inflection_ai(member:)
       new(member: member, discriminant: "inflection-ai")
     end
-    # @param member [Vapi::CreateLangfuseCredentialDto] 
+
+    # @param member [Vapi::CreateLangfuseCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.langfuse(member:)
       new(member: member, discriminant: "langfuse")
     end
-    # @param member [Vapi::CreateLmntCredentialDto] 
+
+    # @param member [Vapi::CreateLmntCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.lmnt(member:)
       new(member: member, discriminant: "lmnt")
     end
-    # @param member [Vapi::CreateMakeCredentialDto] 
+
+    # @param member [Vapi::CreateMakeCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.make(member:)
       new(member: member, discriminant: "make")
     end
-    # @param member [Vapi::CreateOpenAiCredentialDto] 
+
+    # @param member [Vapi::CreateOpenAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.openai(member:)
       new(member: member, discriminant: "openai")
     end
-    # @param member [Vapi::CreateOpenRouterCredentialDto] 
+
+    # @param member [Vapi::CreateOpenRouterCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.openrouter(member:)
       new(member: member, discriminant: "openrouter")
     end
-    # @param member [Vapi::CreatePerplexityAiCredentialDto] 
+
+    # @param member [Vapi::CreatePerplexityAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.perplexity_ai(member:)
       new(member: member, discriminant: "perplexity-ai")
     end
-    # @param member [Vapi::CreatePlayHtCredentialDto] 
+
+    # @param member [Vapi::CreatePlayHtCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.playht(member:)
       new(member: member, discriminant: "playht")
     end
-    # @param member [Vapi::CreateRimeAiCredentialDto] 
+
+    # @param member [Vapi::CreateRimeAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.rime_ai(member:)
       new(member: member, discriminant: "rime-ai")
     end
-    # @param member [Vapi::CreateRunpodCredentialDto] 
+
+    # @param member [Vapi::CreateRunpodCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.runpod(member:)
       new(member: member, discriminant: "runpod")
     end
-    # @param member [Vapi::CreateS3CredentialDto] 
+
+    # @param member [Vapi::CreateS3CredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.s_3(member:)
       new(member: member, discriminant: "s3")
     end
-    # @param member [Vapi::CreateSupabaseCredentialDto] 
+
+    # @param member [Vapi::CreateSupabaseCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.supabase(member:)
       new(member: member, discriminant: "supabase")
     end
-    # @param member [Vapi::CreateSmallestAiCredentialDto] 
+
+    # @param member [Vapi::CreateSmallestAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.smallest_ai(member:)
       new(member: member, discriminant: "smallest-ai")
     end
-    # @param member [Vapi::CreateTavusCredentialDto] 
+
+    # @param member [Vapi::CreateTavusCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.tavus(member:)
       new(member: member, discriminant: "tavus")
     end
-    # @param member [Vapi::CreateTogetherAiCredentialDto] 
+
+    # @param member [Vapi::CreateTogetherAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.together_ai(member:)
       new(member: member, discriminant: "together-ai")
     end
-    # @param member [Vapi::CreateTwilioCredentialDto] 
+
+    # @param member [Vapi::CreateTwilioCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.twilio(member:)
       new(member: member, discriminant: "twilio")
     end
-    # @param member [Vapi::CreateVonageCredentialDto] 
+
+    # @param member [Vapi::CreateVonageCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.vonage(member:)
       new(member: member, discriminant: "vonage")
     end
-    # @param member [Vapi::CreateWebhookCredentialDto] 
+
+    # @param member [Vapi::CreateWebhookCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.webhook(member:)
       new(member: member, discriminant: "webhook")
     end
-    # @param member [Vapi::CreateXAiCredentialDto] 
+
+    # @param member [Vapi::CreateXAiCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.xai(member:)
       new(member: member, discriminant: "xai")
     end
-    # @param member [Vapi::CreateNeuphonicCredentialDto] 
+
+    # @param member [Vapi::CreateNeuphonicCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.neuphonic(member:)
       new(member: member, discriminant: "neuphonic")
     end
-    # @param member [Vapi::CreateHumeCredentialDto] 
+
+    # @param member [Vapi::CreateHumeCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.hume(member:)
       new(member: member, discriminant: "hume")
     end
-    # @param member [Vapi::CreateMistralCredentialDto] 
+
+    # @param member [Vapi::CreateMistralCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.mistral(member:)
       new(member: member, discriminant: "mistral")
     end
-    # @param member [Vapi::CreateSpeechmaticsCredentialDto] 
+
+    # @param member [Vapi::CreateSpeechmaticsCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.speechmatics(member:)
       new(member: member, discriminant: "speechmatics")
     end
-    # @param member [Vapi::CreateTrieveCredentialDto] 
+
+    # @param member [Vapi::CreateTrieveCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.trieve(member:)
       new(member: member, discriminant: "trieve")
     end
-    # @param member [Vapi::CreateGoogleCalendarOAuth2ClientCredentialDto] 
+
+    # @param member [Vapi::CreateGoogleCalendarOAuth2ClientCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.google_calendar_oauth_2_client(member:)
       new(member: member, discriminant: "google.calendar.oauth2-client")
     end
-    # @param member [Vapi::CreateGoogleCalendarOAuth2AuthorizationCredentialDto] 
+
+    # @param member [Vapi::CreateGoogleCalendarOAuth2AuthorizationCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.google_calendar_oauth_2_authorization(member:)
       new(member: member, discriminant: "google.calendar.oauth2-authorization")
     end
-    # @param member [Vapi::CreateGoogleSheetsOAuth2AuthorizationCredentialDto] 
+
+    # @param member [Vapi::CreateGoogleSheetsOAuth2AuthorizationCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.google_sheets_oauth_2_authorization(member:)
       new(member: member, discriminant: "google.sheets.oauth2-authorization")
     end
-    # @param member [Vapi::CreateSlackOAuth2AuthorizationCredentialDto] 
+
+    # @param member [Vapi::CreateSlackOAuth2AuthorizationCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.slack_oauth_2_authorization(member:)
       new(member: member, discriminant: "slack.oauth2-authorization")
     end
-    # @param member [Vapi::CreateGoHighLevelMcpCredentialDto] 
+
+    # @param member [Vapi::CreateGoHighLevelMcpCredentialDto]
     # @return [Vapi::AssistantCredentialsItem]
     def self.ghl_oauth_2_authorization(member:)
       new(member: member, discriminant: "ghl.oauth2-authorization")
     end
-    # @param member [Object] 
+
+    # @param member [Object]
     # @return [Vapi::AssistantCredentialsItem]
     def self.inworld(member:)
       new(member: member, discriminant: "inworld")

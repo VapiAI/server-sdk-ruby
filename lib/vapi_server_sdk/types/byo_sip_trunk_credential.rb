@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require "date"
+
 require "date"
 require_relative "sip_trunk_gateway"
 require_relative "sip_trunk_outbound_authentication_plan"
@@ -9,42 +9,42 @@ require "json"
 
 module Vapi
   class ByoSipTrunkCredential
-  # @return [String] This can be used to bring your own SIP trunks or to connect to a Carrier.
+    # @return [String] This can be used to bring your own SIP trunks or to connect to a Carrier.
     attr_reader :provider
-  # @return [String] This is the unique identifier for the credential.
+    # @return [String] This is the unique identifier for the credential.
     attr_reader :id
-  # @return [String] This is the unique identifier for the org that this credential belongs to.
+    # @return [String] This is the unique identifier for the org that this credential belongs to.
     attr_reader :org_id
-  # @return [DateTime] This is the ISO 8601 date-time string of when the credential was created.
+    # @return [DateTime] This is the ISO 8601 date-time string of when the credential was created.
     attr_reader :created_at
-  # @return [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
+    # @return [DateTime] This is the ISO 8601 date-time string of when the assistant was last updated.
     attr_reader :updated_at
-  # @return [String] This is the name of credential. This is just for your reference.
+    # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
-  # @return [Array<Vapi::SipTrunkGateway>] This is the list of SIP trunk's gateways.
+    # @return [Array<Vapi::SipTrunkGateway>] This is the list of SIP trunk's gateways.
     attr_reader :gateways
-  # @return [Vapi::SipTrunkOutboundAuthenticationPlan] This can be used to configure the outbound authentication if required by the SIP
-#  trunk.
+    # @return [Vapi::SipTrunkOutboundAuthenticationPlan] This can be used to configure the outbound authentication if required by the SIP
+    #  trunk.
     attr_reader :outbound_authentication_plan
-  # @return [Boolean] This ensures the outbound origination attempts have a leading plus. Defaults to
-#  false to match conventional telecom behavior.
-#  Usage:
-#  - Vonage/Twilio requires leading plus for all outbound calls. Set this to true.
-#  @default false
+    # @return [Boolean] This ensures the outbound origination attempts have a leading plus. Defaults to
+    #  false to match conventional telecom behavior.
+    #  Usage:
+    #  - Vonage/Twilio requires leading plus for all outbound calls. Set this to true.
+    #  @default false
     attr_reader :outbound_leading_plus_enabled
-  # @return [String] This can be used to configure the tech prefix on outbound calls. This is an
-#  advanced property.
+    # @return [String] This can be used to configure the tech prefix on outbound calls. This is an
+    #  advanced property.
     attr_reader :tech_prefix
-  # @return [String] This can be used to enable the SIP diversion header for authenticating the
-#  calling number if the SIP trunk supports it. This is an advanced property.
+    # @return [String] This can be used to enable the SIP diversion header for authenticating the
+    #  calling number if the SIP trunk supports it. This is an advanced property.
     attr_reader :sip_diversion_header
-  # @return [Vapi::SbcConfiguration] This is an advanced configuration for enterprise deployments. This uses the
-#  onprem SBC to trunk into the SIP trunk's `gateways`, rather than the managed SBC
-#  provided by Vapi.
+    # @return [Vapi::SbcConfiguration] This is an advanced configuration for enterprise deployments. This uses the
+    #  onprem SBC to trunk into the SIP trunk's `gateways`, rather than the managed SBC
+    #  provided by Vapi.
     attr_reader :sbc_configuration
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
@@ -58,22 +58,23 @@ module Vapi
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param gateways [Array<Vapi::SipTrunkGateway>] This is the list of SIP trunk's gateways.
     # @param outbound_authentication_plan [Vapi::SipTrunkOutboundAuthenticationPlan] This can be used to configure the outbound authentication if required by the SIP
-#  trunk.
+    #  trunk.
     # @param outbound_leading_plus_enabled [Boolean] This ensures the outbound origination attempts have a leading plus. Defaults to
-#  false to match conventional telecom behavior.
-#  Usage:
-#  - Vonage/Twilio requires leading plus for all outbound calls. Set this to true.
-#  @default false
+    #  false to match conventional telecom behavior.
+    #  Usage:
+    #  - Vonage/Twilio requires leading plus for all outbound calls. Set this to true.
+    #  @default false
     # @param tech_prefix [String] This can be used to configure the tech prefix on outbound calls. This is an
-#  advanced property.
+    #  advanced property.
     # @param sip_diversion_header [String] This can be used to enable the SIP diversion header for authenticating the
-#  calling number if the SIP trunk supports it. This is an advanced property.
+    #  calling number if the SIP trunk supports it. This is an advanced property.
     # @param sbc_configuration [Vapi::SbcConfiguration] This is an advanced configuration for enterprise deployments. This uses the
-#  onprem SBC to trunk into the SIP trunk's `gateways`, rather than the managed SBC
-#  provided by Vapi.
+    #  onprem SBC to trunk into the SIP trunk's `gateways`, rather than the managed SBC
+    #  provided by Vapi.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ByoSipTrunkCredential]
-    def initialize(provider: OMIT, id:, org_id:, created_at:, updated_at:, name: OMIT, gateways:, outbound_authentication_plan: OMIT, outbound_leading_plus_enabled: OMIT, tech_prefix: OMIT, sip_diversion_header: OMIT, sbc_configuration: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, created_at:, updated_at:, gateways:, provider: OMIT, name: OMIT,
+                   outbound_authentication_plan: OMIT, outbound_leading_plus_enabled: OMIT, tech_prefix: OMIT, sip_diversion_header: OMIT, sbc_configuration: OMIT, additional_properties: nil)
       @provider = provider if provider != OMIT
       @id = id
       @org_id = org_id
@@ -87,13 +88,27 @@ module Vapi
       @sip_diversion_header = sip_diversion_header if sip_diversion_header != OMIT
       @sbc_configuration = sbc_configuration if sbc_configuration != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "provider": provider, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "name": name, "gateways": gateways, "outboundAuthenticationPlan": outbound_authentication_plan, "outboundLeadingPlusEnabled": outbound_leading_plus_enabled, "techPrefix": tech_prefix, "sipDiversionHeader": sip_diversion_header, "sbcConfiguration": sbc_configuration }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "provider": provider,
+        "id": id,
+        "orgId": org_id,
+        "createdAt": created_at,
+        "updatedAt": updated_at,
+        "name": name,
+        "gateways": gateways,
+        "outboundAuthenticationPlan": outbound_authentication_plan,
+        "outboundLeadingPlusEnabled": outbound_leading_plus_enabled,
+        "techPrefix": tech_prefix,
+        "sipDiversionHeader": sip_diversion_header,
+        "sbcConfiguration": sbc_configuration
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of ByoSipTrunkCredential
+
+    # Deserialize a JSON object to an instance of ByoSipTrunkCredential
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::ByoSipTrunkCredential]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -101,35 +116,27 @@ end
       provider = parsed_json["provider"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
-      created_at = unless parsed_json["createdAt"].nil?
-  DateTime.parse(parsed_json["createdAt"])
-else
-  nil
-end
-      updated_at = unless parsed_json["updatedAt"].nil?
-  DateTime.parse(parsed_json["updatedAt"])
-else
-  nil
-end
+      created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
+      updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
       name = parsed_json["name"]
-      gateways = parsed_json["gateways"]&.map do | item |
-  item = item.to_json
-  Vapi::SipTrunkGateway.from_json(json_object: item)
-end
-      unless parsed_json["outboundAuthenticationPlan"].nil?
+      gateways = parsed_json["gateways"]&.map do |item|
+        item = item.to_json
+        Vapi::SipTrunkGateway.from_json(json_object: item)
+      end
+      if parsed_json["outboundAuthenticationPlan"].nil?
+        outbound_authentication_plan = nil
+      else
         outbound_authentication_plan = parsed_json["outboundAuthenticationPlan"].to_json
         outbound_authentication_plan = Vapi::SipTrunkOutboundAuthenticationPlan.from_json(json_object: outbound_authentication_plan)
-      else
-        outbound_authentication_plan = nil
       end
       outbound_leading_plus_enabled = parsed_json["outboundLeadingPlusEnabled"]
       tech_prefix = parsed_json["techPrefix"]
       sip_diversion_header = parsed_json["sipDiversionHeader"]
-      unless parsed_json["sbcConfiguration"].nil?
+      if parsed_json["sbcConfiguration"].nil?
+        sbc_configuration = nil
+      else
         sbc_configuration = parsed_json["sbcConfiguration"].to_json
         sbc_configuration = Vapi::SbcConfiguration.from_json(json_object: sbc_configuration)
-      else
-        sbc_configuration = nil
       end
       new(
         provider: provider,
@@ -147,17 +154,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of ByoSipTrunkCredential to a JSON object
+
+    # Serialize an instance of ByoSipTrunkCredential to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.provider&.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")

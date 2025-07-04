@@ -2,7 +2,6 @@
 
 module Vapi
   class ElevenLabsVoiceIdEnum
-
     BURT = "burt"
     MARISSA = "marissa"
     ANDREA = "andrea"
@@ -18,6 +17,5 @@ module Vapi
     MRB = "mrb"
     MATILDA = "matilda"
     MARK = "mark"
-
   end
 end

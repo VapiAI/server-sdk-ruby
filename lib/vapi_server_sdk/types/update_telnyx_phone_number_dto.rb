@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "update_telnyx_phone_number_dto_fallback_destination"
 require_relative "phone_number_hook_call_ringing"
 require_relative "server"
@@ -7,92 +8,93 @@ require "json"
 
 module Vapi
   class UpdateTelnyxPhoneNumberDto
-  # @return [Vapi::UpdateTelnyxPhoneNumberDtoFallbackDestination] This is the fallback destination an inbound call will be transferred to if:
-#  1. `assistantId` is not set
-#  2. `squadId` is not set
-#  3. and, `assistant-request` message to the `serverUrl` fails
-#  If this is not set and above conditions are met, the inbound call is hung up
-#  with an error message.
+    # @return [Vapi::UpdateTelnyxPhoneNumberDtoFallbackDestination] This is the fallback destination an inbound call will be transferred to if:
+    #  1. `assistantId` is not set
+    #  2. `squadId` is not set
+    #  3. and, `assistant-request` message to the `serverUrl` fails
+    #  If this is not set and above conditions are met, the inbound call is hung up
+    #  with an error message.
     attr_reader :fallback_destination
-  # @return [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
+    # @return [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
     attr_reader :hooks
-  # @return [String] This is the name of the phone number. This is just for your own reference.
+    # @return [String] This is the name of the phone number. This is just for your own reference.
     attr_reader :name
-  # @return [String] This is the assistant that will be used for incoming calls to this phone number.
-#  If neither `assistantId`, `squadId` nor `workflowId` is set, `assistant-request`
-#  will be sent to your Server URL. Check `ServerMessage` and
-#  `ServerMessageResponse` for the shape of the message and response that is
-#  expected.
+    # @return [String] This is the assistant that will be used for incoming calls to this phone number.
+    #  If neither `assistantId`, `squadId` nor `workflowId` is set, `assistant-request`
+    #  will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     attr_reader :assistant_id
-  # @return [String] This is the workflow that will be used for incoming calls to this phone number.
-#  If neither `assistantId`, `squadId`, nor `workflowId` is set,
-#  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
-#  `ServerMessageResponse` for the shape of the message and response that is
-#  expected.
+    # @return [String] This is the workflow that will be used for incoming calls to this phone number.
+    #  If neither `assistantId`, `squadId`, nor `workflowId` is set,
+    #  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     attr_reader :workflow_id
-  # @return [String] This is the squad that will be used for incoming calls to this phone number.
-#  If neither `assistantId`, `squadId`, nor `workflowId` is set,
-#  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
-#  `ServerMessageResponse` for the shape of the message and response that is
-#  expected.
+    # @return [String] This is the squad that will be used for incoming calls to this phone number.
+    #  If neither `assistantId`, `squadId`, nor `workflowId` is set,
+    #  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     attr_reader :squad_id
-  # @return [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
-#  with their shape in ServerMessage schema.
-#  The order of precedence is:
-#  1. assistant.server
-#  2. phoneNumber.server
-#  3. org.server
+    # @return [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
+    #  with their shape in ServerMessage schema.
+    #  The order of precedence is:
+    #  1. assistant.server
+    #  2. phoneNumber.server
+    #  3. org.server
     attr_reader :server
-  # @return [String] These are the digits of the phone number you own on your Telnyx.
+    # @return [String] These are the digits of the phone number you own on your Telnyx.
     attr_reader :number
-  # @return [String] This is the credential you added in dashboard.vapi.ai/keys. This is used to
-#  configure the number to send inbound calls to Vapi, make outbound calls and do
-#  live call updates like transfers and hangups.
+    # @return [String] This is the credential you added in dashboard.vapi.ai/keys. This is used to
+    #  configure the number to send inbound calls to Vapi, make outbound calls and do
+    #  live call updates like transfers and hangups.
     attr_reader :credential_id
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
     # @param fallback_destination [Vapi::UpdateTelnyxPhoneNumberDtoFallbackDestination] This is the fallback destination an inbound call will be transferred to if:
-#  1. `assistantId` is not set
-#  2. `squadId` is not set
-#  3. and, `assistant-request` message to the `serverUrl` fails
-#  If this is not set and above conditions are met, the inbound call is hung up
-#  with an error message.
+    #  1. `assistantId` is not set
+    #  2. `squadId` is not set
+    #  3. and, `assistant-request` message to the `serverUrl` fails
+    #  If this is not set and above conditions are met, the inbound call is hung up
+    #  with an error message.
     # @param hooks [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
     # @param name [String] This is the name of the phone number. This is just for your own reference.
     # @param assistant_id [String] This is the assistant that will be used for incoming calls to this phone number.
-#  If neither `assistantId`, `squadId` nor `workflowId` is set, `assistant-request`
-#  will be sent to your Server URL. Check `ServerMessage` and
-#  `ServerMessageResponse` for the shape of the message and response that is
-#  expected.
+    #  If neither `assistantId`, `squadId` nor `workflowId` is set, `assistant-request`
+    #  will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     # @param workflow_id [String] This is the workflow that will be used for incoming calls to this phone number.
-#  If neither `assistantId`, `squadId`, nor `workflowId` is set,
-#  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
-#  `ServerMessageResponse` for the shape of the message and response that is
-#  expected.
+    #  If neither `assistantId`, `squadId`, nor `workflowId` is set,
+    #  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     # @param squad_id [String] This is the squad that will be used for incoming calls to this phone number.
-#  If neither `assistantId`, `squadId`, nor `workflowId` is set,
-#  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
-#  `ServerMessageResponse` for the shape of the message and response that is
-#  expected.
+    #  If neither `assistantId`, `squadId`, nor `workflowId` is set,
+    #  `assistant-request` will be sent to your Server URL. Check `ServerMessage` and
+    #  `ServerMessageResponse` for the shape of the message and response that is
+    #  expected.
     # @param server [Vapi::Server] This is where Vapi will send webhooks. You can find all webhooks available along
-#  with their shape in ServerMessage schema.
-#  The order of precedence is:
-#  1. assistant.server
-#  2. phoneNumber.server
-#  3. org.server
+    #  with their shape in ServerMessage schema.
+    #  The order of precedence is:
+    #  1. assistant.server
+    #  2. phoneNumber.server
+    #  3. org.server
     # @param number [String] These are the digits of the phone number you own on your Telnyx.
     # @param credential_id [String] This is the credential you added in dashboard.vapi.ai/keys. This is used to
-#  configure the number to send inbound calls to Vapi, make outbound calls and do
-#  live call updates like transfers and hangups.
+    #  configure the number to send inbound calls to Vapi, make outbound calls and do
+    #  live call updates like transfers and hangups.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateTelnyxPhoneNumberDto]
-    def initialize(fallback_destination: OMIT, hooks: OMIT, name: OMIT, assistant_id: OMIT, workflow_id: OMIT, squad_id: OMIT, server: OMIT, number: OMIT, credential_id: OMIT, additional_properties: nil)
+    def initialize(fallback_destination: OMIT, hooks: OMIT, name: OMIT, assistant_id: OMIT, workflow_id: OMIT,
+                   squad_id: OMIT, server: OMIT, number: OMIT, credential_id: OMIT, additional_properties: nil)
       @fallback_destination = fallback_destination if fallback_destination != OMIT
       @hooks = hooks if hooks != OMIT
       @name = name if name != OMIT
@@ -103,36 +105,47 @@ module Vapi
       @number = number if number != OMIT
       @credential_id = credential_id if credential_id != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "fallbackDestination": fallback_destination, "hooks": hooks, "name": name, "assistantId": assistant_id, "workflowId": workflow_id, "squadId": squad_id, "server": server, "number": number, "credentialId": credential_id }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "fallbackDestination": fallback_destination,
+        "hooks": hooks,
+        "name": name,
+        "assistantId": assistant_id,
+        "workflowId": workflow_id,
+        "squadId": squad_id,
+        "server": server,
+        "number": number,
+        "credentialId": credential_id
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of UpdateTelnyxPhoneNumberDto
+
+    # Deserialize a JSON object to an instance of UpdateTelnyxPhoneNumberDto
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::UpdateTelnyxPhoneNumberDto]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      unless parsed_json["fallbackDestination"].nil?
+      if parsed_json["fallbackDestination"].nil?
+        fallback_destination = nil
+      else
         fallback_destination = parsed_json["fallbackDestination"].to_json
         fallback_destination = Vapi::UpdateTelnyxPhoneNumberDtoFallbackDestination.from_json(json_object: fallback_destination)
-      else
-        fallback_destination = nil
       end
-      hooks = parsed_json["hooks"]&.map do | item |
-  item = item.to_json
-  Vapi::PhoneNumberHookCallRinging.from_json(json_object: item)
-end
+      hooks = parsed_json["hooks"]&.map do |item|
+        item = item.to_json
+        Vapi::PhoneNumberHookCallRinging.from_json(json_object: item)
+      end
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]
       workflow_id = parsed_json["workflowId"]
       squad_id = parsed_json["squadId"]
-      unless parsed_json["server"].nil?
+      if parsed_json["server"].nil?
+        server = nil
+      else
         server = parsed_json["server"].to_json
         server = Vapi::Server.from_json(json_object: server)
-      else
-        server = nil
       end
       number = parsed_json["number"]
       credential_id = parsed_json["credentialId"]
@@ -149,17 +162,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of UpdateTelnyxPhoneNumberDto to a JSON object
+
+    # Serialize an instance of UpdateTelnyxPhoneNumberDto to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.fallback_destination.nil? || Vapi::UpdateTelnyxPhoneNumberDtoFallbackDestination.validate_raw(obj: obj.fallback_destination)

@@ -2,10 +2,8 @@
 
 module Vapi
   class CreateToolTemplateDtoProvider
-
     MAKE = "make"
     GOHIGHLEVEL = "gohighlevel"
     FUNCTION = "function"
-
   end
 end

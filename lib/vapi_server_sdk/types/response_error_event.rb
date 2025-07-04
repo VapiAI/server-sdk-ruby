@@ -1,22 +1,23 @@
 # frozen_string_literal: true
+
 require "ostruct"
 require "json"
 
 module Vapi
   class ResponseErrorEvent
-  # @return [String] Event type
+    # @return [String] Event type
     attr_reader :type
-  # @return [String] Error code
+    # @return [String] Error code
     attr_reader :code
-  # @return [String] Error message
+    # @return [String] Error message
     attr_reader :message
-  # @return [String] Parameter that caused the error
+    # @return [String] Parameter that caused the error
     attr_reader :param
-  # @return [Float] Sequence number of the event
+    # @return [Float] Sequence number of the event
     attr_reader :sequence_number
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
@@ -29,20 +30,27 @@ module Vapi
     # @param sequence_number [Float] Sequence number of the event
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ResponseErrorEvent]
-    def initialize(type:, code:, message:, param: OMIT, sequence_number:, additional_properties: nil)
+    def initialize(type:, code:, message:, sequence_number:, param: OMIT, additional_properties: nil)
       @type = type
       @code = code
       @message = message
       @param = param if param != OMIT
       @sequence_number = sequence_number
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "code": code, "message": message, "param": param, "sequence_number": sequence_number }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "type": type,
+        "code": code,
+        "message": message,
+        "param": param,
+        "sequence_number": sequence_number
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of ResponseErrorEvent
+
+    # Deserialize a JSON object to an instance of ResponseErrorEvent
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::ResponseErrorEvent]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -61,17 +69,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of ResponseErrorEvent to a JSON object
+
+    # Serialize an instance of ResponseErrorEvent to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")

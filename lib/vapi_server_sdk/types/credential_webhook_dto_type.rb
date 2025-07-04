@@ -2,10 +2,8 @@
 
 module Vapi
   class CredentialWebhookDtoType
-
     AUTH = "auth"
     SYNC = "sync"
     FORWARD = "forward"
-
   end
 end

@@ -2,9 +2,7 @@
 
 module Vapi
   class AssistantBackgroundSoundZero
-
     OFF = "off"
     OFFICE = "office"
-
   end
 end

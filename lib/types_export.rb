@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "vapi_server_sdk/types/call"
 require_relative "vapi_server_sdk/types/call_batch_response"
 require_relative "vapi_server_sdk/calls/types/calls_create_response"
@@ -1017,7 +1018,6 @@ require_relative "vapi_server_sdk/types/client_message_speech_update_status"
 require_relative "vapi_server_sdk/types/client_message_speech_update_role"
 require_relative "vapi_server_sdk/types/client_message_speech_update"
 require_relative "vapi_server_sdk/types/client_message_transcript_phone_number"
-require_relative "vapi_server_sdk/types/client_message_transcript_type"
 require_relative "vapi_server_sdk/types/client_message_transcript_role"
 require_relative "vapi_server_sdk/types/client_message_transcript_transcript_type"
 require_relative "vapi_server_sdk/types/client_message_transcript"
@@ -1076,7 +1076,6 @@ require_relative "vapi_server_sdk/types/server_message_transfer_update_phone_num
 require_relative "vapi_server_sdk/types/server_message_transfer_update_destination"
 require_relative "vapi_server_sdk/types/server_message_transfer_update"
 require_relative "vapi_server_sdk/types/server_message_transcript_phone_number"
-require_relative "vapi_server_sdk/types/server_message_transcript_type"
 require_relative "vapi_server_sdk/types/server_message_transcript_role"
 require_relative "vapi_server_sdk/types/server_message_transcript_transcript_type"
 require_relative "vapi_server_sdk/types/server_message_transcript"

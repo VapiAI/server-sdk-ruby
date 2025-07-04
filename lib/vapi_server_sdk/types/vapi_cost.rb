@@ -1,20 +1,21 @@
 # frozen_string_literal: true
+
 require_relative "vapi_cost_sub_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class VapiCost
-  # @return [Vapi::VapiCostSubType] This is the sub type of the cost.
+    # @return [Vapi::VapiCostSubType] This is the sub type of the cost.
     attr_reader :sub_type
-  # @return [Float] This is the minutes of Vapi usage. This should match `call.endedAt` -
-#  `call.startedAt`.
+    # @return [Float] This is the minutes of Vapi usage. This should match `call.endedAt` -
+    #  `call.startedAt`.
     attr_reader :minutes
-  # @return [Float] This is the cost of the component in USD.
+    # @return [Float] This is the cost of the component in USD.
     attr_reader :cost
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
@@ -22,7 +23,7 @@ module Vapi
 
     # @param sub_type [Vapi::VapiCostSubType] This is the sub type of the cost.
     # @param minutes [Float] This is the minutes of Vapi usage. This should match `call.endedAt` -
-#  `call.startedAt`.
+    #  `call.startedAt`.
     # @param cost [Float] This is the cost of the component in USD.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VapiCost]
@@ -33,9 +34,10 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = { "subType": sub_type, "minutes": minutes, "cost": cost }
     end
-# Deserialize a JSON object to an instance of VapiCost
+
+    # Deserialize a JSON object to an instance of VapiCost
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::VapiCost]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
@@ -50,17 +52,19 @@ module Vapi
         additional_properties: struct
       )
     end
-# Serialize an instance of VapiCost to a JSON object
+
+    # Serialize an instance of VapiCost to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.sub_type.is_a?(Vapi::VapiCostSubType) != false || raise("Passed value for field obj.sub_type is not the expected type, validation failed.")

@@ -1,17 +1,16 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the OpenAI model that will be used.
-#  When using Vapi OpenAI or your own Azure Credentials, you have the option to
-#  specify the region for the selected model. This shouldn't be specified unless
-#  you have a specific reason to do so. Vapi will automatically find the fastest
-#  region that make sense.
-#  This is helpful when you are required to comply with Data Residency rules. Learn
-#  more about Azure regions here
-#  https://azure.microsoft.com/en-us/explore/global-infrastructure/data-residency/.
-#  @default undefined
+  # This is the OpenAI model that will be used.
+  #  When using Vapi OpenAI or your own Azure Credentials, you have the option to
+  #  specify the region for the selected model. This shouldn't be specified unless
+  #  you have a specific reason to do so. Vapi will automatically find the fastest
+  #  region that make sense.
+  #  This is helpful when you are required to comply with Data Residency rules. Learn
+  #  more about Azure regions here
+  #  https://azure.microsoft.com/en-us/explore/global-infrastructure/data-residency/.
+  #  @default undefined
   class OpenAiModelModel
-
     GPT_4120250414 = "gpt-4.1-2025-04-14"
     GPT_41_MINI_20250414 = "gpt-4.1-mini-2025-04-14"
     GPT_41_NANO_20250414 = "gpt-4.1-nano-2025-04-14"
@@ -108,6 +107,5 @@ module Vapi
     GPT_35_TURBO_0125_SOUTHCENTRALUS = "gpt-3.5-turbo-0125:southcentralus"
     GPT_35_TURBO_1106_CANADAEAST = "gpt-3.5-turbo-1106:canadaeast"
     GPT_35_TURBO_1106_WESTUS = "gpt-3.5-turbo-1106:westus"
-
   end
 end

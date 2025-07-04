@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# Two letter ISO 639-1 language code. Use "auto" for auto-detection.
+  # Two letter ISO 639-1 language code. Use "auto" for auto-detection.
   class LmntVoiceLanguage
-
     AA = "aa"
     AB = "ab"
     AE = "ae"
@@ -190,6 +189,5 @@ module Vapi
     ZH = "zh"
     ZU = "zu"
     AUTO = "auto"
-
   end
 end

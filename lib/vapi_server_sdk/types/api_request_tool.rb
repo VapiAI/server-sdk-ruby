@@ -1,7 +1,7 @@
 # frozen_string_literal: true
+
 require_relative "api_request_tool_messages_item"
 require_relative "api_request_tool_method"
-require "date"
 require "date"
 require_relative "open_ai_function"
 require_relative "json_schema"
@@ -12,436 +12,437 @@ require "json"
 
 module Vapi
   class ApiRequestTool
-  # @return [Array<Vapi::ApiRequestToolMessagesItem>] These are the messages that will be spoken to the user as the tool is running.
-#  For some tools, this is auto-filled based on special fields like
-#  `tool.destinations`. For others like the function tool, these can be custom
-#  configured.
+    # @return [Array<Vapi::ApiRequestToolMessagesItem>] These are the messages that will be spoken to the user as the tool is running.
+    #  For some tools, this is auto-filled based on special fields like
+    #  `tool.destinations`. For others like the function tool, these can be custom
+    #  configured.
     attr_reader :messages
-  # @return [Vapi::ApiRequestToolMethod] 
+    # @return [Vapi::ApiRequestToolMethod]
     attr_reader :method
-  # @return [Float] This is the timeout in seconds for the request. Defaults to 20 seconds.
-#  @default 20
+    # @return [Float] This is the timeout in seconds for the request. Defaults to 20 seconds.
+    #  @default 20
     attr_reader :timeout_seconds
-  # @return [String] This is the unique identifier for the tool.
+    # @return [String] This is the unique identifier for the tool.
     attr_reader :id
-  # @return [String] This is the unique identifier for the organization that this tool belongs to.
+    # @return [String] This is the unique identifier for the organization that this tool belongs to.
     attr_reader :org_id
-  # @return [DateTime] This is the ISO 8601 date-time string of when the tool was created.
+    # @return [DateTime] This is the ISO 8601 date-time string of when the tool was created.
     attr_reader :created_at
-  # @return [DateTime] This is the ISO 8601 date-time string of when the tool was last updated.
+    # @return [DateTime] This is the ISO 8601 date-time string of when the tool was last updated.
     attr_reader :updated_at
-  # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
-#  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-#  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-#  provide a custom function definition for advanced use cases.
-#  An example of an advanced use case is if you want to customize the message
-#  that's spoken for `endCall` tool. You can specify a function where it returns an
-#  argument "reason". Then, in `messages` array, you can have many
-#  "request-complete" messages. One of these messages will be triggered if the
-#  `messages[].conditions` matches the "reason" argument.
+    # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
+    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
+    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
+    #  provide a custom function definition for advanced use cases.
+    #  An example of an advanced use case is if you want to customize the message
+    #  that's spoken for `endCall` tool. You can specify a function where it returns an
+    #  argument "reason". Then, in `messages` array, you can have many
+    #  "request-complete" messages. One of these messages will be triggered if the
+    #  `messages[].conditions` matches the "reason" argument.
     attr_reader :function
-  # @return [String] This is the name of the tool. This will be passed to the model.
-#  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
-#  of 40.
+    # @return [String] This is the name of the tool. This will be passed to the model.
+    #  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
+    #  of 40.
     attr_reader :name
-  # @return [String] This is the description of the tool. This will be passed to the model.
+    # @return [String] This is the description of the tool. This will be passed to the model.
     attr_reader :description
-  # @return [String] This is where the request will be sent.
+    # @return [String] This is where the request will be sent.
     attr_reader :url
-  # @return [Vapi::JsonSchema] This is the body of the request.
+    # @return [Vapi::JsonSchema] This is the body of the request.
     attr_reader :body
-  # @return [Vapi::JsonSchema] These are the headers to send in the request.
+    # @return [Vapi::JsonSchema] These are the headers to send in the request.
     attr_reader :headers
-  # @return [Vapi::BackoffPlan] This is the backoff plan if the request fails. Defaults to undefined (the
-#  request will not be retried).
-#  @default undefined (the request will not be retried)
+    # @return [Vapi::BackoffPlan] This is the backoff plan if the request fails. Defaults to undefined (the
+    #  request will not be retried).
+    #  @default undefined (the request will not be retried)
     attr_reader :backoff_plan
-  # @return [Vapi::VariableExtractionPlan] This is the plan to extract variables from the tool's response. These will be
-#  accessible during the call and stored in `call.artifact.variableValues` after
-#  the call.
-#  Usage:
-#  1. Use `aliases` to extract variables from the tool's response body. (Most
-#  common case)
-#  ```json
-#  {
-#  "aliases": [
-#  {
-#  "key": "customerName",
-#  "value": "{{customer.name}}"
-#  },
-#  {
-#  "key": "customerAge",
-#  "value": "{{customer.age}}"
-#  }
-#  ]
-#  }
-#  ```
-#  The tool response body is made available to the liquid template.
-#  2. Use `aliases` to extract variables from the tool's response body if the
-#  response is an array.
-#  ```json
-#  {
-#  "aliases": [
-#  {
-#  "key": "customerName",
-#  "value": "{{$[0].name}}"
-#  },
-#  {
-#  "key": "customerAge",
-#  "value": "{{$[0].age}}"
-#  }
-#  ]
-#  }
-#  ```
-#  $ is a shorthand for the tool's response body. `$[0]` is the first item in the
-#  array. `$[n]` is the nth item in the array. Note, $ is available regardless of
-#  the response body type (both object and array).
-#  3. Use `aliases` to extract variables from the tool's response headers.
-#  ```json
-#  {
-#  "aliases": [
-#  {
-#  "key": "customerName",
-#  "value": "{{tool.response.headers.customer-name}}"
-#  },
-#  {
-#  "key": "customerAge",
-#  "value": "{{tool.response.headers.customer-age}}"
-#  }
-#  ]
-#  }
-#  ```
-#  `tool.response` is made available to the liquid template. Particularly, both
-#  `tool.response.headers` and `tool.response.body` are available. Note,
-#  `tool.response` is available regardless of the response body type (both object
-#  and array).
-#  4. Use `schema` to extract a large portion of the tool's response body.
-#  4.1. If you hit example.com and it returns `{"name": "John", "age": 30}`, then
-#  you can specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "object",
-#  "properties": {
-#  "name": {
-#  "type": "string"
-#  },
-#  "age": {
-#  "type": "number"
-#  }
-#  }
-#  }
-#  }
-#  ```
-#  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
-#  "Doe"}}`, then you can specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "object",
-#  "properties": {
-#  "name": {
-#  "type": "object",
-#  "properties": {
-#  "first": {
-#  "type": "string"
-#  },
-#  "last": {
-#  "type": "string"
-#  }
-#  }
-#  }
-#  }
-#  }
-#  }
-#  ```
-#  These will be extracted as `{{ name }}` and `{{ age }}` respectively. To
-#  emphasize, object properties are extracted as direct global variables.
-#  4.3. If you hit example.com and it returns `{"name": {"first": "John", "last":
-#  "Doe"}}`, then you can specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "object",
-#  "properties": {
-#  "name": {
-#  "type": "object",
-#  "properties": {
-#  "first": {
-#  "type": "string"
-#  },
-#  "last": {
-#  "type": "string"
-#  }
-#  }
-#  }
-#  }
-#  }
-#  }
-#  ```
-#  These will be extracted as `{{ name }}`. And, `{{ name.first }}` and `{{
-#  name.last }}` will be accessible.
-#  4.4. If you hit example.com and it returns `["94123", "94124"]`, then you can
-#  specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "array",
-#  "title": "zipCodes",
-#  "items": {
-#  "type": "string"
-#  }
-#  }
-#  }
-#  ```
-#  This will be extracted as `{{ zipCodes }}`. To access the array items, you can
-#  use `{{ zipCodes[0] }}` and `{{ zipCodes[1] }}`.
-#  4.5. If you hit example.com and it returns `[{"name": "John", "age": 30,
-#  "zipCodes": ["94123", "94124"]}, {"name": "Jane", "age": 25, "zipCodes":
-#  ["94125", "94126"]}]`, then you can specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "array",
-#  "title": "people",
-#  "items": {
-#  "type": "object",
-#  "properties": {
-#  "name": {
-#  "type": "string"
-#  },
-#  "age": {
-#  "type": "number"
-#  },
-#  "zipCodes": {
-#  "type": "array",
-#  "items": {
-#  "type": "string"
-#  }
-#  }
-#  }
-#  }
-#  }
-#  }
-#  ```
-#  This will be extracted as `{{ people }}`. To access the array items, you can use
-#  `{{ people[n].name }}`, `{{ people[n].age }}`, `{{ people[n].zipCodes }}`, `{{
-#  people[n].zipCodes[0] }}` and `{{ people[n].zipCodes[1] }}`.
-#  Note: Both `aliases` and `schema` can be used together.
+    # @return [Vapi::VariableExtractionPlan] This is the plan to extract variables from the tool's response. These will be
+    #  accessible during the call and stored in `call.artifact.variableValues` after
+    #  the call.
+    #  Usage:
+    #  1. Use `aliases` to extract variables from the tool's response body. (Most
+    #  common case)
+    #  ```json
+    #  {
+    #  "aliases": [
+    #  {
+    #  "key": "customerName",
+    #  "value": "{{customer.name}}"
+    #  },
+    #  {
+    #  "key": "customerAge",
+    #  "value": "{{customer.age}}"
+    #  }
+    #  ]
+    #  }
+    #  ```
+    #  The tool response body is made available to the liquid template.
+    #  2. Use `aliases` to extract variables from the tool's response body if the
+    #  response is an array.
+    #  ```json
+    #  {
+    #  "aliases": [
+    #  {
+    #  "key": "customerName",
+    #  "value": "{{$[0].name}}"
+    #  },
+    #  {
+    #  "key": "customerAge",
+    #  "value": "{{$[0].age}}"
+    #  }
+    #  ]
+    #  }
+    #  ```
+    #  $ is a shorthand for the tool's response body. `$[0]` is the first item in the
+    #  array. `$[n]` is the nth item in the array. Note, $ is available regardless of
+    #  the response body type (both object and array).
+    #  3. Use `aliases` to extract variables from the tool's response headers.
+    #  ```json
+    #  {
+    #  "aliases": [
+    #  {
+    #  "key": "customerName",
+    #  "value": "{{tool.response.headers.customer-name}}"
+    #  },
+    #  {
+    #  "key": "customerAge",
+    #  "value": "{{tool.response.headers.customer-age}}"
+    #  }
+    #  ]
+    #  }
+    #  ```
+    #  `tool.response` is made available to the liquid template. Particularly, both
+    #  `tool.response.headers` and `tool.response.body` are available. Note,
+    #  `tool.response` is available regardless of the response body type (both object
+    #  and array).
+    #  4. Use `schema` to extract a large portion of the tool's response body.
+    #  4.1. If you hit example.com and it returns `{"name": "John", "age": 30}`, then
+    #  you can specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "object",
+    #  "properties": {
+    #  "name": {
+    #  "type": "string"
+    #  },
+    #  "age": {
+    #  "type": "number"
+    #  }
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
+    #  "Doe"}}`, then you can specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "object",
+    #  "properties": {
+    #  "name": {
+    #  "type": "object",
+    #  "properties": {
+    #  "first": {
+    #  "type": "string"
+    #  },
+    #  "last": {
+    #  "type": "string"
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  These will be extracted as `{{ name }}` and `{{ age }}` respectively. To
+    #  emphasize, object properties are extracted as direct global variables.
+    #  4.3. If you hit example.com and it returns `{"name": {"first": "John", "last":
+    #  "Doe"}}`, then you can specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "object",
+    #  "properties": {
+    #  "name": {
+    #  "type": "object",
+    #  "properties": {
+    #  "first": {
+    #  "type": "string"
+    #  },
+    #  "last": {
+    #  "type": "string"
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  These will be extracted as `{{ name }}`. And, `{{ name.first }}` and `{{
+    #  name.last }}` will be accessible.
+    #  4.4. If you hit example.com and it returns `["94123", "94124"]`, then you can
+    #  specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "array",
+    #  "title": "zipCodes",
+    #  "items": {
+    #  "type": "string"
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  This will be extracted as `{{ zipCodes }}`. To access the array items, you can
+    #  use `{{ zipCodes[0] }}` and `{{ zipCodes[1] }}`.
+    #  4.5. If you hit example.com and it returns `[{"name": "John", "age": 30,
+    #  "zipCodes": ["94123", "94124"]}, {"name": "Jane", "age": 25, "zipCodes":
+    #  ["94125", "94126"]}]`, then you can specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "array",
+    #  "title": "people",
+    #  "items": {
+    #  "type": "object",
+    #  "properties": {
+    #  "name": {
+    #  "type": "string"
+    #  },
+    #  "age": {
+    #  "type": "number"
+    #  },
+    #  "zipCodes": {
+    #  "type": "array",
+    #  "items": {
+    #  "type": "string"
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  This will be extracted as `{{ people }}`. To access the array items, you can use
+    #  `{{ people[n].name }}`, `{{ people[n].age }}`, `{{ people[n].zipCodes }}`, `{{
+    #  people[n].zipCodes[0] }}` and `{{ people[n].zipCodes[1] }}`.
+    #  Note: Both `aliases` and `schema` can be used together.
     attr_reader :variable_extraction_plan
-  # @return [OpenStruct] Additional properties unmapped to the current class definition
+    # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
-  # @return [Object] 
+    # @return [Object]
     attr_reader :_field_set
     protected :_field_set
 
     OMIT = Object.new
 
     # @param messages [Array<Vapi::ApiRequestToolMessagesItem>] These are the messages that will be spoken to the user as the tool is running.
-#  For some tools, this is auto-filled based on special fields like
-#  `tool.destinations`. For others like the function tool, these can be custom
-#  configured.
-    # @param method [Vapi::ApiRequestToolMethod] 
+    #  For some tools, this is auto-filled based on special fields like
+    #  `tool.destinations`. For others like the function tool, these can be custom
+    #  configured.
+    # @param method [Vapi::ApiRequestToolMethod]
     # @param timeout_seconds [Float] This is the timeout in seconds for the request. Defaults to 20 seconds.
-#  @default 20
+    #  @default 20
     # @param id [String] This is the unique identifier for the tool.
     # @param org_id [String] This is the unique identifier for the organization that this tool belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the tool was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the tool was last updated.
     # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
-#  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-#  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-#  provide a custom function definition for advanced use cases.
-#  An example of an advanced use case is if you want to customize the message
-#  that's spoken for `endCall` tool. You can specify a function where it returns an
-#  argument "reason". Then, in `messages` array, you can have many
-#  "request-complete" messages. One of these messages will be triggered if the
-#  `messages[].conditions` matches the "reason" argument.
+    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
+    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
+    #  provide a custom function definition for advanced use cases.
+    #  An example of an advanced use case is if you want to customize the message
+    #  that's spoken for `endCall` tool. You can specify a function where it returns an
+    #  argument "reason". Then, in `messages` array, you can have many
+    #  "request-complete" messages. One of these messages will be triggered if the
+    #  `messages[].conditions` matches the "reason" argument.
     # @param name [String] This is the name of the tool. This will be passed to the model.
-#  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
-#  of 40.
+    #  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
+    #  of 40.
     # @param description [String] This is the description of the tool. This will be passed to the model.
     # @param url [String] This is where the request will be sent.
     # @param body [Vapi::JsonSchema] This is the body of the request.
     # @param headers [Vapi::JsonSchema] These are the headers to send in the request.
     # @param backoff_plan [Vapi::BackoffPlan] This is the backoff plan if the request fails. Defaults to undefined (the
-#  request will not be retried).
-#  @default undefined (the request will not be retried)
+    #  request will not be retried).
+    #  @default undefined (the request will not be retried)
     # @param variable_extraction_plan [Vapi::VariableExtractionPlan] This is the plan to extract variables from the tool's response. These will be
-#  accessible during the call and stored in `call.artifact.variableValues` after
-#  the call.
-#  Usage:
-#  1. Use `aliases` to extract variables from the tool's response body. (Most
-#  common case)
-#  ```json
-#  {
-#  "aliases": [
-#  {
-#  "key": "customerName",
-#  "value": "{{customer.name}}"
-#  },
-#  {
-#  "key": "customerAge",
-#  "value": "{{customer.age}}"
-#  }
-#  ]
-#  }
-#  ```
-#  The tool response body is made available to the liquid template.
-#  2. Use `aliases` to extract variables from the tool's response body if the
-#  response is an array.
-#  ```json
-#  {
-#  "aliases": [
-#  {
-#  "key": "customerName",
-#  "value": "{{$[0].name}}"
-#  },
-#  {
-#  "key": "customerAge",
-#  "value": "{{$[0].age}}"
-#  }
-#  ]
-#  }
-#  ```
-#  $ is a shorthand for the tool's response body. `$[0]` is the first item in the
-#  array. `$[n]` is the nth item in the array. Note, $ is available regardless of
-#  the response body type (both object and array).
-#  3. Use `aliases` to extract variables from the tool's response headers.
-#  ```json
-#  {
-#  "aliases": [
-#  {
-#  "key": "customerName",
-#  "value": "{{tool.response.headers.customer-name}}"
-#  },
-#  {
-#  "key": "customerAge",
-#  "value": "{{tool.response.headers.customer-age}}"
-#  }
-#  ]
-#  }
-#  ```
-#  `tool.response` is made available to the liquid template. Particularly, both
-#  `tool.response.headers` and `tool.response.body` are available. Note,
-#  `tool.response` is available regardless of the response body type (both object
-#  and array).
-#  4. Use `schema` to extract a large portion of the tool's response body.
-#  4.1. If you hit example.com and it returns `{"name": "John", "age": 30}`, then
-#  you can specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "object",
-#  "properties": {
-#  "name": {
-#  "type": "string"
-#  },
-#  "age": {
-#  "type": "number"
-#  }
-#  }
-#  }
-#  }
-#  ```
-#  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
-#  "Doe"}}`, then you can specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "object",
-#  "properties": {
-#  "name": {
-#  "type": "object",
-#  "properties": {
-#  "first": {
-#  "type": "string"
-#  },
-#  "last": {
-#  "type": "string"
-#  }
-#  }
-#  }
-#  }
-#  }
-#  }
-#  ```
-#  These will be extracted as `{{ name }}` and `{{ age }}` respectively. To
-#  emphasize, object properties are extracted as direct global variables.
-#  4.3. If you hit example.com and it returns `{"name": {"first": "John", "last":
-#  "Doe"}}`, then you can specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "object",
-#  "properties": {
-#  "name": {
-#  "type": "object",
-#  "properties": {
-#  "first": {
-#  "type": "string"
-#  },
-#  "last": {
-#  "type": "string"
-#  }
-#  }
-#  }
-#  }
-#  }
-#  }
-#  ```
-#  These will be extracted as `{{ name }}`. And, `{{ name.first }}` and `{{
-#  name.last }}` will be accessible.
-#  4.4. If you hit example.com and it returns `["94123", "94124"]`, then you can
-#  specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "array",
-#  "title": "zipCodes",
-#  "items": {
-#  "type": "string"
-#  }
-#  }
-#  }
-#  ```
-#  This will be extracted as `{{ zipCodes }}`. To access the array items, you can
-#  use `{{ zipCodes[0] }}` and `{{ zipCodes[1] }}`.
-#  4.5. If you hit example.com and it returns `[{"name": "John", "age": 30,
-#  "zipCodes": ["94123", "94124"]}, {"name": "Jane", "age": 25, "zipCodes":
-#  ["94125", "94126"]}]`, then you can specify the schema as:
-#  ```json
-#  {
-#  "schema": {
-#  "type": "array",
-#  "title": "people",
-#  "items": {
-#  "type": "object",
-#  "properties": {
-#  "name": {
-#  "type": "string"
-#  },
-#  "age": {
-#  "type": "number"
-#  },
-#  "zipCodes": {
-#  "type": "array",
-#  "items": {
-#  "type": "string"
-#  }
-#  }
-#  }
-#  }
-#  }
-#  }
-#  ```
-#  This will be extracted as `{{ people }}`. To access the array items, you can use
-#  `{{ people[n].name }}`, `{{ people[n].age }}`, `{{ people[n].zipCodes }}`, `{{
-#  people[n].zipCodes[0] }}` and `{{ people[n].zipCodes[1] }}`.
-#  Note: Both `aliases` and `schema` can be used together.
+    #  accessible during the call and stored in `call.artifact.variableValues` after
+    #  the call.
+    #  Usage:
+    #  1. Use `aliases` to extract variables from the tool's response body. (Most
+    #  common case)
+    #  ```json
+    #  {
+    #  "aliases": [
+    #  {
+    #  "key": "customerName",
+    #  "value": "{{customer.name}}"
+    #  },
+    #  {
+    #  "key": "customerAge",
+    #  "value": "{{customer.age}}"
+    #  }
+    #  ]
+    #  }
+    #  ```
+    #  The tool response body is made available to the liquid template.
+    #  2. Use `aliases` to extract variables from the tool's response body if the
+    #  response is an array.
+    #  ```json
+    #  {
+    #  "aliases": [
+    #  {
+    #  "key": "customerName",
+    #  "value": "{{$[0].name}}"
+    #  },
+    #  {
+    #  "key": "customerAge",
+    #  "value": "{{$[0].age}}"
+    #  }
+    #  ]
+    #  }
+    #  ```
+    #  $ is a shorthand for the tool's response body. `$[0]` is the first item in the
+    #  array. `$[n]` is the nth item in the array. Note, $ is available regardless of
+    #  the response body type (both object and array).
+    #  3. Use `aliases` to extract variables from the tool's response headers.
+    #  ```json
+    #  {
+    #  "aliases": [
+    #  {
+    #  "key": "customerName",
+    #  "value": "{{tool.response.headers.customer-name}}"
+    #  },
+    #  {
+    #  "key": "customerAge",
+    #  "value": "{{tool.response.headers.customer-age}}"
+    #  }
+    #  ]
+    #  }
+    #  ```
+    #  `tool.response` is made available to the liquid template. Particularly, both
+    #  `tool.response.headers` and `tool.response.body` are available. Note,
+    #  `tool.response` is available regardless of the response body type (both object
+    #  and array).
+    #  4. Use `schema` to extract a large portion of the tool's response body.
+    #  4.1. If you hit example.com and it returns `{"name": "John", "age": 30}`, then
+    #  you can specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "object",
+    #  "properties": {
+    #  "name": {
+    #  "type": "string"
+    #  },
+    #  "age": {
+    #  "type": "number"
+    #  }
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
+    #  "Doe"}}`, then you can specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "object",
+    #  "properties": {
+    #  "name": {
+    #  "type": "object",
+    #  "properties": {
+    #  "first": {
+    #  "type": "string"
+    #  },
+    #  "last": {
+    #  "type": "string"
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  These will be extracted as `{{ name }}` and `{{ age }}` respectively. To
+    #  emphasize, object properties are extracted as direct global variables.
+    #  4.3. If you hit example.com and it returns `{"name": {"first": "John", "last":
+    #  "Doe"}}`, then you can specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "object",
+    #  "properties": {
+    #  "name": {
+    #  "type": "object",
+    #  "properties": {
+    #  "first": {
+    #  "type": "string"
+    #  },
+    #  "last": {
+    #  "type": "string"
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  These will be extracted as `{{ name }}`. And, `{{ name.first }}` and `{{
+    #  name.last }}` will be accessible.
+    #  4.4. If you hit example.com and it returns `["94123", "94124"]`, then you can
+    #  specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "array",
+    #  "title": "zipCodes",
+    #  "items": {
+    #  "type": "string"
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  This will be extracted as `{{ zipCodes }}`. To access the array items, you can
+    #  use `{{ zipCodes[0] }}` and `{{ zipCodes[1] }}`.
+    #  4.5. If you hit example.com and it returns `[{"name": "John", "age": 30,
+    #  "zipCodes": ["94123", "94124"]}, {"name": "Jane", "age": 25, "zipCodes":
+    #  ["94125", "94126"]}]`, then you can specify the schema as:
+    #  ```json
+    #  {
+    #  "schema": {
+    #  "type": "array",
+    #  "title": "people",
+    #  "items": {
+    #  "type": "object",
+    #  "properties": {
+    #  "name": {
+    #  "type": "string"
+    #  },
+    #  "age": {
+    #  "type": "number"
+    #  },
+    #  "zipCodes": {
+    #  "type": "array",
+    #  "items": {
+    #  "type": "string"
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  }
+    #  ```
+    #  This will be extracted as `{{ people }}`. To access the array items, you can use
+    #  `{{ people[n].name }}`, `{{ people[n].age }}`, `{{ people[n].zipCodes }}`, `{{
+    #  people[n].zipCodes[0] }}` and `{{ people[n].zipCodes[1] }}`.
+    #  Note: Both `aliases` and `schema` can be used together.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ApiRequestTool]
-    def initialize(messages: OMIT, method:, timeout_seconds: OMIT, id:, org_id:, created_at:, updated_at:, function: OMIT, name: OMIT, description: OMIT, url:, body: OMIT, headers: OMIT, backoff_plan: OMIT, variable_extraction_plan: OMIT, additional_properties: nil)
+    def initialize(method:, id:, org_id:, created_at:, updated_at:, url:, messages: OMIT, timeout_seconds: OMIT,
+                   function: OMIT, name: OMIT, description: OMIT, body: OMIT, headers: OMIT, backoff_plan: OMIT, variable_extraction_plan: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @method = method
       @timeout_seconds = timeout_seconds if timeout_seconds != OMIT
@@ -458,67 +459,76 @@ module Vapi
       @backoff_plan = backoff_plan if backoff_plan != OMIT
       @variable_extraction_plan = variable_extraction_plan if variable_extraction_plan != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "messages": messages, "method": method, "timeoutSeconds": timeout_seconds, "id": id, "orgId": org_id, "createdAt": created_at, "updatedAt": updated_at, "function": function, "name": name, "description": description, "url": url, "body": body, "headers": headers, "backoffPlan": backoff_plan, "variableExtractionPlan": variable_extraction_plan }.reject do | _k, v |
-  v == OMIT
-end
+      @_field_set = {
+        "messages": messages,
+        "method": method,
+        "timeoutSeconds": timeout_seconds,
+        "id": id,
+        "orgId": org_id,
+        "createdAt": created_at,
+        "updatedAt": updated_at,
+        "function": function,
+        "name": name,
+        "description": description,
+        "url": url,
+        "body": body,
+        "headers": headers,
+        "backoffPlan": backoff_plan,
+        "variableExtractionPlan": variable_extraction_plan
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
-# Deserialize a JSON object to an instance of ApiRequestTool
+
+    # Deserialize a JSON object to an instance of ApiRequestTool
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::ApiRequestTool]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
-      messages = parsed_json["messages"]&.map do | item |
-  item = item.to_json
-  Vapi::ApiRequestToolMessagesItem.from_json(json_object: item)
-end
+      messages = parsed_json["messages"]&.map do |item|
+        item = item.to_json
+        Vapi::ApiRequestToolMessagesItem.from_json(json_object: item)
+      end
       method = parsed_json["method"]
       timeout_seconds = parsed_json["timeoutSeconds"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
-      created_at = unless parsed_json["createdAt"].nil?
-  DateTime.parse(parsed_json["createdAt"])
-else
-  nil
-end
-      updated_at = unless parsed_json["updatedAt"].nil?
-  DateTime.parse(parsed_json["updatedAt"])
-else
-  nil
-end
-      unless parsed_json["function"].nil?
+      created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
+      updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
+      if parsed_json["function"].nil?
+        function = nil
+      else
         function = parsed_json["function"].to_json
         function = Vapi::OpenAiFunction.from_json(json_object: function)
-      else
-        function = nil
       end
       name = parsed_json["name"]
       description = parsed_json["description"]
       url = parsed_json["url"]
-      unless parsed_json["body"].nil?
+      if parsed_json["body"].nil?
+        body = nil
+      else
         body = parsed_json["body"].to_json
         body = Vapi::JsonSchema.from_json(json_object: body)
-      else
-        body = nil
       end
-      unless parsed_json["headers"].nil?
+      if parsed_json["headers"].nil?
+        headers = nil
+      else
         headers = parsed_json["headers"].to_json
         headers = Vapi::JsonSchema.from_json(json_object: headers)
-      else
-        headers = nil
       end
-      unless parsed_json["backoffPlan"].nil?
+      if parsed_json["backoffPlan"].nil?
+        backoff_plan = nil
+      else
         backoff_plan = parsed_json["backoffPlan"].to_json
         backoff_plan = Vapi::BackoffPlan.from_json(json_object: backoff_plan)
-      else
-        backoff_plan = nil
       end
-      unless parsed_json["variableExtractionPlan"].nil?
+      if parsed_json["variableExtractionPlan"].nil?
+        variable_extraction_plan = nil
+      else
         variable_extraction_plan = parsed_json["variableExtractionPlan"].to_json
         variable_extraction_plan = Vapi::VariableExtractionPlan.from_json(json_object: variable_extraction_plan)
-      else
-        variable_extraction_plan = nil
       end
       new(
         messages: messages,
@@ -539,17 +549,19 @@ end
         additional_properties: struct
       )
     end
-# Serialize an instance of ApiRequestTool to a JSON object
+
+    # Serialize an instance of ApiRequestTool to a JSON object
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       @_field_set&.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")

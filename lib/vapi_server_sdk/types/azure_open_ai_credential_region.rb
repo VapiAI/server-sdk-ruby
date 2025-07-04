@@ -2,7 +2,6 @@
 
 module Vapi
   class AzureOpenAiCredentialRegion
-
     AUSTRALIA = "australia"
     CANADAEAST = "canadaeast"
     CANADACENTRAL = "canadacentral"
@@ -21,6 +20,5 @@ module Vapi
     UK = "uk"
     WESTUS = "westus"
     WESTUS_3 = "westus3"
-
   end
 end

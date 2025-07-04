@@ -1,45 +1,48 @@
 # frozen_string_literal: true
+
 require "json"
 require_relative "conversation_node"
 require_relative "tool_node"
 
 module Vapi
   class WorkflowUserEditableNodesItem
-  # @return [Object] 
+    # @return [Object]
     attr_reader :member
-  # @return [String] 
+    # @return [String]
     attr_reader :discriminant
 
     private_class_method :new
     alias kind_of? is_a?
 
-    # @param member [Object] 
-    # @param discriminant [String] 
+    # @param member [Object]
+    # @param discriminant [String]
     # @return [Vapi::WorkflowUserEditableNodesItem]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
-# Deserialize a JSON object to an instance of WorkflowUserEditableNodesItem
+
+    # Deserialize a JSON object to an instance of WorkflowUserEditableNodesItem
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::WorkflowUserEditableNodesItem]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      case struct.type
-      when "conversation"
-        member = Vapi::ConversationNode.from_json(json_object: json_object)
-      when "tool"
-        member = Vapi::ToolNode.from_json(json_object: json_object)
-      else
-        member = Vapi::ConversationNode.from_json(json_object: json_object)
-      end
+      member = case struct.type
+               when "conversation"
+                 Vapi::ConversationNode.from_json(json_object: json_object)
+               when "tool"
+                 Vapi::ToolNode.from_json(json_object: json_object)
+               else
+                 Vapi::ConversationNode.from_json(json_object: json_object)
+               end
       new(member: member, discriminant: struct.type)
     end
-# For Union Types, to_json functionality is delegated to the wrapped member.
+
+    # For Union Types, to_json functionality is delegated to the wrapped member.
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       case @discriminant
       when "conversation"
         { **@member.to_json, type: @discriminant }.to_json
@@ -50,11 +53,12 @@ module Vapi
       end
       @member.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.type
@@ -66,19 +70,22 @@ module Vapi
         raise("Passed value matched no type within the union, validation failed.")
       end
     end
-# For Union Types, is_a? functionality is delegated to the wrapped member.
+
+    # For Union Types, is_a? functionality is delegated to the wrapped member.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Boolean]
     def is_a?(obj)
       @member.is_a?(obj)
     end
-    # @param member [Vapi::ConversationNode] 
+
+    # @param member [Vapi::ConversationNode]
     # @return [Vapi::WorkflowUserEditableNodesItem]
     def self.conversation(member:)
       new(member: member, discriminant: "conversation")
     end
-    # @param member [Vapi::ToolNode] 
+
+    # @param member [Vapi::ToolNode]
     # @return [Vapi::WorkflowUserEditableNodesItem]
     def self.tool(member:)
       new(member: member, discriminant: "tool")

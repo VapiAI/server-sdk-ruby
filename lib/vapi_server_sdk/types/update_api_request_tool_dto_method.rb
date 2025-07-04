@@ -2,9 +2,7 @@
 
 module Vapi
   class UpdateApiRequestToolDtoMethod
-
     POST = "POST"
     GET = "GET"
-
   end
 end

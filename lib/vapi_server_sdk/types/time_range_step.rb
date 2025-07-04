@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the time step for aggregations.
-#  If not provided, defaults to returning for the entire time range.
+  # This is the time step for aggregations.
+  #  If not provided, defaults to returning for the entire time range.
   class TimeRangeStep
-
     SECOND = "second"
     MINUTE = "minute"
     HOUR = "hour"
@@ -16,6 +15,5 @@ module Vapi
     DECADE = "decade"
     CENTURY = "century"
     MILLENNIUM = "millennium"
-
   end
 end

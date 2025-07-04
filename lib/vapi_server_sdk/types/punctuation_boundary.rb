@@ -2,7 +2,6 @@
 
 module Vapi
   class PunctuationBoundary
-
     CIRCLE = "。"
     FULL_WIDTH_COMMA = "，"
     DOT = "."
@@ -18,6 +17,5 @@ module Vapi
     DOUBLE_PIPE = "||"
     HALF_WIDTH_COMMA = ","
     COLON = ":"
-
   end
 end

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the reason the call ended. This is only sent if the status is "ended".
+  # This is the reason the call ended. This is only sent if the status is "ended".
   class ServerMessageStatusUpdateEndedReason
-
     CALL_START_ERROR_NEITHER_ASSISTANT_NOR_SERVER_SET = "call-start-error-neither-assistant-nor-server-set"
     ASSISTANT_REQUEST_FAILED = "assistant-request-failed"
     ASSISTANT_REQUEST_RETURNED_ERROR = "assistant-request-returned-error"
@@ -515,6 +514,5 @@ module Vapi
     TWILIO_REPORTED_CUSTOMER_MISDIALED = "twilio-reported-customer-misdialed"
     VONAGE_REJECTED = "vonage-rejected"
     VOICEMAIL = "voicemail"
-
   end
 end

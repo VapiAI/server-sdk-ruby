@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the model that will be used for the transcription.
+  # This is the model that will be used for the transcription.
   class GoogleTranscriberModel
-
     GEMINI_25_PRO = "gemini-2.5-pro"
     GEMINI_25_FLASH = "gemini-2.5-flash"
     GEMINI_25_FLASH_LITE = "gemini-2.5-flash-lite"
@@ -22,6 +21,5 @@ module Vapi
     GEMINI_15_PRO = "gemini-1.5-pro"
     GEMINI_15_PRO_002 = "gemini-1.5-pro-002"
     GEMINI_10_PRO = "gemini-1.0-pro"
-
   end
 end

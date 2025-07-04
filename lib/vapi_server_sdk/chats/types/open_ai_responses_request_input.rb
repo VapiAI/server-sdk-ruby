@@ -1,50 +1,46 @@
 # frozen_string_literal: true
+
 require "json"
 
 module Vapi
-  module Chats
-# This is the input text for the chat.
-#  Can be a string or an array of chat messages.
-#  This field is REQUIRED for chat creation.
+  class Chats
+    # This is the input text for the chat.
+    #  Can be a string or an array of chat messages.
+    #  This field is REQUIRED for chat creation.
     class OpenAiResponsesRequestInput
-
-
-# Deserialize a JSON object to an instance of OpenAiResponsesRequestInput
+      # Deserialize a JSON object to an instance of OpenAiResponsesRequestInput
       #
-      # @param json_object [String] 
+      # @param json_object [String]
       # @return [Vapi::Chats::OpenAiResponsesRequestInput]
       def self.from_json(json_object:)
         struct = JSON.parse(json_object, object_class: OpenStruct)
         begin
           struct.is_a?(String) != false || raise("Passed value for field struct is not the expected type, validation failed.")
-          unless struct.nil?
-  return struct
-else
-  return nil
-end
+          return struct unless struct.nil?
+
+          return nil
         rescue StandardError
           # noop
         end
         begin
           struct.is_a?(Array) != false || raise("Passed value for field struct is not the expected type, validation failed.")
-          unless struct.nil?
-  return struct&.map do | item |
-  item = item.to_json
-  Vapi::Chats::OpenAiResponsesRequestInputItem.from_json(json_object: item)
-end
-else
-  return nil
-end
+          return nil if struct.nil?
+
+          return struct&.map do |item|
+            item = item.to_json
+            Vapi::Chats::OpenAiResponsesRequestInputItem.from_json(json_object: item)
+          end
         rescue StandardError
           # noop
         end
- return struct
+        struct
       end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+      # Leveraged for Union-type generation, validate_raw attempts to parse the given
+      #  hash and check each fields type against the current object's property
+      #  definitions.
       #
-      # @param obj [Object] 
+      # @param obj [Object]
       # @return [Void]
       def self.validate_raw(obj:)
         begin

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "json"
 require_relative "azure_voice"
 require_relative "cartesia_voice"
@@ -18,71 +19,73 @@ require_relative "sesame_voice"
 require_relative "inworld_voice"
 
 module Vapi
-# These are the options for the assistant's voice.
+  # These are the options for the assistant's voice.
   class AssistantOverridesVoice
-  # @return [Object] 
+    # @return [Object]
     attr_reader :member
-  # @return [String] 
+    # @return [String]
     attr_reader :discriminant
 
     private_class_method :new
     alias kind_of? is_a?
 
-    # @param member [Object] 
-    # @param discriminant [String] 
+    # @param member [Object]
+    # @param discriminant [String]
     # @return [Vapi::AssistantOverridesVoice]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
-# Deserialize a JSON object to an instance of AssistantOverridesVoice
+
+    # Deserialize a JSON object to an instance of AssistantOverridesVoice
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::AssistantOverridesVoice]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      case struct.provider
-      when "azure"
-        member = Vapi::AzureVoice.from_json(json_object: json_object)
-      when "cartesia"
-        member = Vapi::CartesiaVoice.from_json(json_object: json_object)
-      when "custom-voice"
-        member = Vapi::CustomVoice.from_json(json_object: json_object)
-      when "deepgram"
-        member = Vapi::DeepgramVoice.from_json(json_object: json_object)
-      when "11labs"
-        member = Vapi::ElevenLabsVoice.from_json(json_object: json_object)
-      when "hume"
-        member = Vapi::HumeVoice.from_json(json_object: json_object)
-      when "lmnt"
-        member = Vapi::LmntVoice.from_json(json_object: json_object)
-      when "neuphonic"
-        member = Vapi::NeuphonicVoice.from_json(json_object: json_object)
-      when "openai"
-        member = Vapi::OpenAiVoice.from_json(json_object: json_object)
-      when "playht"
-        member = Vapi::PlayHtVoice.from_json(json_object: json_object)
-      when "rime-ai"
-        member = Vapi::RimeAiVoice.from_json(json_object: json_object)
-      when "smallest-ai"
-        member = Vapi::SmallestAiVoice.from_json(json_object: json_object)
-      when "tavus"
-        member = Vapi::TavusVoice.from_json(json_object: json_object)
-      when "vapi"
-        member = Vapi::VapiVoice.from_json(json_object: json_object)
-      when "sesame"
-        member = Vapi::SesameVoice.from_json(json_object: json_object)
-      when "inworld"
-        member = Vapi::InworldVoice.from_json(json_object: json_object)
-      else
-        member = Vapi::AzureVoice.from_json(json_object: json_object)
-      end
+      member = case struct.provider
+               when "azure"
+                 Vapi::AzureVoice.from_json(json_object: json_object)
+               when "cartesia"
+                 Vapi::CartesiaVoice.from_json(json_object: json_object)
+               when "custom-voice"
+                 Vapi::CustomVoice.from_json(json_object: json_object)
+               when "deepgram"
+                 Vapi::DeepgramVoice.from_json(json_object: json_object)
+               when "11labs"
+                 Vapi::ElevenLabsVoice.from_json(json_object: json_object)
+               when "hume"
+                 Vapi::HumeVoice.from_json(json_object: json_object)
+               when "lmnt"
+                 Vapi::LmntVoice.from_json(json_object: json_object)
+               when "neuphonic"
+                 Vapi::NeuphonicVoice.from_json(json_object: json_object)
+               when "openai"
+                 Vapi::OpenAiVoice.from_json(json_object: json_object)
+               when "playht"
+                 Vapi::PlayHtVoice.from_json(json_object: json_object)
+               when "rime-ai"
+                 Vapi::RimeAiVoice.from_json(json_object: json_object)
+               when "smallest-ai"
+                 Vapi::SmallestAiVoice.from_json(json_object: json_object)
+               when "tavus"
+                 Vapi::TavusVoice.from_json(json_object: json_object)
+               when "vapi"
+                 Vapi::VapiVoice.from_json(json_object: json_object)
+               when "sesame"
+                 Vapi::SesameVoice.from_json(json_object: json_object)
+               when "inworld"
+                 Vapi::InworldVoice.from_json(json_object: json_object)
+               else
+                 Vapi::AzureVoice.from_json(json_object: json_object)
+               end
       new(member: member, discriminant: struct.provider)
     end
-# For Union Types, to_json functionality is delegated to the wrapped member.
+
+    # For Union Types, to_json functionality is delegated to the wrapped member.
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       case @discriminant
       when "azure"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -121,11 +124,12 @@ module Vapi
       end
       @member.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.provider
@@ -165,89 +169,106 @@ module Vapi
         raise("Passed value matched no type within the union, validation failed.")
       end
     end
-# For Union Types, is_a? functionality is delegated to the wrapped member.
+
+    # For Union Types, is_a? functionality is delegated to the wrapped member.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Boolean]
     def is_a?(obj)
       @member.is_a?(obj)
     end
-    # @param member [Vapi::AzureVoice] 
+
+    # @param member [Vapi::AzureVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.azure(member:)
       new(member: member, discriminant: "azure")
     end
-    # @param member [Vapi::CartesiaVoice] 
+
+    # @param member [Vapi::CartesiaVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.cartesia(member:)
       new(member: member, discriminant: "cartesia")
     end
-    # @param member [Vapi::CustomVoice] 
+
+    # @param member [Vapi::CustomVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.custom_voice(member:)
       new(member: member, discriminant: "custom-voice")
     end
-    # @param member [Vapi::DeepgramVoice] 
+
+    # @param member [Vapi::DeepgramVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.deepgram(member:)
       new(member: member, discriminant: "deepgram")
     end
-    # @param member [Vapi::ElevenLabsVoice] 
+
+    # @param member [Vapi::ElevenLabsVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self._11_labs(member:)
       new(member: member, discriminant: "11labs")
     end
-    # @param member [Vapi::HumeVoice] 
+
+    # @param member [Vapi::HumeVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.hume(member:)
       new(member: member, discriminant: "hume")
     end
-    # @param member [Vapi::LmntVoice] 
+
+    # @param member [Vapi::LmntVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.lmnt(member:)
       new(member: member, discriminant: "lmnt")
     end
-    # @param member [Vapi::NeuphonicVoice] 
+
+    # @param member [Vapi::NeuphonicVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.neuphonic(member:)
       new(member: member, discriminant: "neuphonic")
     end
-    # @param member [Vapi::OpenAiVoice] 
+
+    # @param member [Vapi::OpenAiVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.openai(member:)
       new(member: member, discriminant: "openai")
     end
-    # @param member [Vapi::PlayHtVoice] 
+
+    # @param member [Vapi::PlayHtVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.playht(member:)
       new(member: member, discriminant: "playht")
     end
-    # @param member [Vapi::RimeAiVoice] 
+
+    # @param member [Vapi::RimeAiVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.rime_ai(member:)
       new(member: member, discriminant: "rime-ai")
     end
-    # @param member [Vapi::SmallestAiVoice] 
+
+    # @param member [Vapi::SmallestAiVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.smallest_ai(member:)
       new(member: member, discriminant: "smallest-ai")
     end
-    # @param member [Vapi::TavusVoice] 
+
+    # @param member [Vapi::TavusVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.tavus(member:)
       new(member: member, discriminant: "tavus")
     end
-    # @param member [Vapi::VapiVoice] 
+
+    # @param member [Vapi::VapiVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.vapi(member:)
       new(member: member, discriminant: "vapi")
     end
-    # @param member [Vapi::SesameVoice] 
+
+    # @param member [Vapi::SesameVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.sesame(member:)
       new(member: member, discriminant: "sesame")
     end
-    # @param member [Vapi::InworldVoice] 
+
+    # @param member [Vapi::InworldVoice]
     # @return [Vapi::AssistantOverridesVoice]
     def self.inworld(member:)
       new(member: member, discriminant: "inworld")

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "json"
 require_relative "../../types/create_api_request_tool_dto"
 require_relative "../../types/create_dtmf_tool_dto"
@@ -24,83 +25,85 @@ require_relative "../../types/create_go_high_level_contact_create_tool_dto"
 require_relative "../../types/create_go_high_level_contact_get_tool_dto"
 
 module Vapi
-  module Tools
+  class Tools
     class ToolsCreateRequest
-    # @return [Object] 
+      # @return [Object]
       attr_reader :member
-    # @return [String] 
+      # @return [String]
       attr_reader :discriminant
 
       private_class_method :new
       alias kind_of? is_a?
 
-      # @param member [Object] 
-      # @param discriminant [String] 
+      # @param member [Object]
+      # @param discriminant [String]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def initialize(member:, discriminant:)
         @member = member
         @discriminant = discriminant
       end
-# Deserialize a JSON object to an instance of ToolsCreateRequest
+
+      # Deserialize a JSON object to an instance of ToolsCreateRequest
       #
-      # @param json_object [String] 
+      # @param json_object [String]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.from_json(json_object:)
         struct = JSON.parse(json_object, object_class: OpenStruct)
-        case struct.type
-        when "apiRequest"
-          member = Vapi::CreateApiRequestToolDto.from_json(json_object: json_object)
-        when "dtmf"
-          member = Vapi::CreateDtmfToolDto.from_json(json_object: json_object)
-        when "endCall"
-          member = Vapi::CreateEndCallToolDto.from_json(json_object: json_object)
-        when "function"
-          member = Vapi::CreateFunctionToolDto.from_json(json_object: json_object)
-        when "ghl"
-          member = Vapi::CreateGhlToolDto.from_json(json_object: json_object)
-        when "make"
-          member = Vapi::CreateMakeToolDto.from_json(json_object: json_object)
-        when "transferCall"
-          member = Vapi::CreateTransferCallToolDto.from_json(json_object: json_object)
-        when "output"
-          member = Vapi::CreateOutputToolDto.from_json(json_object: json_object)
-        when "bash"
-          member = Vapi::CreateBashToolDto.from_json(json_object: json_object)
-        when "computer"
-          member = Vapi::CreateComputerToolDto.from_json(json_object: json_object)
-        when "textEditor"
-          member = Vapi::CreateTextEditorToolDto.from_json(json_object: json_object)
-        when "query"
-          member = Vapi::CreateQueryToolDto.from_json(json_object: json_object)
-        when "google.calendar.event.create"
-          member = Vapi::CreateGoogleCalendarCreateEventToolDto.from_json(json_object: json_object)
-        when "google.sheets.row.append"
-          member = Vapi::CreateGoogleSheetsRowAppendToolDto.from_json(json_object: json_object)
-        when "google.calendar.availability.check"
-          member = Vapi::CreateGoogleCalendarCheckAvailabilityToolDto.from_json(json_object: json_object)
-        when "slack.message.send"
-          member = Vapi::CreateSlackSendMessageToolDto.from_json(json_object: json_object)
-        when "sms"
-          member = Vapi::CreateSmsToolDto.from_json(json_object: json_object)
-        when "mcp"
-          member = Vapi::CreateMcpToolDto.from_json(json_object: json_object)
-        when "gohighlevel.calendar.availability.check"
-          member = Vapi::CreateGoHighLevelCalendarAvailabilityToolDto.from_json(json_object: json_object)
-        when "gohighlevel.calendar.event.create"
-          member = Vapi::CreateGoHighLevelCalendarEventCreateToolDto.from_json(json_object: json_object)
-        when "gohighlevel.contact.create"
-          member = Vapi::CreateGoHighLevelContactCreateToolDto.from_json(json_object: json_object)
-        when "gohighlevel.contact.get"
-          member = Vapi::CreateGoHighLevelContactGetToolDto.from_json(json_object: json_object)
-        else
-          member = Vapi::CreateApiRequestToolDto.from_json(json_object: json_object)
-        end
+        member = case struct.type
+                 when "apiRequest"
+                   Vapi::CreateApiRequestToolDto.from_json(json_object: json_object)
+                 when "dtmf"
+                   Vapi::CreateDtmfToolDto.from_json(json_object: json_object)
+                 when "endCall"
+                   Vapi::CreateEndCallToolDto.from_json(json_object: json_object)
+                 when "function"
+                   Vapi::CreateFunctionToolDto.from_json(json_object: json_object)
+                 when "ghl"
+                   Vapi::CreateGhlToolDto.from_json(json_object: json_object)
+                 when "make"
+                   Vapi::CreateMakeToolDto.from_json(json_object: json_object)
+                 when "transferCall"
+                   Vapi::CreateTransferCallToolDto.from_json(json_object: json_object)
+                 when "output"
+                   Vapi::CreateOutputToolDto.from_json(json_object: json_object)
+                 when "bash"
+                   Vapi::CreateBashToolDto.from_json(json_object: json_object)
+                 when "computer"
+                   Vapi::CreateComputerToolDto.from_json(json_object: json_object)
+                 when "textEditor"
+                   Vapi::CreateTextEditorToolDto.from_json(json_object: json_object)
+                 when "query"
+                   Vapi::CreateQueryToolDto.from_json(json_object: json_object)
+                 when "google.calendar.event.create"
+                   Vapi::CreateGoogleCalendarCreateEventToolDto.from_json(json_object: json_object)
+                 when "google.sheets.row.append"
+                   Vapi::CreateGoogleSheetsRowAppendToolDto.from_json(json_object: json_object)
+                 when "google.calendar.availability.check"
+                   Vapi::CreateGoogleCalendarCheckAvailabilityToolDto.from_json(json_object: json_object)
+                 when "slack.message.send"
+                   Vapi::CreateSlackSendMessageToolDto.from_json(json_object: json_object)
+                 when "sms"
+                   Vapi::CreateSmsToolDto.from_json(json_object: json_object)
+                 when "mcp"
+                   Vapi::CreateMcpToolDto.from_json(json_object: json_object)
+                 when "gohighlevel.calendar.availability.check"
+                   Vapi::CreateGoHighLevelCalendarAvailabilityToolDto.from_json(json_object: json_object)
+                 when "gohighlevel.calendar.event.create"
+                   Vapi::CreateGoHighLevelCalendarEventCreateToolDto.from_json(json_object: json_object)
+                 when "gohighlevel.contact.create"
+                   Vapi::CreateGoHighLevelContactCreateToolDto.from_json(json_object: json_object)
+                 when "gohighlevel.contact.get"
+                   Vapi::CreateGoHighLevelContactGetToolDto.from_json(json_object: json_object)
+                 else
+                   Vapi::CreateApiRequestToolDto.from_json(json_object: json_object)
+                 end
         new(member: member, discriminant: struct.type)
       end
-# For Union Types, to_json functionality is delegated to the wrapped member.
+
+      # For Union Types, to_json functionality is delegated to the wrapped member.
       #
       # @return [String]
-      def to_json
+      def to_json(*_args)
         case @discriminant
         when "apiRequest"
           { **@member.to_json, type: @discriminant }.to_json
@@ -151,11 +154,12 @@ module Vapi
         end
         @member.to_json
       end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+      # Leveraged for Union-type generation, validate_raw attempts to parse the given
+      #  hash and check each fields type against the current object's property
+      #  definitions.
       #
-      # @param obj [Object] 
+      # @param obj [Object]
       # @return [Void]
       def self.validate_raw(obj:)
         case obj.type
@@ -207,119 +211,142 @@ module Vapi
           raise("Passed value matched no type within the union, validation failed.")
         end
       end
-# For Union Types, is_a? functionality is delegated to the wrapped member.
+
+      # For Union Types, is_a? functionality is delegated to the wrapped member.
       #
-      # @param obj [Object] 
+      # @param obj [Object]
       # @return [Boolean]
       def is_a?(obj)
         @member.is_a?(obj)
       end
-      # @param member [Vapi::CreateApiRequestToolDto] 
+
+      # @param member [Vapi::CreateApiRequestToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.api_request(member:)
         new(member: member, discriminant: "apiRequest")
       end
-      # @param member [Vapi::CreateDtmfToolDto] 
+
+      # @param member [Vapi::CreateDtmfToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.dtmf(member:)
         new(member: member, discriminant: "dtmf")
       end
-      # @param member [Vapi::CreateEndCallToolDto] 
+
+      # @param member [Vapi::CreateEndCallToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.end_call(member:)
         new(member: member, discriminant: "endCall")
       end
-      # @param member [Vapi::CreateFunctionToolDto] 
+
+      # @param member [Vapi::CreateFunctionToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.function(member:)
         new(member: member, discriminant: "function")
       end
-      # @param member [Vapi::CreateGhlToolDto] 
+
+      # @param member [Vapi::CreateGhlToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.ghl(member:)
         new(member: member, discriminant: "ghl")
       end
-      # @param member [Vapi::CreateMakeToolDto] 
+
+      # @param member [Vapi::CreateMakeToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.make(member:)
         new(member: member, discriminant: "make")
       end
-      # @param member [Vapi::CreateTransferCallToolDto] 
+
+      # @param member [Vapi::CreateTransferCallToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.transfer_call(member:)
         new(member: member, discriminant: "transferCall")
       end
-      # @param member [Vapi::CreateOutputToolDto] 
+
+      # @param member [Vapi::CreateOutputToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.output(member:)
         new(member: member, discriminant: "output")
       end
-      # @param member [Vapi::CreateBashToolDto] 
+
+      # @param member [Vapi::CreateBashToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.bash(member:)
         new(member: member, discriminant: "bash")
       end
-      # @param member [Vapi::CreateComputerToolDto] 
+
+      # @param member [Vapi::CreateComputerToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.computer(member:)
         new(member: member, discriminant: "computer")
       end
-      # @param member [Vapi::CreateTextEditorToolDto] 
+
+      # @param member [Vapi::CreateTextEditorToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.text_editor(member:)
         new(member: member, discriminant: "textEditor")
       end
-      # @param member [Vapi::CreateQueryToolDto] 
+
+      # @param member [Vapi::CreateQueryToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.query(member:)
         new(member: member, discriminant: "query")
       end
-      # @param member [Vapi::CreateGoogleCalendarCreateEventToolDto] 
+
+      # @param member [Vapi::CreateGoogleCalendarCreateEventToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.google_calendar_event_create(member:)
         new(member: member, discriminant: "google.calendar.event.create")
       end
-      # @param member [Vapi::CreateGoogleSheetsRowAppendToolDto] 
+
+      # @param member [Vapi::CreateGoogleSheetsRowAppendToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.google_sheets_row_append(member:)
         new(member: member, discriminant: "google.sheets.row.append")
       end
-      # @param member [Vapi::CreateGoogleCalendarCheckAvailabilityToolDto] 
+
+      # @param member [Vapi::CreateGoogleCalendarCheckAvailabilityToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.google_calendar_availability_check(member:)
         new(member: member, discriminant: "google.calendar.availability.check")
       end
-      # @param member [Vapi::CreateSlackSendMessageToolDto] 
+
+      # @param member [Vapi::CreateSlackSendMessageToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.slack_message_send(member:)
         new(member: member, discriminant: "slack.message.send")
       end
-      # @param member [Vapi::CreateSmsToolDto] 
+
+      # @param member [Vapi::CreateSmsToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.sms(member:)
         new(member: member, discriminant: "sms")
       end
-      # @param member [Vapi::CreateMcpToolDto] 
+
+      # @param member [Vapi::CreateMcpToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.mcp(member:)
         new(member: member, discriminant: "mcp")
       end
-      # @param member [Vapi::CreateGoHighLevelCalendarAvailabilityToolDto] 
+
+      # @param member [Vapi::CreateGoHighLevelCalendarAvailabilityToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.gohighlevel_calendar_availability_check(member:)
         new(member: member, discriminant: "gohighlevel.calendar.availability.check")
       end
-      # @param member [Vapi::CreateGoHighLevelCalendarEventCreateToolDto] 
+
+      # @param member [Vapi::CreateGoHighLevelCalendarEventCreateToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.gohighlevel_calendar_event_create(member:)
         new(member: member, discriminant: "gohighlevel.calendar.event.create")
       end
-      # @param member [Vapi::CreateGoHighLevelContactCreateToolDto] 
+
+      # @param member [Vapi::CreateGoHighLevelContactCreateToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.gohighlevel_contact_create(member:)
         new(member: member, discriminant: "gohighlevel.contact.create")
       end
-      # @param member [Vapi::CreateGoHighLevelContactGetToolDto] 
+
+      # @param member [Vapi::CreateGoHighLevelContactGetToolDto]
       # @return [Vapi::Tools::ToolsCreateRequest]
       def self.gohighlevel_contact_get(member:)
         new(member: member, discriminant: "gohighlevel.contact.get")

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative "environment"
 require_relative "types_export"
 require_relative "requests"
@@ -18,58 +19,57 @@ require_relative "vapi_server_sdk/test_suite_tests/client"
 require_relative "vapi_server_sdk/test_suite_runs/client"
 require_relative "vapi_server_sdk/analytics/client"
 require_relative "vapi_server_sdk/logs/client"
-require_relative "requests"
 
 module Vapi
   class Client
-  # @return [Vapi::CallsClient] 
+    # @return [Vapi::CallsClient]
     attr_reader :calls
-  # @return [Vapi::ChatsClient] 
+    # @return [Vapi::ChatsClient]
     attr_reader :chats
-  # @return [Vapi::CampaignsClient] 
+    # @return [Vapi::CampaignsClient]
     attr_reader :campaigns
-  # @return [Vapi::SessionsClient] 
+    # @return [Vapi::SessionsClient]
     attr_reader :sessions
-  # @return [Vapi::AssistantsClient] 
+    # @return [Vapi::AssistantsClient]
     attr_reader :assistants
-  # @return [Vapi::PhoneNumbersClient] 
+    # @return [Vapi::PhoneNumbersClient]
     attr_reader :phone_numbers
-  # @return [Vapi::ToolsClient] 
+    # @return [Vapi::ToolsClient]
     attr_reader :tools
-  # @return [Vapi::FilesClient] 
+    # @return [Vapi::FilesClient]
     attr_reader :files
-  # @return [Vapi::KnowledgeBasesClient] 
+    # @return [Vapi::KnowledgeBasesClient]
     attr_reader :knowledge_bases
-  # @return [Vapi::WorkflowClient] 
+    # @return [Vapi::WorkflowClient]
     attr_reader :workflow
-  # @return [Vapi::SquadsClient] 
+    # @return [Vapi::SquadsClient]
     attr_reader :squads
-  # @return [Vapi::TestSuitesClient] 
+    # @return [Vapi::TestSuitesClient]
     attr_reader :test_suites
-  # @return [Vapi::TestSuiteTestsClient] 
+    # @return [Vapi::TestSuiteTestsClient]
     attr_reader :test_suite_tests
-  # @return [Vapi::TestSuiteRunsClient] 
+    # @return [Vapi::TestSuiteRunsClient]
     attr_reader :test_suite_runs
-  # @return [Vapi::AnalyticsClient] 
+    # @return [Vapi::AnalyticsClient]
     attr_reader :analytics
-  # @return [Vapi::LogsClient] 
+    # @return [Vapi::LogsClient]
     attr_reader :logs
 
-
-    # @param base_url [String] 
-    # @param environment [Vapi::Environment] 
+    # @param base_url [String]
+    # @param environment [Vapi::Environment]
     # @param max_retries [Long] The number of times to retry a failed request, defaults to 2.
-    # @param timeout_in_seconds [Long] 
-    # @param token [String] 
+    # @param timeout_in_seconds [Long]
+    # @param token [String]
     # @return [Vapi::Client]
-    def initialize(base_url: nil, environment: Vapi::Environment::DEFAULT, max_retries: nil, timeout_in_seconds: nil, token:)
+    def initialize(token:, base_url: nil, environment: Vapi::Environment::DEFAULT, max_retries: nil,
+                   timeout_in_seconds: nil)
       @request_client = Vapi::RequestClient.new(
-  base_url: base_url,
-  environment: environment,
-  max_retries: max_retries,
-  timeout_in_seconds: timeout_in_seconds,
-  token: token
-)
+        base_url: base_url,
+        environment: environment,
+        max_retries: max_retries,
+        timeout_in_seconds: timeout_in_seconds,
+        token: token
+      )
       @calls = Vapi::CallsClient.new(request_client: @request_client)
       @chats = Vapi::ChatsClient.new(request_client: @request_client)
       @campaigns = Vapi::CampaignsClient.new(request_client: @request_client)
@@ -88,55 +88,56 @@ module Vapi
       @logs = Vapi::LogsClient.new(request_client: @request_client)
     end
   end
+
   class AsyncClient
-  # @return [Vapi::AsyncCallsClient] 
+    # @return [Vapi::AsyncCallsClient]
     attr_reader :calls
-  # @return [Vapi::AsyncChatsClient] 
+    # @return [Vapi::AsyncChatsClient]
     attr_reader :chats
-  # @return [Vapi::AsyncCampaignsClient] 
+    # @return [Vapi::AsyncCampaignsClient]
     attr_reader :campaigns
-  # @return [Vapi::AsyncSessionsClient] 
+    # @return [Vapi::AsyncSessionsClient]
     attr_reader :sessions
-  # @return [Vapi::AsyncAssistantsClient] 
+    # @return [Vapi::AsyncAssistantsClient]
     attr_reader :assistants
-  # @return [Vapi::AsyncPhoneNumbersClient] 
+    # @return [Vapi::AsyncPhoneNumbersClient]
     attr_reader :phone_numbers
-  # @return [Vapi::AsyncToolsClient] 
+    # @return [Vapi::AsyncToolsClient]
     attr_reader :tools
-  # @return [Vapi::AsyncFilesClient] 
+    # @return [Vapi::AsyncFilesClient]
     attr_reader :files
-  # @return [Vapi::AsyncKnowledgeBasesClient] 
+    # @return [Vapi::AsyncKnowledgeBasesClient]
     attr_reader :knowledge_bases
-  # @return [Vapi::AsyncWorkflowClient] 
+    # @return [Vapi::AsyncWorkflowClient]
     attr_reader :workflow
-  # @return [Vapi::AsyncSquadsClient] 
+    # @return [Vapi::AsyncSquadsClient]
     attr_reader :squads
-  # @return [Vapi::AsyncTestSuitesClient] 
+    # @return [Vapi::AsyncTestSuitesClient]
     attr_reader :test_suites
-  # @return [Vapi::AsyncTestSuiteTestsClient] 
+    # @return [Vapi::AsyncTestSuiteTestsClient]
     attr_reader :test_suite_tests
-  # @return [Vapi::AsyncTestSuiteRunsClient] 
+    # @return [Vapi::AsyncTestSuiteRunsClient]
     attr_reader :test_suite_runs
-  # @return [Vapi::AsyncAnalyticsClient] 
+    # @return [Vapi::AsyncAnalyticsClient]
     attr_reader :analytics
-  # @return [Vapi::AsyncLogsClient] 
+    # @return [Vapi::AsyncLogsClient]
     attr_reader :logs
 
-
-    # @param base_url [String] 
-    # @param environment [Vapi::Environment] 
+    # @param base_url [String]
+    # @param environment [Vapi::Environment]
     # @param max_retries [Long] The number of times to retry a failed request, defaults to 2.
-    # @param timeout_in_seconds [Long] 
-    # @param token [String] 
+    # @param timeout_in_seconds [Long]
+    # @param token [String]
     # @return [Vapi::AsyncClient]
-    def initialize(base_url: nil, environment: Vapi::Environment::DEFAULT, max_retries: nil, timeout_in_seconds: nil, token:)
+    def initialize(token:, base_url: nil, environment: Vapi::Environment::DEFAULT, max_retries: nil,
+                   timeout_in_seconds: nil)
       @async_request_client = Vapi::AsyncRequestClient.new(
-  base_url: base_url,
-  environment: environment,
-  max_retries: max_retries,
-  timeout_in_seconds: timeout_in_seconds,
-  token: token
-)
+        base_url: base_url,
+        environment: environment,
+        max_retries: max_retries,
+        timeout_in_seconds: timeout_in_seconds,
+        token: token
+      )
       @calls = Vapi::AsyncCallsClient.new(request_client: @async_request_client)
       @chats = Vapi::AsyncChatsClient.new(request_client: @async_request_client)
       @campaigns = Vapi::AsyncCampaignsClient.new(request_client: @async_request_client)

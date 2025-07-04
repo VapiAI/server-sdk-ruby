@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "json"
 require_relative "workflow_open_ai_model"
 require_relative "workflow_anthropic_model"
@@ -6,48 +7,50 @@ require_relative "workflow_google_model"
 require_relative "workflow_custom_model"
 
 module Vapi
-# This is the model for the node.
-#  This overrides `workflow.model`.
+  # This is the model for the node.
+  #  This overrides `workflow.model`.
   class ConversationNodeModel
-  # @return [Object] 
+    # @return [Object]
     attr_reader :member
-  # @return [String] 
+    # @return [String]
     attr_reader :discriminant
 
     private_class_method :new
     alias kind_of? is_a?
 
-    # @param member [Object] 
-    # @param discriminant [String] 
+    # @param member [Object]
+    # @param discriminant [String]
     # @return [Vapi::ConversationNodeModel]
     def initialize(member:, discriminant:)
       @member = member
       @discriminant = discriminant
     end
-# Deserialize a JSON object to an instance of ConversationNodeModel
+
+    # Deserialize a JSON object to an instance of ConversationNodeModel
     #
-    # @param json_object [String] 
+    # @param json_object [String]
     # @return [Vapi::ConversationNodeModel]
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
-      case struct.provider
-      when "openai"
-        member = Vapi::WorkflowOpenAiModel.from_json(json_object: json_object)
-      when "anthropic"
-        member = Vapi::WorkflowAnthropicModel.from_json(json_object: json_object)
-      when "google"
-        member = Vapi::WorkflowGoogleModel.from_json(json_object: json_object)
-      when "custom-llm"
-        member = Vapi::WorkflowCustomModel.from_json(json_object: json_object)
-      else
-        member = Vapi::WorkflowOpenAiModel.from_json(json_object: json_object)
-      end
+      member = case struct.provider
+               when "openai"
+                 Vapi::WorkflowOpenAiModel.from_json(json_object: json_object)
+               when "anthropic"
+                 Vapi::WorkflowAnthropicModel.from_json(json_object: json_object)
+               when "google"
+                 Vapi::WorkflowGoogleModel.from_json(json_object: json_object)
+               when "custom-llm"
+                 Vapi::WorkflowCustomModel.from_json(json_object: json_object)
+               else
+                 Vapi::WorkflowOpenAiModel.from_json(json_object: json_object)
+               end
       new(member: member, discriminant: struct.provider)
     end
-# For Union Types, to_json functionality is delegated to the wrapped member.
+
+    # For Union Types, to_json functionality is delegated to the wrapped member.
     #
     # @return [String]
-    def to_json
+    def to_json(*_args)
       case @discriminant
       when "openai"
         { **@member.to_json, provider: @discriminant }.to_json
@@ -62,11 +65,12 @@ module Vapi
       end
       @member.to_json
     end
-# Leveraged for Union-type generation, validate_raw attempts to parse the given
-#  hash and check each fields type against the current object's property
-#  definitions.
+
+    # Leveraged for Union-type generation, validate_raw attempts to parse the given
+    #  hash and check each fields type against the current object's property
+    #  definitions.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
       case obj.provider
@@ -82,29 +86,34 @@ module Vapi
         raise("Passed value matched no type within the union, validation failed.")
       end
     end
-# For Union Types, is_a? functionality is delegated to the wrapped member.
+
+    # For Union Types, is_a? functionality is delegated to the wrapped member.
     #
-    # @param obj [Object] 
+    # @param obj [Object]
     # @return [Boolean]
     def is_a?(obj)
       @member.is_a?(obj)
     end
-    # @param member [Vapi::WorkflowOpenAiModel] 
+
+    # @param member [Vapi::WorkflowOpenAiModel]
     # @return [Vapi::ConversationNodeModel]
     def self.openai(member:)
       new(member: member, discriminant: "openai")
     end
-    # @param member [Vapi::WorkflowAnthropicModel] 
+
+    # @param member [Vapi::WorkflowAnthropicModel]
     # @return [Vapi::ConversationNodeModel]
     def self.anthropic(member:)
       new(member: member, discriminant: "anthropic")
     end
-    # @param member [Vapi::WorkflowGoogleModel] 
+
+    # @param member [Vapi::WorkflowGoogleModel]
     # @return [Vapi::ConversationNodeModel]
     def self.google(member:)
       new(member: member, discriminant: "google")
     end
-    # @param member [Vapi::WorkflowCustomModel] 
+
+    # @param member [Vapi::WorkflowCustomModel]
     # @return [Vapi::ConversationNodeModel]
     def self.custom_llm(member:)
       new(member: member, discriminant: "custom-llm")

@@ -1,22 +1,21 @@
 # frozen_string_literal: true
 
 module Vapi
-# Available voices by language:
-#  • en: Alex, Ashley, Craig, Deborah, Dennis, Edward, Elizabeth, Hades, Julia,
-#  Pixie, Mark, Olivia, Priya, Ronald, Sarah, Shaun, Theodore, Timothy, Wendy,
-#  Dominus
-#  • zh: Yichen, Xiaoyin, Xinyi, Jing
-#  • nl: Erik, Katrien, Lennart, Lore
-#  • fr: Alain, Hélène, Mathieu, Étienne
-#  • de: Johanna, Josef
-#  • it: Gianni, Orietta
-#  • ja: Asuka, Satoshi
-#  • ko: Hyunwoo, Minji, Seojun, Yoona
-#  • pl: Szymon, Wojciech
-#  • pt: Heitor, Maitê
-#  • es: Diego, Lupita, Miguel, Rafael
+  # Available voices by language:
+  #  • en: Alex, Ashley, Craig, Deborah, Dennis, Edward, Elizabeth, Hades, Julia,
+  #  Pixie, Mark, Olivia, Priya, Ronald, Sarah, Shaun, Theodore, Timothy, Wendy,
+  #  Dominus
+  #  • zh: Yichen, Xiaoyin, Xinyi, Jing
+  #  • nl: Erik, Katrien, Lennart, Lore
+  #  • fr: Alain, Hélène, Mathieu, Étienne
+  #  • de: Johanna, Josef
+  #  • it: Gianni, Orietta
+  #  • ja: Asuka, Satoshi
+  #  • ko: Hyunwoo, Minji, Seojun, Yoona
+  #  • pl: Szymon, Wojciech
+  #  • pt: Heitor, Maitê
+  #  • es: Diego, Lupita, Miguel, Rafael
   class FallbackInworldVoiceVoiceId
-
     ALEX = "Alex"
     ASHLEY = "Ashley"
     CRAIG = "Craig"
@@ -67,6 +66,5 @@ module Vapi
     LUPITA = "Lupita"
     MIGUEL = "Miguel"
     RAFAEL = "Rafael"
-
   end
 end

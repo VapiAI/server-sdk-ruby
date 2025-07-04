@@ -2,8 +2,6 @@
 
 module Vapi
   class Environment
-
     DEFAULT = "https://api.vapi.ai"
-
   end
 end

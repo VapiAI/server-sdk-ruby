@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the S3 Region. It should look like us-east-1
-#  It should be one of the supabase regions defined in the SUPABASE_REGION enum
-#  Check https://supabase.com/docs/guides/platform/regions for up to date regions
+  # This is the S3 Region. It should look like us-east-1
+  #  It should be one of the supabase regions defined in the SUPABASE_REGION enum
+  #  Check https://supabase.com/docs/guides/platform/regions for up to date regions
   class SupabaseBucketPlanRegion
-
     US_WEST_1 = "us-west-1"
     US_EAST_1 = "us-east-1"
     US_EAST_2 = "us-east-2"
@@ -22,6 +21,5 @@ module Vapi
     AP_NORTHEAST_2 = "ap-northeast-2"
     AP_SOUTHEAST_2 = "ap-southeast-2"
     SA_EAST_1 = "sa-east-1"
-
   end
 end

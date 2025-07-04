@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module Vapi
-# This is the language that will be used. This is optional and will default to the
-#  correct language for the voiceId.
+  # This is the language that will be used. This is optional and will default to the
+  #  correct language for the voiceId.
   class FallbackCartesiaVoiceLanguage
-
     EN = "en"
     DE = "de"
     ES = "es"
@@ -20,6 +19,5 @@ module Vapi
     RU = "ru"
     SV = "sv"
     TR = "tr"
-
   end
 end
