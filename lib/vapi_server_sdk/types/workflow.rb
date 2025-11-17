@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require_relative "workflow_nodes_item"
+require_relative "workflow_model"
 require_relative "workflow_transcriber"
 require_relative "workflow_voice"
 require_relative "langfuse_observability_plan"
 require_relative "workflow_background_sound"
+require_relative "workflow_hooks_item"
 require_relative "workflow_credentials_item"
+require_relative "workflow_voicemail_detection"
 require "date"
 require_relative "edge"
 require_relative "server"
@@ -16,6 +19,7 @@ require_relative "start_speaking_plan"
 require_relative "stop_speaking_plan"
 require_relative "monitor_plan"
 require_relative "background_speech_denoising_plan"
+require_relative "keypad_input_plan"
 require "ostruct"
 require "json"
 
@@ -23,6 +27,9 @@ module Vapi
   class Workflow
     # @return [Array<Vapi::WorkflowNodesItem>]
     attr_reader :nodes
+    # @return [Vapi::WorkflowModel] This is the model for the workflow.
+    #  This can be overridden at node level using `nodes[n].model`.
+    attr_reader :model
     # @return [Vapi::WorkflowTranscriber] This is the transcriber for the workflow.
     #  This can be overridden at node level using `nodes[n].transcriber`.
     attr_reader :transcriber
@@ -36,11 +43,19 @@ module Vapi
     #  and default for web calls is 'off'.
     #  You can also provide a custom sound by providing a URL to an audio file.
     attr_reader :background_sound
+    # @return [Array<Vapi::WorkflowHooksItem>] This is a set of actions that will be performed on certain events.
+    attr_reader :hooks
     # @return [Array<Vapi::WorkflowCredentialsItem>] These are dynamic credentials that will be used for the workflow calls. By
     #  default, all the credentials are available for use in the call but you can
     #  supplement an additional credentials using this. Dynamic credentials override
     #  existing credentials.
     attr_reader :credentials
+    # @return [Vapi::WorkflowVoicemailDetection] This is the voicemail detection plan for the workflow.
+    attr_reader :voicemail_detection
+    # @return [Float] This is the maximum duration of the call in seconds.
+    #  After this duration, the call will automatically end.
+    #  Default is 1800 (30 minutes), max is 43200 (12 hours), and min is 10 seconds.
+    attr_reader :max_duration_seconds
     # @return [String]
     attr_reader :id
     # @return [String]
@@ -108,6 +123,12 @@ module Vapi
     #  all the credentials are available for use in the call but you can provide a
     #  subset using this.
     attr_reader :credential_ids
+    # @return [Vapi::KeypadInputPlan] This is the plan for keypad input handling during workflow calls.
+    attr_reader :keypad_input_plan
+    # @return [String] This is the message that the assistant will say if the call is forwarded to
+    #  voicemail.
+    #  If unspecified, it will hang up.
+    attr_reader :voicemail_message
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -117,6 +138,8 @@ module Vapi
     OMIT = Object.new
 
     # @param nodes [Array<Vapi::WorkflowNodesItem>]
+    # @param model [Vapi::WorkflowModel] This is the model for the workflow.
+    #  This can be overridden at node level using `nodes[n].model`.
     # @param transcriber [Vapi::WorkflowTranscriber] This is the transcriber for the workflow.
     #  This can be overridden at node level using `nodes[n].transcriber`.
     # @param voice [Vapi::WorkflowVoice] This is the voice for the workflow.
@@ -126,10 +149,15 @@ module Vapi
     # @param background_sound [Vapi::WorkflowBackgroundSound] This is the background sound in the call. Default for phone calls is 'office'
     #  and default for web calls is 'off'.
     #  You can also provide a custom sound by providing a URL to an audio file.
+    # @param hooks [Array<Vapi::WorkflowHooksItem>] This is a set of actions that will be performed on certain events.
     # @param credentials [Array<Vapi::WorkflowCredentialsItem>] These are dynamic credentials that will be used for the workflow calls. By
     #  default, all the credentials are available for use in the call but you can
     #  supplement an additional credentials using this. Dynamic credentials override
     #  existing credentials.
+    # @param voicemail_detection [Vapi::WorkflowVoicemailDetection] This is the voicemail detection plan for the workflow.
+    # @param max_duration_seconds [Float] This is the maximum duration of the call in seconds.
+    #  After this duration, the call will automatically end.
+    #  Default is 1800 (30 minutes), max is 43200 (12 hours), and min is 10 seconds.
     # @param id [String]
     # @param org_id [String]
     # @param created_at [DateTime]
@@ -181,16 +209,24 @@ module Vapi
     # @param credential_ids [Array<String>] These are the credentials that will be used for the workflow calls. By default,
     #  all the credentials are available for use in the call but you can provide a
     #  subset using this.
+    # @param keypad_input_plan [Vapi::KeypadInputPlan] This is the plan for keypad input handling during workflow calls.
+    # @param voicemail_message [String] This is the message that the assistant will say if the call is forwarded to
+    #  voicemail.
+    #  If unspecified, it will hang up.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Workflow]
-    def initialize(nodes:, id:, org_id:, created_at:, updated_at:, name:, edges:, transcriber: OMIT, voice: OMIT, observability_plan: OMIT, background_sound: OMIT,
-                   credentials: OMIT, global_prompt: OMIT, server: OMIT, compliance_plan: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, background_speech_denoising_plan: OMIT, credential_ids: OMIT, additional_properties: nil)
+    def initialize(nodes:, id:, org_id:, created_at:, updated_at:, name:, edges:, model: OMIT, transcriber: OMIT, voice: OMIT, observability_plan: OMIT,
+                   background_sound: OMIT, hooks: OMIT, credentials: OMIT, voicemail_detection: OMIT, max_duration_seconds: OMIT, global_prompt: OMIT, server: OMIT, compliance_plan: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, background_speech_denoising_plan: OMIT, credential_ids: OMIT, keypad_input_plan: OMIT, voicemail_message: OMIT, additional_properties: nil)
       @nodes = nodes
+      @model = model if model != OMIT
       @transcriber = transcriber if transcriber != OMIT
       @voice = voice if voice != OMIT
       @observability_plan = observability_plan if observability_plan != OMIT
       @background_sound = background_sound if background_sound != OMIT
+      @hooks = hooks if hooks != OMIT
       @credentials = credentials if credentials != OMIT
+      @voicemail_detection = voicemail_detection if voicemail_detection != OMIT
+      @max_duration_seconds = max_duration_seconds if max_duration_seconds != OMIT
       @id = id
       @org_id = org_id
       @created_at = created_at
@@ -207,14 +243,20 @@ module Vapi
       @monitor_plan = monitor_plan if monitor_plan != OMIT
       @background_speech_denoising_plan = background_speech_denoising_plan if background_speech_denoising_plan != OMIT
       @credential_ids = credential_ids if credential_ids != OMIT
+      @keypad_input_plan = keypad_input_plan if keypad_input_plan != OMIT
+      @voicemail_message = voicemail_message if voicemail_message != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "nodes": nodes,
+        "model": model,
         "transcriber": transcriber,
         "voice": voice,
         "observabilityPlan": observability_plan,
         "backgroundSound": background_sound,
+        "hooks": hooks,
         "credentials": credentials,
+        "voicemailDetection": voicemail_detection,
+        "maxDurationSeconds": max_duration_seconds,
         "id": id,
         "orgId": org_id,
         "createdAt": created_at,
@@ -230,7 +272,9 @@ module Vapi
         "stopSpeakingPlan": stop_speaking_plan,
         "monitorPlan": monitor_plan,
         "backgroundSpeechDenoisingPlan": background_speech_denoising_plan,
-        "credentialIds": credential_ids
+        "credentialIds": credential_ids,
+        "keypadInputPlan": keypad_input_plan,
+        "voicemailMessage": voicemail_message
       }.reject do |_k, v|
         v == OMIT
       end
@@ -246,6 +290,12 @@ module Vapi
       nodes = parsed_json["nodes"]&.map do |item|
         item = item.to_json
         Vapi::WorkflowNodesItem.from_json(json_object: item)
+      end
+      if parsed_json["model"].nil?
+        model = nil
+      else
+        model = parsed_json["model"].to_json
+        model = Vapi::WorkflowModel.from_json(json_object: model)
       end
       if parsed_json["transcriber"].nil?
         transcriber = nil
@@ -271,10 +321,21 @@ module Vapi
         background_sound = parsed_json["backgroundSound"].to_json
         background_sound = Vapi::WorkflowBackgroundSound.from_json(json_object: background_sound)
       end
+      hooks = parsed_json["hooks"]&.map do |item|
+        item = item.to_json
+        Vapi::WorkflowHooksItem.from_json(json_object: item)
+      end
       credentials = parsed_json["credentials"]&.map do |item|
         item = item.to_json
         Vapi::WorkflowCredentialsItem.from_json(json_object: item)
       end
+      if parsed_json["voicemailDetection"].nil?
+        voicemail_detection = nil
+      else
+        voicemail_detection = parsed_json["voicemailDetection"].to_json
+        voicemail_detection = Vapi::WorkflowVoicemailDetection.from_json(json_object: voicemail_detection)
+      end
+      max_duration_seconds = parsed_json["maxDurationSeconds"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
@@ -334,13 +395,24 @@ module Vapi
         background_speech_denoising_plan = Vapi::BackgroundSpeechDenoisingPlan.from_json(json_object: background_speech_denoising_plan)
       end
       credential_ids = parsed_json["credentialIds"]
+      if parsed_json["keypadInputPlan"].nil?
+        keypad_input_plan = nil
+      else
+        keypad_input_plan = parsed_json["keypadInputPlan"].to_json
+        keypad_input_plan = Vapi::KeypadInputPlan.from_json(json_object: keypad_input_plan)
+      end
+      voicemail_message = parsed_json["voicemailMessage"]
       new(
         nodes: nodes,
+        model: model,
         transcriber: transcriber,
         voice: voice,
         observability_plan: observability_plan,
         background_sound: background_sound,
+        hooks: hooks,
         credentials: credentials,
+        voicemail_detection: voicemail_detection,
+        max_duration_seconds: max_duration_seconds,
         id: id,
         org_id: org_id,
         created_at: created_at,
@@ -357,6 +429,8 @@ module Vapi
         monitor_plan: monitor_plan,
         background_speech_denoising_plan: background_speech_denoising_plan,
         credential_ids: credential_ids,
+        keypad_input_plan: keypad_input_plan,
+        voicemail_message: voicemail_message,
         additional_properties: struct
       )
     end
@@ -376,11 +450,15 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.nodes.is_a?(Array) != false || raise("Passed value for field obj.nodes is not the expected type, validation failed.")
+      obj.model.nil? || Vapi::WorkflowModel.validate_raw(obj: obj.model)
       obj.transcriber.nil? || Vapi::WorkflowTranscriber.validate_raw(obj: obj.transcriber)
       obj.voice.nil? || Vapi::WorkflowVoice.validate_raw(obj: obj.voice)
       obj.observability_plan.nil? || Vapi::LangfuseObservabilityPlan.validate_raw(obj: obj.observability_plan)
       obj.background_sound.nil? || Vapi::WorkflowBackgroundSound.validate_raw(obj: obj.background_sound)
+      obj.hooks&.is_a?(Array) != false || raise("Passed value for field obj.hooks is not the expected type, validation failed.")
       obj.credentials&.is_a?(Array) != false || raise("Passed value for field obj.credentials is not the expected type, validation failed.")
+      obj.voicemail_detection.nil? || Vapi::WorkflowVoicemailDetection.validate_raw(obj: obj.voicemail_detection)
+      obj.max_duration_seconds&.is_a?(Float) != false || raise("Passed value for field obj.max_duration_seconds is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
@@ -397,6 +475,8 @@ module Vapi
       obj.monitor_plan.nil? || Vapi::MonitorPlan.validate_raw(obj: obj.monitor_plan)
       obj.background_speech_denoising_plan.nil? || Vapi::BackgroundSpeechDenoisingPlan.validate_raw(obj: obj.background_speech_denoising_plan)
       obj.credential_ids&.is_a?(Array) != false || raise("Passed value for field obj.credential_ids is not the expected type, validation failed.")
+      obj.keypad_input_plan.nil? || Vapi::KeypadInputPlan.validate_raw(obj: obj.keypad_input_plan)
+      obj.voicemail_message&.is_a?(String) != false || raise("Passed value for field obj.voicemail_message is not the expected type, validation failed.")
     end
   end
 end

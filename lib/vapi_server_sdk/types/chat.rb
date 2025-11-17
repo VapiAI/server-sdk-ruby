@@ -2,6 +2,7 @@
 
 require_relative "create_assistant_dto"
 require_relative "assistant_overrides"
+require_relative "create_squad_dto"
 require_relative "chat_input"
 require_relative "chat_messages_item"
 require_relative "chat_output_item"
@@ -23,6 +24,12 @@ module Vapi
     #  Only variable substitution is supported in chat contexts - other assistant
     #  properties cannot be overridden.
     attr_reader :assistant_overrides
+    # @return [String] This is the squad that will be used for the chat. To use a transient squad, use
+    #  `squad` instead.
+    attr_reader :squad_id
+    # @return [Vapi::CreateSquadDto] This is the squad that will be used for the chat. To use an existing squad, use
+    #  `squadId` instead.
+    attr_reader :squad
     # @return [String] This is the name of the chat. This is just for your own reference.
     attr_reader :name
     # @return [String] This is the ID of the session that will be used for the chat.
@@ -71,6 +78,10 @@ module Vapi
     #  the assistant messages.
     #  Only variable substitution is supported in chat contexts - other assistant
     #  properties cannot be overridden.
+    # @param squad_id [String] This is the squad that will be used for the chat. To use a transient squad, use
+    #  `squad` instead.
+    # @param squad [Vapi::CreateSquadDto] This is the squad that will be used for the chat. To use an existing squad, use
+    #  `squadId` instead.
     # @param name [String] This is the name of the chat. This is just for your own reference.
     # @param session_id [String] This is the ID of the session that will be used for the chat.
     #  Mutually exclusive with previousChatId.
@@ -92,11 +103,13 @@ module Vapi
     # @param cost [Float] This is the cost of the chat in USD.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Chat]
-    def initialize(id:, org_id:, created_at:, updated_at:, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, name: OMIT, session_id: OMIT,
-                   input: OMIT, stream: OMIT, previous_chat_id: OMIT, messages: OMIT, output: OMIT, costs: OMIT, cost: OMIT, additional_properties: nil)
+    def initialize(id:, org_id:, created_at:, updated_at:, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT,
+                   name: OMIT, session_id: OMIT, input: OMIT, stream: OMIT, previous_chat_id: OMIT, messages: OMIT, output: OMIT, costs: OMIT, cost: OMIT, additional_properties: nil)
       @assistant_id = assistant_id if assistant_id != OMIT
       @assistant = assistant if assistant != OMIT
       @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
+      @squad_id = squad_id if squad_id != OMIT
+      @squad = squad if squad != OMIT
       @name = name if name != OMIT
       @session_id = session_id if session_id != OMIT
       @input = input if input != OMIT
@@ -115,6 +128,8 @@ module Vapi
         "assistantId": assistant_id,
         "assistant": assistant,
         "assistantOverrides": assistant_overrides,
+        "squadId": squad_id,
+        "squad": squad,
         "name": name,
         "sessionId": session_id,
         "input": input,
@@ -153,6 +168,13 @@ module Vapi
         assistant_overrides = parsed_json["assistantOverrides"].to_json
         assistant_overrides = Vapi::AssistantOverrides.from_json(json_object: assistant_overrides)
       end
+      squad_id = parsed_json["squadId"]
+      if parsed_json["squad"].nil?
+        squad = nil
+      else
+        squad = parsed_json["squad"].to_json
+        squad = Vapi::CreateSquadDto.from_json(json_object: squad)
+      end
       name = parsed_json["name"]
       session_id = parsed_json["sessionId"]
       if parsed_json["input"].nil?
@@ -184,6 +206,8 @@ module Vapi
         assistant_id: assistant_id,
         assistant: assistant,
         assistant_overrides: assistant_overrides,
+        squad_id: squad_id,
+        squad: squad,
         name: name,
         session_id: session_id,
         input: input,
@@ -218,6 +242,8 @@ module Vapi
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
       obj.assistant_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.assistant_overrides)
+      obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
+      obj.squad.nil? || Vapi::CreateSquadDto.validate_raw(obj: obj.squad)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.session_id&.is_a?(String) != false || raise("Passed value for field obj.session_id is not the expected type, validation failed.")
       obj.input.nil? || Vapi::ChatInput.validate_raw(obj: obj.input)

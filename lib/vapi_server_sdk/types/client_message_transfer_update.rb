@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "client_message_transfer_update_phone_number"
+require_relative "client_message_transfer_update_type"
 require_relative "client_message_transfer_update_destination"
 require_relative "call"
 require_relative "create_customer_dto"
@@ -12,6 +13,9 @@ module Vapi
   class ClientMessageTransferUpdate
     # @return [Vapi::ClientMessageTransferUpdatePhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ClientMessageTransferUpdateType] This is the type of the message. "transfer-update" is sent whenever a transfer
+    #  happens.
+    attr_reader :type
     # @return [Vapi::ClientMessageTransferUpdateDestination] This is the destination of the transfer.
     attr_reader :destination
     # @return [Float] This is the timestamp of the message.
@@ -41,6 +45,8 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ClientMessageTransferUpdatePhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ClientMessageTransferUpdateType] This is the type of the message. "transfer-update" is sent whenever a transfer
+    #  happens.
     # @param destination [Vapi::ClientMessageTransferUpdateDestination] This is the destination of the transfer.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param call [Vapi::Call] This is the call that the message is associated with.
@@ -54,9 +60,10 @@ module Vapi
     # @param from_step_record [Hash{String => Object}] This is the step that the conversation moved from. =
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageTransferUpdate]
-    def initialize(phone_number: OMIT, destination: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
-                   to_assistant: OMIT, from_assistant: OMIT, to_step_record: OMIT, from_step_record: OMIT, additional_properties: nil)
+    def initialize(type:, phone_number: OMIT, destination: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT,
+                   assistant: OMIT, to_assistant: OMIT, from_assistant: OMIT, to_step_record: OMIT, from_step_record: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @destination = destination if destination != OMIT
       @timestamp = timestamp if timestamp != OMIT
       @call = call if call != OMIT
@@ -69,6 +76,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "destination": destination,
         "timestamp": timestamp,
         "call": call,
@@ -96,6 +104,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ClientMessageTransferUpdatePhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       if parsed_json["destination"].nil?
         destination = nil
       else
@@ -137,6 +146,7 @@ module Vapi
       from_step_record = parsed_json["fromStepRecord"]
       new(
         phone_number: phone_number,
+        type: type,
         destination: destination,
         timestamp: timestamp,
         call: call,
@@ -165,6 +175,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ClientMessageTransferUpdatePhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ClientMessageTransferUpdateType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.destination.nil? || Vapi::ClientMessageTransferUpdateDestination.validate_raw(obj: obj.destination)
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)

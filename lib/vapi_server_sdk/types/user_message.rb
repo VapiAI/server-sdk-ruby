@@ -17,6 +17,15 @@ module Vapi
     attr_reader :seconds_from_start
     # @return [Float] The duration of the message in seconds.
     attr_reader :duration
+    # @return [Boolean] Indicates if the message was filtered for security reasons.
+    attr_reader :is_filtered
+    # @return [Array<String>] List of detected security threats if the message was filtered.
+    attr_reader :detected_threats
+    # @return [String] The original message before filtering (only included if content was filtered).
+    attr_reader :original_message
+    # @return [Hash{String => Object}] The metadata associated with the message. Currently used to store the
+    #  transcriber's word level confidence.
+    attr_reader :metadata
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -31,15 +40,25 @@ module Vapi
     # @param end_time [Float] The timestamp when the message ended.
     # @param seconds_from_start [Float] The number of seconds from the start of the conversation.
     # @param duration [Float] The duration of the message in seconds.
+    # @param is_filtered [Boolean] Indicates if the message was filtered for security reasons.
+    # @param detected_threats [Array<String>] List of detected security threats if the message was filtered.
+    # @param original_message [String] The original message before filtering (only included if content was filtered).
+    # @param metadata [Hash{String => Object}] The metadata associated with the message. Currently used to store the
+    #  transcriber's word level confidence.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UserMessage]
-    def initialize(role:, message:, time:, end_time:, seconds_from_start:, duration: OMIT, additional_properties: nil)
+    def initialize(role:, message:, time:, end_time:, seconds_from_start:, duration: OMIT, is_filtered: OMIT,
+                   detected_threats: OMIT, original_message: OMIT, metadata: OMIT, additional_properties: nil)
       @role = role
       @message = message
       @time = time
       @end_time = end_time
       @seconds_from_start = seconds_from_start
       @duration = duration if duration != OMIT
+      @is_filtered = is_filtered if is_filtered != OMIT
+      @detected_threats = detected_threats if detected_threats != OMIT
+      @original_message = original_message if original_message != OMIT
+      @metadata = metadata if metadata != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "role": role,
@@ -47,7 +66,11 @@ module Vapi
         "time": time,
         "endTime": end_time,
         "secondsFromStart": seconds_from_start,
-        "duration": duration
+        "duration": duration,
+        "isFiltered": is_filtered,
+        "detectedThreats": detected_threats,
+        "originalMessage": original_message,
+        "metadata": metadata
       }.reject do |_k, v|
         v == OMIT
       end
@@ -66,6 +89,10 @@ module Vapi
       end_time = parsed_json["endTime"]
       seconds_from_start = parsed_json["secondsFromStart"]
       duration = parsed_json["duration"]
+      is_filtered = parsed_json["isFiltered"]
+      detected_threats = parsed_json["detectedThreats"]
+      original_message = parsed_json["originalMessage"]
+      metadata = parsed_json["metadata"]
       new(
         role: role,
         message: message,
@@ -73,6 +100,10 @@ module Vapi
         end_time: end_time,
         seconds_from_start: seconds_from_start,
         duration: duration,
+        is_filtered: is_filtered,
+        detected_threats: detected_threats,
+        original_message: original_message,
+        metadata: metadata,
         additional_properties: struct
       )
     end
@@ -97,6 +128,10 @@ module Vapi
       obj.end_time.is_a?(Float) != false || raise("Passed value for field obj.end_time is not the expected type, validation failed.")
       obj.seconds_from_start.is_a?(Float) != false || raise("Passed value for field obj.seconds_from_start is not the expected type, validation failed.")
       obj.duration&.is_a?(Float) != false || raise("Passed value for field obj.duration is not the expected type, validation failed.")
+      obj.is_filtered&.is_a?(Boolean) != false || raise("Passed value for field obj.is_filtered is not the expected type, validation failed.")
+      obj.detected_threats&.is_a?(Array) != false || raise("Passed value for field obj.detected_threats is not the expected type, validation failed.")
+      obj.original_message&.is_a?(String) != false || raise("Passed value for field obj.original_message is not the expected type, validation failed.")
+      obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")
     end
   end
 end

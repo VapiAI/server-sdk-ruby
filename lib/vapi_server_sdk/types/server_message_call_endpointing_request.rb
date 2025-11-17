@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "server_message_call_endpointing_request_phone_number"
+require_relative "server_message_call_endpointing_request_type"
 require_relative "server_message_call_endpointing_request_messages_item"
 require_relative "open_ai_message"
 require_relative "artifact"
@@ -15,6 +16,31 @@ module Vapi
   class ServerMessageCallEndpointingRequest
     # @return [Vapi::ServerMessageCallEndpointingRequestPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ServerMessageCallEndpointingRequestType] This is the type of the message. "call.endpointing.request" is sent when using
+    #  `assistant.startSpeakingPlan.smartEndpointingPlan={ "provider":
+    #  "custom-endpointing-model" }`.
+    #  Here is what the request will look like:
+    #  POST https://{assistant.startSpeakingPlan.smartEndpointingPlan.server.url}
+    #  Content-Type: application/json
+    #  {
+    #  "message": {
+    #  "type": "call.endpointing.request",
+    #  "messages": [
+    #  {
+    #  "role": "user",
+    #  "message": "Hello, how are you?",
+    #  "time": 1234567890,
+    #  "secondsFromStart": 0
+    #  }
+    #  ],
+    #  ...other metadata about the call...
+    #  }
+    #  }
+    #  The expected response:
+    #  {
+    #  "timeoutSeconds": 0.5
+    #  }
+    attr_reader :type
     # @return [Array<Vapi::ServerMessageCallEndpointingRequestMessagesItem>] This is the conversation history at the time of the endpointing request.
     attr_reader :messages
     # @return [Array<Vapi::OpenAiMessage>] This is just `messages` formatted for OpenAI.
@@ -41,6 +67,30 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ServerMessageCallEndpointingRequestPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ServerMessageCallEndpointingRequestType] This is the type of the message. "call.endpointing.request" is sent when using
+    #  `assistant.startSpeakingPlan.smartEndpointingPlan={ "provider":
+    #  "custom-endpointing-model" }`.
+    #  Here is what the request will look like:
+    #  POST https://{assistant.startSpeakingPlan.smartEndpointingPlan.server.url}
+    #  Content-Type: application/json
+    #  {
+    #  "message": {
+    #  "type": "call.endpointing.request",
+    #  "messages": [
+    #  {
+    #  "role": "user",
+    #  "message": "Hello, how are you?",
+    #  "time": 1234567890,
+    #  "secondsFromStart": 0
+    #  }
+    #  ],
+    #  ...other metadata about the call...
+    #  }
+    #  }
+    #  The expected response:
+    #  {
+    #  "timeoutSeconds": 0.5
+    #  }
     # @param messages [Array<Vapi::ServerMessageCallEndpointingRequestMessagesItem>] This is the conversation history at the time of the endpointing request.
     # @param messages_open_ai_formatted [Array<Vapi::OpenAiMessage>] This is just `messages` formatted for OpenAI.
     # @param timestamp [Float] This is the timestamp of the message.
@@ -52,9 +102,10 @@ module Vapi
     # @param chat [Vapi::Chat] This is the chat object.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageCallEndpointingRequest]
-    def initialize(messages_open_ai_formatted:, phone_number: OMIT, messages: OMIT, timestamp: OMIT, artifact: OMIT,
-                   assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, additional_properties: nil)
+    def initialize(type:, messages_open_ai_formatted:, phone_number: OMIT, messages: OMIT, timestamp: OMIT,
+                   artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @messages = messages if messages != OMIT
       @messages_open_ai_formatted = messages_open_ai_formatted
       @timestamp = timestamp if timestamp != OMIT
@@ -66,6 +117,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "messages": messages,
         "messagesOpenAIFormatted": messages_open_ai_formatted,
         "timestamp": timestamp,
@@ -92,6 +144,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageCallEndpointingRequestPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       messages = parsed_json["messages"]&.map do |item|
         item = item.to_json
         Vapi::ServerMessageCallEndpointingRequestMessagesItem.from_json(json_object: item)
@@ -133,6 +186,7 @@ module Vapi
       end
       new(
         phone_number: phone_number,
+        type: type,
         messages: messages,
         messages_open_ai_formatted: messages_open_ai_formatted,
         timestamp: timestamp,
@@ -160,6 +214,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageCallEndpointingRequestPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ServerMessageCallEndpointingRequestType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.messages_open_ai_formatted.is_a?(Array) != false || raise("Passed value for field obj.messages_open_ai_formatted is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")

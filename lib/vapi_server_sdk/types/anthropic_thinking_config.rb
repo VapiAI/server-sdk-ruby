@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "anthropic_thinking_config_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class AnthropicThinkingConfig
-    # @return [String]
+    # @return [Vapi::AnthropicThinkingConfigType]
     attr_reader :type
     # @return [Float] The maximum number of tokens to allocate for thinking.
     #  Must be between 1024 and 100000 tokens.
@@ -18,7 +19,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
+    # @param type [Vapi::AnthropicThinkingConfigType]
     # @param budget_tokens [Float] The maximum number of tokens to allocate for thinking.
     #  Must be between 1024 and 100000 tokens.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
@@ -60,7 +61,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::AnthropicThinkingConfigType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.budget_tokens.is_a?(Float) != false || raise("Passed value for field obj.budget_tokens is not the expected type, validation failed.")
     end
   end

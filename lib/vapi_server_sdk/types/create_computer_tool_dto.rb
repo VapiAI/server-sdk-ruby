@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 require_relative "create_computer_tool_dto_messages_item"
+require_relative "create_computer_tool_dto_sub_type"
 require_relative "server"
-require_relative "open_ai_function"
+require_relative "create_computer_tool_dto_name"
+require_relative "tool_rejection_plan"
 require "ostruct"
 require "json"
 
@@ -13,7 +15,7 @@ module Vapi
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
     attr_reader :messages
-    # @return [String] The sub type of tool.
+    # @return [Vapi::CreateComputerToolDtoSubType] The sub type of tool.
     attr_reader :sub_type
     # @return [Vapi::Server]
     #  This is the server where a `tool-calls` webhook will be sent.
@@ -26,7 +28,7 @@ module Vapi
     #  {{org.server.url}}.
     #  - Webhook expects a response with tool call result.
     attr_reader :server
-    # @return [String] The name of the tool, fixed to 'computer'
+    # @return [Vapi::CreateComputerToolDtoName] The name of the tool, fixed to 'computer'
     attr_reader :name
     # @return [Float] The display width in pixels
     attr_reader :display_width_px
@@ -34,16 +36,85 @@ module Vapi
     attr_reader :display_height_px
     # @return [Float] Optional display number
     attr_reader :display_number
-    # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.
-    attr_reader :function
+    # @return [Vapi::ToolRejectionPlan] This is the plan to reject a tool call based on the conversation state.
+    #  // Example 1: Reject endCall if user didn't say goodbye
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '(?i)\\b(bye|goodbye|farewell|see you later|take care)\\b',
+    #  target: { position: -1, role: 'user' },
+    #  negate: true  // Reject if pattern does NOT match
+    #  }]
+    #  }
+    #  ```
+    #  // Example 2: Reject transfer if user is actually asking a question
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '\\?',
+    #  target: { position: -1, role: 'user' }
+    #  }]
+    #  }
+    #  ```
+    #  // Example 3: Reject transfer if user didn't mention transfer recently
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 5 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' %}
+    #  {% assign mentioned = false %}
+    #  {% for msg in userMessages %}
+    #  {% if msg.content contains 'transfer' or msg.content contains 'connect' or
+    #  msg.content contains 'speak to' %}
+    #  {% assign mentioned = true %}
+    #  {% break %}
+    #  {% endif %}
+    #  {% endfor %}
+    #  {% if mentioned %}
+    #  false
+    #  {% else %}
+    #  true
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    #  // Example 4: Reject endCall if the bot is looping and trying to exit
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 6 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' | reverse %}
+    #  {% if userMessages.size < 3 %}
+    #  false
+    #  {% else %}
+    #  {% assign msg1 = userMessages[0].content | downcase %}
+    #  {% assign msg2 = userMessages[1].content | downcase %}
+    #  {% assign msg3 = userMessages[2].content | downcase %}
+    #  {% comment %} Check for repetitive messages {% endcomment %}
+    #  {% if msg1 == msg2 or msg1 == msg3 or msg2 == msg3 %}
+    #  true
+    #  {% comment %} Check for common loop phrases {% endcomment %}
+    #  {% elsif msg1 contains 'cool thanks' or msg2 contains 'cool thanks' or msg3
+    #  contains 'cool thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'okay thanks' or msg2 contains 'okay thanks' or msg3
+    #  contains 'okay thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'got it' or msg2 contains 'got it' or msg3 contains
+    #  'got it' %}
+    #  true
+    #  {% else %}
+    #  false
+    #  {% endif %}
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    attr_reader :rejection_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -56,7 +127,7 @@ module Vapi
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
-    # @param sub_type [String] The sub type of tool.
+    # @param sub_type [Vapi::CreateComputerToolDtoSubType] The sub type of tool.
     # @param server [Vapi::Server]
     #  This is the server where a `tool-calls` webhook will be sent.
     #  Notes:
@@ -67,23 +138,92 @@ module Vapi
     #  {{tool.server.url}}, {{assistant.server.url}}, {{phoneNumber.server.url}},
     #  {{org.server.url}}.
     #  - Webhook expects a response with tool call result.
-    # @param name [String] The name of the tool, fixed to 'computer'
+    # @param name [Vapi::CreateComputerToolDtoName] The name of the tool, fixed to 'computer'
     # @param display_width_px [Float] The display width in pixels
     # @param display_height_px [Float] The display height in pixels
     # @param display_number [Float] Optional display number
-    # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.
+    # @param rejection_plan [Vapi::ToolRejectionPlan] This is the plan to reject a tool call based on the conversation state.
+    #  // Example 1: Reject endCall if user didn't say goodbye
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '(?i)\\b(bye|goodbye|farewell|see you later|take care)\\b',
+    #  target: { position: -1, role: 'user' },
+    #  negate: true  // Reject if pattern does NOT match
+    #  }]
+    #  }
+    #  ```
+    #  // Example 2: Reject transfer if user is actually asking a question
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '\\?',
+    #  target: { position: -1, role: 'user' }
+    #  }]
+    #  }
+    #  ```
+    #  // Example 3: Reject transfer if user didn't mention transfer recently
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 5 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' %}
+    #  {% assign mentioned = false %}
+    #  {% for msg in userMessages %}
+    #  {% if msg.content contains 'transfer' or msg.content contains 'connect' or
+    #  msg.content contains 'speak to' %}
+    #  {% assign mentioned = true %}
+    #  {% break %}
+    #  {% endif %}
+    #  {% endfor %}
+    #  {% if mentioned %}
+    #  false
+    #  {% else %}
+    #  true
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    #  // Example 4: Reject endCall if the bot is looping and trying to exit
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 6 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' | reverse %}
+    #  {% if userMessages.size < 3 %}
+    #  false
+    #  {% else %}
+    #  {% assign msg1 = userMessages[0].content | downcase %}
+    #  {% assign msg2 = userMessages[1].content | downcase %}
+    #  {% assign msg3 = userMessages[2].content | downcase %}
+    #  {% comment %} Check for repetitive messages {% endcomment %}
+    #  {% if msg1 == msg2 or msg1 == msg3 or msg2 == msg3 %}
+    #  true
+    #  {% comment %} Check for common loop phrases {% endcomment %}
+    #  {% elsif msg1 contains 'cool thanks' or msg2 contains 'cool thanks' or msg3
+    #  contains 'cool thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'okay thanks' or msg2 contains 'okay thanks' or msg3
+    #  contains 'okay thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'got it' or msg2 contains 'got it' or msg3 contains
+    #  'got it' %}
+    #  true
+    #  {% else %}
+    #  false
+    #  {% endif %}
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateComputerToolDto]
     def initialize(sub_type:, name:, display_width_px:, display_height_px:, messages: OMIT, server: OMIT,
-                   display_number: OMIT, function: OMIT, additional_properties: nil)
+                   display_number: OMIT, rejection_plan: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @sub_type = sub_type
       @server = server if server != OMIT
@@ -91,7 +231,7 @@ module Vapi
       @display_width_px = display_width_px
       @display_height_px = display_height_px
       @display_number = display_number if display_number != OMIT
-      @function = function if function != OMIT
+      @rejection_plan = rejection_plan if rejection_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "messages": messages,
@@ -101,7 +241,7 @@ module Vapi
         "displayWidthPx": display_width_px,
         "displayHeightPx": display_height_px,
         "displayNumber": display_number,
-        "function": function
+        "rejectionPlan": rejection_plan
       }.reject do |_k, v|
         v == OMIT
       end
@@ -129,11 +269,11 @@ module Vapi
       display_width_px = parsed_json["displayWidthPx"]
       display_height_px = parsed_json["displayHeightPx"]
       display_number = parsed_json["displayNumber"]
-      if parsed_json["function"].nil?
-        function = nil
+      if parsed_json["rejectionPlan"].nil?
+        rejection_plan = nil
       else
-        function = parsed_json["function"].to_json
-        function = Vapi::OpenAiFunction.from_json(json_object: function)
+        rejection_plan = parsed_json["rejectionPlan"].to_json
+        rejection_plan = Vapi::ToolRejectionPlan.from_json(json_object: rejection_plan)
       end
       new(
         messages: messages,
@@ -143,7 +283,7 @@ module Vapi
         display_width_px: display_width_px,
         display_height_px: display_height_px,
         display_number: display_number,
-        function: function,
+        rejection_plan: rejection_plan,
         additional_properties: struct
       )
     end
@@ -163,13 +303,13 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
-      obj.sub_type.is_a?(String) != false || raise("Passed value for field obj.sub_type is not the expected type, validation failed.")
+      obj.sub_type.is_a?(Vapi::CreateComputerToolDtoSubType) != false || raise("Passed value for field obj.sub_type is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
-      obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
+      obj.name.is_a?(Vapi::CreateComputerToolDtoName) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.display_width_px.is_a?(Float) != false || raise("Passed value for field obj.display_width_px is not the expected type, validation failed.")
       obj.display_height_px.is_a?(Float) != false || raise("Passed value for field obj.display_height_px is not the expected type, validation failed.")
       obj.display_number&.is_a?(Float) != false || raise("Passed value for field obj.display_number is not the expected type, validation failed.")
-      obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
+      obj.rejection_plan.nil? || Vapi::ToolRejectionPlan.validate_raw(obj: obj.rejection_plan)
     end
   end
 end

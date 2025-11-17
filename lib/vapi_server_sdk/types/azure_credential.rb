@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "azure_credential_provider"
 require_relative "azure_credential_service"
 require_relative "azure_credential_region"
 require "date"
@@ -9,7 +10,7 @@ require "json"
 
 module Vapi
   class AzureCredential
-    # @return [String]
+    # @return [Vapi::AzureCredentialProvider]
     attr_reader :provider
     # @return [Vapi::AzureCredentialService] This is the service being used in Azure.
     attr_reader :service
@@ -41,7 +42,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::AzureCredentialProvider]
     # @param service [Vapi::AzureCredentialService] This is the service being used in Azure.
     # @param region [Vapi::AzureCredentialRegion] This is the region of the Azure resource.
     # @param api_key [String] This is not returned in the API.
@@ -140,7 +141,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::AzureCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.service.is_a?(Vapi::AzureCredentialService) != false || raise("Passed value for field obj.service is not the expected type, validation failed.")
       obj.region&.is_a?(Vapi::AzureCredentialRegion) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")

@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "play_ht_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class PlayHtCredential
-    # @return [String]
+    # @return [Vapi::PlayHtCredentialProvider]
     attr_reader :provider
     # @return [String] This is not returned in the API.
     attr_reader :api_key
@@ -30,7 +31,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::PlayHtCredentialProvider]
     # @param api_key [String] This is not returned in the API.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
@@ -107,7 +108,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::PlayHtCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

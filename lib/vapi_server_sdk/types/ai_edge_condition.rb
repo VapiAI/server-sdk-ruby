@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "ai_edge_condition_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class AiEdgeCondition
-    # @return [String]
+    # @return [Vapi::AiEdgeConditionType]
     attr_reader :type
     # @return [String] This is the prompt for the AI edge condition. It should evaluate to a boolean.
     attr_reader :prompt
@@ -17,7 +18,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
+    # @param type [Vapi::AiEdgeConditionType]
     # @param prompt [String] This is the prompt for the AI edge condition. It should evaluate to a boolean.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AiEdgeCondition]
@@ -58,7 +59,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::AiEdgeConditionType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.prompt.is_a?(String) != false || raise("Passed value for field obj.prompt is not the expected type, validation failed.")
     end
   end

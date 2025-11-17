@@ -3,9 +3,11 @@
 require "json"
 require_relative "o_auth_2_authentication_plan"
 require_relative "hmac_authentication_plan"
+require_relative "bearer_authentication_plan"
 
 module Vapi
-  # This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
+  # This is the authentication plan. Supports OAuth2 RFC 6749, HMAC signing, and
+  #  Bearer authentication.
   class CreateWebhookCredentialDtoAuthenticationPlan
     # @return [Object]
     attr_reader :member
@@ -35,6 +37,8 @@ module Vapi
                  Vapi::OAuth2AuthenticationPlan.from_json(json_object: json_object)
                when "hmac"
                  Vapi::HmacAuthenticationPlan.from_json(json_object: json_object)
+               when "bearer"
+                 Vapi::BearerAuthenticationPlan.from_json(json_object: json_object)
                else
                  Vapi::OAuth2AuthenticationPlan.from_json(json_object: json_object)
                end
@@ -49,6 +53,8 @@ module Vapi
       when "oauth2"
         { **@member.to_json, type: @discriminant }.to_json
       when "hmac"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "bearer"
         { **@member.to_json, type: @discriminant }.to_json
       else
         { "type": @discriminant, value: @member }.to_json
@@ -68,6 +74,8 @@ module Vapi
         Vapi::OAuth2AuthenticationPlan.validate_raw(obj: obj)
       when "hmac"
         Vapi::HmacAuthenticationPlan.validate_raw(obj: obj)
+      when "bearer"
+        Vapi::BearerAuthenticationPlan.validate_raw(obj: obj)
       else
         raise("Passed value matched no type within the union, validation failed.")
       end
@@ -91,6 +99,12 @@ module Vapi
     # @return [Vapi::CreateWebhookCredentialDtoAuthenticationPlan]
     def self.hmac(member:)
       new(member: member, discriminant: "hmac")
+    end
+
+    # @param member [Vapi::BearerAuthenticationPlan]
+    # @return [Vapi::CreateWebhookCredentialDtoAuthenticationPlan]
+    def self.bearer(member:)
+      new(member: member, discriminant: "bearer")
     end
   end
 end

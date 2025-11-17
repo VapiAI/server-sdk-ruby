@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "response_object"
+require_relative "response_completed_event_type"
 require "ostruct"
 require "json"
 
@@ -8,7 +9,7 @@ module Vapi
   class ResponseCompletedEvent
     # @return [Vapi::ResponseObject] The completed response
     attr_reader :response
-    # @return [String] Event type
+    # @return [Vapi::ResponseCompletedEventType] Event type
     attr_reader :type
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -19,7 +20,7 @@ module Vapi
     OMIT = Object.new
 
     # @param response [Vapi::ResponseObject] The completed response
-    # @param type [String] Event type
+    # @param type [Vapi::ResponseCompletedEventType] Event type
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ResponseCompletedEvent]
     def initialize(response:, type:, additional_properties: nil)
@@ -65,7 +66,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       Vapi::ResponseObject.validate_raw(obj: obj.response)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::ResponseCompletedEventType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
     end
   end
 end

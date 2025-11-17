@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "gcp_credential_provider"
 require "date"
 require_relative "gcp_key"
 require_relative "bucket_plan"
@@ -8,7 +9,7 @@ require "json"
 
 module Vapi
   class GcpCredential
-    # @return [String]
+    # @return [Vapi::GcpCredentialProvider]
     attr_reader :provider
     # @return [Float] This is the order in which this storage provider is tried during upload retries.
     #  Lower numbers are tried first in increasing order.
@@ -40,7 +41,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::GcpCredentialProvider]
     # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
     #  Lower numbers are tried first in increasing order.
     # @param id [String] This is the unique identifier for the credential.
@@ -141,7 +142,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::GcpCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

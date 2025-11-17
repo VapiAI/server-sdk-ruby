@@ -26,7 +26,8 @@ module Vapi
     #  Here are the template variables available:
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-
     #  {{systemPrompt}}: the system prompt of the call from
-    #  `assistant.model.messages[type=system].content`- {{schema}}: the schema of the
+    #  `assistant.model.messages[type=system].content`- {{messages}}: the messages of
+    #  the call from `assistant.model.messages`- {{schema}}: the schema of the
     #  structured data from `structuredDataPlan.schema`- {{endedReason}}: the ended
     #  reason of the call from `call.endedReason`
     attr_reader :messages
@@ -77,7 +78,8 @@ module Vapi
     #  Here are the template variables available:
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-
     #  {{systemPrompt}}: the system prompt of the call from
-    #  `assistant.model.messages[type=system].content`- {{schema}}: the schema of the
+    #  `assistant.model.messages[type=system].content`- {{messages}}: the messages of
+    #  the call from `assistant.model.messages`- {{schema}}: the schema of the
     #  structured data from `structuredDataPlan.schema`- {{endedReason}}: the ended
     #  reason of the call from `call.endedReason`
     # @param enabled [Boolean] This determines whether structured data is generated and stored in

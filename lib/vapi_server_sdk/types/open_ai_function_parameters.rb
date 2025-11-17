@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "open_ai_function_parameters_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class OpenAiFunctionParameters
-    # @return [String] This must be set to 'object'. It instructs the model to return a JSON object
+    # @return [Vapi::OpenAiFunctionParametersType] This must be set to 'object'. It instructs the model to return a JSON object
     #  containing the function call properties.
     attr_reader :type
     # @return [Hash{String => Vapi::JsonSchema}] This provides a description of the properties required by the function.
@@ -23,7 +24,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This must be set to 'object'. It instructs the model to return a JSON object
+    # @param type [Vapi::OpenAiFunctionParametersType] This must be set to 'object'. It instructs the model to return a JSON object
     #  containing the function call properties.
     # @param properties [Hash{String => Vapi::JsonSchema}] This provides a description of the properties required by the function.
     #  JSON Schema can be used to specify expectations for each property.
@@ -77,7 +78,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::OpenAiFunctionParametersType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.properties.is_a?(Hash) != false || raise("Passed value for field obj.properties is not the expected type, validation failed.")
       obj.required&.is_a?(Array) != false || raise("Passed value for field obj.required is not the expected type, validation failed.")
     end

@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "s_3_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class S3Credential
-    # @return [String] Credential provider. Only allowed value is s3
+    # @return [Vapi::S3CredentialProvider] Credential provider. Only allowed value is s3
     attr_reader :provider
     # @return [String] AWS access key ID.
     attr_reader :aws_access_key_id
@@ -39,7 +40,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String] Credential provider. Only allowed value is s3
+    # @param provider [Vapi::S3CredentialProvider] Credential provider. Only allowed value is s3
     # @param aws_access_key_id [String] AWS access key ID.
     # @param aws_secret_access_key [String] AWS access key secret. This is not returned in the API.
     # @param region [String] AWS region in which the S3 bucket is located.
@@ -137,7 +138,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::S3CredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.aws_access_key_id.is_a?(String) != false || raise("Passed value for field obj.aws_access_key_id is not the expected type, validation failed.")
       obj.aws_secret_access_key.is_a?(String) != false || raise("Passed value for field obj.aws_secret_access_key is not the expected type, validation failed.")
       obj.region.is_a?(String) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")

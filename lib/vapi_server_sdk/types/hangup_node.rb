@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "hangup_node_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class HangupNode
-    # @return [String]
+    # @return [Vapi::HangupNodeType]
     attr_reader :type
     # @return [String]
     attr_reader :name
@@ -21,7 +22,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
+    # @param type [Vapi::HangupNodeType]
     # @param name [String]
     # @param is_start [Boolean] This is whether or not the node is the start of the workflow.
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the task.
@@ -72,7 +73,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::HangupNodeType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.is_start&.is_a?(Boolean) != false || raise("Passed value for field obj.is_start is not the expected type, validation failed.")
       obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")

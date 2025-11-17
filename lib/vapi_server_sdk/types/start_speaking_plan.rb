@@ -24,13 +24,15 @@ module Vapi
     attr_reader :wait_seconds
     # @return [Vapi::StartSpeakingPlanSmartEndpointingEnabled]
     attr_reader :smart_endpointing_enabled
-    # @return [Vapi::StartSpeakingPlanSmartEndpointingPlan] This is the plan for smart endpointing. Pick between Vapi smart endpointing or
-    #  LiveKit smart endpointing (or nothing). We strongly recommend using livekit
-    #  endpointing when working in English. LiveKit endpointing is not supported in
-    #  other languages, yet.
+    # @return [Vapi::StartSpeakingPlanSmartEndpointingPlan] This is the plan for smart endpointing. Pick between Vapi smart endpointing,
+    #  LiveKit, or custom endpointing model (or nothing). We strongly recommend using
+    #  livekit endpointing when working in English. LiveKit endpointing is not
+    #  supported in other languages, yet.
     #  If this is set, it will override and take precedence over
     #  `transcriptionEndpointingPlan`.
     #  This plan will still be overridden by any matching `customEndpointingRules`.
+    #  If this is not set, the system will automatically use the transcriber's built-in
+    #  endpointing capabilities if available.
     attr_reader :smart_endpointing_plan
     # @return [Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>] These are the custom endpointing rules to set an endpointing timeout based on a
     #  regex on the customer's speech or the assistant's last message.
@@ -54,7 +56,8 @@ module Vapi
     # @return [Vapi::TranscriptionEndpointingPlan] This determines how a customer speech is considered done (endpointing) using the
     #  transcription of customer's speech.
     #  Once an endpoint is triggered, the request is sent to `assistant.model`.
-    #  Note: This plan is only used if `smartEndpointingPlan` is not set. If both are
+    #  Note: This plan is only used if `smartEndpointingPlan` is not set and
+    #  transcriber does not have built-in endpointing capabilities. If both are
     #  provided, `smartEndpointingPlan` takes precedence.
     #  This plan will also be overridden by any matching `customEndpointingRules`.
     attr_reader :transcription_endpointing_plan
@@ -79,13 +82,15 @@ module Vapi
     #  value.
     #  @default 0.4
     # @param smart_endpointing_enabled [Vapi::StartSpeakingPlanSmartEndpointingEnabled]
-    # @param smart_endpointing_plan [Vapi::StartSpeakingPlanSmartEndpointingPlan] This is the plan for smart endpointing. Pick between Vapi smart endpointing or
-    #  LiveKit smart endpointing (or nothing). We strongly recommend using livekit
-    #  endpointing when working in English. LiveKit endpointing is not supported in
-    #  other languages, yet.
+    # @param smart_endpointing_plan [Vapi::StartSpeakingPlanSmartEndpointingPlan] This is the plan for smart endpointing. Pick between Vapi smart endpointing,
+    #  LiveKit, or custom endpointing model (or nothing). We strongly recommend using
+    #  livekit endpointing when working in English. LiveKit endpointing is not
+    #  supported in other languages, yet.
     #  If this is set, it will override and take precedence over
     #  `transcriptionEndpointingPlan`.
     #  This plan will still be overridden by any matching `customEndpointingRules`.
+    #  If this is not set, the system will automatically use the transcriber's built-in
+    #  endpointing capabilities if available.
     # @param custom_endpointing_rules [Array<Vapi::StartSpeakingPlanCustomEndpointingRulesItem>] These are the custom endpointing rules to set an endpointing timeout based on a
     #  regex on the customer's speech or the assistant's last message.
     #  Usage:
@@ -107,7 +112,8 @@ module Vapi
     # @param transcription_endpointing_plan [Vapi::TranscriptionEndpointingPlan] This determines how a customer speech is considered done (endpointing) using the
     #  transcription of customer's speech.
     #  Once an endpoint is triggered, the request is sent to `assistant.model`.
-    #  Note: This plan is only used if `smartEndpointingPlan` is not set. If both are
+    #  Note: This plan is only used if `smartEndpointingPlan` is not set and
+    #  transcriber does not have built-in endpointing capabilities. If both are
     #  provided, `smartEndpointingPlan` takes precedence.
     #  This plan will also be overridden by any matching `customEndpointingRules`.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition

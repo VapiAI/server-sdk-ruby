@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "client_message_workflow_node_started_phone_number"
+require_relative "client_message_workflow_node_started_type"
 require_relative "call"
 require_relative "create_customer_dto"
 require_relative "create_assistant_dto"
@@ -11,6 +12,9 @@ module Vapi
   class ClientMessageWorkflowNodeStarted
     # @return [Vapi::ClientMessageWorkflowNodeStartedPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ClientMessageWorkflowNodeStartedType] This is the type of the message. "workflow.node.started" is sent when the active
+    #  node changes.
+    attr_reader :type
     # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Call] This is the call that the message is associated with.
@@ -30,6 +34,8 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ClientMessageWorkflowNodeStartedPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ClientMessageWorkflowNodeStartedType] This is the type of the message. "workflow.node.started" is sent when the active
+    #  node changes.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param call [Vapi::Call] This is the call that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
@@ -37,9 +43,10 @@ module Vapi
     # @param node [Hash{String => Object}] This is the active node.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageWorkflowNodeStarted]
-    def initialize(node:, phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
+    def initialize(type:, node:, phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
                    additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @timestamp = timestamp if timestamp != OMIT
       @call = call if call != OMIT
       @customer = customer if customer != OMIT
@@ -48,6 +55,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "timestamp": timestamp,
         "call": call,
         "customer": customer,
@@ -71,6 +79,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ClientMessageWorkflowNodeStartedPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["call"].nil?
         call = nil
@@ -93,6 +102,7 @@ module Vapi
       node = parsed_json["node"]
       new(
         phone_number: phone_number,
+        type: type,
         timestamp: timestamp,
         call: call,
         customer: customer,
@@ -117,6 +127,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ClientMessageWorkflowNodeStartedPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ClientMessageWorkflowNodeStartedType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)

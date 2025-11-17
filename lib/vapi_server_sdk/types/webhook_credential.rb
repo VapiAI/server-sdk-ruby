@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "webhook_credential_provider"
 require_relative "webhook_credential_authentication_plan"
 require "date"
 require_relative "oauth_2_authentication_session"
@@ -8,9 +9,10 @@ require "json"
 
 module Vapi
   class WebhookCredential
-    # @return [String]
+    # @return [Vapi::WebhookCredentialProvider]
     attr_reader :provider
-    # @return [Vapi::WebhookCredentialAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
+    # @return [Vapi::WebhookCredentialAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749, HMAC signing, and
+    #  Bearer authentication.
     attr_reader :authentication_plan
     # @return [String] This is the unique identifier for the credential.
     attr_reader :id
@@ -33,8 +35,9 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
-    # @param authentication_plan [Vapi::WebhookCredentialAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
+    # @param provider [Vapi::WebhookCredentialProvider]
+    # @param authentication_plan [Vapi::WebhookCredentialAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749, HMAC signing, and
+    #  Bearer authentication.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
@@ -121,7 +124,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::WebhookCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       Vapi::WebhookCredentialAuthenticationPlan.validate_raw(obj: obj.authentication_plan)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

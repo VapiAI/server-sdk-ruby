@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "transport_configuration_twilio_provider"
 require_relative "transport_configuration_twilio_recording_channels"
 require "ostruct"
 require "json"
 
 module Vapi
   class TransportConfigurationTwilio
-    # @return [String]
+    # @return [Vapi::TransportConfigurationTwilioProvider]
     attr_reader :provider
     # @return [Float] The integer number of seconds that we should allow the phone to ring before
     #  assuming there is no answer.
@@ -41,7 +42,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::TransportConfigurationTwilioProvider]
     # @param timeout [Float] The integer number of seconds that we should allow the phone to ring before
     #  assuming there is no answer.
     #  The default is `60` seconds and the maximum is `600` seconds.
@@ -116,7 +117,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::TransportConfigurationTwilioProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.timeout&.is_a?(Float) != false || raise("Passed value for field obj.timeout is not the expected type, validation failed.")
       obj.record&.is_a?(Boolean) != false || raise("Passed value for field obj.record is not the expected type, validation failed.")
       obj.recording_channels&.is_a?(Vapi::TransportConfigurationTwilioRecordingChannels) != false || raise("Passed value for field obj.recording_channels is not the expected type, validation failed.")

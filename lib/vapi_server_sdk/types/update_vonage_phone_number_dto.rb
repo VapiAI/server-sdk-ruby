@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "update_vonage_phone_number_dto_fallback_destination"
-require_relative "phone_number_hook_call_ringing"
+require_relative "update_vonage_phone_number_dto_hooks_item"
 require_relative "server"
 require "ostruct"
 require "json"
@@ -15,7 +15,7 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
-    # @return [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
+    # @return [Array<Vapi::UpdateVonagePhoneNumberDtoHooksItem>] This is the hooks that will be used for incoming calls to this phone number.
     attr_reader :hooks
     # @return [String] This is the name of the phone number. This is just for your own reference.
     attr_reader :name
@@ -64,7 +64,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
-    # @param hooks [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
+    # @param hooks [Array<Vapi::UpdateVonagePhoneNumberDtoHooksItem>] This is the hooks that will be used for incoming calls to this phone number.
     # @param name [String] This is the name of the phone number. This is just for your own reference.
     # @param assistant_id [String] This is the assistant that will be used for incoming calls to this phone number.
     #  If neither `assistantId`, `squadId` nor `workflowId` is set, `assistant-request`
@@ -135,7 +135,7 @@ module Vapi
       end
       hooks = parsed_json["hooks"]&.map do |item|
         item = item.to_json
-        Vapi::PhoneNumberHookCallRinging.from_json(json_object: item)
+        Vapi::UpdateVonagePhoneNumberDtoHooksItem.from_json(json_object: item)
       end
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]

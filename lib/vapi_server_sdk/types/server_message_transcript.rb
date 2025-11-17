@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "server_message_transcript_phone_number"
+require_relative "server_message_transcript_type"
 require_relative "artifact"
 require_relative "create_assistant_dto"
 require_relative "create_customer_dto"
@@ -15,6 +16,9 @@ module Vapi
   class ServerMessageTranscript
     # @return [Vapi::ServerMessageTranscriptPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ServerMessageTranscriptType] This is the type of the message. "transcript" is sent as transcriber outputs
+    #  partial or final transcript.
+    attr_reader :type
     # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Artifact] This is a live version of the `call.artifact`.
@@ -34,6 +38,13 @@ module Vapi
     attr_reader :transcript_type
     # @return [String] This is the transcript content.
     attr_reader :transcript
+    # @return [Boolean] Indicates if the transcript was filtered for security reasons.
+    attr_reader :is_filtered
+    # @return [Array<String>] List of detected security threats if the transcript was filtered.
+    attr_reader :detected_threats
+    # @return [String] The original transcript before filtering (only included if content was
+    #  filtered).
+    attr_reader :original_transcript
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -43,6 +54,8 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ServerMessageTranscriptPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ServerMessageTranscriptType] This is the type of the message. "transcript" is sent as transcriber outputs
+    #  partial or final transcript.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param artifact [Vapi::Artifact] This is a live version of the `call.artifact`.
     #  This matches what is stored on `call.artifact` after the call.
@@ -53,11 +66,16 @@ module Vapi
     # @param role [Vapi::ServerMessageTranscriptRole] This is the role for which the transcript is for.
     # @param transcript_type [Vapi::ServerMessageTranscriptTranscriptType] This is the type of the transcript.
     # @param transcript [String] This is the transcript content.
+    # @param is_filtered [Boolean] Indicates if the transcript was filtered for security reasons.
+    # @param detected_threats [Array<String>] List of detected security threats if the transcript was filtered.
+    # @param original_transcript [String] The original transcript before filtering (only included if content was
+    #  filtered).
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageTranscript]
-    def initialize(role:, transcript_type:, transcript:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT,
-                   chat: OMIT, additional_properties: nil)
+    def initialize(type:, role:, transcript_type:, transcript:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT,
+                   call: OMIT, chat: OMIT, is_filtered: OMIT, detected_threats: OMIT, original_transcript: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @timestamp = timestamp if timestamp != OMIT
       @artifact = artifact if artifact != OMIT
       @assistant = assistant if assistant != OMIT
@@ -67,9 +85,13 @@ module Vapi
       @role = role
       @transcript_type = transcript_type
       @transcript = transcript
+      @is_filtered = is_filtered if is_filtered != OMIT
+      @detected_threats = detected_threats if detected_threats != OMIT
+      @original_transcript = original_transcript if original_transcript != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "timestamp": timestamp,
         "artifact": artifact,
         "assistant": assistant,
@@ -78,7 +100,10 @@ module Vapi
         "chat": chat,
         "role": role,
         "transcriptType": transcript_type,
-        "transcript": transcript
+        "transcript": transcript,
+        "isFiltered": is_filtered,
+        "detectedThreats": detected_threats,
+        "originalTranscript": original_transcript
       }.reject do |_k, v|
         v == OMIT
       end
@@ -97,6 +122,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageTranscriptPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["artifact"].nil?
         artifact = nil
@@ -131,8 +157,12 @@ module Vapi
       role = parsed_json["role"]
       transcript_type = parsed_json["transcriptType"]
       transcript = parsed_json["transcript"]
+      is_filtered = parsed_json["isFiltered"]
+      detected_threats = parsed_json["detectedThreats"]
+      original_transcript = parsed_json["originalTranscript"]
       new(
         phone_number: phone_number,
+        type: type,
         timestamp: timestamp,
         artifact: artifact,
         assistant: assistant,
@@ -142,6 +172,9 @@ module Vapi
         role: role,
         transcript_type: transcript_type,
         transcript: transcript,
+        is_filtered: is_filtered,
+        detected_threats: detected_threats,
+        original_transcript: original_transcript,
         additional_properties: struct
       )
     end
@@ -161,6 +194,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageTranscriptPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ServerMessageTranscriptType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)
@@ -170,6 +204,9 @@ module Vapi
       obj.role.is_a?(Vapi::ServerMessageTranscriptRole) != false || raise("Passed value for field obj.role is not the expected type, validation failed.")
       obj.transcript_type.is_a?(Vapi::ServerMessageTranscriptTranscriptType) != false || raise("Passed value for field obj.transcript_type is not the expected type, validation failed.")
       obj.transcript.is_a?(String) != false || raise("Passed value for field obj.transcript is not the expected type, validation failed.")
+      obj.is_filtered&.is_a?(Boolean) != false || raise("Passed value for field obj.is_filtered is not the expected type, validation failed.")
+      obj.detected_threats&.is_a?(Array) != false || raise("Passed value for field obj.detected_threats is not the expected type, validation failed.")
+      obj.original_transcript&.is_a?(String) != false || raise("Passed value for field obj.original_transcript is not the expected type, validation failed.")
     end
   end
 end

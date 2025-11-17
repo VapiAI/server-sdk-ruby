@@ -48,5 +48,15 @@ module Vapi
     SELENE = "selene"
     THEIA = "theia"
     VESTA = "vesta"
+    CELESTE = "celeste"
+    ESTRELLA = "estrella"
+    NESTOR = "nestor"
+    SIRIO = "sirio"
+    CARINA = "carina"
+    ALVARO = "alvaro"
+    DIANA = "diana"
+    AQUILA = "aquila"
+    SELENA = "selena"
+    JAVIER = "javier"
   end
 end

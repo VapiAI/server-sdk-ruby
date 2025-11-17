@@ -3,6 +3,7 @@
 require_relative "open_ai_message"
 require_relative "vapi_model_tools_item"
 require_relative "create_custom_knowledge_base_dto"
+require_relative "vapi_model_provider"
 require_relative "workflow_user_editable"
 require "ostruct"
 require "json"
@@ -21,9 +22,7 @@ module Vapi
     attr_reader :tool_ids
     # @return [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
     attr_reader :knowledge_base
-    # @return [String] This is the ID of the knowledge base the model will use.
-    attr_reader :knowledge_base_id
-    # @return [String]
+    # @return [Vapi::VapiModelProvider]
     attr_reader :provider
     # @return [String] This is the workflow that will be used for the call. To use a transient
     #  workflow, use `workflow` instead.
@@ -67,8 +66,7 @@ module Vapi
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
     # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
-    # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
-    # @param provider [String]
+    # @param provider [Vapi::VapiModelProvider]
     # @param workflow_id [String] This is the workflow that will be used for the call. To use a transient
     #  workflow, use `workflow` instead.
     # @param workflow [Vapi::WorkflowUserEditable] This is the workflow that will be used for the call. To use an existing
@@ -90,13 +88,12 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VapiModel]
-    def initialize(provider:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT,
-                   knowledge_base_id: OMIT, workflow_id: OMIT, workflow: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+    def initialize(provider:, model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, workflow_id: OMIT,
+                   workflow: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
-      @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @provider = provider
       @workflow_id = workflow_id if workflow_id != OMIT
       @workflow = workflow if workflow != OMIT
@@ -111,7 +108,6 @@ module Vapi
         "tools": tools,
         "toolIds": tool_ids,
         "knowledgeBase": knowledge_base,
-        "knowledgeBaseId": knowledge_base_id,
         "provider": provider,
         "workflowId": workflow_id,
         "workflow": workflow,
@@ -147,7 +143,6 @@ module Vapi
         knowledge_base = parsed_json["knowledgeBase"].to_json
         knowledge_base = Vapi::CreateCustomKnowledgeBaseDto.from_json(json_object: knowledge_base)
       end
-      knowledge_base_id = parsed_json["knowledgeBaseId"]
       provider = parsed_json["provider"]
       workflow_id = parsed_json["workflowId"]
       if parsed_json["workflow"].nil?
@@ -166,7 +161,6 @@ module Vapi
         tools: tools,
         tool_ids: tool_ids,
         knowledge_base: knowledge_base,
-        knowledge_base_id: knowledge_base_id,
         provider: provider,
         workflow_id: workflow_id,
         workflow: workflow,
@@ -197,8 +191,7 @@ module Vapi
       obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
       obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
-      obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::VapiModelProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
       obj.workflow.nil? || Vapi::WorkflowUserEditable.validate_raw(obj: obj.workflow)
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")

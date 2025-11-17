@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "knowledge_base_provider"
 require_relative "knowledge_base_model"
 require "ostruct"
 require "json"
@@ -8,7 +9,7 @@ module Vapi
   class KnowledgeBase
     # @return [String] The name of the knowledge base
     attr_reader :name
-    # @return [String] The provider of the knowledge base
+    # @return [Vapi::KnowledgeBaseProvider] The provider of the knowledge base
     attr_reader :provider
     # @return [Vapi::KnowledgeBaseModel] The model to use for the knowledge base
     attr_reader :model
@@ -25,7 +26,7 @@ module Vapi
     OMIT = Object.new
 
     # @param name [String] The name of the knowledge base
-    # @param provider [String] The provider of the knowledge base
+    # @param provider [Vapi::KnowledgeBaseProvider] The provider of the knowledge base
     # @param model [Vapi::KnowledgeBaseModel] The model to use for the knowledge base
     # @param description [String] A description of the knowledge base
     # @param file_ids [Array<String>] The file IDs associated with this knowledge base
@@ -86,7 +87,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::KnowledgeBaseProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.model&.is_a?(Vapi::KnowledgeBaseModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.description.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")
       obj.file_ids.is_a?(Array) != false || raise("Passed value for field obj.file_ids is not the expected type, validation failed.")

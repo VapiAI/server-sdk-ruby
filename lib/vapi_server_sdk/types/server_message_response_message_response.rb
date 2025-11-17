@@ -2,6 +2,7 @@
 
 require "json"
 require_relative "server_message_response_assistant_request"
+require_relative "server_message_response_handoff_destination_request"
 require_relative "server_message_response_knowledge_base_request"
 require_relative "server_message_response_tool_calls"
 require_relative "server_message_response_transfer_destination_request"
@@ -22,6 +23,14 @@ module Vapi
       begin
         Vapi::ServerMessageResponseAssistantRequest.validate_raw(obj: struct)
         return Vapi::ServerMessageResponseAssistantRequest.from_json(json_object: struct) unless struct.nil?
+
+        return nil
+      rescue StandardError
+        # noop
+      end
+      begin
+        Vapi::ServerMessageResponseHandoffDestinationRequest.validate_raw(obj: struct)
+        return Vapi::ServerMessageResponseHandoffDestinationRequest.from_json(json_object: struct) unless struct.nil?
 
         return nil
       rescue StandardError
@@ -79,6 +88,11 @@ module Vapi
     def self.validate_raw(obj:)
       begin
         return Vapi::ServerMessageResponseAssistantRequest.validate_raw(obj: obj)
+      rescue StandardError
+        # noop
+      end
+      begin
+        return Vapi::ServerMessageResponseHandoffDestinationRequest.validate_raw(obj: obj)
       rescue StandardError
         # noop
       end

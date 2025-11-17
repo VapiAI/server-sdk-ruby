@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "cloudflare_credential_provider"
 require "date"
 require_relative "cloudflare_r_2_bucket_plan"
 require "ostruct"
@@ -7,7 +8,7 @@ require "json"
 
 module Vapi
   class CloudflareCredential
-    # @return [String] Credential provider. Only allowed value is cloudflare
+    # @return [Vapi::CloudflareCredentialProvider] Credential provider. Only allowed value is cloudflare
     attr_reader :provider
     # @return [String] Cloudflare Account Id.
     attr_reader :account_id
@@ -38,7 +39,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String] Credential provider. Only allowed value is cloudflare
+    # @param provider [Vapi::CloudflareCredentialProvider] Credential provider. Only allowed value is cloudflare
     # @param account_id [String] Cloudflare Account Id.
     # @param api_key [String] Cloudflare API Key / Token.
     # @param account_email [String] Cloudflare Account Email.
@@ -136,7 +137,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::CloudflareCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.account_id&.is_a?(String) != false || raise("Passed value for field obj.account_id is not the expected type, validation failed.")
       obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.account_email&.is_a?(String) != false || raise("Passed value for field obj.account_email is not the expected type, validation failed.")

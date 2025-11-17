@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require_relative "make_tool_messages_item"
+require_relative "make_tool_type"
 require "date"
-require_relative "open_ai_function"
+require_relative "tool_rejection_plan"
 require_relative "make_tool_metadata"
 require "ostruct"
 require "json"
@@ -14,6 +15,8 @@ module Vapi
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
     attr_reader :messages
+    # @return [Vapi::MakeToolType] The type of tool. "make" for Make tool.
+    attr_reader :type
     # @return [String] This is the unique identifier for the tool.
     attr_reader :id
     # @return [String] This is the unique identifier for the organization that this tool belongs to.
@@ -22,16 +25,85 @@ module Vapi
     attr_reader :created_at
     # @return [DateTime] This is the ISO 8601 date-time string of when the tool was last updated.
     attr_reader :updated_at
-    # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.
-    attr_reader :function
+    # @return [Vapi::ToolRejectionPlan] This is the plan to reject a tool call based on the conversation state.
+    #  // Example 1: Reject endCall if user didn't say goodbye
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '(?i)\\b(bye|goodbye|farewell|see you later|take care)\\b',
+    #  target: { position: -1, role: 'user' },
+    #  negate: true  // Reject if pattern does NOT match
+    #  }]
+    #  }
+    #  ```
+    #  // Example 2: Reject transfer if user is actually asking a question
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '\\?',
+    #  target: { position: -1, role: 'user' }
+    #  }]
+    #  }
+    #  ```
+    #  // Example 3: Reject transfer if user didn't mention transfer recently
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 5 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' %}
+    #  {% assign mentioned = false %}
+    #  {% for msg in userMessages %}
+    #  {% if msg.content contains 'transfer' or msg.content contains 'connect' or
+    #  msg.content contains 'speak to' %}
+    #  {% assign mentioned = true %}
+    #  {% break %}
+    #  {% endif %}
+    #  {% endfor %}
+    #  {% if mentioned %}
+    #  false
+    #  {% else %}
+    #  true
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    #  // Example 4: Reject endCall if the bot is looping and trying to exit
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 6 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' | reverse %}
+    #  {% if userMessages.size < 3 %}
+    #  false
+    #  {% else %}
+    #  {% assign msg1 = userMessages[0].content | downcase %}
+    #  {% assign msg2 = userMessages[1].content | downcase %}
+    #  {% assign msg3 = userMessages[2].content | downcase %}
+    #  {% comment %} Check for repetitive messages {% endcomment %}
+    #  {% if msg1 == msg2 or msg1 == msg3 or msg2 == msg3 %}
+    #  true
+    #  {% comment %} Check for common loop phrases {% endcomment %}
+    #  {% elsif msg1 contains 'cool thanks' or msg2 contains 'cool thanks' or msg3
+    #  contains 'cool thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'okay thanks' or msg2 contains 'okay thanks' or msg3
+    #  contains 'okay thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'got it' or msg2 contains 'got it' or msg3 contains
+    #  'got it' %}
+    #  true
+    #  {% else %}
+    #  false
+    #  {% endif %}
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    attr_reader :rejection_plan
     # @return [Vapi::MakeToolMetadata]
     attr_reader :metadata
     # @return [OpenStruct] Additional properties unmapped to the current class definition
@@ -46,39 +118,111 @@ module Vapi
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
+    # @param type [Vapi::MakeToolType] The type of tool. "make" for Make tool.
     # @param id [String] This is the unique identifier for the tool.
     # @param org_id [String] This is the unique identifier for the organization that this tool belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the tool was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the tool was last updated.
-    # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.
+    # @param rejection_plan [Vapi::ToolRejectionPlan] This is the plan to reject a tool call based on the conversation state.
+    #  // Example 1: Reject endCall if user didn't say goodbye
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '(?i)\\b(bye|goodbye|farewell|see you later|take care)\\b',
+    #  target: { position: -1, role: 'user' },
+    #  negate: true  // Reject if pattern does NOT match
+    #  }]
+    #  }
+    #  ```
+    #  // Example 2: Reject transfer if user is actually asking a question
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '\\?',
+    #  target: { position: -1, role: 'user' }
+    #  }]
+    #  }
+    #  ```
+    #  // Example 3: Reject transfer if user didn't mention transfer recently
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 5 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' %}
+    #  {% assign mentioned = false %}
+    #  {% for msg in userMessages %}
+    #  {% if msg.content contains 'transfer' or msg.content contains 'connect' or
+    #  msg.content contains 'speak to' %}
+    #  {% assign mentioned = true %}
+    #  {% break %}
+    #  {% endif %}
+    #  {% endfor %}
+    #  {% if mentioned %}
+    #  false
+    #  {% else %}
+    #  true
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    #  // Example 4: Reject endCall if the bot is looping and trying to exit
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 6 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' | reverse %}
+    #  {% if userMessages.size < 3 %}
+    #  false
+    #  {% else %}
+    #  {% assign msg1 = userMessages[0].content | downcase %}
+    #  {% assign msg2 = userMessages[1].content | downcase %}
+    #  {% assign msg3 = userMessages[2].content | downcase %}
+    #  {% comment %} Check for repetitive messages {% endcomment %}
+    #  {% if msg1 == msg2 or msg1 == msg3 or msg2 == msg3 %}
+    #  true
+    #  {% comment %} Check for common loop phrases {% endcomment %}
+    #  {% elsif msg1 contains 'cool thanks' or msg2 contains 'cool thanks' or msg3
+    #  contains 'cool thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'okay thanks' or msg2 contains 'okay thanks' or msg3
+    #  contains 'okay thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'got it' or msg2 contains 'got it' or msg3 contains
+    #  'got it' %}
+    #  true
+    #  {% else %}
+    #  false
+    #  {% endif %}
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
     # @param metadata [Vapi::MakeToolMetadata]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::MakeTool]
-    def initialize(id:, org_id:, created_at:, updated_at:, metadata:, messages: OMIT, function: OMIT,
+    def initialize(type:, id:, org_id:, created_at:, updated_at:, metadata:, messages: OMIT, rejection_plan: OMIT,
                    additional_properties: nil)
       @messages = messages if messages != OMIT
+      @type = type
       @id = id
       @org_id = org_id
       @created_at = created_at
       @updated_at = updated_at
-      @function = function if function != OMIT
+      @rejection_plan = rejection_plan if rejection_plan != OMIT
       @metadata = metadata
       @additional_properties = additional_properties
       @_field_set = {
         "messages": messages,
+        "type": type,
         "id": id,
         "orgId": org_id,
         "createdAt": created_at,
         "updatedAt": updated_at,
-        "function": function,
+        "rejectionPlan": rejection_plan,
         "metadata": metadata
       }.reject do |_k, v|
         v == OMIT
@@ -96,15 +240,16 @@ module Vapi
         item = item.to_json
         Vapi::MakeToolMessagesItem.from_json(json_object: item)
       end
+      type = parsed_json["type"]
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
-      if parsed_json["function"].nil?
-        function = nil
+      if parsed_json["rejectionPlan"].nil?
+        rejection_plan = nil
       else
-        function = parsed_json["function"].to_json
-        function = Vapi::OpenAiFunction.from_json(json_object: function)
+        rejection_plan = parsed_json["rejectionPlan"].to_json
+        rejection_plan = Vapi::ToolRejectionPlan.from_json(json_object: rejection_plan)
       end
       if parsed_json["metadata"].nil?
         metadata = nil
@@ -114,11 +259,12 @@ module Vapi
       end
       new(
         messages: messages,
+        type: type,
         id: id,
         org_id: org_id,
         created_at: created_at,
         updated_at: updated_at,
-        function: function,
+        rejection_plan: rejection_plan,
         metadata: metadata,
         additional_properties: struct
       )
@@ -139,11 +285,12 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::MakeToolType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
-      obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
+      obj.rejection_plan.nil? || Vapi::ToolRejectionPlan.validate_raw(obj: obj.rejection_plan)
       Vapi::MakeToolMetadata.validate_raw(obj: obj.metadata)
     end
   end

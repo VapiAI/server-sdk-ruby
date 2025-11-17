@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "text_content_type"
 require_relative "text_content_language"
 require "ostruct"
 require "json"
 
 module Vapi
   class TextContent
-    # @return [String]
+    # @return [Vapi::TextContentType]
     attr_reader :type
     # @return [String]
     attr_reader :text
@@ -20,7 +21,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String]
+    # @param type [Vapi::TextContentType]
     # @param text [String]
     # @param language [Vapi::TextContentLanguage]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
@@ -65,7 +66,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::TextContentType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.text.is_a?(String) != false || raise("Passed value for field obj.text is not the expected type, validation failed.")
       obj.language.is_a?(Vapi::TextContentLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
     end

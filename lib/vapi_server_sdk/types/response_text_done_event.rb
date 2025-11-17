@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "response_text_done_event_type"
 require "ostruct"
 require "json"
 
@@ -13,7 +14,7 @@ module Vapi
     attr_reader :output_index
     # @return [String] Complete text content
     attr_reader :text
-    # @return [String] Event type
+    # @return [Vapi::ResponseTextDoneEventType] Event type
     attr_reader :type
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -27,7 +28,7 @@ module Vapi
     # @param item_id [String] ID of the output item
     # @param output_index [Float] Index of the output item
     # @param text [String] Complete text content
-    # @param type [String] Event type
+    # @param type [Vapi::ResponseTextDoneEventType] Event type
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ResponseTextDoneEvent]
     def initialize(content_index:, item_id:, output_index:, text:, type:, additional_properties: nil)
@@ -86,7 +87,7 @@ module Vapi
       obj.item_id.is_a?(String) != false || raise("Passed value for field obj.item_id is not the expected type, validation failed.")
       obj.output_index.is_a?(Float) != false || raise("Passed value for field obj.output_index is not the expected type, validation failed.")
       obj.text.is_a?(String) != false || raise("Passed value for field obj.text is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::ResponseTextDoneEventType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
     end
   end
 end

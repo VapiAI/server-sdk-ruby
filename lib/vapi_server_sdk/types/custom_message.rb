@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "text_content"
+require_relative "custom_message_type"
 require "ostruct"
 require "json"
 
@@ -15,7 +16,7 @@ module Vapi
     #  be automatically translated to the active language at that moment.
     #  This will override the `content` property.
     attr_reader :contents
-    # @return [String] This is a custom message.
+    # @return [Vapi::CustomMessageType] This is a custom message.
     attr_reader :type
     # @return [String] This is the content that the assistant will say when this message is triggered.
     attr_reader :content
@@ -35,7 +36,7 @@ module Vapi
     #  - If you don't provide content for a language, the first item in the array will
     #  be automatically translated to the active language at that moment.
     #  This will override the `content` property.
-    # @param type [String] This is a custom message.
+    # @param type [Vapi::CustomMessageType] This is a custom message.
     # @param content [String] This is the content that the assistant will say when this message is triggered.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CustomMessage]
@@ -85,7 +86,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.contents&.is_a?(Array) != false || raise("Passed value for field obj.contents is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::CustomMessageType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.content&.is_a?(String) != false || raise("Passed value for field obj.content is not the expected type, validation failed.")
     end
   end

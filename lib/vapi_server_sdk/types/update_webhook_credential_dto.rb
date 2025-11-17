@@ -6,7 +6,8 @@ require "json"
 
 module Vapi
   class UpdateWebhookCredentialDto
-    # @return [Vapi::UpdateWebhookCredentialDtoAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
+    # @return [Vapi::UpdateWebhookCredentialDtoAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749, HMAC signing, and
+    #  Bearer authentication.
     attr_reader :authentication_plan
     # @return [String] This is the name of credential. This is just for your reference.
     attr_reader :name
@@ -18,7 +19,8 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param authentication_plan [Vapi::UpdateWebhookCredentialDtoAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749 and HMAC signing.
+    # @param authentication_plan [Vapi::UpdateWebhookCredentialDtoAuthenticationPlan] This is the authentication plan. Supports OAuth2 RFC 6749, HMAC signing, and
+    #  Bearer authentication.
     # @param name [String] This is the name of credential. This is just for your reference.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateWebhookCredentialDto]

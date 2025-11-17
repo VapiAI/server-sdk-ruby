@@ -14,5 +14,7 @@ module Vapi
     HARRY = "Harry"
     PAIGE = "Paige"
     SPENCER = "Spencer"
+    LEAH = "Leah"
+    TARA = "Tara"
   end
 end

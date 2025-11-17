@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "trieve_knowledge_base_create_type"
 require_relative "trieve_knowledge_base_chunk_plan"
 require "ostruct"
 require "json"
 
 module Vapi
   class TrieveKnowledgeBaseCreate
-    # @return [String] This is to create a new dataset on Trieve.
+    # @return [Vapi::TrieveKnowledgeBaseCreateType] This is to create a new dataset on Trieve.
     attr_reader :type
     # @return [Array<Vapi::TrieveKnowledgeBaseChunkPlan>] These are the chunk plans used to create the dataset.
     attr_reader :chunk_plans
@@ -18,7 +19,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is to create a new dataset on Trieve.
+    # @param type [Vapi::TrieveKnowledgeBaseCreateType] This is to create a new dataset on Trieve.
     # @param chunk_plans [Array<Vapi::TrieveKnowledgeBaseChunkPlan>] These are the chunk plans used to create the dataset.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TrieveKnowledgeBaseCreate]
@@ -62,7 +63,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::TrieveKnowledgeBaseCreateType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.chunk_plans.is_a?(Array) != false || raise("Passed value for field obj.chunk_plans is not the expected type, validation failed.")
     end
   end

@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "langfuse_observability_plan_provider"
 require "ostruct"
 require "json"
 
 module Vapi
   class LangfuseObservabilityPlan
-    # @return [String]
+    # @return [Vapi::LangfuseObservabilityPlanProvider]
     attr_reader :provider
     # @return [Array<String>] This is an array of tags to be added to the Langfuse trace. Tags allow you to
     #  categorize and filter traces. https://langfuse.com/docs/tracing-features/tags
@@ -24,7 +25,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::LangfuseObservabilityPlanProvider]
     # @param tags [Array<String>] This is an array of tags to be added to the Langfuse trace. Tags allow you to
     #  categorize and filter traces. https://langfuse.com/docs/tracing-features/tags
     # @param metadata [Hash{String => Object}] This is a JSON object that will be added to the Langfuse trace. Traces can be
@@ -76,7 +77,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::LangfuseObservabilityPlanProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.tags.is_a?(Array) != false || raise("Passed value for field obj.tags is not the expected type, validation failed.")
       obj.metadata&.is_a?(Hash) != false || raise("Passed value for field obj.metadata is not the expected type, validation failed.")
     end

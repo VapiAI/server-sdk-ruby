@@ -4,6 +4,7 @@ module Vapi
   # This is the model that will be used. This is optional and will default to the
   #  correct model for the voiceId.
   class CartesiaVoiceModel
+    SONIC_3 = "sonic-3"
     SONIC_2 = "sonic-2"
     SONIC_ENGLISH = "sonic-english"
     SONIC_MULTILINGUAL = "sonic-multilingual"

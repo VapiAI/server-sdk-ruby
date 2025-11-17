@@ -3,6 +3,7 @@
 require_relative "cartesia_voice_model"
 require_relative "cartesia_voice_language"
 require_relative "cartesia_experimental_controls"
+require_relative "cartesia_generation_config"
 require_relative "chunk_plan"
 require_relative "fallback_plan"
 require "ostruct"
@@ -22,6 +23,12 @@ module Vapi
     attr_reader :language
     # @return [Vapi::CartesiaExperimentalControls] Experimental controls for Cartesia voice generation
     attr_reader :experimental_controls
+    # @return [Vapi::CartesiaGenerationConfig] Generation config for fine-grained control of sonic-3 voice output (speed,
+    #  volume, and experimental controls). Only available for sonic-3 model.
+    attr_reader :generation_config
+    # @return [String] Pronunciation dictionary ID for sonic-3. Allows custom pronunciations for
+    #  specific words. Only available for sonic-3 model.
+    attr_reader :pronunciation_dict_id
     # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
     attr_reader :chunk_plan
@@ -43,6 +50,10 @@ module Vapi
     # @param language [Vapi::CartesiaVoiceLanguage] This is the language that will be used. This is optional and will default to the
     #  correct language for the voiceId.
     # @param experimental_controls [Vapi::CartesiaExperimentalControls] Experimental controls for Cartesia voice generation
+    # @param generation_config [Vapi::CartesiaGenerationConfig] Generation config for fine-grained control of sonic-3 voice output (speed,
+    #  volume, and experimental controls). Only available for sonic-3 model.
+    # @param pronunciation_dict_id [String] Pronunciation dictionary ID for sonic-3. Allows custom pronunciations for
+    #  specific words. Only available for sonic-3 model.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
     # @param fallback_plan [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
@@ -50,12 +61,14 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CartesiaVoice]
     def initialize(voice_id:, caching_enabled: OMIT, model: OMIT, language: OMIT, experimental_controls: OMIT,
-                   chunk_plan: OMIT, fallback_plan: OMIT, additional_properties: nil)
+                   generation_config: OMIT, pronunciation_dict_id: OMIT, chunk_plan: OMIT, fallback_plan: OMIT, additional_properties: nil)
       @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @model = model if model != OMIT
       @language = language if language != OMIT
       @experimental_controls = experimental_controls if experimental_controls != OMIT
+      @generation_config = generation_config if generation_config != OMIT
+      @pronunciation_dict_id = pronunciation_dict_id if pronunciation_dict_id != OMIT
       @chunk_plan = chunk_plan if chunk_plan != OMIT
       @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
@@ -65,6 +78,8 @@ module Vapi
         "model": model,
         "language": language,
         "experimentalControls": experimental_controls,
+        "generationConfig": generation_config,
+        "pronunciationDictId": pronunciation_dict_id,
         "chunkPlan": chunk_plan,
         "fallbackPlan": fallback_plan
       }.reject do |_k, v|
@@ -89,6 +104,13 @@ module Vapi
         experimental_controls = parsed_json["experimentalControls"].to_json
         experimental_controls = Vapi::CartesiaExperimentalControls.from_json(json_object: experimental_controls)
       end
+      if parsed_json["generationConfig"].nil?
+        generation_config = nil
+      else
+        generation_config = parsed_json["generationConfig"].to_json
+        generation_config = Vapi::CartesiaGenerationConfig.from_json(json_object: generation_config)
+      end
+      pronunciation_dict_id = parsed_json["pronunciationDictId"]
       if parsed_json["chunkPlan"].nil?
         chunk_plan = nil
       else
@@ -107,6 +129,8 @@ module Vapi
         model: model,
         language: language,
         experimental_controls: experimental_controls,
+        generation_config: generation_config,
+        pronunciation_dict_id: pronunciation_dict_id,
         chunk_plan: chunk_plan,
         fallback_plan: fallback_plan,
         additional_properties: struct
@@ -132,6 +156,8 @@ module Vapi
       obj.model&.is_a?(Vapi::CartesiaVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::CartesiaVoiceLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.experimental_controls.nil? || Vapi::CartesiaExperimentalControls.validate_raw(obj: obj.experimental_controls)
+      obj.generation_config.nil? || Vapi::CartesiaGenerationConfig.validate_raw(obj: obj.generation_config)
+      obj.pronunciation_dict_id&.is_a?(String) != false || raise("Passed value for field obj.pronunciation_dict_id is not the expected type, validation failed.")
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
       obj.fallback_plan.nil? || Vapi::FallbackPlan.validate_raw(obj: obj.fallback_plan)
     end

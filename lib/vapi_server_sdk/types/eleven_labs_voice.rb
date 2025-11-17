@@ -3,6 +3,7 @@
 require_relative "eleven_labs_voice_id"
 require_relative "eleven_labs_voice_model"
 require_relative "chunk_plan"
+require_relative "eleven_labs_pronunciation_dictionary_locator"
 require_relative "fallback_plan"
 require "ostruct"
 require "json"
@@ -36,13 +37,15 @@ module Vapi
     # @return [Vapi::ElevenLabsVoiceModel] This is the model that will be used. Defaults to 'eleven_turbo_v2' if not
     #  specified.
     attr_reader :model
-    # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
-    attr_reader :chunk_plan
     # @return [String] This is the language (ISO 639-1) that is enforced for the model. Currently only
     #  Turbo v2.5 supports language enforcement. For other models, an error will be
     #  returned if language code is provided.
     attr_reader :language
+    # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
+    #  provider.
+    attr_reader :chunk_plan
+    # @return [Array<Vapi::ElevenLabsPronunciationDictionaryLocator>] This is the pronunciation dictionary locators to use.
+    attr_reader :pronunciation_dictionary_locators
     # @return [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
     #  voice provider fails.
     attr_reader :fallback_plan
@@ -70,17 +73,18 @@ module Vapi
     # @param auto_mode [Boolean] Defines the auto mode for voice settings. Defaults to false.
     # @param model [Vapi::ElevenLabsVoiceModel] This is the model that will be used. Defaults to 'eleven_turbo_v2' if not
     #  specified.
-    # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
-    #  provider.
     # @param language [String] This is the language (ISO 639-1) that is enforced for the model. Currently only
     #  Turbo v2.5 supports language enforcement. For other models, an error will be
     #  returned if language code is provided.
+    # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
+    #  provider.
+    # @param pronunciation_dictionary_locators [Array<Vapi::ElevenLabsPronunciationDictionaryLocator>] This is the pronunciation dictionary locators to use.
     # @param fallback_plan [Vapi::FallbackPlan] This is the plan for voice provider fallbacks in the event that the primary
     #  voice provider fails.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ElevenLabsVoice]
     def initialize(voice_id:, caching_enabled: OMIT, stability: OMIT, similarity_boost: OMIT, style: OMIT,
-                   use_speaker_boost: OMIT, speed: OMIT, optimize_streaming_latency: OMIT, enable_ssml_parsing: OMIT, auto_mode: OMIT, model: OMIT, chunk_plan: OMIT, language: OMIT, fallback_plan: OMIT, additional_properties: nil)
+                   use_speaker_boost: OMIT, speed: OMIT, optimize_streaming_latency: OMIT, enable_ssml_parsing: OMIT, auto_mode: OMIT, model: OMIT, language: OMIT, chunk_plan: OMIT, pronunciation_dictionary_locators: OMIT, fallback_plan: OMIT, additional_properties: nil)
       @caching_enabled = caching_enabled if caching_enabled != OMIT
       @voice_id = voice_id
       @stability = stability if stability != OMIT
@@ -92,8 +96,11 @@ module Vapi
       @enable_ssml_parsing = enable_ssml_parsing if enable_ssml_parsing != OMIT
       @auto_mode = auto_mode if auto_mode != OMIT
       @model = model if model != OMIT
-      @chunk_plan = chunk_plan if chunk_plan != OMIT
       @language = language if language != OMIT
+      @chunk_plan = chunk_plan if chunk_plan != OMIT
+      if pronunciation_dictionary_locators != OMIT
+        @pronunciation_dictionary_locators = pronunciation_dictionary_locators
+      end
       @fallback_plan = fallback_plan if fallback_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
@@ -108,8 +115,9 @@ module Vapi
         "enableSsmlParsing": enable_ssml_parsing,
         "autoMode": auto_mode,
         "model": model,
-        "chunkPlan": chunk_plan,
         "language": language,
+        "chunkPlan": chunk_plan,
+        "pronunciationDictionaryLocators": pronunciation_dictionary_locators,
         "fallbackPlan": fallback_plan
       }.reject do |_k, v|
         v == OMIT
@@ -139,13 +147,17 @@ module Vapi
       enable_ssml_parsing = parsed_json["enableSsmlParsing"]
       auto_mode = parsed_json["autoMode"]
       model = parsed_json["model"]
+      language = parsed_json["language"]
       if parsed_json["chunkPlan"].nil?
         chunk_plan = nil
       else
         chunk_plan = parsed_json["chunkPlan"].to_json
         chunk_plan = Vapi::ChunkPlan.from_json(json_object: chunk_plan)
       end
-      language = parsed_json["language"]
+      pronunciation_dictionary_locators = parsed_json["pronunciationDictionaryLocators"]&.map do |item|
+        item = item.to_json
+        Vapi::ElevenLabsPronunciationDictionaryLocator.from_json(json_object: item)
+      end
       if parsed_json["fallbackPlan"].nil?
         fallback_plan = nil
       else
@@ -164,8 +176,9 @@ module Vapi
         enable_ssml_parsing: enable_ssml_parsing,
         auto_mode: auto_mode,
         model: model,
-        chunk_plan: chunk_plan,
         language: language,
+        chunk_plan: chunk_plan,
+        pronunciation_dictionary_locators: pronunciation_dictionary_locators,
         fallback_plan: fallback_plan,
         additional_properties: struct
       )
@@ -196,8 +209,9 @@ module Vapi
       obj.enable_ssml_parsing&.is_a?(Boolean) != false || raise("Passed value for field obj.enable_ssml_parsing is not the expected type, validation failed.")
       obj.auto_mode&.is_a?(Boolean) != false || raise("Passed value for field obj.auto_mode is not the expected type, validation failed.")
       obj.model&.is_a?(Vapi::ElevenLabsVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
-      obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
       obj.language&.is_a?(String) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
+      obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
+      obj.pronunciation_dictionary_locators&.is_a?(Array) != false || raise("Passed value for field obj.pronunciation_dictionary_locators is not the expected type, validation failed.")
       obj.fallback_plan.nil? || Vapi::FallbackPlan.validate_raw(obj: obj.fallback_plan)
     end
   end

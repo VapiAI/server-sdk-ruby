@@ -23,8 +23,6 @@ module Vapi
     attr_reader :tool_ids
     # @return [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
     attr_reader :knowledge_base
-    # @return [String] This is the ID of the knowledge base the model will use.
-    attr_reader :knowledge_base_id
     # @return [Vapi::OpenAiModelModel] This is the OpenAI model that will be used.
     #  When using Vapi OpenAI or your own Azure Credentials, you have the option to
     #  specify the region for the selected model. This shouldn't be specified unless
@@ -82,7 +80,6 @@ module Vapi
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
     # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
-    # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
     # @param model [Vapi::OpenAiModelModel] This is the OpenAI model that will be used.
     #  When using Vapi OpenAI or your own Azure Credentials, you have the option to
     #  specify the region for the selected model. This shouldn't be specified unless
@@ -119,13 +116,12 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::OpenAiModel]
-    def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
-                   fallback_models: OMIT, tool_strict_compatibility_mode: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+    def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, fallback_models: OMIT,
+                   tool_strict_compatibility_mode: OMIT, temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
-      @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @model = model
       @fallback_models = fallback_models if fallback_models != OMIT
       @tool_strict_compatibility_mode = tool_strict_compatibility_mode if tool_strict_compatibility_mode != OMIT
@@ -139,7 +135,6 @@ module Vapi
         "tools": tools,
         "toolIds": tool_ids,
         "knowledgeBase": knowledge_base,
-        "knowledgeBaseId": knowledge_base_id,
         "model": model,
         "fallbackModels": fallback_models,
         "toolStrictCompatibilityMode": tool_strict_compatibility_mode,
@@ -174,7 +169,6 @@ module Vapi
         knowledge_base = parsed_json["knowledgeBase"].to_json
         knowledge_base = Vapi::CreateCustomKnowledgeBaseDto.from_json(json_object: knowledge_base)
       end
-      knowledge_base_id = parsed_json["knowledgeBaseId"]
       model = parsed_json["model"]
       fallback_models = parsed_json["fallbackModels"]
       tool_strict_compatibility_mode = parsed_json["toolStrictCompatibilityMode"]
@@ -187,7 +181,6 @@ module Vapi
         tools: tools,
         tool_ids: tool_ids,
         knowledge_base: knowledge_base,
-        knowledge_base_id: knowledge_base_id,
         model: model,
         fallback_models: fallback_models,
         tool_strict_compatibility_mode: tool_strict_compatibility_mode,
@@ -217,7 +210,6 @@ module Vapi
       obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
       obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
-      obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
       obj.model.is_a?(Vapi::OpenAiModelModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.fallback_models&.is_a?(Array) != false || raise("Passed value for field obj.fallback_models is not the expected type, validation failed.")
       obj.tool_strict_compatibility_mode&.is_a?(Vapi::OpenAiModelToolStrictCompatibilityMode) != false || raise("Passed value for field obj.tool_strict_compatibility_mode is not the expected type, validation failed.")

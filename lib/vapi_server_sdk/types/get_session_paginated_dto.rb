@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "create_customer_dto"
 require_relative "get_session_paginated_dto_sort_order"
 require "date"
 require "ostruct"
@@ -11,8 +12,12 @@ module Vapi
     attr_reader :name
     # @return [String] This is the ID of the assistant to filter sessions by.
     attr_reader :assistant_id
+    # @return [String] This is the ID of the squad to filter sessions by.
+    attr_reader :squad_id
     # @return [String] This is the ID of the workflow to filter sessions by.
     attr_reader :workflow_id
+    # @return [Vapi::CreateCustomerDto] This is the customer information to filter by.
+    attr_reader :customer
     # @return [Float] This is the page number to return. Defaults to 1.
     attr_reader :page
     # @return [Vapi::GetSessionPaginatedDtoSortOrder] This is the sort order for pagination. Defaults to 'DESC'.
@@ -49,7 +54,9 @@ module Vapi
 
     # @param name [String] This is the name of the session to filter by.
     # @param assistant_id [String] This is the ID of the assistant to filter sessions by.
+    # @param squad_id [String] This is the ID of the squad to filter sessions by.
     # @param workflow_id [String] This is the ID of the workflow to filter sessions by.
+    # @param customer [Vapi::CreateCustomerDto] This is the customer information to filter by.
     # @param page [Float] This is the page number to return. Defaults to 1.
     # @param sort_order [Vapi::GetSessionPaginatedDtoSortOrder] This is the sort order for pagination. Defaults to 'DESC'.
     # @param limit [Float] This is the maximum number of items to return. Defaults to 100.
@@ -67,11 +74,13 @@ module Vapi
     #  specified value.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::GetSessionPaginatedDto]
-    def initialize(name: OMIT, assistant_id: OMIT, workflow_id: OMIT, page: OMIT, sort_order: OMIT, limit: OMIT,
-                   created_at_gt: OMIT, created_at_lt: OMIT, created_at_ge: OMIT, created_at_le: OMIT, updated_at_gt: OMIT, updated_at_lt: OMIT, updated_at_ge: OMIT, updated_at_le: OMIT, additional_properties: nil)
+    def initialize(name: OMIT, assistant_id: OMIT, squad_id: OMIT, workflow_id: OMIT, customer: OMIT, page: OMIT,
+                   sort_order: OMIT, limit: OMIT, created_at_gt: OMIT, created_at_lt: OMIT, created_at_ge: OMIT, created_at_le: OMIT, updated_at_gt: OMIT, updated_at_lt: OMIT, updated_at_ge: OMIT, updated_at_le: OMIT, additional_properties: nil)
       @name = name if name != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
+      @squad_id = squad_id if squad_id != OMIT
       @workflow_id = workflow_id if workflow_id != OMIT
+      @customer = customer if customer != OMIT
       @page = page if page != OMIT
       @sort_order = sort_order if sort_order != OMIT
       @limit = limit if limit != OMIT
@@ -87,7 +96,9 @@ module Vapi
       @_field_set = {
         "name": name,
         "assistantId": assistant_id,
+        "squadId": squad_id,
         "workflowId": workflow_id,
+        "customer": customer,
         "page": page,
         "sortOrder": sort_order,
         "limit": limit,
@@ -113,7 +124,14 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       name = parsed_json["name"]
       assistant_id = parsed_json["assistantId"]
+      squad_id = parsed_json["squadId"]
       workflow_id = parsed_json["workflowId"]
+      if parsed_json["customer"].nil?
+        customer = nil
+      else
+        customer = parsed_json["customer"].to_json
+        customer = Vapi::CreateCustomerDto.from_json(json_object: customer)
+      end
       page = parsed_json["page"]
       sort_order = parsed_json["sortOrder"]
       limit = parsed_json["limit"]
@@ -128,7 +146,9 @@ module Vapi
       new(
         name: name,
         assistant_id: assistant_id,
+        squad_id: squad_id,
         workflow_id: workflow_id,
+        customer: customer,
         page: page,
         sort_order: sort_order,
         limit: limit,
@@ -160,7 +180,9 @@ module Vapi
     def self.validate_raw(obj:)
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
+      obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
       obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
+      obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)
       obj.page&.is_a?(Float) != false || raise("Passed value for field obj.page is not the expected type, validation failed.")
       obj.sort_order&.is_a?(Vapi::GetSessionPaginatedDtoSortOrder) != false || raise("Passed value for field obj.sort_order is not the expected type, validation failed.")
       obj.limit&.is_a?(Float) != false || raise("Passed value for field obj.limit is not the expected type, validation failed.")

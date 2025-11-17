@@ -8,5 +8,7 @@ module Vapi
     ONYX = "onyx"
     NOVA = "nova"
     SHIMMER = "shimmer"
+    MARIN = "marin"
+    CEDAR = "cedar"
   end
 end

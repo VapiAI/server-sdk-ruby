@@ -6,5 +6,6 @@ module Vapi
     SUMMARY = "summary"
     STRUCTURED_DATA = "structuredData"
     SUCCESS_EVALUATION = "successEvaluation"
+    STRUCTURED_OUTPUT = "structuredOutput"
   end
 end

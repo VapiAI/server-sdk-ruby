@@ -54,6 +54,10 @@ module Vapi
     #  - Squad, use `squad` or `squadId`
     #  - Workflow, use `workflow` or `workflowId`
     attr_reader :squad
+    # @return [Vapi::AssistantOverrides] These are the overrides for the `squad` or `squadId`'s member settings and
+    #  template variables.
+    #  This will apply to all members of the squad.
+    attr_reader :squad_overrides
     # @return [String] This is the workflow that will be used for the call. To use a transient
     #  workflow, use `workflow` instead.
     #  To start a call with:
@@ -127,6 +131,9 @@ module Vapi
     #  - Assistant, use `assistant` or `assistantId`
     #  - Squad, use `squad` or `squadId`
     #  - Workflow, use `workflow` or `workflowId`
+    # @param squad_overrides [Vapi::AssistantOverrides] These are the overrides for the `squad` or `squadId`'s member settings and
+    #  template variables.
+    #  This will apply to all members of the squad.
     # @param workflow_id [String] This is the workflow that will be used for the call. To use a transient
     #  workflow, use `workflow` instead.
     #  To start a call with:
@@ -156,7 +163,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateOutboundCallDto]
     def initialize(customers: OMIT, name: OMIT, schedule_plan: OMIT, transport: OMIT, assistant_id: OMIT,
-                   assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, workflow_id: OMIT, workflow: OMIT, workflow_overrides: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, additional_properties: nil)
+                   assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, squad_overrides: OMIT, workflow_id: OMIT, workflow: OMIT, workflow_overrides: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, additional_properties: nil)
       @customers = customers if customers != OMIT
       @name = name if name != OMIT
       @schedule_plan = schedule_plan if schedule_plan != OMIT
@@ -166,6 +173,7 @@ module Vapi
       @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
       @squad_id = squad_id if squad_id != OMIT
       @squad = squad if squad != OMIT
+      @squad_overrides = squad_overrides if squad_overrides != OMIT
       @workflow_id = workflow_id if workflow_id != OMIT
       @workflow = workflow if workflow != OMIT
       @workflow_overrides = workflow_overrides if workflow_overrides != OMIT
@@ -184,6 +192,7 @@ module Vapi
         "assistantOverrides": assistant_overrides,
         "squadId": squad_id,
         "squad": squad,
+        "squadOverrides": squad_overrides,
         "workflowId": workflow_id,
         "workflow": workflow,
         "workflowOverrides": workflow_overrides,
@@ -235,6 +244,12 @@ module Vapi
         squad = parsed_json["squad"].to_json
         squad = Vapi::CreateSquadDto.from_json(json_object: squad)
       end
+      if parsed_json["squadOverrides"].nil?
+        squad_overrides = nil
+      else
+        squad_overrides = parsed_json["squadOverrides"].to_json
+        squad_overrides = Vapi::AssistantOverrides.from_json(json_object: squad_overrides)
+      end
       workflow_id = parsed_json["workflowId"]
       if parsed_json["workflow"].nil?
         workflow = nil
@@ -272,6 +287,7 @@ module Vapi
         assistant_overrides: assistant_overrides,
         squad_id: squad_id,
         squad: squad,
+        squad_overrides: squad_overrides,
         workflow_id: workflow_id,
         workflow: workflow,
         workflow_overrides: workflow_overrides,
@@ -306,6 +322,7 @@ module Vapi
       obj.assistant_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.assistant_overrides)
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
       obj.squad.nil? || Vapi::CreateSquadDto.validate_raw(obj: obj.squad)
+      obj.squad_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.squad_overrides)
       obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
       obj.workflow.nil? || Vapi::CreateWorkflowDto.validate_raw(obj: obj.workflow)
       obj.workflow_overrides.nil? || Vapi::WorkflowOverrides.validate_raw(obj: obj.workflow_overrides)

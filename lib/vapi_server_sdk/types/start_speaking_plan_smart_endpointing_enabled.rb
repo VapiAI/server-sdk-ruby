@@ -20,7 +20,7 @@ module Vapi
         # noop
       end
       begin
-        struct.is_a?(String) != false || raise("Passed value for field struct is not the expected type, validation failed.")
+        struct.is_a?(Vapi::StartSpeakingPlanSmartEndpointingEnabledOne) != false || raise("Passed value for field struct is not the expected type, validation failed.")
         return struct unless struct.nil?
 
         return nil
@@ -43,7 +43,7 @@ module Vapi
         # noop
       end
       begin
-        return obj.is_a?(String) != false || raise("Passed value for field obj is not the expected type, validation failed.")
+        return obj.is_a?(Vapi::StartSpeakingPlanSmartEndpointingEnabledOne) != false || raise("Passed value for field obj is not the expected type, validation failed.")
       rescue StandardError
         # noop
       end

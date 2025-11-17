@@ -2,6 +2,7 @@
 
 require_relative "update_function_tool_dto_messages_item"
 require_relative "server"
+require_relative "tool_rejection_plan"
 require_relative "open_ai_function"
 require "ostruct"
 require "json"
@@ -31,15 +32,86 @@ module Vapi
     #  {{org.server.url}}.
     #  - Webhook expects a response with tool call result.
     attr_reader :server
+    # @return [Vapi::ToolRejectionPlan] This is the plan to reject a tool call based on the conversation state.
+    #  // Example 1: Reject endCall if user didn't say goodbye
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '(?i)\\b(bye|goodbye|farewell|see you later|take care)\\b',
+    #  target: { position: -1, role: 'user' },
+    #  negate: true  // Reject if pattern does NOT match
+    #  }]
+    #  }
+    #  ```
+    #  // Example 2: Reject transfer if user is actually asking a question
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '\\?',
+    #  target: { position: -1, role: 'user' }
+    #  }]
+    #  }
+    #  ```
+    #  // Example 3: Reject transfer if user didn't mention transfer recently
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 5 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' %}
+    #  {% assign mentioned = false %}
+    #  {% for msg in userMessages %}
+    #  {% if msg.content contains 'transfer' or msg.content contains 'connect' or
+    #  msg.content contains 'speak to' %}
+    #  {% assign mentioned = true %}
+    #  {% break %}
+    #  {% endif %}
+    #  {% endfor %}
+    #  {% if mentioned %}
+    #  false
+    #  {% else %}
+    #  true
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    #  // Example 4: Reject endCall if the bot is looping and trying to exit
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 6 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' | reverse %}
+    #  {% if userMessages.size < 3 %}
+    #  false
+    #  {% else %}
+    #  {% assign msg1 = userMessages[0].content | downcase %}
+    #  {% assign msg2 = userMessages[1].content | downcase %}
+    #  {% assign msg3 = userMessages[2].content | downcase %}
+    #  {% comment %} Check for repetitive messages {% endcomment %}
+    #  {% if msg1 == msg2 or msg1 == msg3 or msg2 == msg3 %}
+    #  true
+    #  {% comment %} Check for common loop phrases {% endcomment %}
+    #  {% elsif msg1 contains 'cool thanks' or msg2 contains 'cool thanks' or msg3
+    #  contains 'cool thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'okay thanks' or msg2 contains 'okay thanks' or msg3
+    #  contains 'okay thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'got it' or msg2 contains 'got it' or msg3 contains
+    #  'got it' %}
+    #  true
+    #  {% else %}
+    #  false
+    #  {% endif %}
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    attr_reader :rejection_plan
     # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.
     attr_reader :function
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -69,24 +141,102 @@ module Vapi
     #  {{tool.server.url}}, {{assistant.server.url}}, {{phoneNumber.server.url}},
     #  {{org.server.url}}.
     #  - Webhook expects a response with tool call result.
+    # @param rejection_plan [Vapi::ToolRejectionPlan] This is the plan to reject a tool call based on the conversation state.
+    #  // Example 1: Reject endCall if user didn't say goodbye
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '(?i)\\b(bye|goodbye|farewell|see you later|take care)\\b',
+    #  target: { position: -1, role: 'user' },
+    #  negate: true  // Reject if pattern does NOT match
+    #  }]
+    #  }
+    #  ```
+    #  // Example 2: Reject transfer if user is actually asking a question
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '\\?',
+    #  target: { position: -1, role: 'user' }
+    #  }]
+    #  }
+    #  ```
+    #  // Example 3: Reject transfer if user didn't mention transfer recently
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 5 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' %}
+    #  {% assign mentioned = false %}
+    #  {% for msg in userMessages %}
+    #  {% if msg.content contains 'transfer' or msg.content contains 'connect' or
+    #  msg.content contains 'speak to' %}
+    #  {% assign mentioned = true %}
+    #  {% break %}
+    #  {% endif %}
+    #  {% endfor %}
+    #  {% if mentioned %}
+    #  false
+    #  {% else %}
+    #  true
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    #  // Example 4: Reject endCall if the bot is looping and trying to exit
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 6 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' | reverse %}
+    #  {% if userMessages.size < 3 %}
+    #  false
+    #  {% else %}
+    #  {% assign msg1 = userMessages[0].content | downcase %}
+    #  {% assign msg2 = userMessages[1].content | downcase %}
+    #  {% assign msg3 = userMessages[2].content | downcase %}
+    #  {% comment %} Check for repetitive messages {% endcomment %}
+    #  {% if msg1 == msg2 or msg1 == msg3 or msg2 == msg3 %}
+    #  true
+    #  {% comment %} Check for common loop phrases {% endcomment %}
+    #  {% elsif msg1 contains 'cool thanks' or msg2 contains 'cool thanks' or msg3
+    #  contains 'cool thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'okay thanks' or msg2 contains 'okay thanks' or msg3
+    #  contains 'okay thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'got it' or msg2 contains 'got it' or msg3 contains
+    #  'got it' %}
+    #  true
+    #  {% else %}
+    #  false
+    #  {% endif %}
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
     # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateFunctionToolDto]
-    def initialize(messages: OMIT, async: OMIT, server: OMIT, function: OMIT, additional_properties: nil)
+    def initialize(messages: OMIT, async: OMIT, server: OMIT, rejection_plan: OMIT, function: OMIT,
+                   additional_properties: nil)
       @messages = messages if messages != OMIT
       @async = async if async != OMIT
       @server = server if server != OMIT
+      @rejection_plan = rejection_plan if rejection_plan != OMIT
       @function = function if function != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "messages": messages, "async": async, "server": server, "function": function }.reject do |_k, v|
+      @_field_set = {
+        "messages": messages,
+        "async": async,
+        "server": server,
+        "rejectionPlan": rejection_plan,
+        "function": function
+      }.reject do |_k, v|
         v == OMIT
       end
     end
@@ -109,6 +259,12 @@ module Vapi
         server = parsed_json["server"].to_json
         server = Vapi::Server.from_json(json_object: server)
       end
+      if parsed_json["rejectionPlan"].nil?
+        rejection_plan = nil
+      else
+        rejection_plan = parsed_json["rejectionPlan"].to_json
+        rejection_plan = Vapi::ToolRejectionPlan.from_json(json_object: rejection_plan)
+      end
       if parsed_json["function"].nil?
         function = nil
       else
@@ -119,6 +275,7 @@ module Vapi
         messages: messages,
         async: async,
         server: server,
+        rejection_plan: rejection_plan,
         function: function,
         additional_properties: struct
       )
@@ -141,6 +298,7 @@ module Vapi
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.async&.is_a?(Boolean) != false || raise("Passed value for field obj.async is not the expected type, validation failed.")
       obj.server.nil? || Vapi::Server.validate_raw(obj: obj.server)
+      obj.rejection_plan.nil? || Vapi::ToolRejectionPlan.validate_raw(obj: obj.rejection_plan)
       obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "byo_phone_number_fallback_destination"
-require_relative "phone_number_hook_call_ringing"
+require_relative "byo_phone_number_hooks_item"
 require "date"
 require_relative "byo_phone_number_status"
 require_relative "server"
@@ -17,7 +17,7 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
-    # @return [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
+    # @return [Array<Vapi::ByoPhoneNumberHooksItem>] This is the hooks that will be used for incoming calls to this phone number.
     attr_reader :hooks
     # @return [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
@@ -88,7 +88,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
-    # @param hooks [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
+    # @param hooks [Array<Vapi::ByoPhoneNumberHooksItem>] This is the hooks that will be used for incoming calls to this phone number.
     # @param number_e_164_check_enabled [Boolean] This is the flag to toggle the E164 check for the `number` field. This is an
     #  advanced property which should be used if you know your use case requires it.
     #  Use cases:
@@ -187,7 +187,7 @@ module Vapi
       end
       hooks = parsed_json["hooks"]&.map do |item|
         item = item.to_json
-        Vapi::PhoneNumberHookCallRinging.from_json(json_object: item)
+        Vapi::ByoPhoneNumberHooksItem.from_json(json_object: item)
       end
       number_e_164_check_enabled = parsed_json["numberE164CheckEnabled"]
       id = parsed_json["id"]

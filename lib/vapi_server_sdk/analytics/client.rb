@@ -20,6 +20,7 @@ module Vapi
     # @param queries [Array<Hash>] This is the list of metric queries you want to perform.Request of type Array<Vapi::AnalyticsQuery>, as a Hash
     #   * :table (Vapi::AnalyticsQueryTable)
     #   * :group_by (Array<Vapi::AnalyticsQueryGroupByItem>)
+    #   * :group_by_variable_value (Array<Vapi::VariableValueGroupBy>)
     #   * :name (String)
     #   * :time_range (Hash)
     #     * :step (Vapi::TimeRangeStep)
@@ -65,6 +66,7 @@ module Vapi
     # @param queries [Array<Hash>] This is the list of metric queries you want to perform.Request of type Array<Vapi::AnalyticsQuery>, as a Hash
     #   * :table (Vapi::AnalyticsQueryTable)
     #   * :group_by (Array<Vapi::AnalyticsQueryGroupByItem>)
+    #   * :group_by_variable_value (Array<Vapi::VariableValueGroupBy>)
     #   * :name (String)
     #   * :time_range (Hash)
     #     * :step (Vapi::TimeRangeStep)

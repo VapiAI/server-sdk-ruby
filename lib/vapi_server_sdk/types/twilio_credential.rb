@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "twilio_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class TwilioCredential
-    # @return [String]
+    # @return [Vapi::TwilioCredentialProvider]
     attr_reader :provider
     # @return [String] This is not returned in the API.
     attr_reader :auth_token
@@ -34,7 +35,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::TwilioCredentialProvider]
     # @param auth_token [String] This is not returned in the API.
     # @param api_key [String] This is not returned in the API.
     # @param api_secret [String] This is not returned in the API.
@@ -121,7 +122,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::TwilioCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.auth_token&.is_a?(String) != false || raise("Passed value for field obj.auth_token is not the expected type, validation failed.")
       obj.api_key&.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.api_secret&.is_a?(String) != false || raise("Passed value for field obj.api_secret is not the expected type, validation failed.")

@@ -47,9 +47,10 @@ module Vapi
     #  Here are the template variables available:
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-
     #  {{systemPrompt}}: the system prompt of the call from
-    #  `assistant.model.messages[type=system].content`- {{rubric}}: the rubric of the
-    #  success evaluation from `successEvaluationPlan.rubric`- {{endedReason}}: the
-    #  ended reason of the call from `call.endedReason`
+    #  `assistant.model.messages[type=system].content`- {{messages}}: the messages of
+    #  the call from `assistant.model.messages`- {{rubric}}: the rubric of the success
+    #  evaluation from `successEvaluationPlan.rubric`- {{endedReason}}: the ended
+    #  reason of the call from `call.endedReason`
     attr_reader :messages
     # @return [Boolean] This determines whether a success evaluation is generated and stored in
     #  `call.analysis.successEvaluation`. Defaults to true.
@@ -112,9 +113,10 @@ module Vapi
     #  Here are the template variables available:
     #  - {{transcript}}: the transcript of the call from `call.artifact.transcript`-
     #  {{systemPrompt}}: the system prompt of the call from
-    #  `assistant.model.messages[type=system].content`- {{rubric}}: the rubric of the
-    #  success evaluation from `successEvaluationPlan.rubric`- {{endedReason}}: the
-    #  ended reason of the call from `call.endedReason`
+    #  `assistant.model.messages[type=system].content`- {{messages}}: the messages of
+    #  the call from `assistant.model.messages`- {{rubric}}: the rubric of the success
+    #  evaluation from `successEvaluationPlan.rubric`- {{endedReason}}: the ended
+    #  reason of the call from `call.endedReason`
     # @param enabled [Boolean] This determines whether a success evaluation is generated and stored in
     #  `call.analysis.successEvaluation`. Defaults to true.
     #  Usage:

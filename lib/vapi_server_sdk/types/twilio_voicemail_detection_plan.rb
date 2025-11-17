@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require_relative "twilio_voicemail_detection_plan_provider"
 require_relative "twilio_voicemail_detection_plan_voicemail_detection_types_item"
 require "ostruct"
 require "json"
 
 module Vapi
   class TwilioVoicemailDetectionPlan
+    # @return [Vapi::TwilioVoicemailDetectionPlanProvider] This is the provider to use for voicemail detection.
+    attr_reader :provider
     # @return [Array<Vapi::TwilioVoicemailDetectionPlanVoicemailDetectionTypesItem>] These are the AMD messages from Twilio that are considered as voicemail. Default
     #  is ['machine_end_beep', 'machine_end_silence'].
     #  @default {Array} ['machine_end_beep', 'machine_end_silence']
@@ -91,6 +94,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param provider [Vapi::TwilioVoicemailDetectionPlanProvider] This is the provider to use for voicemail detection.
     # @param voicemail_detection_types [Array<Vapi::TwilioVoicemailDetectionPlanVoicemailDetectionTypesItem>] These are the AMD messages from Twilio that are considered as voicemail. Default
     #  is ['machine_end_beep', 'machine_end_silence'].
     #  @default {Array} ['machine_end_beep', 'machine_end_silence']
@@ -164,8 +168,9 @@ module Vapi
     #  @default 5000
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TwilioVoicemailDetectionPlan]
-    def initialize(voicemail_detection_types: OMIT, enabled: OMIT, machine_detection_timeout: OMIT,
+    def initialize(provider:, voicemail_detection_types: OMIT, enabled: OMIT, machine_detection_timeout: OMIT,
                    machine_detection_speech_threshold: OMIT, machine_detection_speech_end_threshold: OMIT, machine_detection_silence_timeout: OMIT, additional_properties: nil)
+      @provider = provider
       @voicemail_detection_types = voicemail_detection_types if voicemail_detection_types != OMIT
       @enabled = enabled if enabled != OMIT
       @machine_detection_timeout = machine_detection_timeout if machine_detection_timeout != OMIT
@@ -180,6 +185,7 @@ module Vapi
       end
       @additional_properties = additional_properties
       @_field_set = {
+        "provider": provider,
         "voicemailDetectionTypes": voicemail_detection_types,
         "enabled": enabled,
         "machineDetectionTimeout": machine_detection_timeout,
@@ -198,6 +204,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      provider = parsed_json["provider"]
       voicemail_detection_types = parsed_json["voicemailDetectionTypes"]
       enabled = parsed_json["enabled"]
       machine_detection_timeout = parsed_json["machineDetectionTimeout"]
@@ -205,6 +212,7 @@ module Vapi
       machine_detection_speech_end_threshold = parsed_json["machineDetectionSpeechEndThreshold"]
       machine_detection_silence_timeout = parsed_json["machineDetectionSilenceTimeout"]
       new(
+        provider: provider,
         voicemail_detection_types: voicemail_detection_types,
         enabled: enabled,
         machine_detection_timeout: machine_detection_timeout,
@@ -229,6 +237,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.provider.is_a?(Vapi::TwilioVoicemailDetectionPlanProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.voicemail_detection_types&.is_a?(Array) != false || raise("Passed value for field obj.voicemail_detection_types is not the expected type, validation failed.")
       obj.enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.enabled is not the expected type, validation failed.")
       obj.machine_detection_timeout&.is_a?(Float) != false || raise("Passed value for field obj.machine_detection_timeout is not the expected type, validation failed.")

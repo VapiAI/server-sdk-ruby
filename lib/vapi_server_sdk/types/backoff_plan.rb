@@ -15,6 +15,10 @@ module Vapi
     # @return [Float] This is the base delay in seconds. For linear backoff, this is the delay between
     #  each retry. For exponential backoff, this is the initial delay.
     attr_reader :base_delay_seconds
+    # @return [Array<Hash{String => Object}>] This is the excluded status codes. If the response status code is in this list,
+    #  the request will not be retried.
+    #  By default, the request will be retried for any non-2xx status code.
+    attr_reader :excluded_status_codes
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -30,14 +34,25 @@ module Vapi
     #  @default 0
     # @param base_delay_seconds [Float] This is the base delay in seconds. For linear backoff, this is the delay between
     #  each retry. For exponential backoff, this is the initial delay.
+    # @param excluded_status_codes [Array<Hash{String => Object}>] This is the excluded status codes. If the response status code is in this list,
+    #  the request will not be retried.
+    #  By default, the request will be retried for any non-2xx status code.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::BackoffPlan]
-    def initialize(type:, max_retries:, base_delay_seconds:, additional_properties: nil)
+    def initialize(type:, max_retries:, base_delay_seconds:, excluded_status_codes: OMIT, additional_properties: nil)
       @type = type
       @max_retries = max_retries
       @base_delay_seconds = base_delay_seconds
+      @excluded_status_codes = excluded_status_codes if excluded_status_codes != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "type": type, "maxRetries": max_retries, "baseDelaySeconds": base_delay_seconds }
+      @_field_set = {
+        "type": type,
+        "maxRetries": max_retries,
+        "baseDelaySeconds": base_delay_seconds,
+        "excludedStatusCodes": excluded_status_codes
+      }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of BackoffPlan
@@ -50,10 +65,12 @@ module Vapi
       type = parsed_json["type"]
       max_retries = parsed_json["maxRetries"]
       base_delay_seconds = parsed_json["baseDelaySeconds"]
+      excluded_status_codes = parsed_json["excludedStatusCodes"]
       new(
         type: type,
         max_retries: max_retries,
         base_delay_seconds: base_delay_seconds,
+        excluded_status_codes: excluded_status_codes,
         additional_properties: struct
       )
     end
@@ -75,6 +92,7 @@ module Vapi
       obj.type.is_a?(Hash) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.max_retries.is_a?(Float) != false || raise("Passed value for field obj.max_retries is not the expected type, validation failed.")
       obj.base_delay_seconds.is_a?(Float) != false || raise("Passed value for field obj.base_delay_seconds is not the expected type, validation failed.")
+      obj.excluded_status_codes&.is_a?(Array) != false || raise("Passed value for field obj.excluded_status_codes is not the expected type, validation failed.")
     end
   end
 end

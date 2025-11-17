@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "eleven_labs_transcriber_model"
 require_relative "eleven_labs_transcriber_language"
 require_relative "fallback_transcriber_plan"
 require "ostruct"
@@ -7,7 +8,7 @@ require "json"
 
 module Vapi
   class ElevenLabsTranscriber
-    # @return [String] This is the model that will be used for the transcription.
+    # @return [Vapi::ElevenLabsTranscriberModel] This is the model that will be used for the transcription.
     attr_reader :model
     # @return [Vapi::ElevenLabsTranscriberLanguage]
     attr_reader :language
@@ -22,7 +23,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param model [String] This is the model that will be used for the transcription.
+    # @param model [Vapi::ElevenLabsTranscriberModel] This is the model that will be used for the transcription.
     # @param language [Vapi::ElevenLabsTranscriberLanguage]
     # @param fallback_plan [Vapi::FallbackTranscriberPlan] This is the plan for voice provider fallbacks in the event that the primary
     #  voice provider fails.
@@ -75,7 +76,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::ElevenLabsTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::ElevenLabsTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.fallback_plan.nil? || Vapi::FallbackTranscriberPlan.validate_raw(obj: obj.fallback_plan)
     end

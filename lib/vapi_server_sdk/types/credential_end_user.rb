@@ -9,6 +9,8 @@ module Vapi
     attr_reader :end_user_id
     # @return [String]
     attr_reader :organization_id
+    # @return [Hash{String => Object}]
+    attr_reader :tags
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -19,13 +21,17 @@ module Vapi
 
     # @param end_user_id [String]
     # @param organization_id [String]
+    # @param tags [Hash{String => Object}]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CredentialEndUser]
-    def initialize(end_user_id:, organization_id:, additional_properties: nil)
+    def initialize(end_user_id:, organization_id:, tags: OMIT, additional_properties: nil)
       @end_user_id = end_user_id
       @organization_id = organization_id
+      @tags = tags if tags != OMIT
       @additional_properties = additional_properties
-      @_field_set = { "endUserId": end_user_id, "organizationId": organization_id }
+      @_field_set = { "endUserId": end_user_id, "organizationId": organization_id, "tags": tags }.reject do |_k, v|
+        v == OMIT
+      end
     end
 
     # Deserialize a JSON object to an instance of CredentialEndUser
@@ -37,9 +43,11 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       end_user_id = parsed_json["endUserId"]
       organization_id = parsed_json["organizationId"]
+      tags = parsed_json["tags"]
       new(
         end_user_id: end_user_id,
         organization_id: organization_id,
+        tags: tags,
         additional_properties: struct
       )
     end
@@ -60,6 +68,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.end_user_id.is_a?(String) != false || raise("Passed value for field obj.end_user_id is not the expected type, validation failed.")
       obj.organization_id.is_a?(String) != false || raise("Passed value for field obj.organization_id is not the expected type, validation failed.")
+      obj.tags&.is_a?(Hash) != false || raise("Passed value for field obj.tags is not the expected type, validation failed.")
     end
   end
 end

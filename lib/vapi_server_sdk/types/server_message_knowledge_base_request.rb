@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "server_message_knowledge_base_request_phone_number"
+require_relative "server_message_knowledge_base_request_type"
 require_relative "server_message_knowledge_base_request_messages_item"
 require_relative "open_ai_message"
 require_relative "artifact"
@@ -15,6 +16,10 @@ module Vapi
   class ServerMessageKnowledgeBaseRequest
     # @return [Vapi::ServerMessageKnowledgeBaseRequestPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ServerMessageKnowledgeBaseRequestType] This is the type of the message. "knowledge-base-request" is sent to request
+    #  knowledge base documents. To enable, use
+    #  `assistant.knowledgeBase.provider=custom-knowledge-base`.
+    attr_reader :type
     # @return [Array<Vapi::ServerMessageKnowledgeBaseRequestMessagesItem>] These are the messages that are going to be sent to the `model` right after the
     #  `knowledge-base-request` webhook completes.
     attr_reader :messages
@@ -42,6 +47,9 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ServerMessageKnowledgeBaseRequestPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ServerMessageKnowledgeBaseRequestType] This is the type of the message. "knowledge-base-request" is sent to request
+    #  knowledge base documents. To enable, use
+    #  `assistant.knowledgeBase.provider=custom-knowledge-base`.
     # @param messages [Array<Vapi::ServerMessageKnowledgeBaseRequestMessagesItem>] These are the messages that are going to be sent to the `model` right after the
     #  `knowledge-base-request` webhook completes.
     # @param messages_open_ai_formatted [Array<Vapi::OpenAiMessage>] This is just `messages` formatted for OpenAI.
@@ -54,9 +62,10 @@ module Vapi
     # @param chat [Vapi::Chat] This is the chat object.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageKnowledgeBaseRequest]
-    def initialize(messages_open_ai_formatted:, phone_number: OMIT, messages: OMIT, timestamp: OMIT, artifact: OMIT,
-                   assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, additional_properties: nil)
+    def initialize(type:, messages_open_ai_formatted:, phone_number: OMIT, messages: OMIT, timestamp: OMIT,
+                   artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @messages = messages if messages != OMIT
       @messages_open_ai_formatted = messages_open_ai_formatted
       @timestamp = timestamp if timestamp != OMIT
@@ -68,6 +77,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "messages": messages,
         "messagesOpenAIFormatted": messages_open_ai_formatted,
         "timestamp": timestamp,
@@ -94,6 +104,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageKnowledgeBaseRequestPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       messages = parsed_json["messages"]&.map do |item|
         item = item.to_json
         Vapi::ServerMessageKnowledgeBaseRequestMessagesItem.from_json(json_object: item)
@@ -135,6 +146,7 @@ module Vapi
       end
       new(
         phone_number: phone_number,
+        type: type,
         messages: messages,
         messages_open_ai_formatted: messages_open_ai_formatted,
         timestamp: timestamp,
@@ -162,6 +174,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageKnowledgeBaseRequestPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ServerMessageKnowledgeBaseRequestType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.messages_open_ai_formatted.is_a?(Array) != false || raise("Passed value for field obj.messages_open_ai_formatted is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")

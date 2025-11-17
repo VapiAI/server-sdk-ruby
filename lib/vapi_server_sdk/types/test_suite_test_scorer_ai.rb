@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "test_suite_test_scorer_ai_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class TestSuiteTestScorerAi
-    # @return [String] This is the type of the scorer, which must be AI.
+    # @return [Vapi::TestSuiteTestScorerAiType] This is the type of the scorer, which must be AI.
     attr_reader :type
     # @return [String] This is the rubric used by the AI scorer.
     attr_reader :rubric
@@ -17,7 +18,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of the scorer, which must be AI.
+    # @param type [Vapi::TestSuiteTestScorerAiType] This is the type of the scorer, which must be AI.
     # @param rubric [String] This is the rubric used by the AI scorer.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TestSuiteTestScorerAi]
@@ -58,7 +59,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::TestSuiteTestScorerAiType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.rubric.is_a?(String) != false || raise("Passed value for field obj.rubric is not the expected type, validation failed.")
     end
   end

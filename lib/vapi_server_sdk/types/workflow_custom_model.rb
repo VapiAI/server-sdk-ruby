@@ -19,6 +19,8 @@ module Vapi
     # @return [String] These is the URL we'll use for the OpenAI client's `baseURL`. Ex.
     #  https://openrouter.ai/api/v1
     attr_reader :url
+    # @return [Hash{String => Object}] These are the headers we'll use for the OpenAI client's `headers`.
+    attr_reader :headers
     # @return [Float] This sets the timeout for the connection to the custom provider without needing
     #  to stream any tokens back. Default is 20 seconds.
     attr_reader :timeout_seconds
@@ -47,6 +49,7 @@ module Vapi
     #  Default is `variable`.
     # @param url [String] These is the URL we'll use for the OpenAI client's `baseURL`. Ex.
     #  https://openrouter.ai/api/v1
+    # @param headers [Hash{String => Object}] These are the headers we'll use for the OpenAI client's `headers`.
     # @param timeout_seconds [Float] This sets the timeout for the connection to the custom provider without needing
     #  to stream any tokens back. Default is 20 seconds.
     # @param model [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
@@ -54,10 +57,11 @@ module Vapi
     # @param max_tokens [Float] This is the max tokens of the model.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::WorkflowCustomModel]
-    def initialize(url:, model:, metadata_send_mode: OMIT, timeout_seconds: OMIT, temperature: OMIT, max_tokens: OMIT,
-                   additional_properties: nil)
+    def initialize(url:, model:, metadata_send_mode: OMIT, headers: OMIT, timeout_seconds: OMIT, temperature: OMIT,
+                   max_tokens: OMIT, additional_properties: nil)
       @metadata_send_mode = metadata_send_mode if metadata_send_mode != OMIT
       @url = url
+      @headers = headers if headers != OMIT
       @timeout_seconds = timeout_seconds if timeout_seconds != OMIT
       @model = model
       @temperature = temperature if temperature != OMIT
@@ -66,6 +70,7 @@ module Vapi
       @_field_set = {
         "metadataSendMode": metadata_send_mode,
         "url": url,
+        "headers": headers,
         "timeoutSeconds": timeout_seconds,
         "model": model,
         "temperature": temperature,
@@ -84,6 +89,7 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       metadata_send_mode = parsed_json["metadataSendMode"]
       url = parsed_json["url"]
+      headers = parsed_json["headers"]
       timeout_seconds = parsed_json["timeoutSeconds"]
       model = parsed_json["model"]
       temperature = parsed_json["temperature"]
@@ -91,6 +97,7 @@ module Vapi
       new(
         metadata_send_mode: metadata_send_mode,
         url: url,
+        headers: headers,
         timeout_seconds: timeout_seconds,
         model: model,
         temperature: temperature,
@@ -115,6 +122,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.metadata_send_mode&.is_a?(Vapi::WorkflowCustomModelMetadataSendMode) != false || raise("Passed value for field obj.metadata_send_mode is not the expected type, validation failed.")
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
+      obj.headers&.is_a?(Hash) != false || raise("Passed value for field obj.headers is not the expected type, validation failed.")
       obj.timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.timeout_seconds is not the expected type, validation failed.")
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")

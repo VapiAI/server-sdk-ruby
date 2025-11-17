@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "fallback_eleven_labs_transcriber_model"
 require_relative "fallback_eleven_labs_transcriber_language"
 require "ostruct"
 require "json"
 
 module Vapi
   class FallbackElevenLabsTranscriber
-    # @return [String] This is the model that will be used for the transcription.
+    # @return [Vapi::FallbackElevenLabsTranscriberModel] This is the model that will be used for the transcription.
     attr_reader :model
     # @return [Vapi::FallbackElevenLabsTranscriberLanguage]
     attr_reader :language
@@ -18,7 +19,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param model [String] This is the model that will be used for the transcription.
+    # @param model [Vapi::FallbackElevenLabsTranscriberModel] This is the model that will be used for the transcription.
     # @param language [Vapi::FallbackElevenLabsTranscriberLanguage]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackElevenLabsTranscriber]
@@ -61,7 +62,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::FallbackElevenLabsTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::FallbackElevenLabsTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
     end
   end

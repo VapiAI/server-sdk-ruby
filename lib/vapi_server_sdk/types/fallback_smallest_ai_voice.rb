@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "fallback_smallest_ai_voice_id"
+require_relative "fallback_smallest_ai_voice_model"
 require_relative "chunk_plan"
 require "ostruct"
 require "json"
@@ -11,7 +12,7 @@ module Vapi
     attr_reader :caching_enabled
     # @return [Vapi::FallbackSmallestAiVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
-    # @return [String] Smallest AI voice model to use. Defaults to 'lightning' when not specified.
+    # @return [Vapi::FallbackSmallestAiVoiceModel] Smallest AI voice model to use. Defaults to 'lightning' when not specified.
     attr_reader :model
     # @return [Float] This is the speed multiplier that will be used.
     attr_reader :speed
@@ -28,7 +29,7 @@ module Vapi
 
     # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [Vapi::FallbackSmallestAiVoiceId] This is the provider-specific ID that will be used.
-    # @param model [String] Smallest AI voice model to use. Defaults to 'lightning' when not specified.
+    # @param model [Vapi::FallbackSmallestAiVoiceModel] Smallest AI voice model to use. Defaults to 'lightning' when not specified.
     # @param speed [Float] This is the speed multiplier that will be used.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
@@ -101,7 +102,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       Vapi::FallbackSmallestAiVoiceId.validate_raw(obj: obj.voice_id)
-      obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::FallbackSmallestAiVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.speed&.is_a?(Float) != false || raise("Passed value for field obj.speed is not the expected type, validation failed.")
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
     end

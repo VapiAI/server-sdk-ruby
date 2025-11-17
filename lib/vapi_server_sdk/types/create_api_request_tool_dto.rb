@@ -5,7 +5,7 @@ require_relative "create_api_request_tool_dto_method"
 require_relative "json_schema"
 require_relative "backoff_plan"
 require_relative "variable_extraction_plan"
-require_relative "open_ai_function"
+require_relative "tool_rejection_plan"
 require "ostruct"
 require "json"
 
@@ -17,10 +17,12 @@ module Vapi
     #  configured.
     attr_reader :messages
     # @return [Vapi::CreateApiRequestToolDtoMethod]
-    attr_reader :method
+    attr_reader :method_
     # @return [Float] This is the timeout in seconds for the request. Defaults to 20 seconds.
     #  @default 20
     attr_reader :timeout_seconds
+    # @return [String] The credential ID for API request authentication
+    attr_reader :credential_id
     # @return [String] This is the name of the tool. This will be passed to the model.
     #  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
     #  of 40.
@@ -31,7 +33,7 @@ module Vapi
     attr_reader :url
     # @return [Vapi::JsonSchema] This is the body of the request.
     attr_reader :body
-    # @return [Vapi::JsonSchema] These are the headers to send in the request.
+    # @return [Vapi::JsonSchema] These are the headers to send with the request.
     attr_reader :headers
     # @return [Vapi::BackoffPlan] This is the backoff plan if the request fails. Defaults to undefined (the
     #  request will not be retried).
@@ -114,31 +116,9 @@ module Vapi
     #  }
     #  }
     #  ```
-    #  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
-    #  "Doe"}}`, then you can specify the schema as:
-    #  ```json
-    #  {
-    #  "schema": {
-    #  "type": "object",
-    #  "properties": {
-    #  "name": {
-    #  "type": "object",
-    #  "properties": {
-    #  "first": {
-    #  "type": "string"
-    #  },
-    #  "last": {
-    #  "type": "string"
-    #  }
-    #  }
-    #  }
-    #  }
-    #  }
-    #  }
-    #  ```
     #  These will be extracted as `{{ name }}` and `{{ age }}` respectively. To
     #  emphasize, object properties are extracted as direct global variables.
-    #  4.3. If you hit example.com and it returns `{"name": {"first": "John", "last":
+    #  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
     #  "Doe"}}`, then you can specify the schema as:
     #  ```json
     #  {
@@ -162,7 +142,7 @@ module Vapi
     #  ```
     #  These will be extracted as `{{ name }}`. And, `{{ name.first }}` and `{{
     #  name.last }}` will be accessible.
-    #  4.4. If you hit example.com and it returns `["94123", "94124"]`, then you can
+    #  4.3. If you hit example.com and it returns `["94123", "94124"]`, then you can
     #  specify the schema as:
     #  ```json
     #  {
@@ -177,7 +157,7 @@ module Vapi
     #  ```
     #  This will be extracted as `{{ zipCodes }}`. To access the array items, you can
     #  use `{{ zipCodes[0] }}` and `{{ zipCodes[1] }}`.
-    #  4.5. If you hit example.com and it returns `[{"name": "John", "age": 30,
+    #  4.4. If you hit example.com and it returns `[{"name": "John", "age": 30,
     #  "zipCodes": ["94123", "94124"]}, {"name": "Jane", "age": 25, "zipCodes":
     #  ["94125", "94126"]}]`, then you can specify the schema as:
     #  ```json
@@ -210,16 +190,85 @@ module Vapi
     #  people[n].zipCodes[0] }}` and `{{ people[n].zipCodes[1] }}`.
     #  Note: Both `aliases` and `schema` can be used together.
     attr_reader :variable_extraction_plan
-    # @return [Vapi::OpenAiFunction] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.
-    attr_reader :function
+    # @return [Vapi::ToolRejectionPlan] This is the plan to reject a tool call based on the conversation state.
+    #  // Example 1: Reject endCall if user didn't say goodbye
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '(?i)\\b(bye|goodbye|farewell|see you later|take care)\\b',
+    #  target: { position: -1, role: 'user' },
+    #  negate: true  // Reject if pattern does NOT match
+    #  }]
+    #  }
+    #  ```
+    #  // Example 2: Reject transfer if user is actually asking a question
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '\\?',
+    #  target: { position: -1, role: 'user' }
+    #  }]
+    #  }
+    #  ```
+    #  // Example 3: Reject transfer if user didn't mention transfer recently
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 5 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' %}
+    #  {% assign mentioned = false %}
+    #  {% for msg in userMessages %}
+    #  {% if msg.content contains 'transfer' or msg.content contains 'connect' or
+    #  msg.content contains 'speak to' %}
+    #  {% assign mentioned = true %}
+    #  {% break %}
+    #  {% endif %}
+    #  {% endfor %}
+    #  {% if mentioned %}
+    #  false
+    #  {% else %}
+    #  true
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    #  // Example 4: Reject endCall if the bot is looping and trying to exit
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 6 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' | reverse %}
+    #  {% if userMessages.size < 3 %}
+    #  false
+    #  {% else %}
+    #  {% assign msg1 = userMessages[0].content | downcase %}
+    #  {% assign msg2 = userMessages[1].content | downcase %}
+    #  {% assign msg3 = userMessages[2].content | downcase %}
+    #  {% comment %} Check for repetitive messages {% endcomment %}
+    #  {% if msg1 == msg2 or msg1 == msg3 or msg2 == msg3 %}
+    #  true
+    #  {% comment %} Check for common loop phrases {% endcomment %}
+    #  {% elsif msg1 contains 'cool thanks' or msg2 contains 'cool thanks' or msg3
+    #  contains 'cool thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'okay thanks' or msg2 contains 'okay thanks' or msg3
+    #  contains 'okay thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'got it' or msg2 contains 'got it' or msg3 contains
+    #  'got it' %}
+    #  true
+    #  {% else %}
+    #  false
+    #  {% endif %}
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    attr_reader :rejection_plan
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -232,16 +281,17 @@ module Vapi
     #  For some tools, this is auto-filled based on special fields like
     #  `tool.destinations`. For others like the function tool, these can be custom
     #  configured.
-    # @param method [Vapi::CreateApiRequestToolDtoMethod]
+    # @param method_ [Vapi::CreateApiRequestToolDtoMethod]
     # @param timeout_seconds [Float] This is the timeout in seconds for the request. Defaults to 20 seconds.
     #  @default 20
+    # @param credential_id [String] The credential ID for API request authentication
     # @param name [String] This is the name of the tool. This will be passed to the model.
     #  Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length
     #  of 40.
     # @param description [String] This is the description of the tool. This will be passed to the model.
     # @param url [String] This is where the request will be sent.
     # @param body [Vapi::JsonSchema] This is the body of the request.
-    # @param headers [Vapi::JsonSchema] These are the headers to send in the request.
+    # @param headers [Vapi::JsonSchema] These are the headers to send with the request.
     # @param backoff_plan [Vapi::BackoffPlan] This is the backoff plan if the request fails. Defaults to undefined (the
     #  request will not be retried).
     #  @default undefined (the request will not be retried)
@@ -322,31 +372,9 @@ module Vapi
     #  }
     #  }
     #  ```
-    #  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
-    #  "Doe"}}`, then you can specify the schema as:
-    #  ```json
-    #  {
-    #  "schema": {
-    #  "type": "object",
-    #  "properties": {
-    #  "name": {
-    #  "type": "object",
-    #  "properties": {
-    #  "first": {
-    #  "type": "string"
-    #  },
-    #  "last": {
-    #  "type": "string"
-    #  }
-    #  }
-    #  }
-    #  }
-    #  }
-    #  }
-    #  ```
     #  These will be extracted as `{{ name }}` and `{{ age }}` respectively. To
     #  emphasize, object properties are extracted as direct global variables.
-    #  4.3. If you hit example.com and it returns `{"name": {"first": "John", "last":
+    #  4.2. If you hit example.com and it returns `{"name": {"first": "John", "last":
     #  "Doe"}}`, then you can specify the schema as:
     #  ```json
     #  {
@@ -370,7 +398,7 @@ module Vapi
     #  ```
     #  These will be extracted as `{{ name }}`. And, `{{ name.first }}` and `{{
     #  name.last }}` will be accessible.
-    #  4.4. If you hit example.com and it returns `["94123", "94124"]`, then you can
+    #  4.3. If you hit example.com and it returns `["94123", "94124"]`, then you can
     #  specify the schema as:
     #  ```json
     #  {
@@ -385,7 +413,7 @@ module Vapi
     #  ```
     #  This will be extracted as `{{ zipCodes }}`. To access the array items, you can
     #  use `{{ zipCodes[0] }}` and `{{ zipCodes[1] }}`.
-    #  4.5. If you hit example.com and it returns `[{"name": "John", "age": 30,
+    #  4.4. If you hit example.com and it returns `[{"name": "John", "age": 30,
     #  "zipCodes": ["94123", "94124"]}, {"name": "Jane", "age": 25, "zipCodes":
     #  ["94125", "94126"]}]`, then you can specify the schema as:
     #  ```json
@@ -417,22 +445,92 @@ module Vapi
     #  `{{ people[n].name }}`, `{{ people[n].age }}`, `{{ people[n].zipCodes }}`, `{{
     #  people[n].zipCodes[0] }}` and `{{ people[n].zipCodes[1] }}`.
     #  Note: Both `aliases` and `schema` can be used together.
-    # @param function [Vapi::OpenAiFunction] This is the function definition of the tool.
-    #  For `endCall`, `transferCall`, and `dtmf` tools, this is auto-filled based on
-    #  tool-specific fields like `tool.destinations`. But, even in those cases, you can
-    #  provide a custom function definition for advanced use cases.
-    #  An example of an advanced use case is if you want to customize the message
-    #  that's spoken for `endCall` tool. You can specify a function where it returns an
-    #  argument "reason". Then, in `messages` array, you can have many
-    #  "request-complete" messages. One of these messages will be triggered if the
-    #  `messages[].conditions` matches the "reason" argument.
+    # @param rejection_plan [Vapi::ToolRejectionPlan] This is the plan to reject a tool call based on the conversation state.
+    #  // Example 1: Reject endCall if user didn't say goodbye
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '(?i)\\b(bye|goodbye|farewell|see you later|take care)\\b',
+    #  target: { position: -1, role: 'user' },
+    #  negate: true  // Reject if pattern does NOT match
+    #  }]
+    #  }
+    #  ```
+    #  // Example 2: Reject transfer if user is actually asking a question
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'regex',
+    #  regex: '\\?',
+    #  target: { position: -1, role: 'user' }
+    #  }]
+    #  }
+    #  ```
+    #  // Example 3: Reject transfer if user didn't mention transfer recently
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 5 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' %}
+    #  {% assign mentioned = false %}
+    #  {% for msg in userMessages %}
+    #  {% if msg.content contains 'transfer' or msg.content contains 'connect' or
+    #  msg.content contains 'speak to' %}
+    #  {% assign mentioned = true %}
+    #  {% break %}
+    #  {% endif %}
+    #  {% endfor %}
+    #  {% if mentioned %}
+    #  false
+    #  {% else %}
+    #  true
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
+    #  // Example 4: Reject endCall if the bot is looping and trying to exit
+    #  ```json
+    #  {
+    #  conditions: [{
+    #  type: 'liquid',
+    #  liquid: `{% assign recentMessages = messages | last: 6 %}
+    #  {% assign userMessages = recentMessages | where: 'role', 'user' | reverse %}
+    #  {% if userMessages.size < 3 %}
+    #  false
+    #  {% else %}
+    #  {% assign msg1 = userMessages[0].content | downcase %}
+    #  {% assign msg2 = userMessages[1].content | downcase %}
+    #  {% assign msg3 = userMessages[2].content | downcase %}
+    #  {% comment %} Check for repetitive messages {% endcomment %}
+    #  {% if msg1 == msg2 or msg1 == msg3 or msg2 == msg3 %}
+    #  true
+    #  {% comment %} Check for common loop phrases {% endcomment %}
+    #  {% elsif msg1 contains 'cool thanks' or msg2 contains 'cool thanks' or msg3
+    #  contains 'cool thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'okay thanks' or msg2 contains 'okay thanks' or msg3
+    #  contains 'okay thanks' %}
+    #  true
+    #  {% elsif msg1 contains 'got it' or msg2 contains 'got it' or msg3 contains
+    #  'got it' %}
+    #  true
+    #  {% else %}
+    #  false
+    #  {% endif %}
+    #  {% endif %}`
+    #  }]
+    #  }
+    #  ```
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateApiRequestToolDto]
-    def initialize(method:, url:, messages: OMIT, timeout_seconds: OMIT, name: OMIT, description: OMIT, body: OMIT,
-                   headers: OMIT, backoff_plan: OMIT, variable_extraction_plan: OMIT, function: OMIT, additional_properties: nil)
+    def initialize(method_:, url:, messages: OMIT, timeout_seconds: OMIT, credential_id: OMIT, name: OMIT,
+                   description: OMIT, body: OMIT, headers: OMIT, backoff_plan: OMIT, variable_extraction_plan: OMIT, rejection_plan: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
-      @method = method
+      @method_ = method_
       @timeout_seconds = timeout_seconds if timeout_seconds != OMIT
+      @credential_id = credential_id if credential_id != OMIT
       @name = name if name != OMIT
       @description = description if description != OMIT
       @url = url
@@ -440,12 +538,13 @@ module Vapi
       @headers = headers if headers != OMIT
       @backoff_plan = backoff_plan if backoff_plan != OMIT
       @variable_extraction_plan = variable_extraction_plan if variable_extraction_plan != OMIT
-      @function = function if function != OMIT
+      @rejection_plan = rejection_plan if rejection_plan != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "messages": messages,
-        "method": method,
+        "method": method_,
         "timeoutSeconds": timeout_seconds,
+        "credentialId": credential_id,
         "name": name,
         "description": description,
         "url": url,
@@ -453,7 +552,7 @@ module Vapi
         "headers": headers,
         "backoffPlan": backoff_plan,
         "variableExtractionPlan": variable_extraction_plan,
-        "function": function
+        "rejectionPlan": rejection_plan
       }.reject do |_k, v|
         v == OMIT
       end
@@ -470,8 +569,9 @@ module Vapi
         item = item.to_json
         Vapi::CreateApiRequestToolDtoMessagesItem.from_json(json_object: item)
       end
-      method = parsed_json["method"]
+      method_ = parsed_json["method"]
       timeout_seconds = parsed_json["timeoutSeconds"]
+      credential_id = parsed_json["credentialId"]
       name = parsed_json["name"]
       description = parsed_json["description"]
       url = parsed_json["url"]
@@ -499,16 +599,17 @@ module Vapi
         variable_extraction_plan = parsed_json["variableExtractionPlan"].to_json
         variable_extraction_plan = Vapi::VariableExtractionPlan.from_json(json_object: variable_extraction_plan)
       end
-      if parsed_json["function"].nil?
-        function = nil
+      if parsed_json["rejectionPlan"].nil?
+        rejection_plan = nil
       else
-        function = parsed_json["function"].to_json
-        function = Vapi::OpenAiFunction.from_json(json_object: function)
+        rejection_plan = parsed_json["rejectionPlan"].to_json
+        rejection_plan = Vapi::ToolRejectionPlan.from_json(json_object: rejection_plan)
       end
       new(
         messages: messages,
-        method: method,
+        method_: method_,
         timeout_seconds: timeout_seconds,
+        credential_id: credential_id,
         name: name,
         description: description,
         url: url,
@@ -516,7 +617,7 @@ module Vapi
         headers: headers,
         backoff_plan: backoff_plan,
         variable_extraction_plan: variable_extraction_plan,
-        function: function,
+        rejection_plan: rejection_plan,
         additional_properties: struct
       )
     end
@@ -536,8 +637,9 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
-      obj.method.is_a?(Vapi::CreateApiRequestToolDtoMethod) != false || raise("Passed value for field obj.method is not the expected type, validation failed.")
+      obj.method_.is_a?(Vapi::CreateApiRequestToolDtoMethod) != false || raise("Passed value for field obj.method_ is not the expected type, validation failed.")
       obj.timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.timeout_seconds is not the expected type, validation failed.")
+      obj.credential_id&.is_a?(String) != false || raise("Passed value for field obj.credential_id is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")
       obj.url.is_a?(String) != false || raise("Passed value for field obj.url is not the expected type, validation failed.")
@@ -545,7 +647,7 @@ module Vapi
       obj.headers.nil? || Vapi::JsonSchema.validate_raw(obj: obj.headers)
       obj.backoff_plan.nil? || Vapi::BackoffPlan.validate_raw(obj: obj.backoff_plan)
       obj.variable_extraction_plan.nil? || Vapi::VariableExtractionPlan.validate_raw(obj: obj.variable_extraction_plan)
-      obj.function.nil? || Vapi::OpenAiFunction.validate_raw(obj: obj.function)
+      obj.rejection_plan.nil? || Vapi::ToolRejectionPlan.validate_raw(obj: obj.rejection_plan)
     end
   end
 end

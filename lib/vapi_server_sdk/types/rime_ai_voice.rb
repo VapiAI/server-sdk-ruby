@@ -13,7 +13,7 @@ module Vapi
     attr_reader :caching_enabled
     # @return [Vapi::RimeAiVoiceId] This is the provider-specific ID that will be used.
     attr_reader :voice_id
-    # @return [Vapi::RimeAiVoiceModel] This is the model that will be used. Defaults to 'mistv2' when not specified.
+    # @return [Vapi::RimeAiVoiceModel] This is the model that will be used. Defaults to 'arcana' when not specified.
     attr_reader :model
     # @return [Float] This is the speed multiplier that will be used.
     attr_reader :speed
@@ -48,7 +48,7 @@ module Vapi
 
     # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [Vapi::RimeAiVoiceId] This is the provider-specific ID that will be used.
-    # @param model [Vapi::RimeAiVoiceModel] This is the model that will be used. Defaults to 'mistv2' when not specified.
+    # @param model [Vapi::RimeAiVoiceModel] This is the model that will be used. Defaults to 'arcana' when not specified.
     # @param speed [Float] This is the speed multiplier that will be used.
     # @param pause_between_brackets [Boolean] This is a flag that controls whether to add slight pauses using angle brackets.
     #  Example: "Hi. <200> I'd love to have a conversation with you." adds a 200ms

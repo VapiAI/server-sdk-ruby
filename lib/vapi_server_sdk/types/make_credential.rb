@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "make_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class MakeCredential
-    # @return [String]
+    # @return [Vapi::MakeCredentialProvider]
     attr_reader :provider
     # @return [String] Team ID
     attr_reader :team_id
@@ -32,7 +33,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::MakeCredentialProvider]
     # @param team_id [String] Team ID
     # @param region [String] Region of your application. For example: eu1, eu2, us1, us2
     # @param api_key [String] This is not returned in the API.
@@ -114,7 +115,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::MakeCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.team_id.is_a?(String) != false || raise("Passed value for field obj.team_id is not the expected type, validation failed.")
       obj.region.is_a?(String) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")

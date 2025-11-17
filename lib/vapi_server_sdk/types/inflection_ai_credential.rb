@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "inflection_ai_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class InflectionAiCredential
-    # @return [String] This is the api key for Pi in InflectionAI's console. Get it from here:
+    # @return [Vapi::InflectionAiCredentialProvider] This is the api key for Pi in InflectionAI's console. Get it from here:
     #  https://developers.inflection.ai/keys, billing will need to be setup
     attr_reader :provider
     # @return [String] This is not returned in the API.
@@ -29,7 +30,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String] This is the api key for Pi in InflectionAI's console. Get it from here:
+    # @param provider [Vapi::InflectionAiCredentialProvider] This is the api key for Pi in InflectionAI's console. Get it from here:
     #  https://developers.inflection.ai/keys, billing will need to be setup
     # @param api_key [String] This is not returned in the API.
     # @param id [String] This is the unique identifier for the credential.
@@ -101,7 +102,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::InflectionAiCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

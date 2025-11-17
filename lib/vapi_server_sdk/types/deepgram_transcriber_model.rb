@@ -2,6 +2,7 @@
 
 module Vapi
   class DeepgramTranscriberModel
+    FLUX_GENERAL_EN = "flux-general-en"
     NOVA_3 = "nova-3"
     NOVA_3_GENERAL = "nova-3-general"
     NOVA_3_MEDICAL = "nova-3-medical"
@@ -33,5 +34,6 @@ module Vapi
     BASE_CONVERSATIONALAI = "base-conversationalai"
     BASE_VOICEMAIL = "base-voicemail"
     BASE_VIDEO = "base-video"
+    WHISPER = "whisper"
   end
 end

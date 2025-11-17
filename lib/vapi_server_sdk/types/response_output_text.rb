@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "response_output_text_type"
 require "ostruct"
 require "json"
 
@@ -9,7 +10,7 @@ module Vapi
     attr_reader :annotations
     # @return [String] The text output from the model
     attr_reader :text
-    # @return [String] The type of the output text
+    # @return [Vapi::ResponseOutputTextType] The type of the output text
     attr_reader :type
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -21,7 +22,7 @@ module Vapi
 
     # @param annotations [Array<Hash{String => Object}>] Annotations in the text output
     # @param text [String] The text output from the model
-    # @param type [String] The type of the output text
+    # @param type [Vapi::ResponseOutputTextType] The type of the output text
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ResponseOutputText]
     def initialize(annotations:, text:, type:, additional_properties: nil)
@@ -66,7 +67,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.annotations.is_a?(Array) != false || raise("Passed value for field obj.annotations is not the expected type, validation failed.")
       obj.text.is_a?(String) != false || raise("Passed value for field obj.text is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::ResponseOutputTextType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
     end
   end
 end

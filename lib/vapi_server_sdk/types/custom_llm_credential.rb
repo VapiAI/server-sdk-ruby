@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "custom_llm_credential_provider"
 require_relative "o_auth_2_authentication_plan"
 require "date"
 require_relative "oauth_2_authentication_session"
@@ -8,7 +9,7 @@ require "json"
 
 module Vapi
   class CustomLlmCredential
-    # @return [String]
+    # @return [Vapi::CustomLlmCredentialProvider]
     attr_reader :provider
     # @return [String] This is not returned in the API.
     attr_reader :api_key
@@ -36,7 +37,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::CustomLlmCredentialProvider]
     # @param api_key [String] This is not returned in the API.
     # @param authentication_plan [Vapi::OAuth2AuthenticationPlan] This is the authentication plan. Currently supports OAuth2 RFC 6749. To use
     #  Bearer authentication, use apiKey
@@ -130,7 +131,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::CustomLlmCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.authentication_plan.nil? || Vapi::OAuth2AuthenticationPlan.validate_raw(obj: obj.authentication_plan)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")

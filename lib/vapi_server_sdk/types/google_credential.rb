@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "google_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class GoogleCredential
-    # @return [String] This is the key for Gemini in Google AI Studio. Get it from here:
+    # @return [Vapi::GoogleCredentialProvider] This is the key for Gemini in Google AI Studio. Get it from here:
     #  https://aistudio.google.com/app/apikey
     attr_reader :provider
     # @return [String] This is not returned in the API.
@@ -29,7 +30,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String] This is the key for Gemini in Google AI Studio. Get it from here:
+    # @param provider [Vapi::GoogleCredentialProvider] This is the key for Gemini in Google AI Studio. Get it from here:
     #  https://aistudio.google.com/app/apikey
     # @param api_key [String] This is not returned in the API.
     # @param id [String] This is the unique identifier for the credential.
@@ -101,7 +102,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::GoogleCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

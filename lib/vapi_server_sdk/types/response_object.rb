@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "response_object_object"
 require_relative "response_object_status"
 require_relative "response_output_message"
 require "ostruct"
@@ -9,7 +10,7 @@ module Vapi
   class ResponseObject
     # @return [String] Unique identifier for this Response
     attr_reader :id
-    # @return [String] The object type
+    # @return [Vapi::ResponseObjectObject] The object type
     attr_reader :object
     # @return [Float] Unix timestamp (in seconds) of when this Response was created
     attr_reader :created_at
@@ -28,7 +29,7 @@ module Vapi
     OMIT = Object.new
 
     # @param id [String] Unique identifier for this Response
-    # @param object [String] The object type
+    # @param object [Vapi::ResponseObjectObject] The object type
     # @param created_at [Float] Unix timestamp (in seconds) of when this Response was created
     # @param status [Vapi::ResponseObjectStatus] Status of the response
     # @param error [String] Error message if the response failed
@@ -97,7 +98,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
-      obj.object.is_a?(String) != false || raise("Passed value for field obj.object is not the expected type, validation failed.")
+      obj.object.is_a?(Vapi::ResponseObjectObject) != false || raise("Passed value for field obj.object is not the expected type, validation failed.")
       obj.created_at.is_a?(Float) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.status.is_a?(Vapi::ResponseObjectStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.error&.is_a?(String) != false || raise("Passed value for field obj.error is not the expected type, validation failed.")

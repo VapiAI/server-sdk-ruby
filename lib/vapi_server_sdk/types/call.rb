@@ -14,6 +14,7 @@ require_relative "artifact_plan"
 require_relative "analysis"
 require_relative "monitor"
 require_relative "artifact"
+require_relative "compliance"
 require_relative "create_assistant_dto"
 require_relative "assistant_overrides"
 require_relative "create_squad_dto"
@@ -73,6 +74,8 @@ module Vapi
     # @return [Vapi::Artifact] These are the artifacts created from the call. Configure in
     #  `assistant.artifactPlan`.
     attr_reader :artifact
+    # @return [Vapi::Compliance] This is the compliance of the call. Configure in `assistant.compliancePlan`.
+    attr_reader :compliance
     # @return [String] The ID of the call as provided by the phone number service. callSid in Twilio.
     #  conversationUuid in Vonage. callControlId in Telnyx.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
@@ -110,6 +113,10 @@ module Vapi
     #  - Squad, use `squad` or `squadId`
     #  - Workflow, use `workflow` or `workflowId`
     attr_reader :squad
+    # @return [Vapi::AssistantOverrides] These are the overrides for the `squad` or `squadId`'s member settings and
+    #  template variables.
+    #  This will apply to all members of the squad.
+    attr_reader :squad_overrides
     # @return [String] This is the workflow that will be used for the call. To use a transient
     #  workflow, use `workflow` instead.
     #  To start a call with:
@@ -183,6 +190,7 @@ module Vapi
     # @param monitor [Vapi::Monitor] This is to real-time monitor the call. Configure in `assistant.monitorPlan`.
     # @param artifact [Vapi::Artifact] These are the artifacts created from the call. Configure in
     #  `assistant.artifactPlan`.
+    # @param compliance [Vapi::Compliance] This is the compliance of the call. Configure in `assistant.compliancePlan`.
     # @param phone_call_provider_id [String] The ID of the call as provided by the phone number service. callSid in Twilio.
     #  conversationUuid in Vonage. callControlId in Telnyx.
     #  Only relevant for `outboundPhoneCall` and `inboundPhoneCall` type.
@@ -213,6 +221,9 @@ module Vapi
     #  - Assistant, use `assistant` or `assistantId`
     #  - Squad, use `squad` or `squadId`
     #  - Workflow, use `workflow` or `workflowId`
+    # @param squad_overrides [Vapi::AssistantOverrides] These are the overrides for the `squad` or `squadId`'s member settings and
+    #  template variables.
+    #  This will apply to all members of the squad.
     # @param workflow_id [String] This is the workflow that will be used for the call. To use a transient
     #  workflow, use `workflow` instead.
     #  To start a call with:
@@ -245,7 +256,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Call]
     def initialize(id:, org_id:, created_at:, updated_at:, type: OMIT, costs: OMIT, messages: OMIT, phone_call_provider: OMIT, phone_call_transport: OMIT,
-                   status: OMIT, ended_reason: OMIT, destination: OMIT, started_at: OMIT, ended_at: OMIT, cost: OMIT, cost_breakdown: OMIT, artifact_plan: OMIT, analysis: OMIT, monitor: OMIT, artifact: OMIT, phone_call_provider_id: OMIT, campaign_id: OMIT, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, workflow_id: OMIT, workflow: OMIT, workflow_overrides: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, name: OMIT, schedule_plan: OMIT, transport: OMIT, additional_properties: nil)
+                   status: OMIT, ended_reason: OMIT, destination: OMIT, started_at: OMIT, ended_at: OMIT, cost: OMIT, cost_breakdown: OMIT, artifact_plan: OMIT, analysis: OMIT, monitor: OMIT, artifact: OMIT, compliance: OMIT, phone_call_provider_id: OMIT, campaign_id: OMIT, assistant_id: OMIT, assistant: OMIT, assistant_overrides: OMIT, squad_id: OMIT, squad: OMIT, squad_overrides: OMIT, workflow_id: OMIT, workflow: OMIT, workflow_overrides: OMIT, phone_number_id: OMIT, phone_number: OMIT, customer_id: OMIT, customer: OMIT, name: OMIT, schedule_plan: OMIT, transport: OMIT, additional_properties: nil)
       @type = type if type != OMIT
       @costs = costs if costs != OMIT
       @messages = messages if messages != OMIT
@@ -266,6 +277,7 @@ module Vapi
       @analysis = analysis if analysis != OMIT
       @monitor = monitor if monitor != OMIT
       @artifact = artifact if artifact != OMIT
+      @compliance = compliance if compliance != OMIT
       @phone_call_provider_id = phone_call_provider_id if phone_call_provider_id != OMIT
       @campaign_id = campaign_id if campaign_id != OMIT
       @assistant_id = assistant_id if assistant_id != OMIT
@@ -273,6 +285,7 @@ module Vapi
       @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
       @squad_id = squad_id if squad_id != OMIT
       @squad = squad if squad != OMIT
+      @squad_overrides = squad_overrides if squad_overrides != OMIT
       @workflow_id = workflow_id if workflow_id != OMIT
       @workflow = workflow if workflow != OMIT
       @workflow_overrides = workflow_overrides if workflow_overrides != OMIT
@@ -305,6 +318,7 @@ module Vapi
         "analysis": analysis,
         "monitor": monitor,
         "artifact": artifact,
+        "compliance": compliance,
         "phoneCallProviderId": phone_call_provider_id,
         "campaignId": campaign_id,
         "assistantId": assistant_id,
@@ -312,6 +326,7 @@ module Vapi
         "assistantOverrides": assistant_overrides,
         "squadId": squad_id,
         "squad": squad,
+        "squadOverrides": squad_overrides,
         "workflowId": workflow_id,
         "workflow": workflow,
         "workflowOverrides": workflow_overrides,
@@ -390,6 +405,12 @@ module Vapi
         artifact = parsed_json["artifact"].to_json
         artifact = Vapi::Artifact.from_json(json_object: artifact)
       end
+      if parsed_json["compliance"].nil?
+        compliance = nil
+      else
+        compliance = parsed_json["compliance"].to_json
+        compliance = Vapi::Compliance.from_json(json_object: compliance)
+      end
       phone_call_provider_id = parsed_json["phoneCallProviderId"]
       campaign_id = parsed_json["campaignId"]
       assistant_id = parsed_json["assistantId"]
@@ -411,6 +432,12 @@ module Vapi
       else
         squad = parsed_json["squad"].to_json
         squad = Vapi::CreateSquadDto.from_json(json_object: squad)
+      end
+      if parsed_json["squadOverrides"].nil?
+        squad_overrides = nil
+      else
+        squad_overrides = parsed_json["squadOverrides"].to_json
+        squad_overrides = Vapi::AssistantOverrides.from_json(json_object: squad_overrides)
       end
       workflow_id = parsed_json["workflowId"]
       if parsed_json["workflow"].nil?
@@ -468,6 +495,7 @@ module Vapi
         analysis: analysis,
         monitor: monitor,
         artifact: artifact,
+        compliance: compliance,
         phone_call_provider_id: phone_call_provider_id,
         campaign_id: campaign_id,
         assistant_id: assistant_id,
@@ -475,6 +503,7 @@ module Vapi
         assistant_overrides: assistant_overrides,
         squad_id: squad_id,
         squad: squad,
+        squad_overrides: squad_overrides,
         workflow_id: workflow_id,
         workflow: workflow,
         workflow_overrides: workflow_overrides,
@@ -523,6 +552,7 @@ module Vapi
       obj.analysis.nil? || Vapi::Analysis.validate_raw(obj: obj.analysis)
       obj.monitor.nil? || Vapi::Monitor.validate_raw(obj: obj.monitor)
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
+      obj.compliance.nil? || Vapi::Compliance.validate_raw(obj: obj.compliance)
       obj.phone_call_provider_id&.is_a?(String) != false || raise("Passed value for field obj.phone_call_provider_id is not the expected type, validation failed.")
       obj.campaign_id&.is_a?(String) != false || raise("Passed value for field obj.campaign_id is not the expected type, validation failed.")
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
@@ -530,6 +560,7 @@ module Vapi
       obj.assistant_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.assistant_overrides)
       obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
       obj.squad.nil? || Vapi::CreateSquadDto.validate_raw(obj: obj.squad)
+      obj.squad_overrides.nil? || Vapi::AssistantOverrides.validate_raw(obj: obj.squad_overrides)
       obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
       obj.workflow.nil? || Vapi::CreateWorkflowDto.validate_raw(obj: obj.workflow)
       obj.workflow_overrides.nil? || Vapi::WorkflowOverrides.validate_raw(obj: obj.workflow_overrides)

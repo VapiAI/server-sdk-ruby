@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "client_message_voice_input_phone_number"
+require_relative "client_message_voice_input_type"
 require_relative "call"
 require_relative "create_customer_dto"
 require_relative "create_assistant_dto"
@@ -11,6 +12,9 @@ module Vapi
   class ClientMessageVoiceInput
     # @return [Vapi::ClientMessageVoiceInputPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ClientMessageVoiceInputType] This is the type of the message. "voice-input" is sent when a generation is
+    #  requested from voice provider.
+    attr_reader :type
     # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Call] This is the call that the message is associated with.
@@ -30,6 +34,8 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ClientMessageVoiceInputPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ClientMessageVoiceInputType] This is the type of the message. "voice-input" is sent when a generation is
+    #  requested from voice provider.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param call [Vapi::Call] This is the call that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
@@ -37,9 +43,10 @@ module Vapi
     # @param input [String] This is the voice input content
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageVoiceInput]
-    def initialize(input:, phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
+    def initialize(type:, input:, phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
                    additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @timestamp = timestamp if timestamp != OMIT
       @call = call if call != OMIT
       @customer = customer if customer != OMIT
@@ -48,6 +55,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "timestamp": timestamp,
         "call": call,
         "customer": customer,
@@ -71,6 +79,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ClientMessageVoiceInputPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["call"].nil?
         call = nil
@@ -93,6 +102,7 @@ module Vapi
       input = parsed_json["input"]
       new(
         phone_number: phone_number,
+        type: type,
         timestamp: timestamp,
         call: call,
         customer: customer,
@@ -117,6 +127,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ClientMessageVoiceInputPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ClientMessageVoiceInputType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)

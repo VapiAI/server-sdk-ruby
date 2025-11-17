@@ -26,7 +26,7 @@ module Vapi
 
         return struct&.map do |item|
           item = item.to_json
-          Vapi::ChatInputItem.from_json(json_object: item)
+          Vapi::ChatInputOneItem.from_json(json_object: item)
         end
       rescue StandardError
         # noop

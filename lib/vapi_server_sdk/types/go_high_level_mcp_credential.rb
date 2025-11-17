@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "go_high_level_mcp_credential_provider"
 require_relative "oauth_2_authentication_session"
 require "date"
 require "ostruct"
@@ -7,7 +8,7 @@ require "json"
 
 module Vapi
   class GoHighLevelMcpCredential
-    # @return [String]
+    # @return [Vapi::GoHighLevelMcpCredentialProvider]
     attr_reader :provider
     # @return [Vapi::Oauth2AuthenticationSession] This is the authentication session for the credential.
     attr_reader :authentication_session
@@ -29,7 +30,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::GoHighLevelMcpCredentialProvider]
     # @param authentication_session [Vapi::Oauth2AuthenticationSession] This is the authentication session for the credential.
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
@@ -106,7 +107,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::GoHighLevelMcpCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       Vapi::Oauth2AuthenticationSession.validate_raw(obj: obj.authentication_session)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

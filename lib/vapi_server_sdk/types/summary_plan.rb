@@ -25,6 +25,7 @@ module Vapi
     #  - {{transcript}}: The transcript of the call from `call.artifact.transcript`
     #  - {{systemPrompt}}: The system prompt of the call from
     #  `assistant.model.messages[type=system].content`
+    #  - {{messages}}: The messages of the call from `assistant.model.messages`
     #  - {{endedReason}}: The ended reason of the call from `call.endedReason`
     attr_reader :messages
     # @return [Boolean] This determines whether a summary is generated and stored in
@@ -68,6 +69,7 @@ module Vapi
     #  - {{transcript}}: The transcript of the call from `call.artifact.transcript`
     #  - {{systemPrompt}}: The system prompt of the call from
     #  `assistant.model.messages[type=system].content`
+    #  - {{messages}}: The messages of the call from `assistant.model.messages`
     #  - {{endedReason}}: The ended reason of the call from `call.endedReason`
     # @param enabled [Boolean] This determines whether a summary is generated and stored in
     #  `call.analysis.summary`. Defaults to true.

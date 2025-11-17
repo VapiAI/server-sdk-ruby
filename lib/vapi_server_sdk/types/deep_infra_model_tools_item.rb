@@ -14,6 +14,7 @@ require_relative "create_go_high_level_contact_get_tool_dto"
 require_relative "create_google_calendar_check_availability_tool_dto"
 require_relative "create_google_calendar_create_event_tool_dto"
 require_relative "create_google_sheets_row_append_tool_dto"
+require_relative "create_handoff_tool_dto"
 require_relative "create_mcp_tool_dto"
 require_relative "create_query_tool_dto"
 require_relative "create_slack_send_message_tool_dto"
@@ -72,6 +73,8 @@ module Vapi
                  Vapi::CreateGoogleCalendarCreateEventToolDto.from_json(json_object: json_object)
                when "google.sheets.row.append"
                  Vapi::CreateGoogleSheetsRowAppendToolDto.from_json(json_object: json_object)
+               when "handoff"
+                 Vapi::CreateHandoffToolDto.from_json(json_object: json_object)
                when "mcp"
                  Vapi::CreateMcpToolDto.from_json(json_object: json_object)
                when "query"
@@ -120,6 +123,8 @@ module Vapi
       when "google.calendar.event.create"
         { **@member.to_json, type: @discriminant }.to_json
       when "google.sheets.row.append"
+        { **@member.to_json, type: @discriminant }.to_json
+      when "handoff"
         { **@member.to_json, type: @discriminant }.to_json
       when "mcp"
         { **@member.to_json, type: @discriminant }.to_json
@@ -173,6 +178,8 @@ module Vapi
         Vapi::CreateGoogleCalendarCreateEventToolDto.validate_raw(obj: obj)
       when "google.sheets.row.append"
         Vapi::CreateGoogleSheetsRowAppendToolDto.validate_raw(obj: obj)
+      when "handoff"
+        Vapi::CreateHandoffToolDto.validate_raw(obj: obj)
       when "mcp"
         Vapi::CreateMcpToolDto.validate_raw(obj: obj)
       when "query"
@@ -274,6 +281,12 @@ module Vapi
     # @return [Vapi::DeepInfraModelToolsItem]
     def self.google_sheets_row_append(member:)
       new(member: member, discriminant: "google.sheets.row.append")
+    end
+
+    # @param member [Vapi::CreateHandoffToolDto]
+    # @return [Vapi::DeepInfraModelToolsItem]
+    def self.handoff(member:)
+      new(member: member, discriminant: "handoff")
     end
 
     # @param member [Vapi::CreateMcpToolDto]

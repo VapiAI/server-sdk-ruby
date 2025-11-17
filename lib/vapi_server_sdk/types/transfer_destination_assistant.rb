@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "transfer_destination_assistant_message"
+require_relative "transfer_destination_assistant_type"
 require_relative "transfer_mode"
 require "ostruct"
 require "json"
@@ -20,6 +21,8 @@ module Vapi
     #  to specify multiple messages for different languages through the `contents`
     #  field.
     attr_reader :message
+    # @return [Vapi::TransferDestinationAssistantType]
+    attr_reader :type
     # @return [Vapi::TransferMode] This is the mode to use for the transfer. Defaults to `rolling-history`.
     #  - `rolling-history`: This is the default mode. It keeps the entire conversation
     #  history and appends the new assistant's system message on transfer.
@@ -125,6 +128,7 @@ module Vapi
     #  This accepts a string or a ToolMessageStart class. Latter is useful if you want
     #  to specify multiple messages for different languages through the `contents`
     #  field.
+    # @param type [Vapi::TransferDestinationAssistantType]
     # @param transfer_mode [Vapi::TransferMode] This is the mode to use for the transfer. Defaults to `rolling-history`.
     #  - `rolling-history`: This is the default mode. It keeps the entire conversation
     #  history and appends the new assistant's system message on transfer.
@@ -209,14 +213,17 @@ module Vapi
     #  how to transfer the call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferDestinationAssistant]
-    def initialize(assistant_name:, message: OMIT, transfer_mode: OMIT, description: OMIT, additional_properties: nil)
+    def initialize(type:, assistant_name:, message: OMIT, transfer_mode: OMIT, description: OMIT,
+                   additional_properties: nil)
       @message = message if message != OMIT
+      @type = type
       @transfer_mode = transfer_mode if transfer_mode != OMIT
       @assistant_name = assistant_name
       @description = description if description != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "message": message,
+        "type": type,
         "transferMode": transfer_mode,
         "assistantName": assistant_name,
         "description": description
@@ -238,11 +245,13 @@ module Vapi
         message = parsed_json["message"].to_json
         message = Vapi::TransferDestinationAssistantMessage.from_json(json_object: message)
       end
+      type = parsed_json["type"]
       transfer_mode = parsed_json["transferMode"]
       assistant_name = parsed_json["assistantName"]
       description = parsed_json["description"]
       new(
         message: message,
+        type: type,
         transfer_mode: transfer_mode,
         assistant_name: assistant_name,
         description: description,
@@ -265,6 +274,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.message.nil? || Vapi::TransferDestinationAssistantMessage.validate_raw(obj: obj.message)
+      obj.type.is_a?(Vapi::TransferDestinationAssistantType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.transfer_mode&.is_a?(Vapi::TransferMode) != false || raise("Passed value for field obj.transfer_mode is not the expected type, validation failed.")
       obj.assistant_name.is_a?(String) != false || raise("Passed value for field obj.assistant_name is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")

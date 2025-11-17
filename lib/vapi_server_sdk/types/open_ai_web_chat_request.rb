@@ -14,6 +14,11 @@ module Vapi
     #  If provided, the conversation will continue from the previous state.
     #  If not provided or expired, a new session will be created.
     attr_reader :session_id
+    # @return [Float] This is the expiration time for the session. This can ONLY be set if starting a
+    #  new chat and therefore a new session is created.
+    #  If session already exists, this will be ignored and NOT be updated for the
+    #  existing session. Use PATCH /session/:id to update the session expiration time.
+    attr_reader :session_expiration_seconds
     # @return [Vapi::ChatAssistantOverrides] These are the variable values that will be used to replace template variables in
     #  the assistant messages.
     #  Only variable substitution is supported in web chat - other assistant properties
@@ -27,6 +32,12 @@ module Vapi
     attr_reader :input
     # @return [Boolean] Whether to stream the response or not.
     attr_reader :stream
+    # @return [Boolean] This is a flag to indicate end of session. When true, the session will be marked
+    #  as completed and the chat will be ended.
+    #  Used to end session to send End-of-session report to the customer.
+    #  When flag is set to true, any messages sent will not be processed and session
+    #  will directly be marked as completed.
+    attr_reader :session_end
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -39,6 +50,10 @@ module Vapi
     # @param session_id [String] This is the ID of the session that will be used for the chat.
     #  If provided, the conversation will continue from the previous state.
     #  If not provided or expired, a new session will be created.
+    # @param session_expiration_seconds [Float] This is the expiration time for the session. This can ONLY be set if starting a
+    #  new chat and therefore a new session is created.
+    #  If session already exists, this will be ignored and NOT be updated for the
+    #  existing session. Use PATCH /session/:id to update the session expiration time.
     # @param assistant_overrides [Vapi::ChatAssistantOverrides] These are the variable values that will be used to replace template variables in
     #  the assistant messages.
     #  Only variable substitution is supported in web chat - other assistant properties
@@ -48,24 +63,33 @@ module Vapi
     # @param input [Vapi::OpenAiWebChatRequestInput] This is the input text for the chat.
     #  Can be a string or an array of chat messages.
     # @param stream [Boolean] Whether to stream the response or not.
+    # @param session_end [Boolean] This is a flag to indicate end of session. When true, the session will be marked
+    #  as completed and the chat will be ended.
+    #  Used to end session to send End-of-session report to the customer.
+    #  When flag is set to true, any messages sent will not be processed and session
+    #  will directly be marked as completed.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::OpenAiWebChatRequest]
-    def initialize(assistant_id:, input:, session_id: OMIT, assistant_overrides: OMIT, customer: OMIT, stream: OMIT,
-                   additional_properties: nil)
+    def initialize(assistant_id:, input:, session_id: OMIT, session_expiration_seconds: OMIT, assistant_overrides: OMIT,
+                   customer: OMIT, stream: OMIT, session_end: OMIT, additional_properties: nil)
       @assistant_id = assistant_id
       @session_id = session_id if session_id != OMIT
+      @session_expiration_seconds = session_expiration_seconds if session_expiration_seconds != OMIT
       @assistant_overrides = assistant_overrides if assistant_overrides != OMIT
       @customer = customer if customer != OMIT
       @input = input
       @stream = stream if stream != OMIT
+      @session_end = session_end if session_end != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "assistantId": assistant_id,
         "sessionId": session_id,
+        "sessionExpirationSeconds": session_expiration_seconds,
         "assistantOverrides": assistant_overrides,
         "customer": customer,
         "input": input,
-        "stream": stream
+        "stream": stream,
+        "sessionEnd": session_end
       }.reject do |_k, v|
         v == OMIT
       end
@@ -80,6 +104,7 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       assistant_id = parsed_json["assistantId"]
       session_id = parsed_json["sessionId"]
+      session_expiration_seconds = parsed_json["sessionExpirationSeconds"]
       if parsed_json["assistantOverrides"].nil?
         assistant_overrides = nil
       else
@@ -99,13 +124,16 @@ module Vapi
         input = Vapi::OpenAiWebChatRequestInput.from_json(json_object: input)
       end
       stream = parsed_json["stream"]
+      session_end = parsed_json["sessionEnd"]
       new(
         assistant_id: assistant_id,
         session_id: session_id,
+        session_expiration_seconds: session_expiration_seconds,
         assistant_overrides: assistant_overrides,
         customer: customer,
         input: input,
         stream: stream,
+        session_end: session_end,
         additional_properties: struct
       )
     end
@@ -126,10 +154,12 @@ module Vapi
     def self.validate_raw(obj:)
       obj.assistant_id.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
       obj.session_id&.is_a?(String) != false || raise("Passed value for field obj.session_id is not the expected type, validation failed.")
+      obj.session_expiration_seconds&.is_a?(Float) != false || raise("Passed value for field obj.session_expiration_seconds is not the expected type, validation failed.")
       obj.assistant_overrides.nil? || Vapi::ChatAssistantOverrides.validate_raw(obj: obj.assistant_overrides)
       obj.customer.nil? || Vapi::CreateWebCustomerDto.validate_raw(obj: obj.customer)
       Vapi::OpenAiWebChatRequestInput.validate_raw(obj: obj.input)
       obj.stream&.is_a?(Boolean) != false || raise("Passed value for field obj.stream is not the expected type, validation failed.")
+      obj.session_end&.is_a?(Boolean) != false || raise("Passed value for field obj.session_end is not the expected type, validation failed.")
     end
   end
 end

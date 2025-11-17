@@ -24,7 +24,11 @@ module Vapi
     attr_reader :workflow_id
     # @return [String] This is the phone number ID that will be used for the campaign calls.
     attr_reader :phone_number_id
-    # @return [Vapi::SchedulePlan] This is the schedule plan for the campaign.
+    # @return [Vapi::SchedulePlan] This is the schedule plan for the campaign. Calls will start at startedAt and
+    #  continue until your organization’s concurrency limit is reached. Any remaining
+    #  calls will be retried for up to one hour as capacity becomes available. After
+    #  that hour or after latestAt, whichever comes first, any calls that couldn’t be
+    #  placed won’t be retried.
     attr_reader :schedule_plan
     # @return [Array<Vapi::CreateCustomerDto>] These are the customers that will be called in the campaign.
     attr_reader :customers
@@ -64,7 +68,11 @@ module Vapi
     # @param workflow_id [String] This is the workflow ID that will be used for the campaign calls. Note: Either
     #  assistantId or workflowId can be used, but not both.
     # @param phone_number_id [String] This is the phone number ID that will be used for the campaign calls.
-    # @param schedule_plan [Vapi::SchedulePlan] This is the schedule plan for the campaign.
+    # @param schedule_plan [Vapi::SchedulePlan] This is the schedule plan for the campaign. Calls will start at startedAt and
+    #  continue until your organization’s concurrency limit is reached. Any remaining
+    #  calls will be retried for up to one hour as capacity becomes available. After
+    #  that hour or after latestAt, whichever comes first, any calls that couldn’t be
+    #  placed won’t be retried.
     # @param customers [Array<Vapi::CreateCustomerDto>] These are the customers that will be called in the campaign.
     # @param id [String] This is the unique identifier for the campaign.
     # @param org_id [String] This is the unique identifier for the org that this campaign belongs to.

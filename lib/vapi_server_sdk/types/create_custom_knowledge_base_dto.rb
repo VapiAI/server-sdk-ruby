@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require_relative "create_custom_knowledge_base_dto_provider"
 require_relative "server"
 require "ostruct"
 require "json"
 
 module Vapi
   class CreateCustomKnowledgeBaseDto
+    # @return [Vapi::CreateCustomKnowledgeBaseDtoProvider] This knowledge base is bring your own knowledge base implementation.
+    attr_reader :provider
     # @return [Vapi::Server] This is where the knowledge base request will be sent.
     #  Request Example:
     #  POST https://{server.url}
@@ -53,6 +56,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param provider [Vapi::CreateCustomKnowledgeBaseDtoProvider] This knowledge base is bring your own knowledge base implementation.
     # @param server [Vapi::Server] This is where the knowledge base request will be sent.
     #  Request Example:
     #  POST https://{server.url}
@@ -93,10 +97,11 @@ module Vapi
     #  ```
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateCustomKnowledgeBaseDto]
-    def initialize(server:, additional_properties: nil)
+    def initialize(provider:, server:, additional_properties: nil)
+      @provider = provider
       @server = server
       @additional_properties = additional_properties
-      @_field_set = { "server": server }
+      @_field_set = { "provider": provider, "server": server }
     end
 
     # Deserialize a JSON object to an instance of CreateCustomKnowledgeBaseDto
@@ -106,13 +111,18 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      provider = parsed_json["provider"]
       if parsed_json["server"].nil?
         server = nil
       else
         server = parsed_json["server"].to_json
         server = Vapi::Server.from_json(json_object: server)
       end
-      new(server: server, additional_properties: struct)
+      new(
+        provider: provider,
+        server: server,
+        additional_properties: struct
+      )
     end
 
     # Serialize an instance of CreateCustomKnowledgeBaseDto to a JSON object
@@ -129,6 +139,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.provider.is_a?(Vapi::CreateCustomKnowledgeBaseDtoProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       Vapi::Server.validate_raw(obj: obj.server)
     end
   end

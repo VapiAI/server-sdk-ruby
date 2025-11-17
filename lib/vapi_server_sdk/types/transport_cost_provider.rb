@@ -2,8 +2,11 @@
 
 module Vapi
   class TransportCostProvider
+    DAILY = "daily"
+    VAPI_WEBSOCKET = "vapi.websocket"
     TWILIO = "twilio"
     VONAGE = "vonage"
-    VAPI = "vapi"
+    TELNYX = "telnyx"
+    VAPI_SIP = "vapi.sip"
   end
 end

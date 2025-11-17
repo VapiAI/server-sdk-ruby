@@ -2,14 +2,14 @@
 
 require_relative "../../requests"
 require "date"
-require_relative "types/tools_list_response_item"
+require_relative "types/list_tools_response_item"
 require "json"
-require_relative "types/tools_create_request"
-require_relative "types/tools_create_response"
-require_relative "types/tools_get_response"
-require_relative "types/tools_delete_response"
-require_relative "types/tools_update_request"
-require_relative "types/tools_update_response"
+require_relative "types/create_tools_request"
+require_relative "types/create_tools_response"
+require_relative "types/get_tools_response"
+require_relative "types/delete_tools_response"
+require_relative "types/update_tools_request_body"
+require_relative "types/update_tools_response"
 require "async"
 
 module Vapi
@@ -37,7 +37,7 @@ module Vapi
     # @param updated_at_le [DateTime] This will return items where the updatedAt is less than or equal to the
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
-    # @return [Array<Vapi::Tools::ToolsListResponseItem>]
+    # @return [Array<Vapi::Tools::ListToolsResponseItem>]
     def list(limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil,
              updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       response = @request_client.conn.get do |req|
@@ -68,13 +68,13 @@ module Vapi
       parsed_json = JSON.parse(response.body)
       parsed_json&.map do |item|
         item = item.to_json
-        Vapi::Tools::ToolsListResponseItem.from_json(json_object: item)
+        Vapi::Tools::ListToolsResponseItem.from_json(json_object: item)
       end
     end
 
-    # @param request [Vapi::Tools::ToolsCreateRequest]
+    # @param request [Vapi::Tools::CreateToolsRequest]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsCreateResponse]
+    # @return [Vapi::Tools::CreateToolsResponse]
     def create(request:, request_options: nil)
       response = @request_client.conn.post do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -90,12 +90,12 @@ module Vapi
         req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/tool"
       end
-      Vapi::Tools::ToolsCreateResponse.from_json(json_object: response.body)
+      Vapi::Tools::CreateToolsResponse.from_json(json_object: response.body)
     end
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsGetResponse]
+    # @return [Vapi::Tools::GetToolsResponse]
     def get(id:, request_options: nil)
       response = @request_client.conn.get do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -113,12 +113,12 @@ module Vapi
         end
         req.url "#{@request_client.get_url(request_options: request_options)}/tool/#{id}"
       end
-      Vapi::Tools::ToolsGetResponse.from_json(json_object: response.body)
+      Vapi::Tools::GetToolsResponse.from_json(json_object: response.body)
     end
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsDeleteResponse]
+    # @return [Vapi::Tools::DeleteToolsResponse]
     def delete(id:, request_options: nil)
       response = @request_client.conn.delete do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -136,13 +136,13 @@ module Vapi
         end
         req.url "#{@request_client.get_url(request_options: request_options)}/tool/#{id}"
       end
-      Vapi::Tools::ToolsDeleteResponse.from_json(json_object: response.body)
+      Vapi::Tools::DeleteToolsResponse.from_json(json_object: response.body)
     end
 
     # @param id [String]
-    # @param request [Vapi::Tools::ToolsUpdateRequest]
+    # @param request [Vapi::Tools::UpdateToolsRequestBody]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsUpdateResponse]
+    # @return [Vapi::Tools::UpdateToolsResponse]
     def update(id:, request:, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -158,7 +158,7 @@ module Vapi
         req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/tool/#{id}"
       end
-      Vapi::Tools::ToolsUpdateResponse.from_json(json_object: response.body)
+      Vapi::Tools::UpdateToolsResponse.from_json(json_object: response.body)
     end
   end
 
@@ -186,7 +186,7 @@ module Vapi
     # @param updated_at_le [DateTime] This will return items where the updatedAt is less than or equal to the
     #  specified value.
     # @param request_options [Vapi::RequestOptions]
-    # @return [Array<Vapi::Tools::ToolsListResponseItem>]
+    # @return [Array<Vapi::Tools::ListToolsResponseItem>]
     def list(limit: nil, created_at_gt: nil, created_at_lt: nil, created_at_ge: nil, created_at_le: nil,
              updated_at_gt: nil, updated_at_lt: nil, updated_at_ge: nil, updated_at_le: nil, request_options: nil)
       Async do
@@ -218,14 +218,14 @@ module Vapi
         parsed_json = JSON.parse(response.body)
         parsed_json&.map do |item|
           item = item.to_json
-          Vapi::Tools::ToolsListResponseItem.from_json(json_object: item)
+          Vapi::Tools::ListToolsResponseItem.from_json(json_object: item)
         end
       end
     end
 
-    # @param request [Vapi::Tools::ToolsCreateRequest]
+    # @param request [Vapi::Tools::CreateToolsRequest]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsCreateResponse]
+    # @return [Vapi::Tools::CreateToolsResponse]
     def create(request:, request_options: nil)
       Async do
         response = @request_client.conn.post do |req|
@@ -242,13 +242,13 @@ module Vapi
           req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/tool"
         end
-        Vapi::Tools::ToolsCreateResponse.from_json(json_object: response.body)
+        Vapi::Tools::CreateToolsResponse.from_json(json_object: response.body)
       end
     end
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsGetResponse]
+    # @return [Vapi::Tools::GetToolsResponse]
     def get(id:, request_options: nil)
       Async do
         response = @request_client.conn.get do |req|
@@ -267,13 +267,13 @@ module Vapi
           end
           req.url "#{@request_client.get_url(request_options: request_options)}/tool/#{id}"
         end
-        Vapi::Tools::ToolsGetResponse.from_json(json_object: response.body)
+        Vapi::Tools::GetToolsResponse.from_json(json_object: response.body)
       end
     end
 
     # @param id [String]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsDeleteResponse]
+    # @return [Vapi::Tools::DeleteToolsResponse]
     def delete(id:, request_options: nil)
       Async do
         response = @request_client.conn.delete do |req|
@@ -292,14 +292,14 @@ module Vapi
           end
           req.url "#{@request_client.get_url(request_options: request_options)}/tool/#{id}"
         end
-        Vapi::Tools::ToolsDeleteResponse.from_json(json_object: response.body)
+        Vapi::Tools::DeleteToolsResponse.from_json(json_object: response.body)
       end
     end
 
     # @param id [String]
-    # @param request [Vapi::Tools::ToolsUpdateRequest]
+    # @param request [Vapi::Tools::UpdateToolsRequestBody]
     # @param request_options [Vapi::RequestOptions]
-    # @return [Vapi::Tools::ToolsUpdateResponse]
+    # @return [Vapi::Tools::UpdateToolsResponse]
     def update(id:, request:, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
@@ -316,7 +316,7 @@ module Vapi
           req.body = { **(request || {}), **(request_options&.additional_body_parameters || {}) }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/tool/#{id}"
         end
-        Vapi::Tools::ToolsUpdateResponse.from_json(json_object: response.body)
+        Vapi::Tools::UpdateToolsResponse.from_json(json_object: response.body)
       end
     end
   end

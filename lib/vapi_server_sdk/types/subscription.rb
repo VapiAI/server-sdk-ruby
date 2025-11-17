@@ -5,6 +5,7 @@ require_relative "subscription_type"
 require_relative "subscription_status"
 require_relative "auto_reload_plan"
 require_relative "invoice_plan"
+require_relative "subscription_minutes_included_reset_frequency"
 require "ostruct"
 require "json"
 
@@ -55,6 +56,10 @@ module Vapi
     #  under this
     #  subscription have the option to enable HIPAA compliance.
     attr_reader :hipaa_enabled
+    # @return [Boolean] This is the data retention enabled flag for the subscription. It determines
+    #  whether orgs under this
+    #  subscription have the option to enable data retention.
+    attr_reader :data_retention_enabled
     # @return [String] This is the ID for the Common Paper agreement outlining the HIPAA contract.
     attr_reader :hipaa_common_paper_agreement_id
     # @return [String] This is the Stripe fingerprint of the payment method (card). It allows us
@@ -99,6 +104,16 @@ module Vapi
     attr_reader :pci_enabled
     # @return [String] This is the ID for the Common Paper agreement outlining the PCI contract.
     attr_reader :pci_common_paper_agreement_id
+    # @return [Float] This is the call retention days for the subscription.
+    attr_reader :call_retention_days
+    # @return [Float] This is the chat retention days for the subscription.
+    attr_reader :chat_retention_days
+    # @return [Vapi::SubscriptionMinutesIncludedResetFrequency] This is the minutes_included reset frequency for the subscription.
+    attr_reader :minutes_included_reset_frequency
+    # @return [Boolean] This is the Role Based Access Control (RBAC) enabled flag for the subscription.
+    attr_reader :rbac_enabled
+    # @return [Float] This is the platform fee for the subscription.
+    attr_reader :platform_fee
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -134,6 +149,9 @@ module Vapi
     # @param hipaa_enabled [Boolean] This is the HIPAA enabled flag for the subscription. It determines whether orgs
     #  under this
     #  subscription have the option to enable HIPAA compliance.
+    # @param data_retention_enabled [Boolean] This is the data retention enabled flag for the subscription. It determines
+    #  whether orgs under this
+    #  subscription have the option to enable data retention.
     # @param hipaa_common_paper_agreement_id [String] This is the ID for the Common Paper agreement outlining the HIPAA contract.
     # @param stripe_payment_method_fingerprint [String] This is the Stripe fingerprint of the payment method (card). It allows us
     #  to detect users who try to abuse our system through multiple sign-ups.
@@ -160,10 +178,15 @@ module Vapi
     #  under this
     #  subscription have the option to enable PCI compliance.
     # @param pci_common_paper_agreement_id [String] This is the ID for the Common Paper agreement outlining the PCI contract.
+    # @param call_retention_days [Float] This is the call retention days for the subscription.
+    # @param chat_retention_days [Float] This is the chat retention days for the subscription.
+    # @param minutes_included_reset_frequency [Vapi::SubscriptionMinutesIncludedResetFrequency] This is the minutes_included reset frequency for the subscription.
+    # @param rbac_enabled [Boolean] This is the Role Based Access Control (RBAC) enabled flag for the subscription.
+    # @param platform_fee [Float] This is the platform fee for the subscription.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Subscription]
     def initialize(id:, created_at:, updated_at:, type:, status:, credits:, concurrency_counter:,
-                   concurrency_limit_included:, concurrency_limit_purchased:, phone_numbers_counter: OMIT, phone_numbers_included: OMIT, monthly_charge_schedule_id: OMIT, monthly_credit_check_schedule_id: OMIT, stripe_customer_id: OMIT, stripe_payment_method_id: OMIT, slack_support_enabled: OMIT, slack_channel_id: OMIT, hipaa_enabled: OMIT, hipaa_common_paper_agreement_id: OMIT, stripe_payment_method_fingerprint: OMIT, stripe_customer_email: OMIT, referred_by_email: OMIT, auto_reload_plan: OMIT, minutes_included: OMIT, minutes_used: OMIT, minutes_used_next_reset_at: OMIT, minutes_overage_cost: OMIT, providers_included: OMIT, outbound_calls_daily_limit: OMIT, outbound_calls_counter: OMIT, outbound_calls_counter_next_reset_at: OMIT, coupon_ids: OMIT, coupon_usage_left: OMIT, invoice_plan: OMIT, pci_enabled: OMIT, pci_common_paper_agreement_id: OMIT, additional_properties: nil)
+                   concurrency_limit_included:, concurrency_limit_purchased:, phone_numbers_counter: OMIT, phone_numbers_included: OMIT, monthly_charge_schedule_id: OMIT, monthly_credit_check_schedule_id: OMIT, stripe_customer_id: OMIT, stripe_payment_method_id: OMIT, slack_support_enabled: OMIT, slack_channel_id: OMIT, hipaa_enabled: OMIT, data_retention_enabled: OMIT, hipaa_common_paper_agreement_id: OMIT, stripe_payment_method_fingerprint: OMIT, stripe_customer_email: OMIT, referred_by_email: OMIT, auto_reload_plan: OMIT, minutes_included: OMIT, minutes_used: OMIT, minutes_used_next_reset_at: OMIT, minutes_overage_cost: OMIT, providers_included: OMIT, outbound_calls_daily_limit: OMIT, outbound_calls_counter: OMIT, outbound_calls_counter_next_reset_at: OMIT, coupon_ids: OMIT, coupon_usage_left: OMIT, invoice_plan: OMIT, pci_enabled: OMIT, pci_common_paper_agreement_id: OMIT, call_retention_days: OMIT, chat_retention_days: OMIT, minutes_included_reset_frequency: OMIT, rbac_enabled: OMIT, platform_fee: OMIT, additional_properties: nil)
       @id = id
       @created_at = created_at
       @updated_at = updated_at
@@ -182,6 +205,7 @@ module Vapi
       @slack_support_enabled = slack_support_enabled if slack_support_enabled != OMIT
       @slack_channel_id = slack_channel_id if slack_channel_id != OMIT
       @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
+      @data_retention_enabled = data_retention_enabled if data_retention_enabled != OMIT
       @hipaa_common_paper_agreement_id = hipaa_common_paper_agreement_id if hipaa_common_paper_agreement_id != OMIT
       if stripe_payment_method_fingerprint != OMIT
         @stripe_payment_method_fingerprint = stripe_payment_method_fingerprint
@@ -204,6 +228,11 @@ module Vapi
       @invoice_plan = invoice_plan if invoice_plan != OMIT
       @pci_enabled = pci_enabled if pci_enabled != OMIT
       @pci_common_paper_agreement_id = pci_common_paper_agreement_id if pci_common_paper_agreement_id != OMIT
+      @call_retention_days = call_retention_days if call_retention_days != OMIT
+      @chat_retention_days = chat_retention_days if chat_retention_days != OMIT
+      @minutes_included_reset_frequency = minutes_included_reset_frequency if minutes_included_reset_frequency != OMIT
+      @rbac_enabled = rbac_enabled if rbac_enabled != OMIT
+      @platform_fee = platform_fee if platform_fee != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "id": id,
@@ -224,6 +253,7 @@ module Vapi
         "slackSupportEnabled": slack_support_enabled,
         "slackChannelId": slack_channel_id,
         "hipaaEnabled": hipaa_enabled,
+        "dataRetentionEnabled": data_retention_enabled,
         "hipaaCommonPaperAgreementId": hipaa_common_paper_agreement_id,
         "stripePaymentMethodFingerprint": stripe_payment_method_fingerprint,
         "stripeCustomerEmail": stripe_customer_email,
@@ -241,7 +271,12 @@ module Vapi
         "couponUsageLeft": coupon_usage_left,
         "invoicePlan": invoice_plan,
         "pciEnabled": pci_enabled,
-        "pciCommonPaperAgreementId": pci_common_paper_agreement_id
+        "pciCommonPaperAgreementId": pci_common_paper_agreement_id,
+        "callRetentionDays": call_retention_days,
+        "chatRetentionDays": chat_retention_days,
+        "minutesIncludedResetFrequency": minutes_included_reset_frequency,
+        "rbacEnabled": rbac_enabled,
+        "platformFee": platform_fee
       }.reject do |_k, v|
         v == OMIT
       end
@@ -272,6 +307,7 @@ module Vapi
       slack_support_enabled = parsed_json["slackSupportEnabled"]
       slack_channel_id = parsed_json["slackChannelId"]
       hipaa_enabled = parsed_json["hipaaEnabled"]
+      data_retention_enabled = parsed_json["dataRetentionEnabled"]
       hipaa_common_paper_agreement_id = parsed_json["hipaaCommonPaperAgreementId"]
       stripe_payment_method_fingerprint = parsed_json["stripePaymentMethodFingerprint"]
       stripe_customer_email = parsed_json["stripeCustomerEmail"]
@@ -304,6 +340,11 @@ module Vapi
       end
       pci_enabled = parsed_json["pciEnabled"]
       pci_common_paper_agreement_id = parsed_json["pciCommonPaperAgreementId"]
+      call_retention_days = parsed_json["callRetentionDays"]
+      chat_retention_days = parsed_json["chatRetentionDays"]
+      minutes_included_reset_frequency = parsed_json["minutesIncludedResetFrequency"]
+      rbac_enabled = parsed_json["rbacEnabled"]
+      platform_fee = parsed_json["platformFee"]
       new(
         id: id,
         created_at: created_at,
@@ -323,6 +364,7 @@ module Vapi
         slack_support_enabled: slack_support_enabled,
         slack_channel_id: slack_channel_id,
         hipaa_enabled: hipaa_enabled,
+        data_retention_enabled: data_retention_enabled,
         hipaa_common_paper_agreement_id: hipaa_common_paper_agreement_id,
         stripe_payment_method_fingerprint: stripe_payment_method_fingerprint,
         stripe_customer_email: stripe_customer_email,
@@ -341,6 +383,11 @@ module Vapi
         invoice_plan: invoice_plan,
         pci_enabled: pci_enabled,
         pci_common_paper_agreement_id: pci_common_paper_agreement_id,
+        call_retention_days: call_retention_days,
+        chat_retention_days: chat_retention_days,
+        minutes_included_reset_frequency: minutes_included_reset_frequency,
+        rbac_enabled: rbac_enabled,
+        platform_fee: platform_fee,
         additional_properties: struct
       )
     end
@@ -377,6 +424,7 @@ module Vapi
       obj.slack_support_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.slack_support_enabled is not the expected type, validation failed.")
       obj.slack_channel_id&.is_a?(String) != false || raise("Passed value for field obj.slack_channel_id is not the expected type, validation failed.")
       obj.hipaa_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.hipaa_enabled is not the expected type, validation failed.")
+      obj.data_retention_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.data_retention_enabled is not the expected type, validation failed.")
       obj.hipaa_common_paper_agreement_id&.is_a?(String) != false || raise("Passed value for field obj.hipaa_common_paper_agreement_id is not the expected type, validation failed.")
       obj.stripe_payment_method_fingerprint&.is_a?(String) != false || raise("Passed value for field obj.stripe_payment_method_fingerprint is not the expected type, validation failed.")
       obj.stripe_customer_email&.is_a?(String) != false || raise("Passed value for field obj.stripe_customer_email is not the expected type, validation failed.")
@@ -395,6 +443,11 @@ module Vapi
       obj.invoice_plan.nil? || Vapi::InvoicePlan.validate_raw(obj: obj.invoice_plan)
       obj.pci_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.pci_enabled is not the expected type, validation failed.")
       obj.pci_common_paper_agreement_id&.is_a?(String) != false || raise("Passed value for field obj.pci_common_paper_agreement_id is not the expected type, validation failed.")
+      obj.call_retention_days&.is_a?(Float) != false || raise("Passed value for field obj.call_retention_days is not the expected type, validation failed.")
+      obj.chat_retention_days&.is_a?(Float) != false || raise("Passed value for field obj.chat_retention_days is not the expected type, validation failed.")
+      obj.minutes_included_reset_frequency&.is_a?(Vapi::SubscriptionMinutesIncludedResetFrequency) != false || raise("Passed value for field obj.minutes_included_reset_frequency is not the expected type, validation failed.")
+      obj.rbac_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.rbac_enabled is not the expected type, validation failed.")
+      obj.platform_fee&.is_a?(Float) != false || raise("Passed value for field obj.platform_fee is not the expected type, validation failed.")
     end
   end
 end

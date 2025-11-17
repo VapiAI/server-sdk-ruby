@@ -6,13 +6,15 @@ require_relative "livekit_smart_endpointing_plan"
 require_relative "custom_endpointing_model_smart_endpointing_plan"
 
 module Vapi
-  # This is the plan for smart endpointing. Pick between Vapi smart endpointing or
-  #  LiveKit smart endpointing (or nothing). We strongly recommend using livekit
-  #  endpointing when working in English. LiveKit endpointing is not supported in
-  #  other languages, yet.
+  # This is the plan for smart endpointing. Pick between Vapi smart endpointing,
+  #  LiveKit, or custom endpointing model (or nothing). We strongly recommend using
+  #  livekit endpointing when working in English. LiveKit endpointing is not
+  #  supported in other languages, yet.
   #  If this is set, it will override and take precedence over
   #  `transcriptionEndpointingPlan`.
   #  This plan will still be overridden by any matching `customEndpointingRules`.
+  #  If this is not set, the system will automatically use the transcriber's built-in
+  #  endpointing capabilities if available.
   class StartSpeakingPlanSmartEndpointingPlan
     # Deserialize a JSON object to an instance of
     #  StartSpeakingPlanSmartEndpointingPlan

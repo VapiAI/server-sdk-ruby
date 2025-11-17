@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "langfuse_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class LangfuseCredential
-    # @return [String]
+    # @return [Vapi::LangfuseCredentialProvider]
     attr_reader :provider
     # @return [String] The public key for Langfuse project. Eg: pk-lf-...
     attr_reader :public_key
@@ -33,7 +34,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::LangfuseCredentialProvider]
     # @param public_key [String] The public key for Langfuse project. Eg: pk-lf-...
     # @param api_key [String] The secret key for Langfuse project. Eg: sk-lf-... .This is not returned in the
     #  API.
@@ -116,7 +117,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::LangfuseCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.public_key.is_a?(String) != false || raise("Passed value for field obj.public_key is not the expected type, validation failed.")
       obj.api_key.is_a?(String) != false || raise("Passed value for field obj.api_key is not the expected type, validation failed.")
       obj.api_url.is_a?(String) != false || raise("Passed value for field obj.api_url is not the expected type, validation failed.")

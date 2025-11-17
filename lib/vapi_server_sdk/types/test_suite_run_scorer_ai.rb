@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "test_suite_run_scorer_ai_type"
 require_relative "test_suite_run_scorer_ai_result"
 require "ostruct"
 require "json"
 
 module Vapi
   class TestSuiteRunScorerAi
-    # @return [String] This is the type of the scorer, which must be AI.
+    # @return [Vapi::TestSuiteRunScorerAiType] This is the type of the scorer, which must be AI.
     attr_reader :type
     # @return [Vapi::TestSuiteRunScorerAiResult] This is the result of the test suite.
     attr_reader :result
@@ -22,7 +23,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] This is the type of the scorer, which must be AI.
+    # @param type [Vapi::TestSuiteRunScorerAiType] This is the type of the scorer, which must be AI.
     # @param result [Vapi::TestSuiteRunScorerAiResult] This is the result of the test suite.
     # @param reasoning [String] This is the reasoning provided by the AI scorer.
     # @param rubric [String] This is the rubric used by the AI scorer.
@@ -71,7 +72,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::TestSuiteRunScorerAiType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.result.is_a?(Vapi::TestSuiteRunScorerAiResult) != false || raise("Passed value for field obj.result is not the expected type, validation failed.")
       obj.reasoning.is_a?(String) != false || raise("Passed value for field obj.reasoning is not the expected type, validation failed.")
       obj.rubric.is_a?(String) != false || raise("Passed value for field obj.rubric is not the expected type, validation failed.")

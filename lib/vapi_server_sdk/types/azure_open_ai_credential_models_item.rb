@@ -2,6 +2,9 @@
 
 module Vapi
   class AzureOpenAiCredentialModelsItem
+    GPT_5 = "gpt-5"
+    GPT_5_MINI = "gpt-5-mini"
+    GPT_5_NANO = "gpt-5-nano"
     GPT_4120250414 = "gpt-4.1-2025-04-14"
     GPT_41_MINI_20250414 = "gpt-4.1-mini-2025-04-14"
     GPT_41_NANO_20250414 = "gpt-4.1-nano-2025-04-14"

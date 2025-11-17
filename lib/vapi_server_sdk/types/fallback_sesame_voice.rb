@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "fallback_sesame_voice_model"
 require_relative "chunk_plan"
 require "ostruct"
 require "json"
@@ -10,7 +11,7 @@ module Vapi
     attr_reader :caching_enabled
     # @return [String] This is the provider-specific ID that will be used.
     attr_reader :voice_id
-    # @return [String] This is the model that will be used.
+    # @return [Vapi::FallbackSesameVoiceModel] This is the model that will be used.
     attr_reader :model
     # @return [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
@@ -25,7 +26,7 @@ module Vapi
 
     # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
     # @param voice_id [String] This is the provider-specific ID that will be used.
-    # @param model [String] This is the model that will be used.
+    # @param model [Vapi::FallbackSesameVoiceModel] This is the model that will be used.
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
@@ -87,7 +88,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       obj.voice_id.is_a?(String) != false || raise("Passed value for field obj.voice_id is not the expected type, validation failed.")
-      obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model.is_a?(Vapi::FallbackSesameVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
     end
   end

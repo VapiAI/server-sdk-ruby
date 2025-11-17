@@ -16,7 +16,6 @@ require_relative "compliance_plan"
 require_relative "background_speech_denoising_plan"
 require_relative "analysis_plan"
 require_relative "artifact_plan"
-require_relative "message_plan"
 require_relative "start_speaking_plan"
 require_relative "stop_speaking_plan"
 require_relative "monitor_plan"
@@ -54,22 +53,16 @@ module Vapi
     # @return [Vapi::CreateAssistantDtoVoicemailDetection] These are the settings to configure or disable voicemail detection.
     #  Alternatively, voicemail detection can be configured using the
     #  model.tools=[VoicemailTool].
-    #  This uses Twilio's built-in detection while the VoicemailTool relies on the
-    #  model to detect if a voicemail was reached.
-    #  You can use neither of them, one of them, or both of them. By default, Twilio
-    #  built-in detection is enabled while VoicemailTool is not.
+    #  By default, voicemail detection is disabled.
     attr_reader :voicemail_detection
     # @return [Array<Vapi::CreateAssistantDtoClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
-    #  update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started.
+    #  tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started.
     #  You can check the shape of the messages in ClientMessage schema.
     attr_reader :client_messages
     # @return [Array<Vapi::CreateAssistantDtoServerMessagesItem>] These are the messages that will be sent to your Server URL. Default is
-    #  h-update,status-update,tool-calls,transfer-destination-request,user-interrupted.
+    #  tination-request,handoff-destination-request,user-interrupted,assistant.started.
     #  You can check the shape of the messages in ServerMessage schema.
     attr_reader :server_messages
-    # @return [Float] How many seconds of silence to wait before ending the call. Defaults to 30.
-    #  @default 30
-    attr_reader :silence_timeout_seconds
     # @return [Float] This is the maximum number of seconds that the call will last. When the call
     #  reaches this duration, it will be ended.
     #  @default 600 (10 minutes)
@@ -78,10 +71,6 @@ module Vapi
     #  and default for web calls is 'off'.
     #  You can also provide a custom sound by providing a URL to an audio file.
     attr_reader :background_sound
-    # @return [Boolean] This enables filtering of noise and background speech while the user is talking.
-    #  Default `false` while in beta.
-    #  @default false
-    attr_reader :background_denoising_enabled
     # @return [Boolean] This determines whether the model's output is used in conversation history
     #  rather than the transcription of assistant's speech.
     #  Default `false` while in beta.
@@ -133,12 +122,6 @@ module Vapi
     # @return [Vapi::ArtifactPlan] This is the plan for artifacts generated during assistant's calls. Stored in
     #  `call.artifact`.
     attr_reader :artifact_plan
-    # @return [Vapi::MessagePlan] This is the plan for static predefined messages that can be spoken by the
-    #  assistant during the call, like `idleMessages`.
-    #  Note: `firstMessage`, `voicemailMessage`, and `endCallMessage` are currently at
-    #  the root level. They will be moved to `messagePlan` in the future, but will
-    #  remain backwards compatible.
-    attr_reader :message_plan
     # @return [Vapi::StartSpeakingPlan] This is the plan for when the assistant should start talking.
     #  You should configure this if you're running into these issues:
     #  - The assistant is too slow to start talking after the customer is done
@@ -206,27 +189,19 @@ module Vapi
     # @param voicemail_detection [Vapi::CreateAssistantDtoVoicemailDetection] These are the settings to configure or disable voicemail detection.
     #  Alternatively, voicemail detection can be configured using the
     #  model.tools=[VoicemailTool].
-    #  This uses Twilio's built-in detection while the VoicemailTool relies on the
-    #  model to detect if a voicemail was reached.
-    #  You can use neither of them, one of them, or both of them. By default, Twilio
-    #  built-in detection is enabled while VoicemailTool is not.
+    #  By default, voicemail detection is disabled.
     # @param client_messages [Array<Vapi::CreateAssistantDtoClientMessagesItem>] These are the messages that will be sent to your Client SDKs. Default is
-    #  update,transcript,tool-calls,user-interrupted,voice-input,workflow.node.started.
+    #  tool-calls,user-interrupted,voice-input,workflow.node.started,assistant.started.
     #  You can check the shape of the messages in ClientMessage schema.
     # @param server_messages [Array<Vapi::CreateAssistantDtoServerMessagesItem>] These are the messages that will be sent to your Server URL. Default is
-    #  h-update,status-update,tool-calls,transfer-destination-request,user-interrupted.
+    #  tination-request,handoff-destination-request,user-interrupted,assistant.started.
     #  You can check the shape of the messages in ServerMessage schema.
-    # @param silence_timeout_seconds [Float] How many seconds of silence to wait before ending the call. Defaults to 30.
-    #  @default 30
     # @param max_duration_seconds [Float] This is the maximum number of seconds that the call will last. When the call
     #  reaches this duration, it will be ended.
     #  @default 600 (10 minutes)
     # @param background_sound [Vapi::CreateAssistantDtoBackgroundSound] This is the background sound in the call. Default for phone calls is 'office'
     #  and default for web calls is 'off'.
     #  You can also provide a custom sound by providing a URL to an audio file.
-    # @param background_denoising_enabled [Boolean] This enables filtering of noise and background speech while the user is talking.
-    #  Default `false` while in beta.
-    #  @default false
     # @param model_output_in_messages_enabled [Boolean] This determines whether the model's output is used in conversation history
     #  rather than the transcription of assistant's speech.
     #  Default `false` while in beta.
@@ -264,11 +239,6 @@ module Vapi
     # @param analysis_plan [Vapi::AnalysisPlan] This is the plan for analysis of assistant's calls. Stored in `call.analysis`.
     # @param artifact_plan [Vapi::ArtifactPlan] This is the plan for artifacts generated during assistant's calls. Stored in
     #  `call.artifact`.
-    # @param message_plan [Vapi::MessagePlan] This is the plan for static predefined messages that can be spoken by the
-    #  assistant during the call, like `idleMessages`.
-    #  Note: `firstMessage`, `voicemailMessage`, and `endCallMessage` are currently at
-    #  the root level. They will be moved to `messagePlan` in the future, but will
-    #  remain backwards compatible.
     # @param start_speaking_plan [Vapi::StartSpeakingPlan] This is the plan for when the assistant should start talking.
     #  You should configure this if you're running into these issues:
     #  - The assistant is too slow to start talking after the customer is done
@@ -304,7 +274,7 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CreateAssistantDto]
     def initialize(transcriber: OMIT, model: OMIT, voice: OMIT, first_message: OMIT,
-                   first_message_interruptions_enabled: OMIT, first_message_mode: OMIT, voicemail_detection: OMIT, client_messages: OMIT, server_messages: OMIT, silence_timeout_seconds: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, background_denoising_enabled: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, observability_plan: OMIT, credentials: OMIT, hooks: OMIT, name: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, compliance_plan: OMIT, metadata: OMIT, background_speech_denoising_plan: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, message_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, keypad_input_plan: OMIT, additional_properties: nil)
+                   first_message_interruptions_enabled: OMIT, first_message_mode: OMIT, voicemail_detection: OMIT, client_messages: OMIT, server_messages: OMIT, max_duration_seconds: OMIT, background_sound: OMIT, model_output_in_messages_enabled: OMIT, transport_configurations: OMIT, observability_plan: OMIT, credentials: OMIT, hooks: OMIT, name: OMIT, voicemail_message: OMIT, end_call_message: OMIT, end_call_phrases: OMIT, compliance_plan: OMIT, metadata: OMIT, background_speech_denoising_plan: OMIT, analysis_plan: OMIT, artifact_plan: OMIT, start_speaking_plan: OMIT, stop_speaking_plan: OMIT, monitor_plan: OMIT, credential_ids: OMIT, server: OMIT, keypad_input_plan: OMIT, additional_properties: nil)
       @transcriber = transcriber if transcriber != OMIT
       @model = model if model != OMIT
       @voice = voice if voice != OMIT
@@ -316,10 +286,8 @@ module Vapi
       @voicemail_detection = voicemail_detection if voicemail_detection != OMIT
       @client_messages = client_messages if client_messages != OMIT
       @server_messages = server_messages if server_messages != OMIT
-      @silence_timeout_seconds = silence_timeout_seconds if silence_timeout_seconds != OMIT
       @max_duration_seconds = max_duration_seconds if max_duration_seconds != OMIT
       @background_sound = background_sound if background_sound != OMIT
-      @background_denoising_enabled = background_denoising_enabled if background_denoising_enabled != OMIT
       @model_output_in_messages_enabled = model_output_in_messages_enabled if model_output_in_messages_enabled != OMIT
       @transport_configurations = transport_configurations if transport_configurations != OMIT
       @observability_plan = observability_plan if observability_plan != OMIT
@@ -334,7 +302,6 @@ module Vapi
       @background_speech_denoising_plan = background_speech_denoising_plan if background_speech_denoising_plan != OMIT
       @analysis_plan = analysis_plan if analysis_plan != OMIT
       @artifact_plan = artifact_plan if artifact_plan != OMIT
-      @message_plan = message_plan if message_plan != OMIT
       @start_speaking_plan = start_speaking_plan if start_speaking_plan != OMIT
       @stop_speaking_plan = stop_speaking_plan if stop_speaking_plan != OMIT
       @monitor_plan = monitor_plan if monitor_plan != OMIT
@@ -352,10 +319,8 @@ module Vapi
         "voicemailDetection": voicemail_detection,
         "clientMessages": client_messages,
         "serverMessages": server_messages,
-        "silenceTimeoutSeconds": silence_timeout_seconds,
         "maxDurationSeconds": max_duration_seconds,
         "backgroundSound": background_sound,
-        "backgroundDenoisingEnabled": background_denoising_enabled,
         "modelOutputInMessagesEnabled": model_output_in_messages_enabled,
         "transportConfigurations": transport_configurations,
         "observabilityPlan": observability_plan,
@@ -370,7 +335,6 @@ module Vapi
         "backgroundSpeechDenoisingPlan": background_speech_denoising_plan,
         "analysisPlan": analysis_plan,
         "artifactPlan": artifact_plan,
-        "messagePlan": message_plan,
         "startSpeakingPlan": start_speaking_plan,
         "stopSpeakingPlan": stop_speaking_plan,
         "monitorPlan": monitor_plan,
@@ -418,7 +382,6 @@ module Vapi
       end
       client_messages = parsed_json["clientMessages"]
       server_messages = parsed_json["serverMessages"]
-      silence_timeout_seconds = parsed_json["silenceTimeoutSeconds"]
       max_duration_seconds = parsed_json["maxDurationSeconds"]
       if parsed_json["backgroundSound"].nil?
         background_sound = nil
@@ -426,7 +389,6 @@ module Vapi
         background_sound = parsed_json["backgroundSound"].to_json
         background_sound = Vapi::CreateAssistantDtoBackgroundSound.from_json(json_object: background_sound)
       end
-      background_denoising_enabled = parsed_json["backgroundDenoisingEnabled"]
       model_output_in_messages_enabled = parsed_json["modelOutputInMessagesEnabled"]
       transport_configurations = parsed_json["transportConfigurations"]&.map do |item|
         item = item.to_json
@@ -475,12 +437,6 @@ module Vapi
         artifact_plan = parsed_json["artifactPlan"].to_json
         artifact_plan = Vapi::ArtifactPlan.from_json(json_object: artifact_plan)
       end
-      if parsed_json["messagePlan"].nil?
-        message_plan = nil
-      else
-        message_plan = parsed_json["messagePlan"].to_json
-        message_plan = Vapi::MessagePlan.from_json(json_object: message_plan)
-      end
       if parsed_json["startSpeakingPlan"].nil?
         start_speaking_plan = nil
       else
@@ -522,10 +478,8 @@ module Vapi
         voicemail_detection: voicemail_detection,
         client_messages: client_messages,
         server_messages: server_messages,
-        silence_timeout_seconds: silence_timeout_seconds,
         max_duration_seconds: max_duration_seconds,
         background_sound: background_sound,
-        background_denoising_enabled: background_denoising_enabled,
         model_output_in_messages_enabled: model_output_in_messages_enabled,
         transport_configurations: transport_configurations,
         observability_plan: observability_plan,
@@ -540,7 +494,6 @@ module Vapi
         background_speech_denoising_plan: background_speech_denoising_plan,
         analysis_plan: analysis_plan,
         artifact_plan: artifact_plan,
-        message_plan: message_plan,
         start_speaking_plan: start_speaking_plan,
         stop_speaking_plan: stop_speaking_plan,
         monitor_plan: monitor_plan,
@@ -574,10 +527,8 @@ module Vapi
       obj.voicemail_detection.nil? || Vapi::CreateAssistantDtoVoicemailDetection.validate_raw(obj: obj.voicemail_detection)
       obj.client_messages&.is_a?(Array) != false || raise("Passed value for field obj.client_messages is not the expected type, validation failed.")
       obj.server_messages&.is_a?(Array) != false || raise("Passed value for field obj.server_messages is not the expected type, validation failed.")
-      obj.silence_timeout_seconds&.is_a?(Float) != false || raise("Passed value for field obj.silence_timeout_seconds is not the expected type, validation failed.")
       obj.max_duration_seconds&.is_a?(Float) != false || raise("Passed value for field obj.max_duration_seconds is not the expected type, validation failed.")
       obj.background_sound.nil? || Vapi::CreateAssistantDtoBackgroundSound.validate_raw(obj: obj.background_sound)
-      obj.background_denoising_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.background_denoising_enabled is not the expected type, validation failed.")
       obj.model_output_in_messages_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.model_output_in_messages_enabled is not the expected type, validation failed.")
       obj.transport_configurations&.is_a?(Array) != false || raise("Passed value for field obj.transport_configurations is not the expected type, validation failed.")
       obj.observability_plan.nil? || Vapi::LangfuseObservabilityPlan.validate_raw(obj: obj.observability_plan)
@@ -592,7 +543,6 @@ module Vapi
       obj.background_speech_denoising_plan.nil? || Vapi::BackgroundSpeechDenoisingPlan.validate_raw(obj: obj.background_speech_denoising_plan)
       obj.analysis_plan.nil? || Vapi::AnalysisPlan.validate_raw(obj: obj.analysis_plan)
       obj.artifact_plan.nil? || Vapi::ArtifactPlan.validate_raw(obj: obj.artifact_plan)
-      obj.message_plan.nil? || Vapi::MessagePlan.validate_raw(obj: obj.message_plan)
       obj.start_speaking_plan.nil? || Vapi::StartSpeakingPlan.validate_raw(obj: obj.start_speaking_plan)
       obj.stop_speaking_plan.nil? || Vapi::StopSpeakingPlan.validate_raw(obj: obj.stop_speaking_plan)
       obj.monitor_plan.nil? || Vapi::MonitorPlan.validate_raw(obj: obj.monitor_plan)

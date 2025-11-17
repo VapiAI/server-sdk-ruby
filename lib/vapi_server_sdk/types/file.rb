@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "file_object"
 require_relative "file_status"
 require "date"
 require "ostruct"
@@ -7,7 +8,7 @@ require "json"
 
 module Vapi
   class File
-    # @return [String]
+    # @return [Vapi::FileObject]
     attr_reader :object
     # @return [Vapi::FileStatus]
     attr_reader :status
@@ -51,7 +52,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param object [String]
+    # @param object [Vapi::FileObject]
     # @param status [Vapi::FileStatus]
     # @param name [String] This is the name of the file. This is just for your own reference.
     # @param original_name [String]
@@ -178,7 +179,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.object&.is_a?(String) != false || raise("Passed value for field obj.object is not the expected type, validation failed.")
+      obj.object&.is_a?(Vapi::FileObject) != false || raise("Passed value for field obj.object is not the expected type, validation failed.")
       obj.status&.is_a?(Vapi::FileStatus) != false || raise("Passed value for field obj.status is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.original_name&.is_a?(String) != false || raise("Passed value for field obj.original_name is not the expected type, validation failed.")

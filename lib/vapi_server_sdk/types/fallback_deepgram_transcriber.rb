@@ -31,6 +31,17 @@ module Vapi
     # @return [Float] Transcripts below this confidence threshold will be discarded.
     #  @default 0.4
     attr_reader :confidence_threshold
+    # @return [Float] Eager end-of-turn confidence required to fire a eager end-of-turn event. Setting
+    #  a value here will enable EagerEndOfTurn and SpeechResumed events. It is disabled
+    #  by default. Only used with Flux models.
+    attr_reader :eager_eot_threshold
+    # @return [Float] End-of-turn confidence required to finish a turn. Only used with Flux models.
+    #  @default 0.7
+    attr_reader :eot_threshold
+    # @return [Float] A turn will be finished when this much time has passed after speech, regardless
+    #  of EOT confidence. Only used with Flux models.
+    #  @default 5000
+    attr_reader :eot_timeout_ms
     # @return [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
     #  specific words. Anything that may not be a common word, like your company name,
     #  should be added here.
@@ -78,6 +89,14 @@ module Vapi
     #  @default false
     # @param confidence_threshold [Float] Transcripts below this confidence threshold will be discarded.
     #  @default 0.4
+    # @param eager_eot_threshold [Float] Eager end-of-turn confidence required to fire a eager end-of-turn event. Setting
+    #  a value here will enable EagerEndOfTurn and SpeechResumed events. It is disabled
+    #  by default. Only used with Flux models.
+    # @param eot_threshold [Float] End-of-turn confidence required to finish a turn. Only used with Flux models.
+    #  @default 0.7
+    # @param eot_timeout_ms [Float] A turn will be finished when this much time has passed after speech, regardless
+    #  of EOT confidence. Only used with Flux models.
+    #  @default 5000
     # @param keywords [Array<String>] These keywords are passed to the transcription model to help it pick up use-case
     #  specific words. Anything that may not be a common word, like your company name,
     #  should be added here.
@@ -99,13 +118,16 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackDeepgramTranscriber]
     def initialize(model: OMIT, language: OMIT, smart_format: OMIT, mip_opt_out: OMIT, numerals: OMIT,
-                   confidence_threshold: OMIT, keywords: OMIT, keyterm: OMIT, endpointing: OMIT, additional_properties: nil)
+                   confidence_threshold: OMIT, eager_eot_threshold: OMIT, eot_threshold: OMIT, eot_timeout_ms: OMIT, keywords: OMIT, keyterm: OMIT, endpointing: OMIT, additional_properties: nil)
       @model = model if model != OMIT
       @language = language if language != OMIT
       @smart_format = smart_format if smart_format != OMIT
       @mip_opt_out = mip_opt_out if mip_opt_out != OMIT
       @numerals = numerals if numerals != OMIT
       @confidence_threshold = confidence_threshold if confidence_threshold != OMIT
+      @eager_eot_threshold = eager_eot_threshold if eager_eot_threshold != OMIT
+      @eot_threshold = eot_threshold if eot_threshold != OMIT
+      @eot_timeout_ms = eot_timeout_ms if eot_timeout_ms != OMIT
       @keywords = keywords if keywords != OMIT
       @keyterm = keyterm if keyterm != OMIT
       @endpointing = endpointing if endpointing != OMIT
@@ -117,6 +139,9 @@ module Vapi
         "mipOptOut": mip_opt_out,
         "numerals": numerals,
         "confidenceThreshold": confidence_threshold,
+        "eagerEotThreshold": eager_eot_threshold,
+        "eotThreshold": eot_threshold,
+        "eotTimeoutMs": eot_timeout_ms,
         "keywords": keywords,
         "keyterm": keyterm,
         "endpointing": endpointing
@@ -138,6 +163,9 @@ module Vapi
       mip_opt_out = parsed_json["mipOptOut"]
       numerals = parsed_json["numerals"]
       confidence_threshold = parsed_json["confidenceThreshold"]
+      eager_eot_threshold = parsed_json["eagerEotThreshold"]
+      eot_threshold = parsed_json["eotThreshold"]
+      eot_timeout_ms = parsed_json["eotTimeoutMs"]
       keywords = parsed_json["keywords"]
       keyterm = parsed_json["keyterm"]
       endpointing = parsed_json["endpointing"]
@@ -148,6 +176,9 @@ module Vapi
         mip_opt_out: mip_opt_out,
         numerals: numerals,
         confidence_threshold: confidence_threshold,
+        eager_eot_threshold: eager_eot_threshold,
+        eot_threshold: eot_threshold,
+        eot_timeout_ms: eot_timeout_ms,
         keywords: keywords,
         keyterm: keyterm,
         endpointing: endpointing,
@@ -175,6 +206,9 @@ module Vapi
       obj.mip_opt_out&.is_a?(Boolean) != false || raise("Passed value for field obj.mip_opt_out is not the expected type, validation failed.")
       obj.numerals&.is_a?(Boolean) != false || raise("Passed value for field obj.numerals is not the expected type, validation failed.")
       obj.confidence_threshold&.is_a?(Float) != false || raise("Passed value for field obj.confidence_threshold is not the expected type, validation failed.")
+      obj.eager_eot_threshold&.is_a?(Float) != false || raise("Passed value for field obj.eager_eot_threshold is not the expected type, validation failed.")
+      obj.eot_threshold&.is_a?(Float) != false || raise("Passed value for field obj.eot_threshold is not the expected type, validation failed.")
+      obj.eot_timeout_ms&.is_a?(Float) != false || raise("Passed value for field obj.eot_timeout_ms is not the expected type, validation failed.")
       obj.keywords&.is_a?(Array) != false || raise("Passed value for field obj.keywords is not the expected type, validation failed.")
       obj.keyterm&.is_a?(Array) != false || raise("Passed value for field obj.keyterm is not the expected type, validation failed.")
       obj.endpointing&.is_a?(Float) != false || raise("Passed value for field obj.endpointing is not the expected type, validation failed.")

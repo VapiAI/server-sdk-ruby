@@ -9,5 +9,7 @@ module Vapi
     IN_PROGRESS = "in-progress"
     FORWARDING = "forwarding"
     ENDED = "ended"
+    NOT_FOUND = "not-found"
+    DELETION_FAILED = "deletion-failed"
   end
 end

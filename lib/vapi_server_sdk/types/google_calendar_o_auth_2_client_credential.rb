@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "google_calendar_o_auth_2_client_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class GoogleCalendarOAuth2ClientCredential
-    # @return [String]
+    # @return [Vapi::GoogleCalendarOAuth2ClientCredentialProvider]
     attr_reader :provider
     # @return [String] This is the unique identifier for the credential.
     attr_reader :id
@@ -26,7 +27,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::GoogleCalendarOAuth2ClientCredentialProvider]
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the credential was created.
@@ -92,7 +93,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::GoogleCalendarOAuth2ClientCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")

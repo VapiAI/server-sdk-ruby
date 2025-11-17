@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "server_message_hang_phone_number"
+require_relative "server_message_hang_type"
 require_relative "artifact"
 require_relative "create_assistant_dto"
 require_relative "create_customer_dto"
@@ -13,6 +14,13 @@ module Vapi
   class ServerMessageHang
     # @return [Vapi::ServerMessageHangPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ServerMessageHangType] This is the type of the message. "hang" is sent when the assistant is hanging
+    #  due to a delay. The delay can be caused by many factors, such as:
+    #  - the model is too slow to respond
+    #  - the voice is too slow to respond
+    #  - the tool call is still waiting for a response from your server
+    #  - etc.
+    attr_reader :type
     # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Artifact] This is a live version of the `call.artifact`.
@@ -35,6 +43,12 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ServerMessageHangPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ServerMessageHangType] This is the type of the message. "hang" is sent when the assistant is hanging
+    #  due to a delay. The delay can be caused by many factors, such as:
+    #  - the model is too slow to respond
+    #  - the voice is too slow to respond
+    #  - the tool call is still waiting for a response from your server
+    #  - etc.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param artifact [Vapi::Artifact] This is a live version of the `call.artifact`.
     #  This matches what is stored on `call.artifact` after the call.
@@ -44,9 +58,10 @@ module Vapi
     # @param chat [Vapi::Chat] This is the chat object.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageHang]
-    def initialize(phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT,
-                   chat: OMIT, additional_properties: nil)
+    def initialize(type:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT,
+                   call: OMIT, chat: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @timestamp = timestamp if timestamp != OMIT
       @artifact = artifact if artifact != OMIT
       @assistant = assistant if assistant != OMIT
@@ -56,6 +71,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "timestamp": timestamp,
         "artifact": artifact,
         "assistant": assistant,
@@ -80,6 +96,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageHangPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["artifact"].nil?
         artifact = nil
@@ -113,6 +130,7 @@ module Vapi
       end
       new(
         phone_number: phone_number,
+        type: type,
         timestamp: timestamp,
         artifact: artifact,
         assistant: assistant,
@@ -138,6 +156,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageHangPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ServerMessageHangType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)

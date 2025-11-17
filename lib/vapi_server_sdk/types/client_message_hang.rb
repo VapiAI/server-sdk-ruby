@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "client_message_hang_phone_number"
+require_relative "client_message_hang_type"
 require_relative "call"
 require_relative "create_customer_dto"
 require_relative "create_assistant_dto"
@@ -11,6 +12,13 @@ module Vapi
   class ClientMessageHang
     # @return [Vapi::ClientMessageHangPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ClientMessageHangType] This is the type of the message. "hang" is sent when the assistant is hanging
+    #  due to a delay. The delay can be caused by many factors, such as:
+    #  - the model is too slow to respond
+    #  - the voice is too slow to respond
+    #  - the tool call is still waiting for a response from your server
+    #  - etc.
+    attr_reader :type
     # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Call] This is the call that the message is associated with.
@@ -28,15 +36,22 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ClientMessageHangPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ClientMessageHangType] This is the type of the message. "hang" is sent when the assistant is hanging
+    #  due to a delay. The delay can be caused by many factors, such as:
+    #  - the model is too slow to respond
+    #  - the voice is too slow to respond
+    #  - the tool call is still waiting for a response from your server
+    #  - etc.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param call [Vapi::Call] This is the call that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
     # @param assistant [Vapi::CreateAssistantDto] This is the assistant that the message is associated with.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageHang]
-    def initialize(phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
+    def initialize(type:, phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
                    additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @timestamp = timestamp if timestamp != OMIT
       @call = call if call != OMIT
       @customer = customer if customer != OMIT
@@ -44,6 +59,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "timestamp": timestamp,
         "call": call,
         "customer": customer,
@@ -66,6 +82,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ClientMessageHangPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["call"].nil?
         call = nil
@@ -87,6 +104,7 @@ module Vapi
       end
       new(
         phone_number: phone_number,
+        type: type,
         timestamp: timestamp,
         call: call,
         customer: customer,
@@ -110,6 +128,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ClientMessageHangPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ClientMessageHangType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)

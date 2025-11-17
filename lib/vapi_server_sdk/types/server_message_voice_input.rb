@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "server_message_voice_input_phone_number"
+require_relative "server_message_voice_input_type"
 require_relative "artifact"
 require_relative "create_assistant_dto"
 require_relative "create_customer_dto"
@@ -13,6 +14,9 @@ module Vapi
   class ServerMessageVoiceInput
     # @return [Vapi::ServerMessageVoiceInputPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ServerMessageVoiceInputType] This is the type of the message. "voice-input" is sent when a generation is
+    #  requested from voice provider.
+    attr_reader :type
     # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Artifact] This is a live version of the `call.artifact`.
@@ -37,6 +41,8 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ServerMessageVoiceInputPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ServerMessageVoiceInputType] This is the type of the message. "voice-input" is sent when a generation is
+    #  requested from voice provider.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param artifact [Vapi::Artifact] This is a live version of the `call.artifact`.
     #  This matches what is stored on `call.artifact` after the call.
@@ -47,9 +53,10 @@ module Vapi
     # @param input [String] This is the voice input content
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageVoiceInput]
-    def initialize(input:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT,
-                   chat: OMIT, additional_properties: nil)
+    def initialize(type:, input:, phone_number: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT, customer: OMIT,
+                   call: OMIT, chat: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @timestamp = timestamp if timestamp != OMIT
       @artifact = artifact if artifact != OMIT
       @assistant = assistant if assistant != OMIT
@@ -60,6 +67,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "timestamp": timestamp,
         "artifact": artifact,
         "assistant": assistant,
@@ -85,6 +93,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageVoiceInputPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["artifact"].nil?
         artifact = nil
@@ -119,6 +128,7 @@ module Vapi
       input = parsed_json["input"]
       new(
         phone_number: phone_number,
+        type: type,
         timestamp: timestamp,
         artifact: artifact,
         assistant: assistant,
@@ -145,6 +155,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageVoiceInputPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ServerMessageVoiceInputType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.artifact.nil? || Vapi::Artifact.validate_raw(obj: obj.artifact)
       obj.assistant.nil? || Vapi::CreateAssistantDto.validate_raw(obj: obj.assistant)

@@ -18,5 +18,7 @@ module Vapi
     TAVUS = "tavus"
     SESAME = "sesame"
     INWORLD = "inworld"
+    MINIMAX = "minimax"
+    ORPHEUS = "orpheus"
   end
 end

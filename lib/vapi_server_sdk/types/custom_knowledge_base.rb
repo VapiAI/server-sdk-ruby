@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require_relative "custom_knowledge_base_provider"
 require_relative "server"
 require "ostruct"
 require "json"
 
 module Vapi
   class CustomKnowledgeBase
+    # @return [Vapi::CustomKnowledgeBaseProvider] This knowledge base is bring your own knowledge base implementation.
+    attr_reader :provider
     # @return [Vapi::Server] This is where the knowledge base request will be sent.
     #  Request Example:
     #  POST https://{server.url}
@@ -57,6 +60,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param provider [Vapi::CustomKnowledgeBaseProvider] This knowledge base is bring your own knowledge base implementation.
     # @param server [Vapi::Server] This is where the knowledge base request will be sent.
     #  Request Example:
     #  POST https://{server.url}
@@ -99,12 +103,13 @@ module Vapi
     # @param org_id [String] This is the org id of the knowledge base.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::CustomKnowledgeBase]
-    def initialize(server:, id:, org_id:, additional_properties: nil)
+    def initialize(provider:, server:, id:, org_id:, additional_properties: nil)
+      @provider = provider
       @server = server
       @id = id
       @org_id = org_id
       @additional_properties = additional_properties
-      @_field_set = { "server": server, "id": id, "orgId": org_id }
+      @_field_set = { "provider": provider, "server": server, "id": id, "orgId": org_id }
     end
 
     # Deserialize a JSON object to an instance of CustomKnowledgeBase
@@ -114,6 +119,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      provider = parsed_json["provider"]
       if parsed_json["server"].nil?
         server = nil
       else
@@ -123,6 +129,7 @@ module Vapi
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       new(
+        provider: provider,
         server: server,
         id: id,
         org_id: org_id,
@@ -144,6 +151,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.provider.is_a?(Vapi::CustomKnowledgeBaseProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       Vapi::Server.validate_raw(obj: obj.server)
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

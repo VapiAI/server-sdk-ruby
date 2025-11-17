@@ -38,6 +38,7 @@ require_relative "../../types/create_together_ai_credential_dto"
 require_relative "../../types/create_twilio_credential_dto"
 require_relative "../../types/create_vonage_credential_dto"
 require_relative "../../types/create_webhook_credential_dto"
+require_relative "../../types/create_custom_credential_dto"
 require_relative "../../types/create_x_ai_credential_dto"
 require_relative "../../types/create_neuphonic_credential_dto"
 require_relative "../../types/create_hume_credential_dto"
@@ -49,6 +50,8 @@ require_relative "../../types/create_google_calendar_o_auth_2_authorization_cred
 require_relative "../../types/create_google_sheets_o_auth_2_authorization_credential_dto"
 require_relative "../../types/create_slack_o_auth_2_authorization_credential_dto"
 require_relative "../../types/create_go_high_level_mcp_credential_dto"
+require_relative "../../types/create_inworld_credential_dto"
+require_relative "../../types/create_minimax_credential_dto"
 
 module Vapi
   class Assistants
@@ -150,6 +153,8 @@ module Vapi
                    Vapi::CreateVonageCredentialDto.from_json(json_object: json_object)
                  when "webhook"
                    Vapi::CreateWebhookCredentialDto.from_json(json_object: json_object)
+                 when "custom-credential"
+                   Vapi::CreateCustomCredentialDto.from_json(json_object: json_object)
                  when "xai"
                    Vapi::CreateXAiCredentialDto.from_json(json_object: json_object)
                  when "neuphonic"
@@ -173,7 +178,9 @@ module Vapi
                  when "ghl.oauth2-authorization"
                    Vapi::CreateGoHighLevelMcpCredentialDto.from_json(json_object: json_object)
                  when "inworld"
-                   json_object.value
+                   Vapi::CreateInworldCredentialDto.from_json(json_object: json_object)
+                 when "minimax"
+                   Vapi::CreateMinimaxCredentialDto.from_json(json_object: json_object)
                  else
                    Vapi::CreateElevenLabsCredentialDto.from_json(json_object: json_object)
                  end
@@ -259,6 +266,8 @@ module Vapi
           { **@member.to_json, provider: @discriminant }.to_json
         when "webhook"
           { **@member.to_json, provider: @discriminant }.to_json
+        when "custom-credential"
+          { **@member.to_json, provider: @discriminant }.to_json
         when "xai"
           { **@member.to_json, provider: @discriminant }.to_json
         when "neuphonic"
@@ -282,7 +291,9 @@ module Vapi
         when "ghl.oauth2-authorization"
           { **@member.to_json, provider: @discriminant }.to_json
         when "inworld"
-          { "provider": @discriminant, "value": @member }.to_json
+          { **@member.to_json, provider: @discriminant }.to_json
+        when "minimax"
+          { **@member.to_json, provider: @discriminant }.to_json
         else
           { "provider": @discriminant, value: @member }.to_json
         end
@@ -371,6 +382,8 @@ module Vapi
           Vapi::CreateVonageCredentialDto.validate_raw(obj: obj)
         when "webhook"
           Vapi::CreateWebhookCredentialDto.validate_raw(obj: obj)
+        when "custom-credential"
+          Vapi::CreateCustomCredentialDto.validate_raw(obj: obj)
         when "xai"
           Vapi::CreateXAiCredentialDto.validate_raw(obj: obj)
         when "neuphonic"
@@ -394,7 +407,9 @@ module Vapi
         when "ghl.oauth2-authorization"
           Vapi::CreateGoHighLevelMcpCredentialDto.validate_raw(obj: obj)
         when "inworld"
-          obj.is_a?(Object) != false || raise("Passed value for field obj is not the expected type, validation failed.")
+          Vapi::CreateInworldCredentialDto.validate_raw(obj: obj)
+        when "minimax"
+          Vapi::CreateMinimaxCredentialDto.validate_raw(obj: obj)
         else
           raise("Passed value matched no type within the union, validation failed.")
         end
@@ -630,6 +645,12 @@ module Vapi
         new(member: member, discriminant: "webhook")
       end
 
+      # @param member [Vapi::CreateCustomCredentialDto]
+      # @return [Vapi::Assistants::UpdateAssistantDtoCredentialsItem]
+      def self.custom_credential(member:)
+        new(member: member, discriminant: "custom-credential")
+      end
+
       # @param member [Vapi::CreateXAiCredentialDto]
       # @return [Vapi::Assistants::UpdateAssistantDtoCredentialsItem]
       def self.xai(member:)
@@ -696,10 +717,16 @@ module Vapi
         new(member: member, discriminant: "ghl.oauth2-authorization")
       end
 
-      # @param member [Object]
+      # @param member [Vapi::CreateInworldCredentialDto]
       # @return [Vapi::Assistants::UpdateAssistantDtoCredentialsItem]
       def self.inworld(member:)
         new(member: member, discriminant: "inworld")
+      end
+
+      # @param member [Vapi::CreateMinimaxCredentialDto]
+      # @return [Vapi::Assistants::UpdateAssistantDtoCredentialsItem]
+      def self.minimax(member:)
+        new(member: member, discriminant: "minimax")
       end
     end
   end

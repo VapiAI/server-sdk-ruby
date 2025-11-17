@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "test_suite_test_scorer_ai"
+require_relative "test_suite_test_voice_type"
 require "date"
 require "ostruct"
 require "json"
@@ -9,6 +10,8 @@ module Vapi
   class TestSuiteTestVoice
     # @return [Array<Vapi::TestSuiteTestScorerAi>] These are the scorers used to evaluate the test.
     attr_reader :scorers
+    # @return [Vapi::TestSuiteTestVoiceType] This is the type of the test, which must be voice.
+    attr_reader :type
     # @return [String] This is the unique identifier for the test.
     attr_reader :id
     # @return [String] This is the unique identifier for the test suite this test belongs to.
@@ -34,6 +37,7 @@ module Vapi
     OMIT = Object.new
 
     # @param scorers [Array<Vapi::TestSuiteTestScorerAi>] These are the scorers used to evaluate the test.
+    # @param type [Vapi::TestSuiteTestVoiceType] This is the type of the test, which must be voice.
     # @param id [String] This is the unique identifier for the test.
     # @param test_suite_id [String] This is the unique identifier for the test suite this test belongs to.
     # @param org_id [String] This is the unique identifier for the organization this test belongs to.
@@ -44,9 +48,10 @@ module Vapi
     # @param num_attempts [Float] This is the number of attempts allowed for the test.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TestSuiteTestVoice]
-    def initialize(scorers:, id:, test_suite_id:, org_id:, created_at:, updated_at:, script:, name: OMIT,
+    def initialize(scorers:, type:, id:, test_suite_id:, org_id:, created_at:, updated_at:, script:, name: OMIT,
                    num_attempts: OMIT, additional_properties: nil)
       @scorers = scorers
+      @type = type
       @id = id
       @test_suite_id = test_suite_id
       @org_id = org_id
@@ -58,6 +63,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "scorers": scorers,
+        "type": type,
         "id": id,
         "testSuiteId": test_suite_id,
         "orgId": org_id,
@@ -82,6 +88,7 @@ module Vapi
         item = item.to_json
         Vapi::TestSuiteTestScorerAi.from_json(json_object: item)
       end
+      type = parsed_json["type"]
       id = parsed_json["id"]
       test_suite_id = parsed_json["testSuiteId"]
       org_id = parsed_json["orgId"]
@@ -92,6 +99,7 @@ module Vapi
       num_attempts = parsed_json["numAttempts"]
       new(
         scorers: scorers,
+        type: type,
         id: id,
         test_suite_id: test_suite_id,
         org_id: org_id,
@@ -119,6 +127,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.scorers.is_a?(Array) != false || raise("Passed value for field obj.scorers is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::TestSuiteTestVoiceType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.test_suite_id.is_a?(String) != false || raise("Passed value for field obj.test_suite_id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

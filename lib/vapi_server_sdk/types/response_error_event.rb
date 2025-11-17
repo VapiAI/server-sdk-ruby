@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "response_error_event_type"
 require "ostruct"
 require "json"
 
 module Vapi
   class ResponseErrorEvent
-    # @return [String] Event type
+    # @return [Vapi::ResponseErrorEventType] Event type
     attr_reader :type
     # @return [String] Error code
     attr_reader :code
@@ -23,7 +24,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param type [String] Event type
+    # @param type [Vapi::ResponseErrorEventType] Event type
     # @param code [String] Error code
     # @param message [String] Error message
     # @param param [String] Parameter that caused the error
@@ -84,7 +85,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::ResponseErrorEventType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.code.is_a?(String) != false || raise("Passed value for field obj.code is not the expected type, validation failed.")
       obj.message.is_a?(String) != false || raise("Passed value for field obj.message is not the expected type, validation failed.")
       obj.param&.is_a?(String) != false || raise("Passed value for field obj.param is not the expected type, validation failed.")

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "vonage_phone_number_fallback_destination"
-require_relative "phone_number_hook_call_ringing"
+require_relative "vonage_phone_number_hooks_item"
 require "date"
 require_relative "vonage_phone_number_status"
 require_relative "server"
@@ -17,7 +17,7 @@ module Vapi
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
     attr_reader :fallback_destination
-    # @return [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
+    # @return [Array<Vapi::VonagePhoneNumberHooksItem>] This is the hooks that will be used for incoming calls to this phone number.
     attr_reader :hooks
     # @return [String] This is the unique identifier for the phone number.
     attr_reader :id
@@ -76,7 +76,7 @@ module Vapi
     #  3. and, `assistant-request` message to the `serverUrl` fails
     #  If this is not set and above conditions are met, the inbound call is hung up
     #  with an error message.
-    # @param hooks [Array<Vapi::PhoneNumberHookCallRinging>] This is the hooks that will be used for incoming calls to this phone number.
+    # @param hooks [Array<Vapi::VonagePhoneNumberHooksItem>] This is the hooks that will be used for incoming calls to this phone number.
     # @param id [String] This is the unique identifier for the phone number.
     # @param org_id [String] This is the unique identifier for the org that this phone number belongs to.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the phone number was created.
@@ -162,7 +162,7 @@ module Vapi
       end
       hooks = parsed_json["hooks"]&.map do |item|
         item = item.to_json
-        Vapi::PhoneNumberHookCallRinging.from_json(json_object: item)
+        Vapi::VonagePhoneNumberHooksItem.from_json(json_object: item)
       end
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]

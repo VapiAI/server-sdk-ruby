@@ -4,6 +4,7 @@ require_relative "create_tool_template_dto_details"
 require_relative "create_tool_template_dto_provider_details"
 require_relative "tool_template_metadata"
 require_relative "create_tool_template_dto_visibility"
+require_relative "create_tool_template_dto_type"
 require_relative "create_tool_template_dto_provider"
 require "ostruct"
 require "json"
@@ -18,7 +19,7 @@ module Vapi
     attr_reader :metadata
     # @return [Vapi::CreateToolTemplateDtoVisibility]
     attr_reader :visibility
-    # @return [String]
+    # @return [Vapi::CreateToolTemplateDtoType]
     attr_reader :type
     # @return [String] The name of the template. This is just for your own reference.
     attr_reader :name
@@ -36,7 +37,7 @@ module Vapi
     # @param provider_details [Vapi::CreateToolTemplateDtoProviderDetails]
     # @param metadata [Vapi::ToolTemplateMetadata]
     # @param visibility [Vapi::CreateToolTemplateDtoVisibility]
-    # @param type [String]
+    # @param type [Vapi::CreateToolTemplateDtoType]
     # @param name [String] The name of the template. This is just for your own reference.
     # @param provider [Vapi::CreateToolTemplateDtoProvider]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
@@ -123,7 +124,7 @@ module Vapi
       obj.provider_details.nil? || Vapi::CreateToolTemplateDtoProviderDetails.validate_raw(obj: obj.provider_details)
       obj.metadata.nil? || Vapi::ToolTemplateMetadata.validate_raw(obj: obj.metadata)
       obj.visibility&.is_a?(Vapi::CreateToolTemplateDtoVisibility) != false || raise("Passed value for field obj.visibility is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::CreateToolTemplateDtoType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.provider&.is_a?(Vapi::CreateToolTemplateDtoProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
     end

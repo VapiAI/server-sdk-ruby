@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "trieve_knowledge_base_provider"
 require_relative "trieve_knowledge_base_search_plan"
 require_relative "trieve_knowledge_base_import"
 require "ostruct"
@@ -7,6 +8,9 @@ require "json"
 
 module Vapi
   class TrieveKnowledgeBase
+    # @return [Vapi::TrieveKnowledgeBaseProvider] This knowledge base is provided by Trieve.
+    #  To learn more about Trieve, visit https://trieve.ai.
+    attr_reader :provider
     # @return [String] This is the name of the knowledge base.
     attr_reader :name
     # @return [Vapi::TrieveKnowledgeBaseSearchPlan] This is the searching plan used when searching for relevant chunks from the
@@ -30,6 +34,8 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param provider [Vapi::TrieveKnowledgeBaseProvider] This knowledge base is provided by Trieve.
+    #  To learn more about Trieve, visit https://trieve.ai.
     # @param name [String] This is the name of the knowledge base.
     # @param search_plan [Vapi::TrieveKnowledgeBaseSearchPlan] This is the searching plan used when searching for relevant chunks from the
     #  vector store.
@@ -42,7 +48,9 @@ module Vapi
     # @param org_id [String] This is the org id of the knowledge base.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TrieveKnowledgeBase]
-    def initialize(id:, org_id:, name: OMIT, search_plan: OMIT, create_plan: OMIT, additional_properties: nil)
+    def initialize(provider:, id:, org_id:, name: OMIT, search_plan: OMIT, create_plan: OMIT,
+                   additional_properties: nil)
+      @provider = provider
       @name = name if name != OMIT
       @search_plan = search_plan if search_plan != OMIT
       @create_plan = create_plan if create_plan != OMIT
@@ -50,6 +58,7 @@ module Vapi
       @org_id = org_id
       @additional_properties = additional_properties
       @_field_set = {
+        "provider": provider,
         "name": name,
         "searchPlan": search_plan,
         "createPlan": create_plan,
@@ -67,6 +76,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      provider = parsed_json["provider"]
       name = parsed_json["name"]
       if parsed_json["searchPlan"].nil?
         search_plan = nil
@@ -83,6 +93,7 @@ module Vapi
       id = parsed_json["id"]
       org_id = parsed_json["orgId"]
       new(
+        provider: provider,
         name: name,
         search_plan: search_plan,
         create_plan: create_plan,
@@ -106,6 +117,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.provider.is_a?(Vapi::TrieveKnowledgeBaseProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.search_plan.nil? || Vapi::TrieveKnowledgeBaseSearchPlan.validate_raw(obj: obj.search_plan)
       obj.create_plan.nil? || Vapi::TrieveKnowledgeBaseImport.validate_raw(obj: obj.create_plan)

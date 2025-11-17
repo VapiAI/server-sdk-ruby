@@ -8,6 +8,7 @@ require_relative "../types/campaign_paginated_response"
 require_relative "../types/schedule_plan"
 require_relative "../types/create_customer_dto"
 require_relative "../types/campaign"
+require_relative "types/update_campaign_dto_status"
 require "async"
 
 module Vapi
@@ -80,7 +81,11 @@ module Vapi
     # @param workflow_id [String] This is the workflow ID that will be used for the campaign calls. Note: Either
     #  assistantId or workflowId can be used, but not both.
     # @param phone_number_id [String] This is the phone number ID that will be used for the campaign calls.
-    # @param schedule_plan [Hash] This is the schedule plan for the campaign.Request of type Vapi::SchedulePlan, as a Hash
+    # @param schedule_plan [Hash] This is the schedule plan for the campaign. Calls will start at startedAt and
+    #  continue until your organization’s concurrency limit is reached. Any remaining
+    #  calls will be retried for up to one hour as capacity becomes available. After
+    #  that hour or after latestAt, whichever comes first, any calls that couldn’t be
+    #  placed won’t be retried.Request of type Vapi::SchedulePlan, as a Hash
     #   * :earliest_at (DateTime)
     #   * :latest_at (DateTime)
     # @param customers [Array<Hash>] These are the customers that will be called in the campaign.Request of type Array<Vapi::CreateCustomerDto>, as a Hash
@@ -96,18 +101,17 @@ module Vapi
     #     * :voicemail_detection (Hash)
     #     * :client_messages (Array<Vapi::AssistantOverridesClientMessagesItem>)
     #     * :server_messages (Array<Vapi::AssistantOverridesServerMessagesItem>)
-    #     * :silence_timeout_seconds (Float)
     #     * :max_duration_seconds (Float)
     #     * :background_sound (Hash)
-    #     * :background_denoising_enabled (Boolean)
     #     * :model_output_in_messages_enabled (Boolean)
     #     * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #     * :observability_plan (Hash)
-    #       * :provider (String)
+    #       * :provider (Vapi::LangfuseObservabilityPlanProvider)
     #       * :tags (Array<String>)
     #       * :metadata (Hash{String => Object})
     #     * :credentials (Array<Vapi::AssistantOverridesCredentialsItem>)
     #     * :hooks (Array<Vapi::AssistantOverridesHooksItem>)
+    #     * :tools_append (Array<Vapi::AssistantOverridesToolsAppendItem>)
     #     * :variable_values (Hash{String => Object})
     #     * :name (String)
     #     * :voicemail_message (String)
@@ -116,6 +120,12 @@ module Vapi
     #     * :compliance_plan (Hash)
     #       * :hipaa_enabled (Boolean)
     #       * :pci_enabled (Boolean)
+    #       * :security_filter_plan (Hash)
+    #         * :enabled (Boolean)
+    #         * :filters (Array<Vapi::SecurityFilterBase>)
+    #         * :mode (Vapi::SecurityFilterPlanMode)
+    #         * :replacement_text (String)
+    #       * :recording_consent_plan (Hash)
     #     * :metadata (Hash{String => Object})
     #     * :background_speech_denoising_plan (Hash)
     #       * :smart_denoising_plan (Hash)
@@ -153,23 +163,27 @@ module Vapi
     #         * :messages (Array<Hash{String => Object}>)
     #         * :enabled (Boolean)
     #         * :timeout_seconds (Float)
+    #       * :outcome_ids (Array<String>)
     #     * :artifact_plan (Hash)
     #       * :recording_enabled (Boolean)
     #       * :recording_format (Vapi::ArtifactPlanRecordingFormat)
+    #       * :recording_use_custom_storage_enabled (Boolean)
     #       * :video_recording_enabled (Boolean)
+    #       * :full_message_history_enabled (Boolean)
     #       * :pcap_enabled (Boolean)
     #       * :pcap_s_3_path_prefix (String)
+    #       * :pcap_use_custom_storage_enabled (Boolean)
+    #       * :logging_enabled (Boolean)
+    #       * :logging_use_custom_storage_enabled (Boolean)
     #       * :transcript_plan (Hash)
     #         * :enabled (Boolean)
     #         * :assistant_name (String)
     #         * :user_name (String)
     #       * :recording_path (String)
-    #     * :message_plan (Hash)
-    #       * :idle_messages (Array<String>)
-    #       * :idle_message_max_spoken_count (Float)
-    #       * :idle_message_reset_count_on_user_speech_enabled (Boolean)
-    #       * :idle_timeout_seconds (Float)
-    #       * :silence_timeout_message (String)
+    #       * :structured_output_ids (Array<String>)
+    #       * :scorecard_ids (Array<String>)
+    #       * :scorecards (Array<Vapi::CreateScorecardDto>)
+    #       * :logging_path (String)
     #     * :start_speaking_plan (Hash)
     #       * :wait_seconds (Float)
     #       * :smart_endpointing_enabled (Hash)
@@ -193,12 +207,15 @@ module Vapi
     #     * :credential_ids (Array<String>)
     #     * :server (Hash)
     #       * :timeout_seconds (Float)
+    #       * :credential_id (String)
+    #       * :static_ip_addresses_enabled (Boolean)
     #       * :url (String)
     #       * :headers (Hash{String => Object})
     #       * :backoff_plan (Hash)
     #         * :type (Hash{String => Object})
     #         * :max_retries (Float)
     #         * :base_delay_seconds (Float)
+    #         * :excluded_status_codes (Array<Hash{String => Object}>)
     #     * :keypad_input_plan (Hash)
     #       * :enabled (Boolean)
     #       * :timeout_seconds (Float)
@@ -295,10 +312,14 @@ module Vapi
     #  Can only be updated if campaign is not in progress or has ended.Request of type Vapi::SchedulePlan, as a Hash
     #   * :earliest_at (DateTime)
     #   * :latest_at (DateTime)
+    # @param status [Vapi::Campaigns::UpdateCampaignDtoStatus] This is the status of the campaign.
+    #  Can only be updated to 'ended' if you want to end the campaign.
+    #  When set to 'ended', it will delete all scheduled calls. Calls in progress will
+    #  be allowed to complete.
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Campaign]
     def campaign_controller_update(id:, name: nil, assistant_id: nil, workflow_id: nil, phone_number_id: nil,
-                                   schedule_plan: nil, request_options: nil)
+                                   schedule_plan: nil, status: nil, request_options: nil)
       response = @request_client.conn.patch do |req|
         req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
         req.headers["Authorization"] = request_options.token unless request_options&.token.nil?
@@ -312,12 +333,12 @@ module Vapi
         end
         req.body = {
           **(request_options&.additional_body_parameters || {}),
-          "status": "ended",
           name: name,
           assistantId: assistant_id,
           workflowId: workflow_id,
           phoneNumberId: phone_number_id,
-          schedulePlan: schedule_plan
+          schedulePlan: schedule_plan,
+          status: status
         }.compact
         req.url "#{@request_client.get_url(request_options: request_options)}/campaign/#{id}"
       end
@@ -396,7 +417,11 @@ module Vapi
     # @param workflow_id [String] This is the workflow ID that will be used for the campaign calls. Note: Either
     #  assistantId or workflowId can be used, but not both.
     # @param phone_number_id [String] This is the phone number ID that will be used for the campaign calls.
-    # @param schedule_plan [Hash] This is the schedule plan for the campaign.Request of type Vapi::SchedulePlan, as a Hash
+    # @param schedule_plan [Hash] This is the schedule plan for the campaign. Calls will start at startedAt and
+    #  continue until your organization’s concurrency limit is reached. Any remaining
+    #  calls will be retried for up to one hour as capacity becomes available. After
+    #  that hour or after latestAt, whichever comes first, any calls that couldn’t be
+    #  placed won’t be retried.Request of type Vapi::SchedulePlan, as a Hash
     #   * :earliest_at (DateTime)
     #   * :latest_at (DateTime)
     # @param customers [Array<Hash>] These are the customers that will be called in the campaign.Request of type Array<Vapi::CreateCustomerDto>, as a Hash
@@ -412,18 +437,17 @@ module Vapi
     #     * :voicemail_detection (Hash)
     #     * :client_messages (Array<Vapi::AssistantOverridesClientMessagesItem>)
     #     * :server_messages (Array<Vapi::AssistantOverridesServerMessagesItem>)
-    #     * :silence_timeout_seconds (Float)
     #     * :max_duration_seconds (Float)
     #     * :background_sound (Hash)
-    #     * :background_denoising_enabled (Boolean)
     #     * :model_output_in_messages_enabled (Boolean)
     #     * :transport_configurations (Array<Vapi::TransportConfigurationTwilio>)
     #     * :observability_plan (Hash)
-    #       * :provider (String)
+    #       * :provider (Vapi::LangfuseObservabilityPlanProvider)
     #       * :tags (Array<String>)
     #       * :metadata (Hash{String => Object})
     #     * :credentials (Array<Vapi::AssistantOverridesCredentialsItem>)
     #     * :hooks (Array<Vapi::AssistantOverridesHooksItem>)
+    #     * :tools_append (Array<Vapi::AssistantOverridesToolsAppendItem>)
     #     * :variable_values (Hash{String => Object})
     #     * :name (String)
     #     * :voicemail_message (String)
@@ -432,6 +456,12 @@ module Vapi
     #     * :compliance_plan (Hash)
     #       * :hipaa_enabled (Boolean)
     #       * :pci_enabled (Boolean)
+    #       * :security_filter_plan (Hash)
+    #         * :enabled (Boolean)
+    #         * :filters (Array<Vapi::SecurityFilterBase>)
+    #         * :mode (Vapi::SecurityFilterPlanMode)
+    #         * :replacement_text (String)
+    #       * :recording_consent_plan (Hash)
     #     * :metadata (Hash{String => Object})
     #     * :background_speech_denoising_plan (Hash)
     #       * :smart_denoising_plan (Hash)
@@ -469,23 +499,27 @@ module Vapi
     #         * :messages (Array<Hash{String => Object}>)
     #         * :enabled (Boolean)
     #         * :timeout_seconds (Float)
+    #       * :outcome_ids (Array<String>)
     #     * :artifact_plan (Hash)
     #       * :recording_enabled (Boolean)
     #       * :recording_format (Vapi::ArtifactPlanRecordingFormat)
+    #       * :recording_use_custom_storage_enabled (Boolean)
     #       * :video_recording_enabled (Boolean)
+    #       * :full_message_history_enabled (Boolean)
     #       * :pcap_enabled (Boolean)
     #       * :pcap_s_3_path_prefix (String)
+    #       * :pcap_use_custom_storage_enabled (Boolean)
+    #       * :logging_enabled (Boolean)
+    #       * :logging_use_custom_storage_enabled (Boolean)
     #       * :transcript_plan (Hash)
     #         * :enabled (Boolean)
     #         * :assistant_name (String)
     #         * :user_name (String)
     #       * :recording_path (String)
-    #     * :message_plan (Hash)
-    #       * :idle_messages (Array<String>)
-    #       * :idle_message_max_spoken_count (Float)
-    #       * :idle_message_reset_count_on_user_speech_enabled (Boolean)
-    #       * :idle_timeout_seconds (Float)
-    #       * :silence_timeout_message (String)
+    #       * :structured_output_ids (Array<String>)
+    #       * :scorecard_ids (Array<String>)
+    #       * :scorecards (Array<Vapi::CreateScorecardDto>)
+    #       * :logging_path (String)
     #     * :start_speaking_plan (Hash)
     #       * :wait_seconds (Float)
     #       * :smart_endpointing_enabled (Hash)
@@ -509,12 +543,15 @@ module Vapi
     #     * :credential_ids (Array<String>)
     #     * :server (Hash)
     #       * :timeout_seconds (Float)
+    #       * :credential_id (String)
+    #       * :static_ip_addresses_enabled (Boolean)
     #       * :url (String)
     #       * :headers (Hash{String => Object})
     #       * :backoff_plan (Hash)
     #         * :type (Hash{String => Object})
     #         * :max_retries (Float)
     #         * :base_delay_seconds (Float)
+    #         * :excluded_status_codes (Array<Hash{String => Object}>)
     #     * :keypad_input_plan (Hash)
     #       * :enabled (Boolean)
     #       * :timeout_seconds (Float)
@@ -617,10 +654,14 @@ module Vapi
     #  Can only be updated if campaign is not in progress or has ended.Request of type Vapi::SchedulePlan, as a Hash
     #   * :earliest_at (DateTime)
     #   * :latest_at (DateTime)
+    # @param status [Vapi::Campaigns::UpdateCampaignDtoStatus] This is the status of the campaign.
+    #  Can only be updated to 'ended' if you want to end the campaign.
+    #  When set to 'ended', it will delete all scheduled calls. Calls in progress will
+    #  be allowed to complete.
     # @param request_options [Vapi::RequestOptions]
     # @return [Vapi::Campaign]
     def campaign_controller_update(id:, name: nil, assistant_id: nil, workflow_id: nil, phone_number_id: nil,
-                                   schedule_plan: nil, request_options: nil)
+                                   schedule_plan: nil, status: nil, request_options: nil)
       Async do
         response = @request_client.conn.patch do |req|
           req.options.timeout = request_options.timeout_in_seconds unless request_options&.timeout_in_seconds.nil?
@@ -635,12 +676,12 @@ module Vapi
           end
           req.body = {
             **(request_options&.additional_body_parameters || {}),
-            "status": "ended",
             name: name,
             assistantId: assistant_id,
             workflowId: workflow_id,
             phoneNumberId: phone_number_id,
-            schedulePlan: schedule_plan
+            schedulePlan: schedule_plan,
+            status: status
           }.compact
           req.url "#{@request_client.get_url(request_options: request_options)}/campaign/#{id}"
         end

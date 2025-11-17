@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "supabase_credential_provider"
 require "date"
 require_relative "supabase_bucket_plan"
 require "ostruct"
@@ -7,7 +8,7 @@ require "json"
 
 module Vapi
   class SupabaseCredential
-    # @return [String] This is for supabase storage.
+    # @return [Vapi::SupabaseCredentialProvider] This is for supabase storage.
     attr_reader :provider
     # @return [Float] This is the order in which this storage provider is tried during upload retries.
     #  Lower numbers are tried first in increasing order.
@@ -32,7 +33,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String] This is for supabase storage.
+    # @param provider [Vapi::SupabaseCredentialProvider] This is for supabase storage.
     # @param fallback_index [Float] This is the order in which this storage provider is tried during upload retries.
     #  Lower numbers are tried first in increasing order.
     # @param id [String] This is the unique identifier for the credential.
@@ -115,7 +116,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::SupabaseCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.fallback_index&.is_a?(Float) != false || raise("Passed value for field obj.fallback_index is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

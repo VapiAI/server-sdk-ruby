@@ -4,6 +4,8 @@ require_relative "artifact_messages_item"
 require_relative "open_ai_message"
 require_relative "recording"
 require_relative "node_artifact"
+require_relative "performance_metrics"
+require "date"
 require "ostruct"
 require "json"
 
@@ -35,10 +37,31 @@ module Vapi
     # @return [String] This is the packet capture url for the call. This is only available for `phone`
     #  type calls where phone number's provider is `vapi` or `byo-phone-number`.
     attr_reader :pcap_url
+    # @return [String] This is the url for the call logs. This includes all logging output during the
+    #  call for debugging purposes.
+    attr_reader :log_url
     # @return [Array<Vapi::NodeArtifact>] This is the history of workflow nodes that were executed during the call.
     attr_reader :nodes
     # @return [Hash{String => Object}] These are the variable values at the end of the workflow execution.
     attr_reader :variable_values
+    # @return [Vapi::PerformanceMetrics] This is the performance metrics for the call. It contains the turn latency,
+    #  broken down by component.
+    attr_reader :performance_metrics
+    # @return [Hash{String => Object}] These are the structured outputs that will be extracted from the call.
+    #  To enable, set `assistant.artifactPlan.structuredOutputIds` with the IDs of the
+    #  structured outputs you want to extract.
+    attr_reader :structured_outputs
+    # @return [Hash{String => Object}] These are the scorecards that have been evaluated based on the structured
+    #  outputs extracted during the call.
+    #  To enable, set `assistant.artifactPlan.scorecardIds` or
+    #  `assistant.artifactPlan.scorecards` with the IDs or objects of the scorecards
+    #  you want to evaluate.
+    attr_reader :scorecards
+    # @return [Array<String>] These are the transfer records from warm transfers, including destinations,
+    #  transcripts, and status.
+    attr_reader :transfers
+    # @return [DateTime] This is when the structured outputs were last updated
+    attr_reader :structured_outputs_last_updated_at
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -64,12 +87,27 @@ module Vapi
     #  provided for convenience.
     # @param pcap_url [String] This is the packet capture url for the call. This is only available for `phone`
     #  type calls where phone number's provider is `vapi` or `byo-phone-number`.
+    # @param log_url [String] This is the url for the call logs. This includes all logging output during the
+    #  call for debugging purposes.
     # @param nodes [Array<Vapi::NodeArtifact>] This is the history of workflow nodes that were executed during the call.
     # @param variable_values [Hash{String => Object}] These are the variable values at the end of the workflow execution.
+    # @param performance_metrics [Vapi::PerformanceMetrics] This is the performance metrics for the call. It contains the turn latency,
+    #  broken down by component.
+    # @param structured_outputs [Hash{String => Object}] These are the structured outputs that will be extracted from the call.
+    #  To enable, set `assistant.artifactPlan.structuredOutputIds` with the IDs of the
+    #  structured outputs you want to extract.
+    # @param scorecards [Hash{String => Object}] These are the scorecards that have been evaluated based on the structured
+    #  outputs extracted during the call.
+    #  To enable, set `assistant.artifactPlan.scorecardIds` or
+    #  `assistant.artifactPlan.scorecards` with the IDs or objects of the scorecards
+    #  you want to evaluate.
+    # @param transfers [Array<String>] These are the transfer records from warm transfers, including destinations,
+    #  transcripts, and status.
+    # @param structured_outputs_last_updated_at [DateTime] This is when the structured outputs were last updated
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Artifact]
     def initialize(messages: OMIT, messages_open_ai_formatted: OMIT, recording_url: OMIT, stereo_recording_url: OMIT,
-                   video_recording_url: OMIT, video_recording_start_delay_seconds: OMIT, recording: OMIT, transcript: OMIT, pcap_url: OMIT, nodes: OMIT, variable_values: OMIT, additional_properties: nil)
+                   video_recording_url: OMIT, video_recording_start_delay_seconds: OMIT, recording: OMIT, transcript: OMIT, pcap_url: OMIT, log_url: OMIT, nodes: OMIT, variable_values: OMIT, performance_metrics: OMIT, structured_outputs: OMIT, scorecards: OMIT, transfers: OMIT, structured_outputs_last_updated_at: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @messages_open_ai_formatted = messages_open_ai_formatted if messages_open_ai_formatted != OMIT
       @recording_url = recording_url if recording_url != OMIT
@@ -81,8 +119,16 @@ module Vapi
       @recording = recording if recording != OMIT
       @transcript = transcript if transcript != OMIT
       @pcap_url = pcap_url if pcap_url != OMIT
+      @log_url = log_url if log_url != OMIT
       @nodes = nodes if nodes != OMIT
       @variable_values = variable_values if variable_values != OMIT
+      @performance_metrics = performance_metrics if performance_metrics != OMIT
+      @structured_outputs = structured_outputs if structured_outputs != OMIT
+      @scorecards = scorecards if scorecards != OMIT
+      @transfers = transfers if transfers != OMIT
+      if structured_outputs_last_updated_at != OMIT
+        @structured_outputs_last_updated_at = structured_outputs_last_updated_at
+      end
       @additional_properties = additional_properties
       @_field_set = {
         "messages": messages,
@@ -94,8 +140,14 @@ module Vapi
         "recording": recording,
         "transcript": transcript,
         "pcapUrl": pcap_url,
+        "logUrl": log_url,
         "nodes": nodes,
-        "variableValues": variable_values
+        "variableValues": variable_values,
+        "performanceMetrics": performance_metrics,
+        "structuredOutputs": structured_outputs,
+        "scorecards": scorecards,
+        "transfers": transfers,
+        "structuredOutputsLastUpdatedAt": structured_outputs_last_updated_at
       }.reject do |_k, v|
         v == OMIT
       end
@@ -128,11 +180,24 @@ module Vapi
       end
       transcript = parsed_json["transcript"]
       pcap_url = parsed_json["pcapUrl"]
+      log_url = parsed_json["logUrl"]
       nodes = parsed_json["nodes"]&.map do |item|
         item = item.to_json
         Vapi::NodeArtifact.from_json(json_object: item)
       end
       variable_values = parsed_json["variableValues"]
+      if parsed_json["performanceMetrics"].nil?
+        performance_metrics = nil
+      else
+        performance_metrics = parsed_json["performanceMetrics"].to_json
+        performance_metrics = Vapi::PerformanceMetrics.from_json(json_object: performance_metrics)
+      end
+      structured_outputs = parsed_json["structuredOutputs"]
+      scorecards = parsed_json["scorecards"]
+      transfers = parsed_json["transfers"]
+      structured_outputs_last_updated_at = unless parsed_json["structuredOutputsLastUpdatedAt"].nil?
+                                             DateTime.parse(parsed_json["structuredOutputsLastUpdatedAt"])
+                                           end
       new(
         messages: messages,
         messages_open_ai_formatted: messages_open_ai_formatted,
@@ -143,8 +208,14 @@ module Vapi
         recording: recording,
         transcript: transcript,
         pcap_url: pcap_url,
+        log_url: log_url,
         nodes: nodes,
         variable_values: variable_values,
+        performance_metrics: performance_metrics,
+        structured_outputs: structured_outputs,
+        scorecards: scorecards,
+        transfers: transfers,
+        structured_outputs_last_updated_at: structured_outputs_last_updated_at,
         additional_properties: struct
       )
     end
@@ -172,8 +243,14 @@ module Vapi
       obj.recording.nil? || Vapi::Recording.validate_raw(obj: obj.recording)
       obj.transcript&.is_a?(String) != false || raise("Passed value for field obj.transcript is not the expected type, validation failed.")
       obj.pcap_url&.is_a?(String) != false || raise("Passed value for field obj.pcap_url is not the expected type, validation failed.")
+      obj.log_url&.is_a?(String) != false || raise("Passed value for field obj.log_url is not the expected type, validation failed.")
       obj.nodes&.is_a?(Array) != false || raise("Passed value for field obj.nodes is not the expected type, validation failed.")
       obj.variable_values&.is_a?(Hash) != false || raise("Passed value for field obj.variable_values is not the expected type, validation failed.")
+      obj.performance_metrics.nil? || Vapi::PerformanceMetrics.validate_raw(obj: obj.performance_metrics)
+      obj.structured_outputs&.is_a?(Hash) != false || raise("Passed value for field obj.structured_outputs is not the expected type, validation failed.")
+      obj.scorecards&.is_a?(Hash) != false || raise("Passed value for field obj.scorecards is not the expected type, validation failed.")
+      obj.transfers&.is_a?(Array) != false || raise("Passed value for field obj.transfers is not the expected type, validation failed.")
+      obj.structured_outputs_last_updated_at&.is_a?(DateTime) != false || raise("Passed value for field obj.structured_outputs_last_updated_at is not the expected type, validation failed.")
     end
   end
 end

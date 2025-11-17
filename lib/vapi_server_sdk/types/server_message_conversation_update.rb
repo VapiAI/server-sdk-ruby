@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "server_message_conversation_update_phone_number"
+require_relative "server_message_conversation_update_type"
 require_relative "server_message_conversation_update_messages_item"
 require_relative "open_ai_message"
 require_relative "artifact"
@@ -15,6 +16,9 @@ module Vapi
   class ServerMessageConversationUpdate
     # @return [Vapi::ServerMessageConversationUpdatePhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ServerMessageConversationUpdateType] This is the type of the message. "conversation-update" is sent when an update is
+    #  committed to the conversation history.
+    attr_reader :type
     # @return [Array<Vapi::ServerMessageConversationUpdateMessagesItem>] This is the most up-to-date conversation history at the time the message is
     #  sent.
     attr_reader :messages
@@ -43,6 +47,8 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ServerMessageConversationUpdatePhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ServerMessageConversationUpdateType] This is the type of the message. "conversation-update" is sent when an update is
+    #  committed to the conversation history.
     # @param messages [Array<Vapi::ServerMessageConversationUpdateMessagesItem>] This is the most up-to-date conversation history at the time the message is
     #  sent.
     # @param messages_open_ai_formatted [Array<Vapi::OpenAiMessage>] This is the most up-to-date conversation history at the time the message is
@@ -56,9 +62,10 @@ module Vapi
     # @param chat [Vapi::Chat] This is the chat object.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessageConversationUpdate]
-    def initialize(messages_open_ai_formatted:, phone_number: OMIT, messages: OMIT, timestamp: OMIT, artifact: OMIT,
-                   assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, additional_properties: nil)
+    def initialize(type:, messages_open_ai_formatted:, phone_number: OMIT, messages: OMIT, timestamp: OMIT,
+                   artifact: OMIT, assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @messages = messages if messages != OMIT
       @messages_open_ai_formatted = messages_open_ai_formatted
       @timestamp = timestamp if timestamp != OMIT
@@ -70,6 +77,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "messages": messages,
         "messagesOpenAIFormatted": messages_open_ai_formatted,
         "timestamp": timestamp,
@@ -96,6 +104,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessageConversationUpdatePhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       messages = parsed_json["messages"]&.map do |item|
         item = item.to_json
         Vapi::ServerMessageConversationUpdateMessagesItem.from_json(json_object: item)
@@ -137,6 +146,7 @@ module Vapi
       end
       new(
         phone_number: phone_number,
+        type: type,
         messages: messages,
         messages_open_ai_formatted: messages_open_ai_formatted,
         timestamp: timestamp,
@@ -164,6 +174,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessageConversationUpdatePhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ServerMessageConversationUpdateType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.messages&.is_a?(Array) != false || raise("Passed value for field obj.messages is not the expected type, validation failed.")
       obj.messages_open_ai_formatted.is_a?(Array) != false || raise("Passed value for field obj.messages_open_ai_formatted is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")

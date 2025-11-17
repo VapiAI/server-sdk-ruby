@@ -4,6 +4,7 @@ require_relative "template_details"
 require_relative "template_provider_details"
 require_relative "tool_template_metadata"
 require_relative "template_visibility"
+require_relative "template_type"
 require_relative "template_provider"
 require "date"
 require "ostruct"
@@ -19,7 +20,7 @@ module Vapi
     attr_reader :metadata
     # @return [Vapi::TemplateVisibility]
     attr_reader :visibility
-    # @return [String]
+    # @return [Vapi::TemplateType]
     attr_reader :type
     # @return [String] The name of the template. This is just for your own reference.
     attr_reader :name
@@ -45,7 +46,7 @@ module Vapi
     # @param provider_details [Vapi::TemplateProviderDetails]
     # @param metadata [Vapi::ToolTemplateMetadata]
     # @param visibility [Vapi::TemplateVisibility]
-    # @param type [String]
+    # @param type [Vapi::TemplateType]
     # @param name [String] The name of the template. This is just for your own reference.
     # @param provider [Vapi::TemplateProvider]
     # @param id [String] The unique identifier for the template.
@@ -152,7 +153,7 @@ module Vapi
       obj.provider_details.nil? || Vapi::TemplateProviderDetails.validate_raw(obj: obj.provider_details)
       obj.metadata.nil? || Vapi::ToolTemplateMetadata.validate_raw(obj: obj.metadata)
       obj.visibility&.is_a?(Vapi::TemplateVisibility) != false || raise("Passed value for field obj.visibility is not the expected type, validation failed.")
-      obj.type.is_a?(String) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
+      obj.type.is_a?(Vapi::TemplateType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.provider&.is_a?(Vapi::TemplateProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")

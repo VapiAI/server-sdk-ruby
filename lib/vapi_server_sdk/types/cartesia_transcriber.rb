@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "cartesia_transcriber_model"
 require_relative "cartesia_transcriber_language"
 require_relative "fallback_transcriber_plan"
 require "ostruct"
@@ -7,7 +8,7 @@ require "json"
 
 module Vapi
   class CartesiaTranscriber
-    # @return [String]
+    # @return [Vapi::CartesiaTranscriberModel]
     attr_reader :model
     # @return [Vapi::CartesiaTranscriberLanguage]
     attr_reader :language
@@ -22,7 +23,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param model [String]
+    # @param model [Vapi::CartesiaTranscriberModel]
     # @param language [Vapi::CartesiaTranscriberLanguage]
     # @param fallback_plan [Vapi::FallbackTranscriberPlan] This is the plan for voice provider fallbacks in the event that the primary
     #  voice provider fails.
@@ -75,7 +76,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::CartesiaTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::CartesiaTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
       obj.fallback_plan.nil? || Vapi::FallbackTranscriberPlan.validate_raw(obj: obj.fallback_plan)
     end

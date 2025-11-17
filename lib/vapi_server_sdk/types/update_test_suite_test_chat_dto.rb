@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "test_suite_test_scorer_ai"
+require_relative "update_test_suite_test_chat_dto_type"
 require "ostruct"
 require "json"
 
@@ -8,6 +9,8 @@ module Vapi
   class UpdateTestSuiteTestChatDto
     # @return [Array<Vapi::TestSuiteTestScorerAi>] These are the scorers used to evaluate the test.
     attr_reader :scorers
+    # @return [Vapi::UpdateTestSuiteTestChatDtoType] This is the type of the test, which must be chat.
+    attr_reader :type
     # @return [String] This is the name of the test.
     attr_reader :name
     # @return [String] This is the script to be used for the chat test.
@@ -23,19 +26,22 @@ module Vapi
     OMIT = Object.new
 
     # @param scorers [Array<Vapi::TestSuiteTestScorerAi>] These are the scorers used to evaluate the test.
+    # @param type [Vapi::UpdateTestSuiteTestChatDtoType] This is the type of the test, which must be chat.
     # @param name [String] This is the name of the test.
     # @param script [String] This is the script to be used for the chat test.
     # @param num_attempts [Float] This is the number of attempts allowed for the test.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::UpdateTestSuiteTestChatDto]
-    def initialize(scorers: OMIT, name: OMIT, script: OMIT, num_attempts: OMIT, additional_properties: nil)
+    def initialize(scorers: OMIT, type: OMIT, name: OMIT, script: OMIT, num_attempts: OMIT, additional_properties: nil)
       @scorers = scorers if scorers != OMIT
+      @type = type if type != OMIT
       @name = name if name != OMIT
       @script = script if script != OMIT
       @num_attempts = num_attempts if num_attempts != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "scorers": scorers,
+        "type": type,
         "name": name,
         "script": script,
         "numAttempts": num_attempts
@@ -55,11 +61,13 @@ module Vapi
         item = item.to_json
         Vapi::TestSuiteTestScorerAi.from_json(json_object: item)
       end
+      type = parsed_json["type"]
       name = parsed_json["name"]
       script = parsed_json["script"]
       num_attempts = parsed_json["numAttempts"]
       new(
         scorers: scorers,
+        type: type,
         name: name,
         script: script,
         num_attempts: num_attempts,
@@ -82,6 +90,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.scorers&.is_a?(Array) != false || raise("Passed value for field obj.scorers is not the expected type, validation failed.")
+      obj.type&.is_a?(Vapi::UpdateTestSuiteTestChatDtoType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.script&.is_a?(String) != false || raise("Passed value for field obj.script is not the expected type, validation failed.")
       obj.num_attempts&.is_a?(Float) != false || raise("Passed value for field obj.num_attempts is not the expected type, validation failed.")

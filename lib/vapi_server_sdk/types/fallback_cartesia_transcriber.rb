@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "fallback_cartesia_transcriber_model"
 require_relative "fallback_cartesia_transcriber_language"
 require "ostruct"
 require "json"
 
 module Vapi
   class FallbackCartesiaTranscriber
-    # @return [String]
+    # @return [Vapi::FallbackCartesiaTranscriberModel]
     attr_reader :model
     # @return [Vapi::FallbackCartesiaTranscriberLanguage]
     attr_reader :language
@@ -18,7 +19,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param model [String]
+    # @param model [Vapi::FallbackCartesiaTranscriberModel]
     # @param language [Vapi::FallbackCartesiaTranscriberLanguage]
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::FallbackCartesiaTranscriber]
@@ -61,7 +62,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::FallbackCartesiaTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::FallbackCartesiaTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
     end
   end

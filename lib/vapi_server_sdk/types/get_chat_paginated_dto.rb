@@ -9,10 +9,12 @@ module Vapi
   class GetChatPaginatedDto
     # @return [String] This is the unique identifier for the assistant that will be used for the chat.
     attr_reader :assistant_id
-    # @return [String] This is the unique identifier for the workflow that will be used for the chat.
-    attr_reader :workflow_id
+    # @return [String] This is the unique identifier for the squad that will be used for the chat.
+    attr_reader :squad_id
     # @return [String] This is the unique identifier for the session that will be used for the chat.
     attr_reader :session_id
+    # @return [String] This is the unique identifier for the previous chat to filter by.
+    attr_reader :previous_chat_id
     # @return [Float] This is the page number to return. Defaults to 1.
     attr_reader :page
     # @return [Vapi::GetChatPaginatedDtoSortOrder] This is the sort order for pagination. Defaults to 'DESC'.
@@ -48,8 +50,9 @@ module Vapi
     OMIT = Object.new
 
     # @param assistant_id [String] This is the unique identifier for the assistant that will be used for the chat.
-    # @param workflow_id [String] This is the unique identifier for the workflow that will be used for the chat.
+    # @param squad_id [String] This is the unique identifier for the squad that will be used for the chat.
     # @param session_id [String] This is the unique identifier for the session that will be used for the chat.
+    # @param previous_chat_id [String] This is the unique identifier for the previous chat to filter by.
     # @param page [Float] This is the page number to return. Defaults to 1.
     # @param sort_order [Vapi::GetChatPaginatedDtoSortOrder] This is the sort order for pagination. Defaults to 'DESC'.
     # @param limit [Float] This is the maximum number of items to return. Defaults to 100.
@@ -67,11 +70,12 @@ module Vapi
     #  specified value.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::GetChatPaginatedDto]
-    def initialize(assistant_id: OMIT, workflow_id: OMIT, session_id: OMIT, page: OMIT, sort_order: OMIT, limit: OMIT,
-                   created_at_gt: OMIT, created_at_lt: OMIT, created_at_ge: OMIT, created_at_le: OMIT, updated_at_gt: OMIT, updated_at_lt: OMIT, updated_at_ge: OMIT, updated_at_le: OMIT, additional_properties: nil)
+    def initialize(assistant_id: OMIT, squad_id: OMIT, session_id: OMIT, previous_chat_id: OMIT, page: OMIT,
+                   sort_order: OMIT, limit: OMIT, created_at_gt: OMIT, created_at_lt: OMIT, created_at_ge: OMIT, created_at_le: OMIT, updated_at_gt: OMIT, updated_at_lt: OMIT, updated_at_ge: OMIT, updated_at_le: OMIT, additional_properties: nil)
       @assistant_id = assistant_id if assistant_id != OMIT
-      @workflow_id = workflow_id if workflow_id != OMIT
+      @squad_id = squad_id if squad_id != OMIT
       @session_id = session_id if session_id != OMIT
+      @previous_chat_id = previous_chat_id if previous_chat_id != OMIT
       @page = page if page != OMIT
       @sort_order = sort_order if sort_order != OMIT
       @limit = limit if limit != OMIT
@@ -86,8 +90,9 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "assistantId": assistant_id,
-        "workflowId": workflow_id,
+        "squadId": squad_id,
         "sessionId": session_id,
+        "previousChatId": previous_chat_id,
         "page": page,
         "sortOrder": sort_order,
         "limit": limit,
@@ -112,8 +117,9 @@ module Vapi
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
       assistant_id = parsed_json["assistantId"]
-      workflow_id = parsed_json["workflowId"]
+      squad_id = parsed_json["squadId"]
       session_id = parsed_json["sessionId"]
+      previous_chat_id = parsed_json["previousChatId"]
       page = parsed_json["page"]
       sort_order = parsed_json["sortOrder"]
       limit = parsed_json["limit"]
@@ -127,8 +133,9 @@ module Vapi
       updated_at_le = (DateTime.parse(parsed_json["updatedAtLe"]) unless parsed_json["updatedAtLe"].nil?)
       new(
         assistant_id: assistant_id,
-        workflow_id: workflow_id,
+        squad_id: squad_id,
         session_id: session_id,
+        previous_chat_id: previous_chat_id,
         page: page,
         sort_order: sort_order,
         limit: limit,
@@ -159,8 +166,9 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.assistant_id&.is_a?(String) != false || raise("Passed value for field obj.assistant_id is not the expected type, validation failed.")
-      obj.workflow_id&.is_a?(String) != false || raise("Passed value for field obj.workflow_id is not the expected type, validation failed.")
+      obj.squad_id&.is_a?(String) != false || raise("Passed value for field obj.squad_id is not the expected type, validation failed.")
       obj.session_id&.is_a?(String) != false || raise("Passed value for field obj.session_id is not the expected type, validation failed.")
+      obj.previous_chat_id&.is_a?(String) != false || raise("Passed value for field obj.previous_chat_id is not the expected type, validation failed.")
       obj.page&.is_a?(Float) != false || raise("Passed value for field obj.page is not the expected type, validation failed.")
       obj.sort_order&.is_a?(Vapi::GetChatPaginatedDtoSortOrder) != false || raise("Passed value for field obj.sort_order is not the expected type, validation failed.")
       obj.limit&.is_a?(Float) != false || raise("Passed value for field obj.limit is not the expected type, validation failed.")

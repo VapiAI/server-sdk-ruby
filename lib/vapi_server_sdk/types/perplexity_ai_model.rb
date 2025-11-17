@@ -20,8 +20,6 @@ module Vapi
     attr_reader :tool_ids
     # @return [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
     attr_reader :knowledge_base
-    # @return [String] This is the ID of the knowledge base the model will use.
-    attr_reader :knowledge_base_id
     # @return [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     attr_reader :model
     # @return [Float] This is the temperature that will be used for calls. Default is 0 to leverage
@@ -58,7 +56,6 @@ module Vapi
     #  tools, use `tools`.
     #  Both `tools` and `toolIds` can be used together.
     # @param knowledge_base [Vapi::CreateCustomKnowledgeBaseDto] These are the options for the knowledge base.
-    # @param knowledge_base_id [String] This is the ID of the knowledge base the model will use.
     # @param model [String] This is the name of the model. Ex. cognitivecomputations/dolphin-mixtral-8x7b
     # @param temperature [Float] This is the temperature that will be used for calls. Default is 0 to leverage
     #  caching for lower latency.
@@ -76,13 +73,12 @@ module Vapi
     #  @default 0
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::PerplexityAiModel]
-    def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, knowledge_base_id: OMIT,
-                   temperature: OMIT, max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
+    def initialize(model:, messages: OMIT, tools: OMIT, tool_ids: OMIT, knowledge_base: OMIT, temperature: OMIT,
+                   max_tokens: OMIT, emotion_recognition_enabled: OMIT, num_fast_turns: OMIT, additional_properties: nil)
       @messages = messages if messages != OMIT
       @tools = tools if tools != OMIT
       @tool_ids = tool_ids if tool_ids != OMIT
       @knowledge_base = knowledge_base if knowledge_base != OMIT
-      @knowledge_base_id = knowledge_base_id if knowledge_base_id != OMIT
       @model = model
       @temperature = temperature if temperature != OMIT
       @max_tokens = max_tokens if max_tokens != OMIT
@@ -94,7 +90,6 @@ module Vapi
         "tools": tools,
         "toolIds": tool_ids,
         "knowledgeBase": knowledge_base,
-        "knowledgeBaseId": knowledge_base_id,
         "model": model,
         "temperature": temperature,
         "maxTokens": max_tokens,
@@ -127,7 +122,6 @@ module Vapi
         knowledge_base = parsed_json["knowledgeBase"].to_json
         knowledge_base = Vapi::CreateCustomKnowledgeBaseDto.from_json(json_object: knowledge_base)
       end
-      knowledge_base_id = parsed_json["knowledgeBaseId"]
       model = parsed_json["model"]
       temperature = parsed_json["temperature"]
       max_tokens = parsed_json["maxTokens"]
@@ -138,7 +132,6 @@ module Vapi
         tools: tools,
         tool_ids: tool_ids,
         knowledge_base: knowledge_base,
-        knowledge_base_id: knowledge_base_id,
         model: model,
         temperature: temperature,
         max_tokens: max_tokens,
@@ -166,7 +159,6 @@ module Vapi
       obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
       obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
       obj.knowledge_base.nil? || Vapi::CreateCustomKnowledgeBaseDto.validate_raw(obj: obj.knowledge_base)
-      obj.knowledge_base_id&.is_a?(String) != false || raise("Passed value for field obj.knowledge_base_id is not the expected type, validation failed.")
       obj.model.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.temperature&.is_a?(Float) != false || raise("Passed value for field obj.temperature is not the expected type, validation failed.")
       obj.max_tokens&.is_a?(Float) != false || raise("Passed value for field obj.max_tokens is not the expected type, validation failed.")

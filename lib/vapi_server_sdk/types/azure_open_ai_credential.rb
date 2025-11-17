@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "azure_open_ai_credential_provider"
 require_relative "azure_open_ai_credential_region"
 require_relative "azure_open_ai_credential_models_item"
 require "date"
@@ -8,7 +9,7 @@ require "json"
 
 module Vapi
   class AzureOpenAiCredential
-    # @return [String]
+    # @return [Vapi::AzureOpenAiCredentialProvider]
     attr_reader :provider
     # @return [Vapi::AzureOpenAiCredentialRegion]
     attr_reader :region
@@ -38,7 +39,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::AzureOpenAiCredentialProvider]
     # @param region [Vapi::AzureOpenAiCredentialRegion]
     # @param models [Array<Vapi::AzureOpenAiCredentialModelsItem>]
     # @param open_ai_key [String] This is not returned in the API.
@@ -130,7 +131,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::AzureOpenAiCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.region.is_a?(Vapi::AzureOpenAiCredentialRegion) != false || raise("Passed value for field obj.region is not the expected type, validation failed.")
       obj.models.is_a?(Array) != false || raise("Passed value for field obj.models is not the expected type, validation failed.")
       obj.open_ai_key.is_a?(String) != false || raise("Passed value for field obj.open_ai_key is not the expected type, validation failed.")

@@ -19,6 +19,8 @@ module Vapi
     attr_reader :source
     # @return [Float] The duration of the message in seconds.
     attr_reader :duration
+    # @return [String] Stable speaker label for diarized user speakers (e.g., "Speaker 1").
+    attr_reader :speaker_label
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -34,10 +36,11 @@ module Vapi
     # @param seconds_from_start [Float] The number of seconds from the start of the conversation.
     # @param source [String] The source of the message.
     # @param duration [Float] The duration of the message in seconds.
+    # @param speaker_label [String] Stable speaker label for diarized user speakers (e.g., "Speaker 1").
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::BotMessage]
     def initialize(role:, message:, time:, end_time:, seconds_from_start:, source: OMIT, duration: OMIT,
-                   additional_properties: nil)
+                   speaker_label: OMIT, additional_properties: nil)
       @role = role
       @message = message
       @time = time
@@ -45,6 +48,7 @@ module Vapi
       @seconds_from_start = seconds_from_start
       @source = source if source != OMIT
       @duration = duration if duration != OMIT
+      @speaker_label = speaker_label if speaker_label != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "role": role,
@@ -53,7 +57,8 @@ module Vapi
         "endTime": end_time,
         "secondsFromStart": seconds_from_start,
         "source": source,
-        "duration": duration
+        "duration": duration,
+        "speakerLabel": speaker_label
       }.reject do |_k, v|
         v == OMIT
       end
@@ -73,6 +78,7 @@ module Vapi
       seconds_from_start = parsed_json["secondsFromStart"]
       source = parsed_json["source"]
       duration = parsed_json["duration"]
+      speaker_label = parsed_json["speakerLabel"]
       new(
         role: role,
         message: message,
@@ -81,6 +87,7 @@ module Vapi
         seconds_from_start: seconds_from_start,
         source: source,
         duration: duration,
+        speaker_label: speaker_label,
         additional_properties: struct
       )
     end
@@ -106,6 +113,7 @@ module Vapi
       obj.seconds_from_start.is_a?(Float) != false || raise("Passed value for field obj.seconds_from_start is not the expected type, validation failed.")
       obj.source&.is_a?(String) != false || raise("Passed value for field obj.source is not the expected type, validation failed.")
       obj.duration&.is_a?(Float) != false || raise("Passed value for field obj.duration is not the expected type, validation failed.")
+      obj.speaker_label&.is_a?(String) != false || raise("Passed value for field obj.speaker_label is not the expected type, validation failed.")
     end
   end
 end

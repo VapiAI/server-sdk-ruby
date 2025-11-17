@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "inworld_voice_voice_id"
+require_relative "inworld_voice_model"
 require_relative "inworld_voice_language_code"
 require_relative "chunk_plan"
 require_relative "fallback_plan"
@@ -26,7 +27,7 @@ module Vapi
     #  • pt: Heitor, Maitê
     #  • es: Diego, Lupita, Miguel, Rafael
     attr_reader :voice_id
-    # @return [String] This is the model that will be used.
+    # @return [Vapi::InworldVoiceModel] This is the model that will be used.
     attr_reader :model
     # @return [Vapi::InworldVoiceLanguageCode] Language code for Inworld TTS synthesis
     attr_reader :language_code
@@ -59,7 +60,7 @@ module Vapi
     #  • pl: Szymon, Wojciech
     #  • pt: Heitor, Maitê
     #  • es: Diego, Lupita, Miguel, Rafael
-    # @param model [String] This is the model that will be used.
+    # @param model [Vapi::InworldVoiceModel] This is the model that will be used.
     # @param language_code [Vapi::InworldVoiceLanguageCode] Language code for Inworld TTS synthesis
     # @param chunk_plan [Vapi::ChunkPlan] This is the plan for chunking the model output before it is sent to the voice
     #  provider.
@@ -138,7 +139,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
       obj.voice_id.is_a?(Vapi::InworldVoiceVoiceId) != false || raise("Passed value for field obj.voice_id is not the expected type, validation failed.")
-      obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::InworldVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language_code&.is_a?(Vapi::InworldVoiceLanguageCode) != false || raise("Passed value for field obj.language_code is not the expected type, validation failed.")
       obj.chunk_plan.nil? || Vapi::ChunkPlan.validate_raw(obj: obj.chunk_plan)
       obj.fallback_plan.nil? || Vapi::FallbackPlan.validate_raw(obj: obj.fallback_plan)

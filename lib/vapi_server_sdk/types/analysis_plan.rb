@@ -26,6 +26,9 @@ module Vapi
     # @return [Vapi::SuccessEvaluationPlan] This is the plan for generating the success evaluation of the call. This outputs
     #  to `call.analysis.successEvaluation`.
     attr_reader :success_evaluation_plan
+    # @return [Array<String>] This is an array of outcome UUIDs to be calculated during analysis.
+    #  The outcomes will be calculated and stored in `call.analysis.outcomes`.
+    attr_reader :outcome_ids
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
     # @return [Object]
@@ -46,22 +49,26 @@ module Vapi
     #  `call.analysis.structuredDataMulti`.
     # @param success_evaluation_plan [Vapi::SuccessEvaluationPlan] This is the plan for generating the success evaluation of the call. This outputs
     #  to `call.analysis.successEvaluation`.
+    # @param outcome_ids [Array<String>] This is an array of outcome UUIDs to be calculated during analysis.
+    #  The outcomes will be calculated and stored in `call.analysis.outcomes`.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AnalysisPlan]
     def initialize(min_messages_threshold: OMIT, summary_plan: OMIT, structured_data_plan: OMIT,
-                   structured_data_multi_plan: OMIT, success_evaluation_plan: OMIT, additional_properties: nil)
+                   structured_data_multi_plan: OMIT, success_evaluation_plan: OMIT, outcome_ids: OMIT, additional_properties: nil)
       @min_messages_threshold = min_messages_threshold if min_messages_threshold != OMIT
       @summary_plan = summary_plan if summary_plan != OMIT
       @structured_data_plan = structured_data_plan if structured_data_plan != OMIT
       @structured_data_multi_plan = structured_data_multi_plan if structured_data_multi_plan != OMIT
       @success_evaluation_plan = success_evaluation_plan if success_evaluation_plan != OMIT
+      @outcome_ids = outcome_ids if outcome_ids != OMIT
       @additional_properties = additional_properties
       @_field_set = {
         "minMessagesThreshold": min_messages_threshold,
         "summaryPlan": summary_plan,
         "structuredDataPlan": structured_data_plan,
         "structuredDataMultiPlan": structured_data_multi_plan,
-        "successEvaluationPlan": success_evaluation_plan
+        "successEvaluationPlan": success_evaluation_plan,
+        "outcomeIds": outcome_ids
       }.reject do |_k, v|
         v == OMIT
       end
@@ -97,12 +104,14 @@ module Vapi
         success_evaluation_plan = parsed_json["successEvaluationPlan"].to_json
         success_evaluation_plan = Vapi::SuccessEvaluationPlan.from_json(json_object: success_evaluation_plan)
       end
+      outcome_ids = parsed_json["outcomeIds"]
       new(
         min_messages_threshold: min_messages_threshold,
         summary_plan: summary_plan,
         structured_data_plan: structured_data_plan,
         structured_data_multi_plan: structured_data_multi_plan,
         success_evaluation_plan: success_evaluation_plan,
+        outcome_ids: outcome_ids,
         additional_properties: struct
       )
     end
@@ -126,6 +135,7 @@ module Vapi
       obj.structured_data_plan.nil? || Vapi::StructuredDataPlan.validate_raw(obj: obj.structured_data_plan)
       obj.structured_data_multi_plan&.is_a?(Array) != false || raise("Passed value for field obj.structured_data_multi_plan is not the expected type, validation failed.")
       obj.success_evaluation_plan.nil? || Vapi::SuccessEvaluationPlan.validate_raw(obj: obj.success_evaluation_plan)
+      obj.outcome_ids&.is_a?(Array) != false || raise("Passed value for field obj.outcome_ids is not the expected type, validation failed.")
     end
   end
 end

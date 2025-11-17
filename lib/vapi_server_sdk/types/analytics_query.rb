@@ -2,6 +2,7 @@
 
 require_relative "analytics_query_table"
 require_relative "analytics_query_group_by_item"
+require_relative "variable_value_group_by"
 require_relative "time_range"
 require_relative "analytics_operation"
 require "ostruct"
@@ -13,6 +14,8 @@ module Vapi
     attr_reader :table
     # @return [Array<Vapi::AnalyticsQueryGroupByItem>] This is the list of columns you want to group by.
     attr_reader :group_by
+    # @return [Array<Vapi::VariableValueGroupBy>] This is the list of variable value keys you want to group by.
+    attr_reader :group_by_variable_value
     # @return [String] This is the name of the query. This will be used to identify the query in the
     #  response.
     attr_reader :name
@@ -30,15 +33,18 @@ module Vapi
 
     # @param table [Vapi::AnalyticsQueryTable] This is the table you want to query.
     # @param group_by [Array<Vapi::AnalyticsQueryGroupByItem>] This is the list of columns you want to group by.
+    # @param group_by_variable_value [Array<Vapi::VariableValueGroupBy>] This is the list of variable value keys you want to group by.
     # @param name [String] This is the name of the query. This will be used to identify the query in the
     #  response.
     # @param time_range [Vapi::TimeRange] This is the time range for the query.
     # @param operations [Array<Vapi::AnalyticsOperation>] This is the list of operations you want to perform.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::AnalyticsQuery]
-    def initialize(table:, name:, operations:, group_by: OMIT, time_range: OMIT, additional_properties: nil)
+    def initialize(table:, name:, operations:, group_by: OMIT, group_by_variable_value: OMIT, time_range: OMIT,
+                   additional_properties: nil)
       @table = table
       @group_by = group_by if group_by != OMIT
+      @group_by_variable_value = group_by_variable_value if group_by_variable_value != OMIT
       @name = name
       @time_range = time_range if time_range != OMIT
       @operations = operations
@@ -46,6 +52,7 @@ module Vapi
       @_field_set = {
         "table": table,
         "groupBy": group_by,
+        "groupByVariableValue": group_by_variable_value,
         "name": name,
         "timeRange": time_range,
         "operations": operations
@@ -63,6 +70,10 @@ module Vapi
       parsed_json = JSON.parse(json_object)
       table = parsed_json["table"]
       group_by = parsed_json["groupBy"]
+      group_by_variable_value = parsed_json["groupByVariableValue"]&.map do |item|
+        item = item.to_json
+        Vapi::VariableValueGroupBy.from_json(json_object: item)
+      end
       name = parsed_json["name"]
       if parsed_json["timeRange"].nil?
         time_range = nil
@@ -77,6 +88,7 @@ module Vapi
       new(
         table: table,
         group_by: group_by,
+        group_by_variable_value: group_by_variable_value,
         name: name,
         time_range: time_range,
         operations: operations,
@@ -100,6 +112,7 @@ module Vapi
     def self.validate_raw(obj:)
       obj.table.is_a?(Vapi::AnalyticsQueryTable) != false || raise("Passed value for field obj.table is not the expected type, validation failed.")
       obj.group_by&.is_a?(Array) != false || raise("Passed value for field obj.group_by is not the expected type, validation failed.")
+      obj.group_by_variable_value&.is_a?(Array) != false || raise("Passed value for field obj.group_by_variable_value is not the expected type, validation failed.")
       obj.name.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
       obj.time_range.nil? || Vapi::TimeRange.validate_raw(obj: obj.time_range)
       obj.operations.is_a?(Array) != false || raise("Passed value for field obj.operations is not the expected type, validation failed.")

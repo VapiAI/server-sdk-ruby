@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "fallback_hume_voice_model"
 require_relative "chunk_plan"
 require "ostruct"
 require "json"
@@ -8,7 +9,7 @@ module Vapi
   class FallbackHumeVoice
     # @return [Boolean] This is the flag to toggle voice caching for the assistant.
     attr_reader :caching_enabled
-    # @return [String] This is the model that will be used.
+    # @return [Vapi::FallbackHumeVoiceModel] This is the model that will be used.
     attr_reader :model
     # @return [String] The ID of the particular voice you want to use.
     attr_reader :voice_id
@@ -33,7 +34,7 @@ module Vapi
     OMIT = Object.new
 
     # @param caching_enabled [Boolean] This is the flag to toggle voice caching for the assistant.
-    # @param model [String] This is the model that will be used.
+    # @param model [Vapi::FallbackHumeVoiceModel] This is the model that will be used.
     # @param voice_id [String] The ID of the particular voice you want to use.
     # @param is_custom_hume_voice [Boolean] Indicates whether the chosen voice is a preset Hume AI voice or a custom voice.
     # @param description [String] Natural language instructions describing how the synthesized speech should
@@ -111,7 +112,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.caching_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.caching_enabled is not the expected type, validation failed.")
-      obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::FallbackHumeVoiceModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.voice_id.is_a?(String) != false || raise("Passed value for field obj.voice_id is not the expected type, validation failed.")
       obj.is_custom_hume_voice&.is_a?(Boolean) != false || raise("Passed value for field obj.is_custom_hume_voice is not the expected type, validation failed.")
       obj.description&.is_a?(String) != false || raise("Passed value for field obj.description is not the expected type, validation failed.")

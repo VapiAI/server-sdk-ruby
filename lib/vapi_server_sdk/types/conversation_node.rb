@@ -3,6 +3,7 @@
 require_relative "conversation_node_model"
 require_relative "conversation_node_transcriber"
 require_relative "conversation_node_voice"
+require_relative "conversation_node_tools_item"
 require_relative "global_node_plan"
 require_relative "variable_extraction_plan"
 require "ostruct"
@@ -19,6 +20,14 @@ module Vapi
     # @return [Vapi::ConversationNodeVoice] This is the voice for the node.
     #  This overrides `workflow.voice`.
     attr_reader :voice
+    # @return [Array<Vapi::ConversationNodeToolsItem>] These are the tools that the conversation node can use during the call. To use
+    #  existing tools, use `toolIds`.
+    #  Both `tools` and `toolIds` can be used together.
+    attr_reader :tools
+    # @return [Array<String>] These are the tools that the conversation node can use during the call. To use
+    #  transient tools, use `tools`.
+    #  Both `tools` and `toolIds` can be used together.
+    attr_reader :tool_ids
     # @return [String]
     attr_reader :prompt
     # @return [Vapi::GlobalNodePlan] This is the plan for the global node.
@@ -87,6 +96,12 @@ module Vapi
     #  This overrides `workflow.transcriber`.
     # @param voice [Vapi::ConversationNodeVoice] This is the voice for the node.
     #  This overrides `workflow.voice`.
+    # @param tools [Array<Vapi::ConversationNodeToolsItem>] These are the tools that the conversation node can use during the call. To use
+    #  existing tools, use `toolIds`.
+    #  Both `tools` and `toolIds` can be used together.
+    # @param tool_ids [Array<String>] These are the tools that the conversation node can use during the call. To use
+    #  transient tools, use `tools`.
+    #  Both `tools` and `toolIds` can be used together.
     # @param prompt [String]
     # @param global_node_plan [Vapi::GlobalNodePlan] This is the plan for the global node.
     # @param variable_extraction_plan [Vapi::VariableExtractionPlan] This is the plan that controls the variable extraction from the user's
@@ -137,11 +152,13 @@ module Vapi
     # @param metadata [Hash{String => Object}] This is for metadata you want to store on the task.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ConversationNode]
-    def initialize(name:, model: OMIT, transcriber: OMIT, voice: OMIT, prompt: OMIT, global_node_plan: OMIT,
-                   variable_extraction_plan: OMIT, is_start: OMIT, metadata: OMIT, additional_properties: nil)
+    def initialize(name:, model: OMIT, transcriber: OMIT, voice: OMIT, tools: OMIT, tool_ids: OMIT, prompt: OMIT,
+                   global_node_plan: OMIT, variable_extraction_plan: OMIT, is_start: OMIT, metadata: OMIT, additional_properties: nil)
       @model = model if model != OMIT
       @transcriber = transcriber if transcriber != OMIT
       @voice = voice if voice != OMIT
+      @tools = tools if tools != OMIT
+      @tool_ids = tool_ids if tool_ids != OMIT
       @prompt = prompt if prompt != OMIT
       @global_node_plan = global_node_plan if global_node_plan != OMIT
       @variable_extraction_plan = variable_extraction_plan if variable_extraction_plan != OMIT
@@ -153,6 +170,8 @@ module Vapi
         "model": model,
         "transcriber": transcriber,
         "voice": voice,
+        "tools": tools,
+        "toolIds": tool_ids,
         "prompt": prompt,
         "globalNodePlan": global_node_plan,
         "variableExtractionPlan": variable_extraction_plan,
@@ -189,6 +208,11 @@ module Vapi
         voice = parsed_json["voice"].to_json
         voice = Vapi::ConversationNodeVoice.from_json(json_object: voice)
       end
+      tools = parsed_json["tools"]&.map do |item|
+        item = item.to_json
+        Vapi::ConversationNodeToolsItem.from_json(json_object: item)
+      end
+      tool_ids = parsed_json["toolIds"]
       prompt = parsed_json["prompt"]
       if parsed_json["globalNodePlan"].nil?
         global_node_plan = nil
@@ -209,6 +233,8 @@ module Vapi
         model: model,
         transcriber: transcriber,
         voice: voice,
+        tools: tools,
+        tool_ids: tool_ids,
         prompt: prompt,
         global_node_plan: global_node_plan,
         variable_extraction_plan: variable_extraction_plan,
@@ -236,6 +262,8 @@ module Vapi
       obj.model.nil? || Vapi::ConversationNodeModel.validate_raw(obj: obj.model)
       obj.transcriber.nil? || Vapi::ConversationNodeTranscriber.validate_raw(obj: obj.transcriber)
       obj.voice.nil? || Vapi::ConversationNodeVoice.validate_raw(obj: obj.voice)
+      obj.tools&.is_a?(Array) != false || raise("Passed value for field obj.tools is not the expected type, validation failed.")
+      obj.tool_ids&.is_a?(Array) != false || raise("Passed value for field obj.tool_ids is not the expected type, validation failed.")
       obj.prompt&.is_a?(String) != false || raise("Passed value for field obj.prompt is not the expected type, validation failed.")
       obj.global_node_plan.nil? || Vapi::GlobalNodePlan.validate_raw(obj: obj.global_node_plan)
       obj.variable_extraction_plan.nil? || Vapi::VariableExtractionPlan.validate_raw(obj: obj.variable_extraction_plan)

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "client_message_tool_calls_result_phone_number"
+require_relative "client_message_tool_calls_result_type"
 require_relative "call"
 require_relative "create_customer_dto"
 require_relative "create_assistant_dto"
@@ -11,6 +12,9 @@ module Vapi
   class ClientMessageToolCallsResult
     # @return [Vapi::ClientMessageToolCallsResultPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ClientMessageToolCallsResultType] This is the type of the message. "tool-calls-result" is sent to forward the
+    #  result of a tool call to the client.
+    attr_reader :type
     # @return [Float] This is the timestamp of the message.
     attr_reader :timestamp
     # @return [Vapi::Call] This is the call that the message is associated with.
@@ -30,6 +34,8 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ClientMessageToolCallsResultPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ClientMessageToolCallsResultType] This is the type of the message. "tool-calls-result" is sent to forward the
+    #  result of a tool call to the client.
     # @param timestamp [Float] This is the timestamp of the message.
     # @param call [Vapi::Call] This is the call that the message is associated with.
     # @param customer [Vapi::CreateCustomerDto] This is the customer that the message is associated with.
@@ -37,9 +43,10 @@ module Vapi
     # @param tool_call_result [Hash{String => Object}] This is the result of the tool call.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ClientMessageToolCallsResult]
-    def initialize(tool_call_result:, phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT, assistant: OMIT,
-                   additional_properties: nil)
+    def initialize(type:, tool_call_result:, phone_number: OMIT, timestamp: OMIT, call: OMIT, customer: OMIT,
+                   assistant: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @timestamp = timestamp if timestamp != OMIT
       @call = call if call != OMIT
       @customer = customer if customer != OMIT
@@ -48,6 +55,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "timestamp": timestamp,
         "call": call,
         "customer": customer,
@@ -71,6 +79,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ClientMessageToolCallsResultPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       timestamp = parsed_json["timestamp"]
       if parsed_json["call"].nil?
         call = nil
@@ -93,6 +102,7 @@ module Vapi
       tool_call_result = parsed_json["toolCallResult"]
       new(
         phone_number: phone_number,
+        type: type,
         timestamp: timestamp,
         call: call,
         customer: customer,
@@ -117,6 +127,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ClientMessageToolCallsResultPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ClientMessageToolCallsResultType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")
       obj.call.nil? || Vapi::Call.validate_raw(obj: obj.call)
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)

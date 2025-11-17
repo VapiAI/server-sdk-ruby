@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "slack_o_auth_2_authorization_credential_provider"
 require "date"
 require "ostruct"
 require "json"
 
 module Vapi
   class SlackOAuth2AuthorizationCredential
-    # @return [String]
+    # @return [Vapi::SlackOAuth2AuthorizationCredentialProvider]
     attr_reader :provider
     # @return [String] The authorization ID for the OAuth2 authorization
     attr_reader :authorization_id
@@ -28,7 +29,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param provider [String]
+    # @param provider [Vapi::SlackOAuth2AuthorizationCredentialProvider]
     # @param authorization_id [String] The authorization ID for the OAuth2 authorization
     # @param id [String] This is the unique identifier for the credential.
     # @param org_id [String] This is the unique identifier for the org that this credential belongs to.
@@ -100,7 +101,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.provider.is_a?(String) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
+      obj.provider.is_a?(Vapi::SlackOAuth2AuthorizationCredentialProvider) != false || raise("Passed value for field obj.provider is not the expected type, validation failed.")
       obj.authorization_id.is_a?(String) != false || raise("Passed value for field obj.authorization_id is not the expected type, validation failed.")
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.org_id.is_a?(String) != false || raise("Passed value for field obj.org_id is not the expected type, validation failed.")

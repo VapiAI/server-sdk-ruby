@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "server_message_phone_call_control_phone_number"
+require_relative "server_message_phone_call_control_type"
 require_relative "server_message_phone_call_control_request"
 require_relative "server_message_phone_call_control_destination"
 require_relative "artifact"
@@ -15,6 +16,12 @@ module Vapi
   class ServerMessagePhoneCallControl
     # @return [Vapi::ServerMessagePhoneCallControlPhoneNumber] This is the phone number that the message is associated with.
     attr_reader :phone_number
+    # @return [Vapi::ServerMessagePhoneCallControlType] This is the type of the message. "phone-call-control" is an advanced type of
+    #  message.
+    #  When it is requested in `assistant.serverMessages`, the hangup and forwarding
+    #  responsibilities are delegated to your server. Vapi will no longer do the actual
+    #  transfer and hangup.
+    attr_reader :type
     # @return [Vapi::ServerMessagePhoneCallControlRequest] This is the request to control the phone call.
     attr_reader :request
     # @return [Vapi::ServerMessagePhoneCallControlDestination] This is the destination to forward the call to if the request is "forward".
@@ -41,6 +48,11 @@ module Vapi
     OMIT = Object.new
 
     # @param phone_number [Vapi::ServerMessagePhoneCallControlPhoneNumber] This is the phone number that the message is associated with.
+    # @param type [Vapi::ServerMessagePhoneCallControlType] This is the type of the message. "phone-call-control" is an advanced type of
+    #  message.
+    #  When it is requested in `assistant.serverMessages`, the hangup and forwarding
+    #  responsibilities are delegated to your server. Vapi will no longer do the actual
+    #  transfer and hangup.
     # @param request [Vapi::ServerMessagePhoneCallControlRequest] This is the request to control the phone call.
     # @param destination [Vapi::ServerMessagePhoneCallControlDestination] This is the destination to forward the call to if the request is "forward".
     # @param timestamp [Float] This is the timestamp of the message.
@@ -52,9 +64,10 @@ module Vapi
     # @param chat [Vapi::Chat] This is the chat object.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::ServerMessagePhoneCallControl]
-    def initialize(request:, phone_number: OMIT, destination: OMIT, timestamp: OMIT, artifact: OMIT, assistant: OMIT,
-                   customer: OMIT, call: OMIT, chat: OMIT, additional_properties: nil)
+    def initialize(type:, request:, phone_number: OMIT, destination: OMIT, timestamp: OMIT, artifact: OMIT,
+                   assistant: OMIT, customer: OMIT, call: OMIT, chat: OMIT, additional_properties: nil)
       @phone_number = phone_number if phone_number != OMIT
+      @type = type
       @request = request
       @destination = destination if destination != OMIT
       @timestamp = timestamp if timestamp != OMIT
@@ -66,6 +79,7 @@ module Vapi
       @additional_properties = additional_properties
       @_field_set = {
         "phoneNumber": phone_number,
+        "type": type,
         "request": request,
         "destination": destination,
         "timestamp": timestamp,
@@ -92,6 +106,7 @@ module Vapi
         phone_number = parsed_json["phoneNumber"].to_json
         phone_number = Vapi::ServerMessagePhoneCallControlPhoneNumber.from_json(json_object: phone_number)
       end
+      type = parsed_json["type"]
       request = parsed_json["request"]
       if parsed_json["destination"].nil?
         destination = nil
@@ -132,6 +147,7 @@ module Vapi
       end
       new(
         phone_number: phone_number,
+        type: type,
         request: request,
         destination: destination,
         timestamp: timestamp,
@@ -159,6 +175,7 @@ module Vapi
     # @return [Void]
     def self.validate_raw(obj:)
       obj.phone_number.nil? || Vapi::ServerMessagePhoneCallControlPhoneNumber.validate_raw(obj: obj.phone_number)
+      obj.type.is_a?(Vapi::ServerMessagePhoneCallControlType) != false || raise("Passed value for field obj.type is not the expected type, validation failed.")
       obj.request.is_a?(Vapi::ServerMessagePhoneCallControlRequest) != false || raise("Passed value for field obj.request is not the expected type, validation failed.")
       obj.destination.nil? || Vapi::ServerMessagePhoneCallControlDestination.validate_raw(obj: obj.destination)
       obj.timestamp&.is_a?(Float) != false || raise("Passed value for field obj.timestamp is not the expected type, validation failed.")

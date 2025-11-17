@@ -106,7 +106,7 @@ module Vapi
     #  "value": "Hello {{name}}, welcome to {{company}}!"
     #  },
     #  {
-    #  "key": "customerEmail",
+    #  "key": "customerCity",
     #  "value": "{{addresses[0].city}}"
     #  },
     #  {
@@ -116,10 +116,10 @@ module Vapi
     #  ]
     #  }
     #  ```
-    #  This will create variables `customerName`, `fullName`, `customerEmail`,
-    #  `greeting`, and `something`. To access these variables, you can reference them
-    #  as `{{customerName}}`, `{{fullName}}`, `{{customerEmail}}`, `{{greeting}}`, and
-    #  `{{something}}`.
+    #  This will create variables `customerName`, `fullName`, `greeting`,
+    #  `customerCity`, and `something`. To access these variables, you can reference
+    #  them as `{{customerName}}`, `{{fullName}}`, `{{greeting}}`, `{{customerCity}}`,
+    #  and `{{something}}`.
     attr_reader :aliases
     # @return [OpenStruct] Additional properties unmapped to the current class definition
     attr_reader :additional_properties
@@ -227,7 +227,7 @@ module Vapi
     #  "value": "Hello {{name}}, welcome to {{company}}!"
     #  },
     #  {
-    #  "key": "customerEmail",
+    #  "key": "customerCity",
     #  "value": "{{addresses[0].city}}"
     #  },
     #  {
@@ -237,10 +237,10 @@ module Vapi
     #  ]
     #  }
     #  ```
-    #  This will create variables `customerName`, `fullName`, `customerEmail`,
-    #  `greeting`, and `something`. To access these variables, you can reference them
-    #  as `{{customerName}}`, `{{fullName}}`, `{{customerEmail}}`, `{{greeting}}`, and
-    #  `{{something}}`.
+    #  This will create variables `customerName`, `fullName`, `greeting`,
+    #  `customerCity`, and `something`. To access these variables, you can reference
+    #  them as `{{customerName}}`, `{{fullName}}`, `{{greeting}}`, `{{customerCity}}`,
+    #  and `{{something}}`.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::VariableExtractionPlan]
     def initialize(schema: OMIT, aliases: OMIT, additional_properties: nil)

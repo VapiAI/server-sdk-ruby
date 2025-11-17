@@ -2,6 +2,7 @@
 
 require_relative "transfer_plan_mode"
 require_relative "transfer_plan_message"
+require_relative "transfer_plan_context_engineering_plan"
 require_relative "summary_plan"
 require_relative "transfer_fallback_plan"
 require "ostruct"
@@ -74,6 +75,18 @@ module Vapi
     #  - Must be a publicly accessible URL to an audio file.
     #  - Supported formats: MP3 and WAV.
     attr_reader :transfer_complete_audio_url
+    # @return [Vapi::TransferPlanContextEngineeringPlan] This is the plan for manipulating the message context before initiating the warm
+    #  transfer.
+    #  Usage:
+    #  - Used only when `mode` is `warm-transfer-experimental`.
+    #  - These messages will automatically be added to the transferAssistant's system
+    #  message.
+    #  - If 'none', we will not add any transcript to the transferAssistant's system
+    #  message.
+    #  - If you want to provide your own messages, use transferAssistant.model.messages
+    #  instead.
+    #  @default { type: 'all' }
+    attr_reader :context_engineering_plan
     # @return [String] This is the TwiML instructions to execute on the destination call leg before
     #  connecting the customer.
     #  Usage:
@@ -173,6 +186,17 @@ module Vapi
     #  - Used when transferring calls to play hold audio for the destination party.
     #  - Must be a publicly accessible URL to an audio file.
     #  - Supported formats: MP3 and WAV.
+    # @param context_engineering_plan [Vapi::TransferPlanContextEngineeringPlan] This is the plan for manipulating the message context before initiating the warm
+    #  transfer.
+    #  Usage:
+    #  - Used only when `mode` is `warm-transfer-experimental`.
+    #  - These messages will automatically be added to the transferAssistant's system
+    #  message.
+    #  - If 'none', we will not add any transcript to the transferAssistant's system
+    #  message.
+    #  - If you want to provide your own messages, use transferAssistant.model.messages
+    #  instead.
+    #  @default { type: 'all' }
     # @param twiml [String] This is the TwiML instructions to execute on the destination call leg before
     #  connecting the customer.
     #  Usage:
@@ -204,13 +228,14 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferPlan]
     def initialize(mode:, message: OMIT, timeout: OMIT, sip_verb: OMIT, hold_audio_url: OMIT,
-                   transfer_complete_audio_url: OMIT, twiml: OMIT, summary_plan: OMIT, sip_headers_in_refer_to_enabled: OMIT, fallback_plan: OMIT, additional_properties: nil)
+                   transfer_complete_audio_url: OMIT, context_engineering_plan: OMIT, twiml: OMIT, summary_plan: OMIT, sip_headers_in_refer_to_enabled: OMIT, fallback_plan: OMIT, additional_properties: nil)
       @mode = mode
       @message = message if message != OMIT
       @timeout = timeout if timeout != OMIT
       @sip_verb = sip_verb if sip_verb != OMIT
       @hold_audio_url = hold_audio_url if hold_audio_url != OMIT
       @transfer_complete_audio_url = transfer_complete_audio_url if transfer_complete_audio_url != OMIT
+      @context_engineering_plan = context_engineering_plan if context_engineering_plan != OMIT
       @twiml = twiml if twiml != OMIT
       @summary_plan = summary_plan if summary_plan != OMIT
       @sip_headers_in_refer_to_enabled = sip_headers_in_refer_to_enabled if sip_headers_in_refer_to_enabled != OMIT
@@ -223,6 +248,7 @@ module Vapi
         "sipVerb": sip_verb,
         "holdAudioUrl": hold_audio_url,
         "transferCompleteAudioUrl": transfer_complete_audio_url,
+        "contextEngineeringPlan": context_engineering_plan,
         "twiml": twiml,
         "summaryPlan": summary_plan,
         "sipHeadersInReferToEnabled": sip_headers_in_refer_to_enabled,
@@ -250,6 +276,12 @@ module Vapi
       sip_verb = parsed_json["sipVerb"]
       hold_audio_url = parsed_json["holdAudioUrl"]
       transfer_complete_audio_url = parsed_json["transferCompleteAudioUrl"]
+      if parsed_json["contextEngineeringPlan"].nil?
+        context_engineering_plan = nil
+      else
+        context_engineering_plan = parsed_json["contextEngineeringPlan"].to_json
+        context_engineering_plan = Vapi::TransferPlanContextEngineeringPlan.from_json(json_object: context_engineering_plan)
+      end
       twiml = parsed_json["twiml"]
       if parsed_json["summaryPlan"].nil?
         summary_plan = nil
@@ -271,6 +303,7 @@ module Vapi
         sip_verb: sip_verb,
         hold_audio_url: hold_audio_url,
         transfer_complete_audio_url: transfer_complete_audio_url,
+        context_engineering_plan: context_engineering_plan,
         twiml: twiml,
         summary_plan: summary_plan,
         sip_headers_in_refer_to_enabled: sip_headers_in_refer_to_enabled,
@@ -299,6 +332,7 @@ module Vapi
       obj.sip_verb&.is_a?(Hash) != false || raise("Passed value for field obj.sip_verb is not the expected type, validation failed.")
       obj.hold_audio_url&.is_a?(String) != false || raise("Passed value for field obj.hold_audio_url is not the expected type, validation failed.")
       obj.transfer_complete_audio_url&.is_a?(String) != false || raise("Passed value for field obj.transfer_complete_audio_url is not the expected type, validation failed.")
+      obj.context_engineering_plan.nil? || Vapi::TransferPlanContextEngineeringPlan.validate_raw(obj: obj.context_engineering_plan)
       obj.twiml&.is_a?(String) != false || raise("Passed value for field obj.twiml is not the expected type, validation failed.")
       obj.summary_plan.nil? || Vapi::SummaryPlan.validate_raw(obj: obj.summary_plan)
       obj.sip_headers_in_refer_to_enabled&.is_a?(Boolean) != false || raise("Passed value for field obj.sip_headers_in_refer_to_enabled is not the expected type, validation failed.")

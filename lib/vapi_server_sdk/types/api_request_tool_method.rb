@@ -4,5 +4,8 @@ module Vapi
   class ApiRequestToolMethod
     POST = "POST"
     GET = "GET"
+    PUT = "PUT"
+    PATCH = "PATCH"
+    DELETE = "DELETE"
   end
 end

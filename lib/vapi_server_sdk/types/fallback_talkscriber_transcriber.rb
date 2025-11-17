@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "fallback_talkscriber_transcriber_model"
 require_relative "fallback_talkscriber_transcriber_language"
 require "ostruct"
 require "json"
 
 module Vapi
   class FallbackTalkscriberTranscriber
-    # @return [String] This is the model that will be used for the transcription.
+    # @return [Vapi::FallbackTalkscriberTranscriberModel] This is the model that will be used for the transcription.
     attr_reader :model
     # @return [Vapi::FallbackTalkscriberTranscriberLanguage] This is the language that will be set for the transcription. The list of
     #  languages Whisper supports can be found here:
@@ -20,7 +21,7 @@ module Vapi
 
     OMIT = Object.new
 
-    # @param model [String] This is the model that will be used for the transcription.
+    # @param model [Vapi::FallbackTalkscriberTranscriberModel] This is the model that will be used for the transcription.
     # @param language [Vapi::FallbackTalkscriberTranscriberLanguage] This is the language that will be set for the transcription. The list of
     #  languages Whisper supports can be found here:
     #  https://github.com/openai/whisper/blob/main/whisper/tokenizer.py
@@ -65,7 +66,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
-      obj.model&.is_a?(String) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
+      obj.model&.is_a?(Vapi::FallbackTalkscriberTranscriberModel) != false || raise("Passed value for field obj.model is not the expected type, validation failed.")
       obj.language&.is_a?(Vapi::FallbackTalkscriberTranscriberLanguage) != false || raise("Passed value for field obj.language is not the expected type, validation failed.")
     end
   end

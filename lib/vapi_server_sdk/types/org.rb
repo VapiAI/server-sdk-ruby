@@ -2,7 +2,6 @@
 
 require_relative "subscription"
 require "date"
-require_relative "org_plan"
 require_relative "org_channel"
 require_relative "server"
 require_relative "compliance_plan"
@@ -29,8 +28,6 @@ module Vapi
     attr_reader :created_at
     # @return [DateTime] This is the ISO 8601 date-time string of when the org was last updated.
     attr_reader :updated_at
-    # @return [String] This is the Stripe customer for the org.
-    attr_reader :stripe_customer_id
     # @return [String] This is the subscription for the org.
     attr_reader :stripe_subscription_id
     # @return [String] This is the subscription's subscription item.
@@ -39,8 +36,6 @@ module Vapi
     attr_reader :stripe_subscription_current_period_start
     # @return [String] This is the subscription's status.
     attr_reader :stripe_subscription_status
-    # @return [Vapi::OrgPlan] This is the plan for the org.
-    attr_reader :plan
     # @return [String] This is the secret key used for signing JWT tokens for the org.
     attr_reader :jwt_secret
     # @return [Float] This is the total number of call minutes used by this org across all time.
@@ -96,12 +91,10 @@ module Vapi
     # @param id [String] This is the unique identifier for the org.
     # @param created_at [DateTime] This is the ISO 8601 date-time string of when the org was created.
     # @param updated_at [DateTime] This is the ISO 8601 date-time string of when the org was last updated.
-    # @param stripe_customer_id [String] This is the Stripe customer for the org.
     # @param stripe_subscription_id [String] This is the subscription for the org.
     # @param stripe_subscription_item_id [String] This is the subscription's subscription item.
     # @param stripe_subscription_current_period_start [DateTime] This is the subscription's current period start.
     # @param stripe_subscription_status [String] This is the subscription's status.
-    # @param plan [Vapi::OrgPlan] This is the plan for the org.
     # @param jwt_secret [String] This is the secret key used for signing JWT tokens for the org.
     # @param minutes_used [Float] This is the total number of call minutes used by this org across all time.
     # @param name [String] This is the name of the org. This is just for your own reference.
@@ -132,21 +125,19 @@ module Vapi
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::Org]
     def initialize(id:, created_at:, updated_at:, hipaa_enabled: OMIT, subscription: OMIT, subscription_id: OMIT,
-                   stripe_customer_id: OMIT, stripe_subscription_id: OMIT, stripe_subscription_item_id: OMIT, stripe_subscription_current_period_start: OMIT, stripe_subscription_status: OMIT, plan: OMIT, jwt_secret: OMIT, minutes_used: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT, server: OMIT, concurrency_limit: OMIT, compliance_plan: OMIT, additional_properties: nil)
+                   stripe_subscription_id: OMIT, stripe_subscription_item_id: OMIT, stripe_subscription_current_period_start: OMIT, stripe_subscription_status: OMIT, jwt_secret: OMIT, minutes_used: OMIT, name: OMIT, channel: OMIT, billing_limit: OMIT, server: OMIT, concurrency_limit: OMIT, compliance_plan: OMIT, additional_properties: nil)
       @hipaa_enabled = hipaa_enabled if hipaa_enabled != OMIT
       @subscription = subscription if subscription != OMIT
       @subscription_id = subscription_id if subscription_id != OMIT
       @id = id
       @created_at = created_at
       @updated_at = updated_at
-      @stripe_customer_id = stripe_customer_id if stripe_customer_id != OMIT
       @stripe_subscription_id = stripe_subscription_id if stripe_subscription_id != OMIT
       @stripe_subscription_item_id = stripe_subscription_item_id if stripe_subscription_item_id != OMIT
       if stripe_subscription_current_period_start != OMIT
         @stripe_subscription_current_period_start = stripe_subscription_current_period_start
       end
       @stripe_subscription_status = stripe_subscription_status if stripe_subscription_status != OMIT
-      @plan = plan if plan != OMIT
       @jwt_secret = jwt_secret if jwt_secret != OMIT
       @minutes_used = minutes_used if minutes_used != OMIT
       @name = name if name != OMIT
@@ -163,12 +154,10 @@ module Vapi
         "id": id,
         "createdAt": created_at,
         "updatedAt": updated_at,
-        "stripeCustomerId": stripe_customer_id,
         "stripeSubscriptionId": stripe_subscription_id,
         "stripeSubscriptionItemId": stripe_subscription_item_id,
         "stripeSubscriptionCurrentPeriodStart": stripe_subscription_current_period_start,
         "stripeSubscriptionStatus": stripe_subscription_status,
-        "plan": plan,
         "jwtSecret": jwt_secret,
         "minutesUsed": minutes_used,
         "name": name,
@@ -200,19 +189,12 @@ module Vapi
       id = parsed_json["id"]
       created_at = (DateTime.parse(parsed_json["createdAt"]) unless parsed_json["createdAt"].nil?)
       updated_at = (DateTime.parse(parsed_json["updatedAt"]) unless parsed_json["updatedAt"].nil?)
-      stripe_customer_id = parsed_json["stripeCustomerId"]
       stripe_subscription_id = parsed_json["stripeSubscriptionId"]
       stripe_subscription_item_id = parsed_json["stripeSubscriptionItemId"]
       stripe_subscription_current_period_start = unless parsed_json["stripeSubscriptionCurrentPeriodStart"].nil?
                                                    DateTime.parse(parsed_json["stripeSubscriptionCurrentPeriodStart"])
                                                  end
       stripe_subscription_status = parsed_json["stripeSubscriptionStatus"]
-      if parsed_json["plan"].nil?
-        plan = nil
-      else
-        plan = parsed_json["plan"].to_json
-        plan = Vapi::OrgPlan.from_json(json_object: plan)
-      end
       jwt_secret = parsed_json["jwtSecret"]
       minutes_used = parsed_json["minutesUsed"]
       name = parsed_json["name"]
@@ -238,12 +220,10 @@ module Vapi
         id: id,
         created_at: created_at,
         updated_at: updated_at,
-        stripe_customer_id: stripe_customer_id,
         stripe_subscription_id: stripe_subscription_id,
         stripe_subscription_item_id: stripe_subscription_item_id,
         stripe_subscription_current_period_start: stripe_subscription_current_period_start,
         stripe_subscription_status: stripe_subscription_status,
-        plan: plan,
         jwt_secret: jwt_secret,
         minutes_used: minutes_used,
         name: name,
@@ -276,12 +256,10 @@ module Vapi
       obj.id.is_a?(String) != false || raise("Passed value for field obj.id is not the expected type, validation failed.")
       obj.created_at.is_a?(DateTime) != false || raise("Passed value for field obj.created_at is not the expected type, validation failed.")
       obj.updated_at.is_a?(DateTime) != false || raise("Passed value for field obj.updated_at is not the expected type, validation failed.")
-      obj.stripe_customer_id&.is_a?(String) != false || raise("Passed value for field obj.stripe_customer_id is not the expected type, validation failed.")
       obj.stripe_subscription_id&.is_a?(String) != false || raise("Passed value for field obj.stripe_subscription_id is not the expected type, validation failed.")
       obj.stripe_subscription_item_id&.is_a?(String) != false || raise("Passed value for field obj.stripe_subscription_item_id is not the expected type, validation failed.")
       obj.stripe_subscription_current_period_start&.is_a?(DateTime) != false || raise("Passed value for field obj.stripe_subscription_current_period_start is not the expected type, validation failed.")
       obj.stripe_subscription_status&.is_a?(String) != false || raise("Passed value for field obj.stripe_subscription_status is not the expected type, validation failed.")
-      obj.plan.nil? || Vapi::OrgPlan.validate_raw(obj: obj.plan)
       obj.jwt_secret&.is_a?(String) != false || raise("Passed value for field obj.jwt_secret is not the expected type, validation failed.")
       obj.minutes_used&.is_a?(Float) != false || raise("Passed value for field obj.minutes_used is not the expected type, validation failed.")
       obj.name&.is_a?(String) != false || raise("Passed value for field obj.name is not the expected type, validation failed.")
