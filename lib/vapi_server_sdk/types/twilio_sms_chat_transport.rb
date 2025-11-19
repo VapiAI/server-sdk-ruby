@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "twilio_sms_chat_transport_conversation_type"
 require_relative "create_customer_dto"
 require_relative "twilio_sms_chat_transport_type"
 require "ostruct"
@@ -7,6 +8,8 @@ require "json"
 
 module Vapi
   class TwilioSmsChatTransport
+    # @return [Vapi::TwilioSmsChatTransportConversationType] This is the conversation type of the call (ie, voice or chat).
+    attr_reader :conversation_type
     # @return [String] This is the phone number that will be used to send the SMS.
     #  If provided, will create a new session. If not provided, uses existing session's
     #  phoneNumberId.
@@ -33,6 +36,7 @@ module Vapi
 
     OMIT = Object.new
 
+    # @param conversation_type [Vapi::TwilioSmsChatTransportConversationType] This is the conversation type of the call (ie, voice or chat).
     # @param phone_number_id [String] This is the phone number that will be used to send the SMS.
     #  If provided, will create a new session. If not provided, uses existing session's
     #  phoneNumberId.
@@ -49,8 +53,9 @@ module Vapi
     #  Currently supports 'twilio.sms' for SMS delivery via Twilio.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TwilioSmsChatTransport]
-    def initialize(type:, phone_number_id: OMIT, customer: OMIT, use_llm_generated_message_for_outbound: OMIT,
-                   additional_properties: nil)
+    def initialize(type:, conversation_type: OMIT, phone_number_id: OMIT, customer: OMIT,
+                   use_llm_generated_message_for_outbound: OMIT, additional_properties: nil)
+      @conversation_type = conversation_type if conversation_type != OMIT
       @phone_number_id = phone_number_id if phone_number_id != OMIT
       @customer = customer if customer != OMIT
       if use_llm_generated_message_for_outbound != OMIT
@@ -59,6 +64,7 @@ module Vapi
       @type = type
       @additional_properties = additional_properties
       @_field_set = {
+        "conversationType": conversation_type,
         "phoneNumberId": phone_number_id,
         "customer": customer,
         "useLLMGeneratedMessageForOutbound": use_llm_generated_message_for_outbound,
@@ -75,6 +81,7 @@ module Vapi
     def self.from_json(json_object:)
       struct = JSON.parse(json_object, object_class: OpenStruct)
       parsed_json = JSON.parse(json_object)
+      conversation_type = parsed_json["conversationType"]
       phone_number_id = parsed_json["phoneNumberId"]
       if parsed_json["customer"].nil?
         customer = nil
@@ -85,6 +92,7 @@ module Vapi
       use_llm_generated_message_for_outbound = parsed_json["useLLMGeneratedMessageForOutbound"]
       type = parsed_json["type"]
       new(
+        conversation_type: conversation_type,
         phone_number_id: phone_number_id,
         customer: customer,
         use_llm_generated_message_for_outbound: use_llm_generated_message_for_outbound,
@@ -107,6 +115,7 @@ module Vapi
     # @param obj [Object]
     # @return [Void]
     def self.validate_raw(obj:)
+      obj.conversation_type&.is_a?(Vapi::TwilioSmsChatTransportConversationType) != false || raise("Passed value for field obj.conversation_type is not the expected type, validation failed.")
       obj.phone_number_id&.is_a?(String) != false || raise("Passed value for field obj.phone_number_id is not the expected type, validation failed.")
       obj.customer.nil? || Vapi::CreateCustomerDto.validate_raw(obj: obj.customer)
       obj.use_llm_generated_message_for_outbound&.is_a?(Boolean) != false || raise("Passed value for field obj.use_llm_generated_message_for_outbound is not the expected type, validation failed.")

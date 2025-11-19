@@ -56,6 +56,11 @@ module Vapi
     #  - 'bye': Ends current call with SIP BYE
     #  - 'dial': Uses SIP DIAL to transfer the call
     attr_reader :sip_verb
+    # @return [Float] This sets the timeout for the dial operation in seconds. This is the duration
+    #  the call will ring before timing out.
+    #  Only applicable when `sipVerb='dial'`. Not applicable for SIP REFER or BYE.
+    #  @default 60
+    attr_reader :dial_timeout
     # @return [String] This is the URL to an audio file played while the customer is on hold during
     #  transfer.
     #  Usage:
@@ -169,6 +174,10 @@ module Vapi
     #  - 'refer': Uses SIP REFER to transfer the call (default)
     #  - 'bye': Ends current call with SIP BYE
     #  - 'dial': Uses SIP DIAL to transfer the call
+    # @param dial_timeout [Float] This sets the timeout for the dial operation in seconds. This is the duration
+    #  the call will ring before timing out.
+    #  Only applicable when `sipVerb='dial'`. Not applicable for SIP REFER or BYE.
+    #  @default 60
     # @param hold_audio_url [String] This is the URL to an audio file played while the customer is on hold during
     #  transfer.
     #  Usage:
@@ -227,12 +236,13 @@ module Vapi
     #  will be used.
     # @param additional_properties [OpenStruct] Additional properties unmapped to the current class definition
     # @return [Vapi::TransferPlan]
-    def initialize(mode:, message: OMIT, timeout: OMIT, sip_verb: OMIT, hold_audio_url: OMIT,
+    def initialize(mode:, message: OMIT, timeout: OMIT, sip_verb: OMIT, dial_timeout: OMIT, hold_audio_url: OMIT,
                    transfer_complete_audio_url: OMIT, context_engineering_plan: OMIT, twiml: OMIT, summary_plan: OMIT, sip_headers_in_refer_to_enabled: OMIT, fallback_plan: OMIT, additional_properties: nil)
       @mode = mode
       @message = message if message != OMIT
       @timeout = timeout if timeout != OMIT
       @sip_verb = sip_verb if sip_verb != OMIT
+      @dial_timeout = dial_timeout if dial_timeout != OMIT
       @hold_audio_url = hold_audio_url if hold_audio_url != OMIT
       @transfer_complete_audio_url = transfer_complete_audio_url if transfer_complete_audio_url != OMIT
       @context_engineering_plan = context_engineering_plan if context_engineering_plan != OMIT
@@ -246,6 +256,7 @@ module Vapi
         "message": message,
         "timeout": timeout,
         "sipVerb": sip_verb,
+        "dialTimeout": dial_timeout,
         "holdAudioUrl": hold_audio_url,
         "transferCompleteAudioUrl": transfer_complete_audio_url,
         "contextEngineeringPlan": context_engineering_plan,
@@ -274,6 +285,7 @@ module Vapi
       end
       timeout = parsed_json["timeout"]
       sip_verb = parsed_json["sipVerb"]
+      dial_timeout = parsed_json["dialTimeout"]
       hold_audio_url = parsed_json["holdAudioUrl"]
       transfer_complete_audio_url = parsed_json["transferCompleteAudioUrl"]
       if parsed_json["contextEngineeringPlan"].nil?
@@ -301,6 +313,7 @@ module Vapi
         message: message,
         timeout: timeout,
         sip_verb: sip_verb,
+        dial_timeout: dial_timeout,
         hold_audio_url: hold_audio_url,
         transfer_complete_audio_url: transfer_complete_audio_url,
         context_engineering_plan: context_engineering_plan,
@@ -330,6 +343,7 @@ module Vapi
       obj.message.nil? || Vapi::TransferPlanMessage.validate_raw(obj: obj.message)
       obj.timeout&.is_a?(Float) != false || raise("Passed value for field obj.timeout is not the expected type, validation failed.")
       obj.sip_verb&.is_a?(Hash) != false || raise("Passed value for field obj.sip_verb is not the expected type, validation failed.")
+      obj.dial_timeout&.is_a?(Float) != false || raise("Passed value for field obj.dial_timeout is not the expected type, validation failed.")
       obj.hold_audio_url&.is_a?(String) != false || raise("Passed value for field obj.hold_audio_url is not the expected type, validation failed.")
       obj.transfer_complete_audio_url&.is_a?(String) != false || raise("Passed value for field obj.transfer_complete_audio_url is not the expected type, validation failed.")
       obj.context_engineering_plan.nil? || Vapi::TransferPlanContextEngineeringPlan.validate_raw(obj: obj.context_engineering_plan)

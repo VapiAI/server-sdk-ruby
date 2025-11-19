@@ -507,6 +507,7 @@ module Vapi
     #  If sessionId is provided without transport fields, uses existing session data.
     #  Cannot specify both sessionId and transport fields (phoneNumberId/customer)
     #  together.Request of type Vapi::TwilioSmsChatTransport, as a Hash
+    #   * :conversation_type (Vapi::TwilioSmsChatTransportConversationType)
     #   * :phone_number_id (String)
     #   * :customer (Hash)
     #     * :number_e_164_check_enabled (Boolean)
@@ -1140,6 +1141,7 @@ module Vapi
     #  If sessionId is provided without transport fields, uses existing session data.
     #  Cannot specify both sessionId and transport fields (phoneNumberId/customer)
     #  together.Request of type Vapi::TwilioSmsChatTransport, as a Hash
+    #   * :conversation_type (Vapi::TwilioSmsChatTransportConversationType)
     #   * :phone_number_id (String)
     #   * :customer (Hash)
     #     * :number_e_164_check_enabled (Boolean)
@@ -1808,6 +1810,7 @@ module Vapi
     #  If sessionId is provided without transport fields, uses existing session data.
     #  Cannot specify both sessionId and transport fields (phoneNumberId/customer)
     #  together.Request of type Vapi::TwilioSmsChatTransport, as a Hash
+    #   * :conversation_type (Vapi::TwilioSmsChatTransportConversationType)
     #   * :phone_number_id (String)
     #   * :customer (Hash)
     #     * :number_e_164_check_enabled (Boolean)
@@ -2447,6 +2450,7 @@ module Vapi
     #  If sessionId is provided without transport fields, uses existing session data.
     #  Cannot specify both sessionId and transport fields (phoneNumberId/customer)
     #  together.Request of type Vapi::TwilioSmsChatTransport, as a Hash
+    #   * :conversation_type (Vapi::TwilioSmsChatTransportConversationType)
     #   * :phone_number_id (String)
     #   * :customer (Hash)
     #     * :number_e_164_check_enabled (Boolean)
