@@ -1,8 +1,0 @@
-# frozen_string_literal: true
-
-module Vapi
-  # This is the model that will be used for the transcription.
-  class FallbackSpeechmaticsTranscriberModel
-    DEFAULT = "default"
-  end
-end

@@ -1,6 +1,3 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-
-require "minitest/autorun"
-require "vapi_server_sdk"
+require_relative "../lib/vapi"

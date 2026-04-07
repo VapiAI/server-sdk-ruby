@@ -1,0 +1,52 @@
+# frozen_string_literal: true
+
+module Vapi
+  module Types
+    module FallbackCartesiaVoiceLanguage
+      extend Vapi::Internal::Types::Enum
+
+      AR = "ar"
+      BG = "bg"
+      BN = "bn"
+      CS = "cs"
+      DA = "da"
+      DE = "de"
+      EL = "el"
+      EN = "en"
+      ES = "es"
+      FI = "fi"
+      FR = "fr"
+      GU = "gu"
+      HE = "he"
+      HI = "hi"
+      HR = "hr"
+      HU = "hu"
+      ID = "id"
+      IT = "it"
+      JA = "ja"
+      KA = "ka"
+      KN = "kn"
+      KO = "ko"
+      ML = "ml"
+      MR = "mr"
+      MS = "ms"
+      NL = "nl"
+      NO = "no"
+      PA = "pa"
+      PL = "pl"
+      PT = "pt"
+      RO = "ro"
+      RU = "ru"
+      SK = "sk"
+      SV = "sv"
+      TA = "ta"
+      TE = "te"
+      TH = "th"
+      TL = "tl"
+      TR = "tr"
+      UK = "uk"
+      VI = "vi"
+      ZH = "zh"
+    end
+  end
+end

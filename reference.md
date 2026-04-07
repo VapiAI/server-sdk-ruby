@@ -1,0 +1,16 @@
+# Reference
+## Assistants
+## Squads
+## Calls
+## Chats
+## Campaigns
+## Sessions
+## PhoneNumbers
+## Tools
+## Files
+## StructuredOutputs
+## Insight
+## Eval
+## ObservabilityScorecard
+## ProviderResources
+## Analytics

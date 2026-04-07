@@ -1,0 +1,68 @@
+# frozen_string_literal: true
+
+module Vapi
+  module Types
+    class CreateAssistantDtoCredentialsItem < Internal::Types::Model
+      extend Vapi::Internal::Types::Union
+
+      discriminant :provider
+
+      member -> { Vapi::Types::CreateElevenLabsCredentialDto }, key: "_11_LABS"
+      member -> { Vapi::Types::CreateAnthropicCredentialDto }, key: "ANTHROPIC"
+      member -> { Vapi::Types::CreateAnthropicBedrockCredentialDto }, key: "ANTHROPIC_BEDROCK"
+      member -> { Vapi::Types::CreateAnyscaleCredentialDto }, key: "ANYSCALE"
+      member -> { Vapi::Types::CreateAssemblyAiCredentialDto }, key: "ASSEMBLY_AI"
+      member -> { Vapi::Types::CreateAzureOpenAiCredentialDto }, key: "AZURE_OPENAI"
+      member -> { Vapi::Types::CreateAzureCredentialDto }, key: "AZURE"
+      member -> { Vapi::Types::CreateByoSipTrunkCredentialDto }, key: "BYO_SIP_TRUNK"
+      member -> { Vapi::Types::CreateCartesiaCredentialDto }, key: "CARTESIA"
+      member -> { Vapi::Types::CreateCerebrasCredentialDto }, key: "CEREBRAS"
+      member -> { Vapi::Types::CreateCloudflareCredentialDto }, key: "CLOUDFLARE"
+      member -> { Vapi::Types::CreateCustomLlmCredentialDto }, key: "CUSTOM_LLM"
+      member -> { Vapi::Types::CreateDeepgramCredentialDto }, key: "DEEPGRAM"
+      member -> { Vapi::Types::CreateDeepInfraCredentialDto }, key: "DEEPINFRA"
+      member -> { Vapi::Types::CreateDeepSeekCredentialDto }, key: "DEEP_SEEK"
+      member -> { Vapi::Types::CreateGcpCredentialDto }, key: "GCP"
+      member -> { Vapi::Types::CreateGladiaCredentialDto }, key: "GLADIA"
+      member -> { Vapi::Types::CreateGoHighLevelCredentialDto }, key: "GOHIGHLEVEL"
+      member -> { Vapi::Types::CreateGoogleCredentialDto }, key: "GOOGLE"
+      member -> { Vapi::Types::CreateGroqCredentialDto }, key: "GROQ"
+      member -> { Vapi::Types::CreateInflectionAiCredentialDto }, key: "INFLECTION_AI"
+      member -> { Vapi::Types::CreateLangfuseCredentialDto }, key: "LANGFUSE"
+      member -> { Vapi::Types::CreateLmntCredentialDto }, key: "LMNT"
+      member -> { Vapi::Types::CreateMakeCredentialDto }, key: "MAKE"
+      member -> { Vapi::Types::CreateOpenAiCredentialDto }, key: "OPENAI"
+      member -> { Vapi::Types::CreateOpenRouterCredentialDto }, key: "OPENROUTER"
+      member -> { Vapi::Types::CreatePerplexityAiCredentialDto }, key: "PERPLEXITY_AI"
+      member -> { Vapi::Types::CreatePlayHtCredentialDto }, key: "PLAYHT"
+      member -> { Vapi::Types::CreateRimeAiCredentialDto }, key: "RIME_AI"
+      member -> { Vapi::Types::CreateRunpodCredentialDto }, key: "RUNPOD"
+      member -> { Vapi::Types::CreateS3CredentialDto }, key: "S_3"
+      member -> { Vapi::Types::CreateSupabaseCredentialDto }, key: "SUPABASE"
+      member -> { Vapi::Types::CreateSmallestAiCredentialDto }, key: "SMALLEST_AI"
+      member -> { Vapi::Types::CreateTavusCredentialDto }, key: "TAVUS"
+      member -> { Vapi::Types::CreateTogetherAiCredentialDto }, key: "TOGETHER_AI"
+      member -> { Vapi::Types::CreateTwilioCredentialDto }, key: "TWILIO"
+      member -> { Vapi::Types::CreateVonageCredentialDto }, key: "VONAGE"
+      member -> { Vapi::Types::CreateWebhookCredentialDto }, key: "WEBHOOK"
+      member -> { Vapi::Types::CreateCustomCredentialDto }, key: "CUSTOM_CREDENTIAL"
+      member -> { Vapi::Types::CreateXAiCredentialDto }, key: "XAI"
+      member -> { Vapi::Types::CreateNeuphonicCredentialDto }, key: "NEUPHONIC"
+      member -> { Vapi::Types::CreateHumeCredentialDto }, key: "HUME"
+      member -> { Vapi::Types::CreateMistralCredentialDto }, key: "MISTRAL"
+      member -> { Vapi::Types::CreateSpeechmaticsCredentialDto }, key: "SPEECHMATICS"
+      member -> { Vapi::Types::CreateSonioxCredentialDto }, key: "SONIOX"
+      member -> { Vapi::Types::CreateTrieveCredentialDto }, key: "TRIEVE"
+      member -> { Vapi::Types::CreateGoogleCalendarOAuth2ClientCredentialDto }, key: "GOOGLE_CALENDAR_OAUTH_2_CLIENT"
+      member -> { Vapi::Types::CreateGoogleCalendarOAuth2AuthorizationCredentialDto }, key: "GOOGLE_CALENDAR_OAUTH_2_AUTHORIZATION"
+      member -> { Vapi::Types::CreateGoogleSheetsOAuth2AuthorizationCredentialDto }, key: "GOOGLE_SHEETS_OAUTH_2_AUTHORIZATION"
+      member -> { Vapi::Types::CreateSlackOAuth2AuthorizationCredentialDto }, key: "SLACK_OAUTH_2_AUTHORIZATION"
+      member -> { Vapi::Types::CreateGoHighLevelMcpCredentialDto }, key: "GHL_OAUTH_2_AUTHORIZATION"
+      member -> { Vapi::Types::CreateInworldCredentialDto }, key: "INWORLD"
+      member -> { Vapi::Types::CreateMinimaxCredentialDto }, key: "MINIMAX"
+      member -> { Vapi::Types::CreateWellSaidCredentialDto }, key: "WELLSAID"
+      member -> { Vapi::Types::CreateEmailCredentialDto }, key: "EMAIL"
+      member -> { Vapi::Types::CreateSlackWebhookCredentialDto }, key: "SLACK_WEBHOOK"
+    end
+  end
+end
