@@ -10,7 +10,7 @@ module Vapi
       @raw_client = Vapi::Internal::Http::RawClient.new(
         base_url: base_url || Vapi::Environment::DEFAULT,
         headers: {
-          "User-Agent" => "vapi-server-sdk/0.0.1",
+          "User-Agent" => "vapi-server-sdk/0.0.2",
           "X-Fern-Language" => "Ruby",
           Authorization: "Bearer #{token}"
         }

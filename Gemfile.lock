@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vapi-server-sdk (0.0.0.pre.fern.pre.placeholder)
+    vapi-server-sdk (0.0.2)
 
 GEM
   remote: https://rubygems.org/
@@ -23,7 +23,7 @@ GEM
     minitest (5.27.0)
     minitest-rg (5.4.0)
       minitest (>= 5.0, < 7)
-    parallel (1.28.0)
+    parallel (2.0.1)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
@@ -40,11 +40,11 @@ GEM
     reline (0.6.3)
       io-console (~> 0.5)
     rexml (3.4.4)
-    rubocop (1.86.0)
+    rubocop (1.86.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
-      parallel (~> 1.10)
+      parallel (>= 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
