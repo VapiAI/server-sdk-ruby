@@ -6,7 +6,7 @@ require_relative "custom.gemspec"
 # NOTE: A handful of these fields are required as part of the Ruby specification.
 #       You can change them here or overwrite them in the custom gemspec file.
 Gem::Specification.new do |spec|
-  spec.name = "vapi-server-sdk"
+  spec.name = "vapi_server_sdk"
   spec.authors = ["Vapi"]
   spec.version = Vapi::VERSION
   spec.summary = "Ruby client library for the Vapi API"
