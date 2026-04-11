@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vapi-server-sdk (0.0.2)
+    vapi_server_sdk (0.0.0.pre.fern.pre.placeholder)
 
 GEM
   remote: https://rubygems.org/
@@ -78,7 +78,7 @@ DEPENDENCIES
   rake (~> 13.0)
   rubocop (~> 1.21)
   rubocop-minitest
-  vapi-server-sdk!
+  vapi_server_sdk!
   webmock
 
 BUNDLED WITH
