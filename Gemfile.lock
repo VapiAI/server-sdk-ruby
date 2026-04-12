@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vapi_server_sdk (0.0.0.pre.fern.pre.placeholder)
+    vapi_server_sdk (1.0.0)
 
 GEM
   remote: https://rubygems.org/
