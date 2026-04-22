@@ -1,3 +1,7 @@
+## 1.1.0 - 2026-04-22
+### Added
+* **`Call#subscription_limits`** — new optional field exposing `SubscriptionLimits` data directly on `Call` objects.
+
 ## 0.0.3 - 2026-04-11
 * chore: remove User-Agent header from HTTP client
 * Remove the hardcoded `User-Agent` header from the default headers sent

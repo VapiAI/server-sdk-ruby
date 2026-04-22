@@ -43,6 +43,7 @@ module Vapi
       field :name, -> { String }, optional: true, nullable: false
       field :schedule_plan, -> { Vapi::Types::SchedulePlan }, optional: true, nullable: false, api_name: "schedulePlan"
       field :transport, -> { Internal::Types::Hash[String, Object] }, optional: true, nullable: false
+      field :subscription_limits, -> { Vapi::Types::SubscriptionLimits }, optional: true, nullable: false, api_name: "subscriptionLimits"
     end
   end
 end
