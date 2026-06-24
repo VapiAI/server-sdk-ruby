@@ -2,7 +2,7 @@
 
 module Vapi
   module Types
-    module FallbackAzureVoiceVoiceIdZero
+    module FallbackAzureVoiceIdZero
       extend Vapi::Internal::Types::Enum
 
       ANDREW = "andrew"

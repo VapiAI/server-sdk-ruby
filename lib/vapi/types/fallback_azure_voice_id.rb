@@ -6,7 +6,7 @@ module Vapi
     class FallbackAzureVoiceId < Internal::Types::Model
       extend Vapi::Internal::Types::Union
 
-      member -> { Vapi::Types::FallbackAzureVoiceVoiceIdZero }
+      member -> { Vapi::Types::FallbackAzureVoiceIdZero }
       member -> { String }
     end
   end

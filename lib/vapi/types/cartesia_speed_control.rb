@@ -5,7 +5,7 @@ module Vapi
     class CartesiaSpeedControl < Internal::Types::Model
       extend Vapi::Internal::Types::Union
 
-      member -> { Vapi::Types::CartesiaExperimentalControlsSpeedZero }
+      member -> { Vapi::Types::CartesiaSpeedControlZero }
       member -> { Integer }
     end
   end

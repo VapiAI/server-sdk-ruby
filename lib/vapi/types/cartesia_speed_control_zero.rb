@@ -2,7 +2,7 @@
 
 module Vapi
   module Types
-    module CartesiaExperimentalControlsSpeedZero
+    module CartesiaSpeedControlZero
       extend Vapi::Internal::Types::Enum
 
       SLOWEST = "slowest"

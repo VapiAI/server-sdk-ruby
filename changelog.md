@@ -1,3 +1,8 @@
+## 2.0.0 - 2026-06-24
+### Breaking Changes
+* **`Vapi::Types::CartesiaExperimentalControlsSpeedZero`** has been renamed to **`Vapi::Types::CartesiaSpeedControlZero`**. Update any references to use the new name.
+* **`Vapi::Types::FallbackAzureVoiceVoiceIdZero`** has been renamed to **`Vapi::Types::FallbackAzureVoiceIdZero`**. Update any references to use the new name.
+
 ## 1.1.0 - 2026-04-22
 ### Added
 * **`Call#subscription_limits`** — new optional field exposing `SubscriptionLimits` data directly on `Call` objects.
