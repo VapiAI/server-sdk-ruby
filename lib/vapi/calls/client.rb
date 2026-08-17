@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Returns calls for the authenticated organization. Filter results by call ID, assistant ID, phone number ID, or
+      # creation and update timestamps.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -68,6 +71,9 @@ module Vapi
         raise error_class.new(response.body, code: code)
       end
 
+      # Creates a call using an assistant or squad. The request can reference saved resources or include transient
+      # configurations.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Calls::Types::CreateCallDto]
       # @option request_options [String] :base_url
@@ -100,6 +106,8 @@ module Vapi
         end
       end
 
+      # Returns the call identified by its ID, including its status, configuration, and available call data.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -132,6 +140,8 @@ module Vapi
         end
       end
 
+      # Deletes the call identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Calls::Types::DeleteCallDto]
       # @option request_options [String] :base_url
@@ -169,6 +179,8 @@ module Vapi
         end
       end
 
+      # Updates the call identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Calls::Types::UpdateCallDto]
       # @option request_options [String] :base_url
@@ -204,6 +216,216 @@ module Vapi
           error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
           raise error_class.new(response.body, code: code)
         end
+      end
+
+      # @param request_options [Hash]
+      # @param params [Hash]
+      # @option request_options [String] :base_url
+      # @option request_options [Hash{String => Object}] :additional_headers
+      # @option request_options [Hash{String => Object}] :additional_query_parameters
+      # @option request_options [Hash{String => Object}] :additional_body_parameters
+      # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String] :id
+      #
+      # @return [untyped]
+      def call_artifact_controller_mono_recording_download(request_options: {}, **params)
+        params = Vapi::Internal::Types::Utils.normalize_keys(params)
+        request = Vapi::Internal::JSON::Request.new(
+          base_url: request_options[:base_url],
+          method: "GET",
+          path: "call/#{URI.encode_uri_component(params[:id].to_s)}/mono-recording",
+          request_options: request_options
+        )
+        begin
+          response = @client.send(request)
+        rescue Net::HTTPRequestTimeout
+          raise Vapi::Errors::TimeoutError
+        end
+        code = response.code.to_i
+        return if code.between?(200, 299)
+
+        error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
+        raise error_class.new(response.body, code: code)
+      end
+
+      # @param request_options [Hash]
+      # @param params [Hash]
+      # @option request_options [String] :base_url
+      # @option request_options [Hash{String => Object}] :additional_headers
+      # @option request_options [Hash{String => Object}] :additional_query_parameters
+      # @option request_options [Hash{String => Object}] :additional_body_parameters
+      # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String] :id
+      #
+      # @return [untyped]
+      def call_artifact_controller_stereo_recording_download(request_options: {}, **params)
+        params = Vapi::Internal::Types::Utils.normalize_keys(params)
+        request = Vapi::Internal::JSON::Request.new(
+          base_url: request_options[:base_url],
+          method: "GET",
+          path: "call/#{URI.encode_uri_component(params[:id].to_s)}/stereo-recording",
+          request_options: request_options
+        )
+        begin
+          response = @client.send(request)
+        rescue Net::HTTPRequestTimeout
+          raise Vapi::Errors::TimeoutError
+        end
+        code = response.code.to_i
+        return if code.between?(200, 299)
+
+        error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
+        raise error_class.new(response.body, code: code)
+      end
+
+      # @param request_options [Hash]
+      # @param params [Hash]
+      # @option request_options [String] :base_url
+      # @option request_options [Hash{String => Object}] :additional_headers
+      # @option request_options [Hash{String => Object}] :additional_query_parameters
+      # @option request_options [Hash{String => Object}] :additional_body_parameters
+      # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String] :id
+      #
+      # @return [untyped]
+      def call_artifact_controller_video_recording_download(request_options: {}, **params)
+        params = Vapi::Internal::Types::Utils.normalize_keys(params)
+        request = Vapi::Internal::JSON::Request.new(
+          base_url: request_options[:base_url],
+          method: "GET",
+          path: "call/#{URI.encode_uri_component(params[:id].to_s)}/video-recording",
+          request_options: request_options
+        )
+        begin
+          response = @client.send(request)
+        rescue Net::HTTPRequestTimeout
+          raise Vapi::Errors::TimeoutError
+        end
+        code = response.code.to_i
+        return if code.between?(200, 299)
+
+        error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
+        raise error_class.new(response.body, code: code)
+      end
+
+      # @param request_options [Hash]
+      # @param params [Hash]
+      # @option request_options [String] :base_url
+      # @option request_options [Hash{String => Object}] :additional_headers
+      # @option request_options [Hash{String => Object}] :additional_query_parameters
+      # @option request_options [Hash{String => Object}] :additional_body_parameters
+      # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String] :id
+      #
+      # @return [untyped]
+      def call_artifact_controller_customer_recording_download(request_options: {}, **params)
+        params = Vapi::Internal::Types::Utils.normalize_keys(params)
+        request = Vapi::Internal::JSON::Request.new(
+          base_url: request_options[:base_url],
+          method: "GET",
+          path: "call/#{URI.encode_uri_component(params[:id].to_s)}/customer-recording",
+          request_options: request_options
+        )
+        begin
+          response = @client.send(request)
+        rescue Net::HTTPRequestTimeout
+          raise Vapi::Errors::TimeoutError
+        end
+        code = response.code.to_i
+        return if code.between?(200, 299)
+
+        error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
+        raise error_class.new(response.body, code: code)
+      end
+
+      # @param request_options [Hash]
+      # @param params [Hash]
+      # @option request_options [String] :base_url
+      # @option request_options [Hash{String => Object}] :additional_headers
+      # @option request_options [Hash{String => Object}] :additional_query_parameters
+      # @option request_options [Hash{String => Object}] :additional_body_parameters
+      # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String] :id
+      #
+      # @return [untyped]
+      def call_artifact_controller_assistant_recording_download(request_options: {}, **params)
+        params = Vapi::Internal::Types::Utils.normalize_keys(params)
+        request = Vapi::Internal::JSON::Request.new(
+          base_url: request_options[:base_url],
+          method: "GET",
+          path: "call/#{URI.encode_uri_component(params[:id].to_s)}/assistant-recording",
+          request_options: request_options
+        )
+        begin
+          response = @client.send(request)
+        rescue Net::HTTPRequestTimeout
+          raise Vapi::Errors::TimeoutError
+        end
+        code = response.code.to_i
+        return if code.between?(200, 299)
+
+        error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
+        raise error_class.new(response.body, code: code)
+      end
+
+      # @param request_options [Hash]
+      # @param params [Hash]
+      # @option request_options [String] :base_url
+      # @option request_options [Hash{String => Object}] :additional_headers
+      # @option request_options [Hash{String => Object}] :additional_query_parameters
+      # @option request_options [Hash{String => Object}] :additional_body_parameters
+      # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String] :id
+      #
+      # @return [untyped]
+      def call_artifact_controller_pcap_download(request_options: {}, **params)
+        params = Vapi::Internal::Types::Utils.normalize_keys(params)
+        request = Vapi::Internal::JSON::Request.new(
+          base_url: request_options[:base_url],
+          method: "GET",
+          path: "call/#{URI.encode_uri_component(params[:id].to_s)}/pcap",
+          request_options: request_options
+        )
+        begin
+          response = @client.send(request)
+        rescue Net::HTTPRequestTimeout
+          raise Vapi::Errors::TimeoutError
+        end
+        code = response.code.to_i
+        return if code.between?(200, 299)
+
+        error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
+        raise error_class.new(response.body, code: code)
+      end
+
+      # @param request_options [Hash]
+      # @param params [Hash]
+      # @option request_options [String] :base_url
+      # @option request_options [Hash{String => Object}] :additional_headers
+      # @option request_options [Hash{String => Object}] :additional_query_parameters
+      # @option request_options [Hash{String => Object}] :additional_body_parameters
+      # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String] :id
+      #
+      # @return [untyped]
+      def call_artifact_controller_call_logs_download(request_options: {}, **params)
+        params = Vapi::Internal::Types::Utils.normalize_keys(params)
+        request = Vapi::Internal::JSON::Request.new(
+          base_url: request_options[:base_url],
+          method: "GET",
+          path: "call/#{URI.encode_uri_component(params[:id].to_s)}/call-logs",
+          request_options: request_options
+        )
+        begin
+          response = @client.send(request)
+        rescue Net::HTTPRequestTimeout
+          raise Vapi::Errors::TimeoutError
+        end
+        code = response.code.to_i
+        return if code.between?(200, 299)
+
+        error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
+        raise error_class.new(response.body, code: code)
       end
     end
   end

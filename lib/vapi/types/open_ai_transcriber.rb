@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for transcribing speech during assistant conversations with OpenAI, including model, language, and
+    # fallback settings.
     class OpenAiTranscriber < Internal::Types::Model
       field :model, -> { Vapi::Types::OpenAiTranscriberModel }, optional: false, nullable: false
       field :language, -> { Vapi::Types::OpenAiTranscriberLanguage }, optional: true, nullable: false

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Transfers a call to a SIP URI, with optional caller ID, headers, message, and transfer plan.
     class TransferDestinationSip < Internal::Types::Model
       field :message, -> { Vapi::Types::TransferDestinationSipMessage }, optional: true, nullable: false
       field :sip_uri, -> { String }, optional: false, nullable: false, api_name: "sipUri"

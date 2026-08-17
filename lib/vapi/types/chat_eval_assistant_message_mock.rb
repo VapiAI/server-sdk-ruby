@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A simulated assistant turn in an evaluation conversation, with optional message content and tool calls.
     class ChatEvalAssistantMessageMock < Internal::Types::Model
       field :role, -> { Vapi::Types::ChatEvalAssistantMessageMockRole }, optional: false, nullable: false
       field :content, -> { String }, optional: true, nullable: false

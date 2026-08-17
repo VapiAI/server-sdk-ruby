@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class GhlTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::GhlToolMessagesItem] }, optional: true, nullable: false
       field :type, -> { Vapi::Types::GhlToolType }, optional: false, nullable: false
       field :id, -> { String }, optional: false, nullable: false

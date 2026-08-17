@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Credentials for sending assistant call traces to a Langfuse project, including its public key, secret key, and
+    # host URL.
     class CreateLangfuseCredentialDto < Internal::Types::Model
       field :public_key, -> { String }, optional: false, nullable: false, api_name: "publicKey"
       field :api_key, -> { String }, optional: false, nullable: false, api_name: "apiKey"

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration for post-call analysis of summaries, structured-data extraction, success evaluation, and outcomes.
     class AnalysisPlan < Internal::Types::Model
       field :min_messages_threshold, -> { Integer }, optional: true, nullable: false, api_name: "minMessagesThreshold"
       field :summary_plan, -> { Vapi::Types::SummaryPlan }, optional: true, nullable: false, api_name: "summaryPlan"

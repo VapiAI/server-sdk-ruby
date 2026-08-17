@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fallback configuration for synthesizing assistant speech with Cartesia, including voice and model selection,
+    # language, generation controls, pronunciation dictionaries, chunking, and caching.
     class FallbackCartesiaVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { String }, optional: false, nullable: false, api_name: "voiceId"

@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ClientMessageAssistantStarted < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ClientMessageAssistantStartedPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ClientMessageAssistantStartedType }, optional: false, nullable: false
       field :timestamp, -> { Integer }, optional: true, nullable: false
       field :call, -> { Vapi::Types::Call }, optional: true, nullable: false

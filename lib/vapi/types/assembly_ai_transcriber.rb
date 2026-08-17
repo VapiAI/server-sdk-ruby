@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for transcribing speech during assistant conversations with AssemblyAI, including language,
+    # streaming model, endpointing, vocabulary, and fallback settings.
     class AssemblyAiTranscriber < Internal::Types::Model
       field :language, -> { Vapi::Types::AssemblyAiTranscriberLanguage }, optional: true, nullable: false
       field :confidence_threshold, -> { Integer }, optional: true, nullable: false, api_name: "confidenceThreshold"

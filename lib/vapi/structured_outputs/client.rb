@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Returns structured-output definitions for the authenticated organization. Filter results by ID, name, or
+      # creation and update timestamps.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -21,6 +24,7 @@ module Vapi
       # @option params [String, nil] :name
       # @option params [Integer, nil] :page
       # @option params [Vapi::StructuredOutputs::Types::StructuredOutputControllerFindAllRequestSortOrder, nil] :sort_order
+      # @option params [Vapi::StructuredOutputs::Types::StructuredOutputControllerFindAllRequestSortBy, nil] :sort_by
       # @option params [Integer, nil] :limit
       # @option params [String, nil] :created_at_gt
       # @option params [String, nil] :created_at_lt
@@ -34,12 +38,13 @@ module Vapi
       # @return [Vapi::Types::StructuredOutputPaginatedResponse]
       def structured_output_controller_find_all(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
-        query_param_names = %i[id name page sort_order limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
+        query_param_names = %i[id name page sort_order sort_by limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
         query_params = {}
         query_params["id"] = params[:id] if params.key?(:id)
         query_params["name"] = params[:name] if params.key?(:name)
         query_params["page"] = params[:page] if params.key?(:page)
         query_params["sortOrder"] = params[:sort_order] if params.key?(:sort_order)
+        query_params["sortBy"] = params[:sort_by] if params.key?(:sort_by)
         query_params["limit"] = params[:limit] if params.key?(:limit)
         query_params["createdAtGt"] = params[:created_at_gt] if params.key?(:created_at_gt)
         query_params["createdAtLt"] = params[:created_at_lt] if params.key?(:created_at_lt)
@@ -72,6 +77,9 @@ module Vapi
         end
       end
 
+      # Creates a reusable definition for extracting validated data from conversations using an AI model or regular
+      # expression.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Types::CreateStructuredOutputDto]
       # @option request_options [String] :base_url
@@ -104,6 +112,8 @@ module Vapi
         end
       end
 
+      # Returns the structured-output definition identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -136,6 +146,8 @@ module Vapi
         end
       end
 
+      # Deletes the structured-output definition identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -168,6 +180,8 @@ module Vapi
         end
       end
 
+      # Updates the structured-output definition identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::StructuredOutputs::Types::UpdateStructuredOutputDto]
       # @option request_options [String] :base_url
@@ -212,6 +226,9 @@ module Vapi
         end
       end
 
+      # Runs a saved or transient structured-output definition against one or more calls, optionally returning a preview
+      # without updating call artifacts.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::StructuredOutputs::Types::StructuredOutputRunDto]
       # @option request_options [String] :base_url
@@ -220,7 +237,7 @@ module Vapi
       # @option request_options [Hash{String => Object}] :additional_body_parameters
       # @option request_options [Integer] :timeout_in_seconds
       #
-      # @return [Vapi::Types::StructuredOutput]
+      # @return [Vapi::StructuredOutputs::Types::StructuredOutputControllerRunResponse]
       def structured_output_controller_run(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
         request = Vapi::Internal::JSON::Request.new(
@@ -237,7 +254,7 @@ module Vapi
         end
         code = response.code.to_i
         if code.between?(200, 299)
-          Vapi::Types::StructuredOutput.load(response.body)
+          Vapi::StructuredOutputs::Types::StructuredOutputControllerRunResponse.load(response.body)
         else
           error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
           raise error_class.new(response.body, code: code)

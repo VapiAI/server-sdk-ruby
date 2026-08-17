@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A directed connection between two workflow nodes, with an optional AI-evaluated transition condition.
     class Edge < Internal::Types::Model
       field :condition, -> { Vapi::Types::AiEdgeCondition }, optional: true, nullable: false
       field :from, -> { String }, optional: false, nullable: false

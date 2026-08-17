@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a SIP-request tool, including its method, headers, body, spoken messages, and rejection
+    # plan.
     class UpdateSipRequestToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateSipRequestToolDtoMessagesItem] }, optional: true, nullable: false
       field :verb, -> { Vapi::Types::UpdateSipRequestToolDtoVerb }, optional: true, nullable: false

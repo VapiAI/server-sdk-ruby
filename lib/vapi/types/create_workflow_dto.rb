@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for creating a graph-based workflow, including conversation and tool nodes, directed edges, global
+    # prompts, shared providers, hooks, credentials, and call behavior.
     class CreateWorkflowDto < Internal::Types::Model
       field :nodes, -> { Internal::Types::Array[Vapi::Types::CreateWorkflowDtoNodesItem] }, optional: false, nullable: false
       field :model, -> { Vapi::Types::CreateWorkflowDtoModel }, optional: true, nullable: false

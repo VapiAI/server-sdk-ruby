@@ -18,6 +18,7 @@ module Vapi
       CLAUDE_SONNET_420250514 = "claude-sonnet-4-20250514"
       CLAUDE_SONNET_4520250929 = "claude-sonnet-4-5-20250929"
       CLAUDE_SONNET_46 = "claude-sonnet-4-6"
+      CLAUDE_SONNET_5 = "claude-sonnet-5"
       CLAUDE_HAIKU_4520251001 = "claude-haiku-4-5-20251001"
     end
   end

@@ -5,6 +5,8 @@ module Vapi
     module CartesiaVoiceModel
       extend Vapi::Internal::Types::Enum
 
+      SONIC_35 = "sonic-3.5"
+      SONIC_3520260504 = "sonic-3.5-2026-05-04"
       SONIC_3 = "sonic-3"
       SONIC_320260112 = "sonic-3-2026-01-12"
       SONIC_320251027 = "sonic-3-2025-10-27"

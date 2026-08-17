@@ -9,7 +9,13 @@
 ## Tools
 ## Files
 ## StructuredOutputs
+## SimulationPersonalities
+## SimulationScenarios
+## SimulationRuns
+## SimulationSuites
+## Simulations
 ## Insight
+## Board
 ## Eval
 ## ObservabilityScorecard
 ## ProviderResources

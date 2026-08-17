@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for synthesizing assistant speech with OpenAI, including voice and model selection, delivery
+    # instructions, speed, chunking, caching, and fallback settings.
     class OpenAiVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { Vapi::Types::OpenAiVoiceId }, optional: false, nullable: false, api_name: "voiceId"

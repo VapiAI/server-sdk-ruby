@@ -10,7 +10,7 @@ module Vapi
       @raw_client = Vapi::Internal::Http::RawClient.new(
         base_url: base_url || Vapi::Environment::DEFAULT,
         headers: {
-          "User-Agent" => "vapi_server_sdk/2.0.0",
+          "User-Agent" => "vapi_server_sdk/0.0.0-fern-placeholder",
           "X-Fern-Language" => "Ruby",
           Authorization: "Bearer #{token}"
         }
@@ -67,9 +67,39 @@ module Vapi
       @structured_outputs ||= Vapi::StructuredOutputs::Client.new(client: @raw_client)
     end
 
+    # @return [Vapi::SimulationPersonalities::Client]
+    def simulation_personalities
+      @simulation_personalities ||= Vapi::SimulationPersonalities::Client.new(client: @raw_client)
+    end
+
+    # @return [Vapi::SimulationScenarios::Client]
+    def simulation_scenarios
+      @simulation_scenarios ||= Vapi::SimulationScenarios::Client.new(client: @raw_client)
+    end
+
+    # @return [Vapi::SimulationRuns::Client]
+    def simulation_runs
+      @simulation_runs ||= Vapi::SimulationRuns::Client.new(client: @raw_client)
+    end
+
+    # @return [Vapi::SimulationSuites::Client]
+    def simulation_suites
+      @simulation_suites ||= Vapi::SimulationSuites::Client.new(client: @raw_client)
+    end
+
+    # @return [Vapi::Simulations::Client]
+    def simulations
+      @simulations ||= Vapi::Simulations::Client.new(client: @raw_client)
+    end
+
     # @return [Vapi::Insight::Client]
     def insight
       @insight ||= Vapi::Insight::Client.new(client: @raw_client)
+    end
+
+    # @return [Vapi::Board::Client]
+    def board
+      @board ||= Vapi::Board::Client.new(client: @raw_client)
     end
 
     # @return [Vapi::Eval::Client]

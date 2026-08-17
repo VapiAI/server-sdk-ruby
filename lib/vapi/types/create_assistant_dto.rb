@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to create an assistant, including its model, voice, transcriber, prompts, tools, messaging, and
+    # conversation behavior.
     class CreateAssistantDto < Internal::Types::Model
       field :transcriber, -> { Vapi::Types::CreateAssistantDtoTranscriber }, optional: true, nullable: false
       field :model, -> { Vapi::Types::CreateAssistantDtoModel }, optional: true, nullable: false

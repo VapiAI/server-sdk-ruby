@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Google Cloud Storage bucket configuration for call artifacts, including bucket name, region, path, and optional
+    # HMAC credentials.
     class BucketPlan < Internal::Types::Model
       field :name, -> { String }, optional: false, nullable: false
       field :region, -> { String }, optional: true, nullable: false
