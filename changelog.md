@@ -1,3 +1,5 @@
+## [2.0.1] - 2026-08-17
+
 ## 2.0.0 - 2026-06-24
 ### Breaking Changes
 * **`Vapi::Types::CartesiaExperimentalControlsSpeedZero`** has been renamed to **`Vapi::Types::CartesiaSpeedControlZero`**. Update any references to use the new name.
