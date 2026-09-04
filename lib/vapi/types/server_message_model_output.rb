@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ServerMessageModelOutput < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ServerMessageModelOutputPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ServerMessageModelOutputType }, optional: false, nullable: false
       field :turn_id, -> { String }, optional: true, nullable: false, api_name: "turnId"
       field :timestamp, -> { Integer }, optional: true, nullable: false

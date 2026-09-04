@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to create a pie-chart insight from call data using metric queries, formulas, grouping, and a
+    # time range.
     class CreatePieInsightFromCallTableDto < Internal::Types::Model
       field :name, -> { String }, optional: true, nullable: false
       field :formulas, -> { Internal::Types::Array[Vapi::Types::InsightFormula] }, optional: true, nullable: false

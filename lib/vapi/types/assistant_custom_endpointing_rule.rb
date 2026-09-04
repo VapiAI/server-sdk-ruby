@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A custom endpointing rule that matches the assistant's last message and applies a configured timeout.
     class AssistantCustomEndpointingRule < Internal::Types::Model
       field :regex, -> { String }, optional: false, nullable: false
       field :regex_options, -> { Internal::Types::Array[Vapi::Types::RegexOption] }, optional: true, nullable: false, api_name: "regexOptions"

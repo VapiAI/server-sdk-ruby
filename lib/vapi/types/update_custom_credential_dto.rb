@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateCustomCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateCustomCredentialDtoProvider }, optional: true, nullable: false
       field :authentication_plan, -> { Vapi::Types::UpdateCustomCredentialDtoAuthenticationPlan }, optional: true, nullable: false, api_name: "authenticationPlan"
       field :encryption_plan, -> { Vapi::Types::UpdateCustomCredentialDtoEncryptionPlan }, optional: true, nullable: false, api_name: "encryptionPlan"
       field :name, -> { String }, optional: true, nullable: false

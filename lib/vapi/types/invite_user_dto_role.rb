@@ -2,12 +2,11 @@
 
 module Vapi
   module Types
-    module InviteUserDtoRole
-      extend Vapi::Internal::Types::Enum
+    class InviteUserDtoRole < Internal::Types::Model
+      extend Vapi::Internal::Types::Union
 
-      ADMIN = "admin"
-      EDITOR = "editor"
-      VIEWER = "viewer"
+      member -> { Vapi::Types::InviteUserDtoRoleZero }
+      member -> { String }
     end
   end
 end

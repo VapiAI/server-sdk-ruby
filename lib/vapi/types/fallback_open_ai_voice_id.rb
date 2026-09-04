@@ -3,7 +3,7 @@
 module Vapi
   module Types
     # This is the provider-specific ID that will be used.
-    # Please note that ash, ballad, coral, sage, and verse may only be used with realtime models.
+    # Please note that ash, ballad, coral, sage, and verse may only be used with realtime or GPT-Live models.
     class FallbackOpenAiVoiceId < Internal::Types::Model
       extend Vapi::Internal::Types::Union
 

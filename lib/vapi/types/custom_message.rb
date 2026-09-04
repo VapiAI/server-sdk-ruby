@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A message spoken by the assistant with optional language-specific content variants.
     class CustomMessage < Internal::Types::Model
       field :contents, -> { Internal::Types::Array[Vapi::Types::TextContent] }, optional: true, nullable: false
       field :type, -> { Vapi::Types::CustomMessageType }, optional: false, nullable: false

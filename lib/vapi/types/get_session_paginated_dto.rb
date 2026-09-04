@@ -11,10 +11,12 @@ module Vapi
       field :workflow_id, -> { String }, optional: true, nullable: false, api_name: "workflowId"
       field :customer, -> { Vapi::Types::CreateCustomerDto }, optional: true, nullable: false
       field :customer_number_any, -> { String }, optional: true, nullable: false, api_name: "customerNumberAny"
+      field :id_any, -> { String }, optional: true, nullable: false, api_name: "idAny"
       field :phone_number_id, -> { String }, optional: true, nullable: false, api_name: "phoneNumberId"
       field :phone_number_id_any, -> { Internal::Types::Array[String] }, optional: true, nullable: false, api_name: "phoneNumberIdAny"
       field :page, -> { Integer }, optional: true, nullable: false
       field :sort_order, -> { Vapi::Types::GetSessionPaginatedDtoSortOrder }, optional: true, nullable: false, api_name: "sortOrder"
+      field :sort_by, -> { Vapi::Types::GetSessionPaginatedDtoSortBy }, optional: true, nullable: false, api_name: "sortBy"
       field :limit, -> { Integer }, optional: true, nullable: false
       field :created_at_gt, -> { String }, optional: true, nullable: false, api_name: "createdAtGt"
       field :created_at_lt, -> { String }, optional: true, nullable: false, api_name: "createdAtLt"

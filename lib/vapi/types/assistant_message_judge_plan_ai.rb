@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Evaluates an assistant message with an LLM judge and a configured evaluation model.
     class AssistantMessageJudgePlanAi < Internal::Types::Model
       field :model, -> { Vapi::Types::AssistantMessageJudgePlanAiModel }, optional: false, nullable: false
       field :type, -> { Vapi::Types::AssistantMessageJudgePlanAiType }, optional: false, nullable: false

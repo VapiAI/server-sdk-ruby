@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A user-authored entry in the call message history, including content, timing, security-filter results, and
+    # optional speaker metadata.
     class UserMessage < Internal::Types::Model
       field :role, -> { String }, optional: false, nullable: false
       field :message, -> { String }, optional: false, nullable: false

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for transcribing speech during assistant conversations with AssemblyAI, including language,
+    # streaming model, endpointing, vocabulary, and fallback settings.
     class AssemblyAiTranscriber < Internal::Types::Model
       field :language, -> { Vapi::Types::AssemblyAiTranscriberLanguage }, optional: true, nullable: false
       field :confidence_threshold, -> { Integer }, optional: true, nullable: false, api_name: "confidenceThreshold"
@@ -11,6 +13,10 @@ module Vapi
       field :word_finalization_max_wait_time, -> { Integer }, optional: true, nullable: false, api_name: "wordFinalizationMaxWaitTime"
       field :max_turn_silence, -> { Integer }, optional: true, nullable: false, api_name: "maxTurnSilence"
       field :vad_assisted_endpointing_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "vadAssistedEndpointingEnabled"
+      field :mode, -> { Vapi::Types::AssemblyAiTranscriberMode }, optional: true, nullable: false
+      field :prompt, -> { String }, optional: true, nullable: false
+      field :agent_context, -> { String }, optional: true, nullable: false, api_name: "agentContext"
+      field :language_codes, -> { Internal::Types::Array[Vapi::Types::AssemblyAiTranscriberLanguageCodesItem] }, optional: true, nullable: false, api_name: "languageCodes"
       field :speech_model, -> { Vapi::Types::AssemblyAiTranscriberSpeechModel }, optional: true, nullable: false, api_name: "speechModel"
       field :realtime_url, -> { String }, optional: true, nullable: false, api_name: "realtimeUrl"
       field :word_boost, -> { Internal::Types::Array[String] }, optional: true, nullable: false, api_name: "wordBoost"

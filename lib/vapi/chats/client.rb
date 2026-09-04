@@ -23,8 +23,10 @@ module Vapi
       # @option params [String, nil] :squad_id
       # @option params [String, nil] :session_id
       # @option params [String, nil] :previous_chat_id
+      # @option params [String, nil] :id_any
       # @option params [Integer, nil] :page
       # @option params [Vapi::Chats::Types::ListChatsRequestSortOrder, nil] :sort_order
+      # @option params [Vapi::Chats::Types::ListChatsRequestSortBy, nil] :sort_by
       # @option params [Integer, nil] :limit
       # @option params [String, nil] :created_at_gt
       # @option params [String, nil] :created_at_lt
@@ -38,7 +40,7 @@ module Vapi
       # @return [Vapi::Types::ChatPaginatedResponse]
       def list(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
-        query_param_names = %i[id assistant_id assistant_id_any squad_id session_id previous_chat_id page sort_order limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
+        query_param_names = %i[id assistant_id assistant_id_any squad_id session_id previous_chat_id id_any page sort_order sort_by limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
         query_params = {}
         query_params["id"] = params[:id] if params.key?(:id)
         query_params["assistantId"] = params[:assistant_id] if params.key?(:assistant_id)
@@ -46,8 +48,10 @@ module Vapi
         query_params["squadId"] = params[:squad_id] if params.key?(:squad_id)
         query_params["sessionId"] = params[:session_id] if params.key?(:session_id)
         query_params["previousChatId"] = params[:previous_chat_id] if params.key?(:previous_chat_id)
+        query_params["idAny"] = params[:id_any] if params.key?(:id_any)
         query_params["page"] = params[:page] if params.key?(:page)
         query_params["sortOrder"] = params[:sort_order] if params.key?(:sort_order)
+        query_params["sortBy"] = params[:sort_by] if params.key?(:sort_by)
         query_params["limit"] = params[:limit] if params.key?(:limit)
         query_params["createdAtGt"] = params[:created_at_gt] if params.key?(:created_at_gt)
         query_params["createdAtLt"] = params[:created_at_lt] if params.key?(:created_at_lt)

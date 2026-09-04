@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Realm, username, and password used to authenticate SIP requests.
     class SipAuthentication < Internal::Types::Model
       field :realm, -> { String }, optional: true, nullable: false
       field :username, -> { String }, optional: false, nullable: false

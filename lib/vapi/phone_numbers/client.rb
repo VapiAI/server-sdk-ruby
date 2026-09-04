@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Returns phone numbers for the authenticated organization. Filter results by creation or update timestamps and
+      # limit the number returned.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -62,6 +65,9 @@ module Vapi
         raise error_class.new(response.body, code: code)
       end
 
+      # Creates a Vapi phone number or imports a phone number from a supported provider, including Twilio, Vonage,
+      # Telnyx, or a bring-your-own provider.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::PhoneNumbers::Types::CreatePhoneNumbersRequest]
       # @option request_options [String] :base_url
@@ -94,6 +100,9 @@ module Vapi
         end
       end
 
+      # Returns a paginated list of phone numbers for the authenticated organization. Search by name, number, or SIP URI
+      # using a partial, case-insensitive match, and filter by creation or update timestamps.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -104,6 +113,7 @@ module Vapi
       # @option params [String, nil] :search
       # @option params [Integer, nil] :page
       # @option params [Vapi::PhoneNumbers::Types::PhoneNumberControllerFindAllPaginatedRequestSortOrder, nil] :sort_order
+      # @option params [Vapi::PhoneNumbers::Types::PhoneNumberControllerFindAllPaginatedRequestSortBy, nil] :sort_by
       # @option params [Integer, nil] :limit
       # @option params [String, nil] :created_at_gt
       # @option params [String, nil] :created_at_lt
@@ -117,11 +127,12 @@ module Vapi
       # @return [Vapi::Types::PhoneNumberPaginatedResponse]
       def phone_number_controller_find_all_paginated(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
-        query_param_names = %i[search page sort_order limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
+        query_param_names = %i[search page sort_order sort_by limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
         query_params = {}
         query_params["search"] = params[:search] if params.key?(:search)
         query_params["page"] = params[:page] if params.key?(:page)
         query_params["sortOrder"] = params[:sort_order] if params.key?(:sort_order)
+        query_params["sortBy"] = params[:sort_by] if params.key?(:sort_by)
         query_params["limit"] = params[:limit] if params.key?(:limit)
         query_params["createdAtGt"] = params[:created_at_gt] if params.key?(:created_at_gt)
         query_params["createdAtLt"] = params[:created_at_lt] if params.key?(:created_at_lt)
@@ -154,6 +165,8 @@ module Vapi
         end
       end
 
+      # Returns the phone number resource identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -186,6 +199,8 @@ module Vapi
         end
       end
 
+      # Deletes the phone number resource identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -218,6 +233,8 @@ module Vapi
         end
       end
 
+      # Updates the specified fields of the phone number resource identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::PhoneNumbers::Types::UpdatePhoneNumbersRequestBody]
       # @option request_options [String] :base_url

@@ -9,11 +9,13 @@ module Vapi
       field :squad_id, -> { String }, optional: true, nullable: false, api_name: "squadId"
       field :session_id, -> { String }, optional: true, nullable: false, api_name: "sessionId"
       field :previous_chat_id, -> { String }, optional: true, nullable: false, api_name: "previousChatId"
+      field :id_any, -> { String }, optional: true, nullable: false, api_name: "idAny"
       field :columns, -> { Vapi::Types::ExportChatDtoColumns }, optional: true, nullable: false
       field :email, -> { String }, optional: true, nullable: false
       field :format, -> { Vapi::Types::ExportChatDtoFormat }, optional: true, nullable: false
       field :page, -> { Integer }, optional: true, nullable: false
       field :sort_order, -> { Vapi::Types::ExportChatDtoSortOrder }, optional: true, nullable: false, api_name: "sortOrder"
+      field :sort_by, -> { Vapi::Types::ExportChatDtoSortBy }, optional: true, nullable: false, api_name: "sortBy"
       field :limit, -> { Integer }, optional: true, nullable: false
       field :created_at_gt, -> { String }, optional: true, nullable: false, api_name: "createdAtGt"
       field :created_at_lt, -> { String }, optional: true, nullable: false, api_name: "createdAtLt"

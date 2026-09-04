@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # VapiQL JSON query that counts values from a string-valued call-table column with optional call filters.
     class JsonQueryOnCallTableWithStringTypeColumn < Internal::Types::Model
       field :type, -> { Vapi::Types::JsonQueryOnCallTableWithStringTypeColumnType }, optional: false, nullable: false
       field :table, -> { Vapi::Types::JsonQueryOnCallTableWithStringTypeColumnTable }, optional: false, nullable: false

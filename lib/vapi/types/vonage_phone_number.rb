@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A Vonage phone number connected to Vapi, including its credential, routing, hooks, server settings, and lifecycle
+    # metadata.
     class VonagePhoneNumber < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::VonagePhoneNumberFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::VonagePhoneNumberHooksItem] }, optional: true, nullable: false

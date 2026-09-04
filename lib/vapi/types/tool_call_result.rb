@@ -3,7 +3,7 @@
 module Vapi
   module Types
     class ToolCallResult < Internal::Types::Model
-      field :message, -> { Vapi::Types::ToolCallResultMessage }, optional: true, nullable: false
+      field :message, -> { Vapi::Types::ToolCallResultSpokenMessage }, optional: true, nullable: false
       field :name, -> { String }, optional: false, nullable: false
       field :tool_call_id, -> { String }, optional: false, nullable: false, api_name: "toolCallId"
       field :result, -> { String }, optional: true, nullable: false

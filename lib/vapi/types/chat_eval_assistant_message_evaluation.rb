@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # An expected assistant turn in an evaluation, including the judge plan and how the evaluation should continue
+    # afterward.
     class ChatEvalAssistantMessageEvaluation < Internal::Types::Model
       field :role, -> { Vapi::Types::ChatEvalAssistantMessageEvaluationRole }, optional: false, nullable: false
       field :judge_plan, -> { Vapi::Types::ChatEvalAssistantMessageEvaluationJudgePlan }, optional: false, nullable: false, api_name: "judgePlan"

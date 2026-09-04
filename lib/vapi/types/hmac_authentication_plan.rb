@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for signing outbound requests with an HMAC secret, including algorithm, headers, payload format, and
+    # signature encoding.
     class HmacAuthenticationPlan < Internal::Types::Model
       field :secret_key, -> { String }, optional: false, nullable: false, api_name: "secretKey"
       field :algorithm, -> { Vapi::Types::HmacAuthenticationPlanAlgorithm }, optional: false, nullable: false
