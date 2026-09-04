@@ -10,8 +10,10 @@ module Vapi
         field :squad_id, -> { String }, optional: true, nullable: false, api_name: "squadId"
         field :session_id, -> { String }, optional: true, nullable: false, api_name: "sessionId"
         field :previous_chat_id, -> { String }, optional: true, nullable: false, api_name: "previousChatId"
+        field :id_any, -> { String }, optional: true, nullable: false, api_name: "idAny"
         field :page, -> { Integer }, optional: true, nullable: false
         field :sort_order, -> { Vapi::Chats::Types::ListChatsRequestSortOrder }, optional: true, nullable: false, api_name: "sortOrder"
+        field :sort_by, -> { Vapi::Chats::Types::ListChatsRequestSortBy }, optional: true, nullable: false, api_name: "sortBy"
         field :limit, -> { Integer }, optional: true, nullable: false
         field :created_at_gt, -> { String }, optional: true, nullable: false, api_name: "createdAtGt"
         field :created_at_lt, -> { String }, optional: true, nullable: false, api_name: "createdAtLt"

@@ -23,6 +23,8 @@ module Vapi
       SPAINCENTRAL = "spaincentral"
       SWEDENCENTRAL = "swedencentral"
       SWITZERLAND = "switzerland"
+      SWITZERLANDNORTH = "switzerlandnorth"
+      SWITZERLANDWEST = "switzerlandwest"
       UAENORTH = "uaenorth"
       UK = "uk"
       WESTEUROPE = "westeurope"

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A call record returned by Vapi. It contains the configuration and resources used for the call, its lifecycle
+    # status and timestamps, conversation messages, artifacts, analysis, and costs.
     class Call < Internal::Types::Model
       field :type, -> { Vapi::Types::CallType }, optional: true, nullable: false
       field :costs, -> { Internal::Types::Array[Vapi::Types::CallCostsItem] }, optional: true, nullable: false
@@ -12,6 +14,8 @@ module Vapi
       field :ended_reason, -> { Vapi::Types::CallEndedReason }, optional: true, nullable: false, api_name: "endedReason"
       field :ended_message, -> { String }, optional: true, nullable: false, api_name: "endedMessage"
       field :destination, -> { Vapi::Types::CallDestination }, optional: true, nullable: false
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
+      field :transport, -> { Vapi::Types::CallTransport }, optional: true, nullable: false
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
@@ -42,8 +46,6 @@ module Vapi
       field :customer, -> { Vapi::Types::CreateCustomerDto }, optional: true, nullable: false
       field :name, -> { String }, optional: true, nullable: false
       field :schedule_plan, -> { Vapi::Types::SchedulePlan }, optional: true, nullable: false, api_name: "schedulePlan"
-      field :transport, -> { Internal::Types::Hash[String, Object] }, optional: true, nullable: false
-      field :subscription_limits, -> { Vapi::Types::SubscriptionLimits }, optional: true, nullable: false, api_name: "subscriptionLimits"
     end
   end
 end

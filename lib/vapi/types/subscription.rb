@@ -6,6 +6,7 @@ module Vapi
       field :id, -> { String }, optional: false, nullable: false
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
       field :updated_at, -> { String }, optional: false, nullable: false, api_name: "updatedAt"
+      field :name, -> { String }, optional: true, nullable: false
       field :type, -> { Vapi::Types::SubscriptionType }, optional: false, nullable: false
       field :status, -> { Vapi::Types::SubscriptionStatus }, optional: false, nullable: false
       field :credits, -> { String }, optional: false, nullable: false
@@ -18,8 +19,6 @@ module Vapi
       field :monthly_credit_check_schedule_id, -> { Integer }, optional: true, nullable: false, api_name: "monthlyCreditCheckScheduleId"
       field :stripe_customer_id, -> { String }, optional: true, nullable: false, api_name: "stripeCustomerId"
       field :stripe_payment_method_id, -> { String }, optional: true, nullable: false, api_name: "stripePaymentMethodId"
-      field :slack_support_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "slackSupportEnabled"
-      field :slack_channel_id, -> { String }, optional: true, nullable: false, api_name: "slackChannelId"
       field :hipaa_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "hipaaEnabled"
       field :zdr_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "zdrEnabled"
       field :data_retention_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "dataRetentionEnabled"

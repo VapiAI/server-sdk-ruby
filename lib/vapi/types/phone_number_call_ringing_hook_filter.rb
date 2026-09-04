@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Matches an incoming caller's phone number against one or more prefixes before a ringing hook runs.
     class PhoneNumberCallRingingHookFilter < Internal::Types::Model
       field :type, -> { Vapi::Types::PhoneNumberCallRingingHookFilterType }, optional: false, nullable: false
       field :key, -> { Vapi::Types::PhoneNumberCallRingingHookFilterKey }, optional: false, nullable: false

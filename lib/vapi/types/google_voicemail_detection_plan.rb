@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration for detecting voicemail with Google, including detection type, maximum beep wait, and retry backoff.
     class GoogleVoicemailDetectionPlan < Internal::Types::Model
       field :beep_max_await_seconds, -> { Integer }, optional: true, nullable: false, api_name: "beepMaxAwaitSeconds"
       field :provider, -> { Vapi::Types::GoogleVoicemailDetectionPlanProvider }, optional: false, nullable: false

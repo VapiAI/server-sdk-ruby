@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A Gladia custom vocabulary word or phrase with optional pronunciations, intensity, and language.
     class GladiaVocabularyItemDto < Internal::Types::Model
       field :value, -> { String }, optional: false, nullable: false
       field :pronunciations, -> { Internal::Types::Array[String] }, optional: true, nullable: false

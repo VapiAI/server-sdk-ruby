@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ClientMessageTranscript < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ClientMessageTranscriptPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ClientMessageTranscriptType }, optional: false, nullable: false
       field :timestamp, -> { Integer }, optional: true, nullable: false
       field :call, -> { Vapi::Types::Call }, optional: true, nullable: false
@@ -12,6 +13,8 @@ module Vapi
       field :role, -> { Vapi::Types::ClientMessageTranscriptRole }, optional: false, nullable: false
       field :transcript_type, -> { Vapi::Types::ClientMessageTranscriptTranscriptType }, optional: false, nullable: false, api_name: "transcriptType"
       field :transcript, -> { String }, optional: false, nullable: false
+      field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
+      field :assistant_name, -> { String }, optional: true, nullable: false, api_name: "assistantName"
       field :is_filtered, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "isFiltered"
       field :detected_threats, -> { Internal::Types::Array[String] }, optional: true, nullable: false, api_name: "detectedThreats"
       field :original_transcript, -> { String }, optional: true, nullable: false, api_name: "originalTranscript"

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Knowledge-base model cost, including model, token usage, and amount.
     class KnowledgeBaseCost < Internal::Types::Model
       field :model, -> { Internal::Types::Hash[String, Object] }, optional: false, nullable: false
       field :prompt_tokens, -> { Integer }, optional: false, nullable: false, api_name: "promptTokens"

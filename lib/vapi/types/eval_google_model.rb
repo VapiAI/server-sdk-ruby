@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Google model configuration for an LLM judge, including its messages and generation settings.
     class EvalGoogleModel < Internal::Types::Model
       field :model, -> { Vapi::Types::EvalGoogleModelModel }, optional: false, nullable: false
       field :temperature, -> { Integer }, optional: true, nullable: false

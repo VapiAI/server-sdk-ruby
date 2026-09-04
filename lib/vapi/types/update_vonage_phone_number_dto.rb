@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a Vonage phone number, including its credential, number, routing, hooks, and server
+    # settings.
     class UpdateVonagePhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::UpdateVonagePhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::UpdateVonagePhoneNumberDtoHooksItem] }, optional: true, nullable: false

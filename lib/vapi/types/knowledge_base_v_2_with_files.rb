@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+module Vapi
+  module Types
+    class KnowledgeBaseV2WithFiles < Internal::Types::Model
+      field :name, -> { String }, optional: false, nullable: false
+      field :description, -> { String }, optional: true, nullable: false
+      field :id, -> { String }, optional: false, nullable: false
+      field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
+      field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
+      field :updated_at, -> { String }, optional: false, nullable: false, api_name: "updatedAt"
+      field :files, -> { Internal::Types::Array[Vapi::Types::KnowledgeBaseV2File] }, optional: false, nullable: false
+      field :tool_id, -> { String }, optional: false, nullable: true, api_name: "toolId"
+    end
+  end
+end

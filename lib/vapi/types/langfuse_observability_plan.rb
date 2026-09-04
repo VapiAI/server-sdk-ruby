@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for sending assistant call traces to Langfuse, including prompt version linkage, trace naming, tags,
+    # and metadata.
     class LangfuseObservabilityPlan < Internal::Types::Model
       field :provider, -> { Vapi::Types::LangfuseObservabilityPlanProvider }, optional: false, nullable: false
       field :prompt_name, -> { String }, optional: true, nullable: false, api_name: "promptName"

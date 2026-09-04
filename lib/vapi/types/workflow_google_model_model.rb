@@ -5,6 +5,8 @@ module Vapi
     module WorkflowGoogleModelModel
       extend Vapi::Internal::Types::Enum
 
+      GEMINI_35_FLASH = "gemini-3.5-flash"
+      GEMINI_31_FLASH_LITE = "gemini-3.1-flash-lite"
       GEMINI_3_FLASH_PREVIEW = "gemini-3-flash-preview"
       GEMINI_25_PRO = "gemini-2.5-pro"
       GEMINI_25_FLASH = "gemini-2.5-flash"

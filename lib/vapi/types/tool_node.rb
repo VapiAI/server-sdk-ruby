@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A workflow node that invokes an inline tool or an existing saved tool.
     class ToolNode < Internal::Types::Model
       field :tool, -> { Vapi::Types::ToolNodeTool }, optional: true, nullable: false
       field :tool_id, -> { String }, optional: true, nullable: false, api_name: "toolId"

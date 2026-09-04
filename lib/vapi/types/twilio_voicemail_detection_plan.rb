@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for Twilio answering-machine detection, including recognized outcomes, enablement, timeout, speech
+    # thresholds, and silence timeout.
     class TwilioVoicemailDetectionPlan < Internal::Types::Model
       field :provider, -> { Vapi::Types::TwilioVoicemailDetectionPlanProvider }, optional: false, nullable: false
       field :voicemail_detection_types, -> { Internal::Types::Array[Vapi::Types::TwilioVoicemailDetectionPlanVoicemailDetectionTypesItem] }, optional: true, nullable: false, api_name: "voicemailDetectionTypes"
