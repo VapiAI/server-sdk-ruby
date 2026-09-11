@@ -2,7 +2,10 @@
 
 module Vapi
   module Types
+    # A reusable tool that lets the model interact with a computer display through screen, pointer, and keyboard
+    # actions.
     class ComputerTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::ComputerToolMessagesItem] }, optional: true, nullable: false
       field :sub_type, -> { Vapi::Types::ComputerToolSubType }, optional: false, nullable: false, api_name: "subType"
       field :server, -> { Vapi::Types::Server }, optional: true, nullable: false

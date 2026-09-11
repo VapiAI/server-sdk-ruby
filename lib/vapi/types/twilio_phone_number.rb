@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A Twilio phone number connected to Vapi, including its Twilio account details, SMS configuration, routing, hooks,
+    # server settings, and lifecycle metadata.
     class TwilioPhoneNumber < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::TwilioPhoneNumberFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::TwilioPhoneNumberHooksItem] }, optional: true, nullable: false

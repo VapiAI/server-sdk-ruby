@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls collection of dual-tone multi-frequency (DTMF) keypad input, including enablement, processing timeout,
+    # and delimiters.
     class KeypadInputPlan < Internal::Types::Model
       field :enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false
       field :timeout_seconds, -> { Integer }, optional: true, nullable: false, api_name: "timeoutSeconds"

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration used to import a Twilio phone number into Vapi with its account credentials and routing settings.
     class CreateTwilioPhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::CreateTwilioPhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::CreateTwilioPhoneNumberDtoHooksItem] }, optional: true, nullable: false

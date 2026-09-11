@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Vapi platform cost for a call, including cost subtype, billable minutes, and amount.
     class VapiCost < Internal::Types::Model
       field :sub_type, -> { Vapi::Types::VapiCostSubType }, optional: false, nullable: false, api_name: "subType"
       field :minutes, -> { Integer }, optional: false, nullable: false

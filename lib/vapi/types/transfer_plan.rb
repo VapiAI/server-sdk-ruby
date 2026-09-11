@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls how a call transfer is executed, including blind and warm transfer modes, dialing and SIP behavior, hold
+    # audio, context, summary, and failure handling.
     class TransferPlan < Internal::Types::Model
       field :mode, -> { Vapi::Types::TransferPlanMode }, optional: false, nullable: false
       field :message, -> { Vapi::Types::TransferPlanMessage }, optional: true, nullable: false

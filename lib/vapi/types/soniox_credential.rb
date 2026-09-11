@@ -5,6 +5,7 @@ module Vapi
     class SonioxCredential < Internal::Types::Model
       field :provider, -> { Vapi::Types::SonioxCredentialProvider }, optional: false, nullable: false
       field :api_key, -> { String }, optional: false, nullable: false, api_name: "apiKey"
+      field :api_url, -> { String }, optional: true, nullable: false, api_name: "apiUrl"
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"

@@ -13,6 +13,7 @@ module Vapi
         member -> { Vapi::Types::DtmfTool }, key: "DTMF"
         member -> { Vapi::Types::EndCallTool }, key: "END_CALL"
         member -> { Vapi::Types::FunctionTool }, key: "FUNCTION"
+        member -> { Vapi::Types::KnowledgeBaseTool }, key: "KNOWLEDGE_BASE"
         member -> { Vapi::Types::TransferCallTool }, key: "TRANSFER_CALL"
         member -> { Vapi::Types::HandoffTool }, key: "HANDOFF"
         member -> { Vapi::Types::BashTool }, key: "BASH"

@@ -10,6 +10,8 @@ module Vapi
         @client = client
       end
 
+      # Returns files uploaded to the authenticated organization.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -17,14 +19,21 @@ module Vapi
       # @option request_options [Hash{String => Object}] :additional_query_parameters
       # @option request_options [Hash{String => Object}] :additional_body_parameters
       # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String] :purpose
       #
       # @return [Array[Vapi::Types::File]]
       def list(request_options: {}, **params)
-        Vapi::Internal::Types::Utils.normalize_keys(params)
+        params = Vapi::Internal::Types::Utils.normalize_keys(params)
+        query_param_names = %i[purpose]
+        query_params = {}
+        query_params["purpose"] = params[:purpose] if params.key?(:purpose)
+        params.except(*query_param_names)
+
         request = Vapi::Internal::JSON::Request.new(
           base_url: request_options[:base_url],
           method: "GET",
           path: "file",
+          query: query_params,
           request_options: request_options
         )
         begin
@@ -39,6 +48,8 @@ module Vapi
         raise error_class.new(response.body, code: code)
       end
 
+      # Uploads a file for use with a Vapi knowledge base.
+      #
       # @param request_options [Hash]
       # @param params [void]
       # @option request_options [String] :base_url
@@ -53,6 +64,18 @@ module Vapi
         body = Internal::Multipart::FormData.new
 
         body.add_part(params[:file].to_form_data_part(name: "file")) if params[:file]
+        if params[:purpose]
+          body.add(
+            name: "purpose",
+            value: params[:purpose]
+          )
+        end
+        if params[:metadata]
+          body.add(
+            name: "metadata",
+            value: params[:metadata]
+          )
+        end
 
         request = Vapi::Internal::Multipart::Request.new(
           base_url: request_options[:base_url],
@@ -75,6 +98,8 @@ module Vapi
         end
       end
 
+      # Returns the uploaded file identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -107,6 +132,8 @@ module Vapi
         end
       end
 
+      # Deletes the uploaded file identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -139,6 +166,8 @@ module Vapi
         end
       end
 
+      # Updates the name of the uploaded file identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Files::Types::UpdateFileDto]
       # @option request_options [String] :base_url

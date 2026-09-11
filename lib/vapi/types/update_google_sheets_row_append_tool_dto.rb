@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Fields used to update a Google Sheets row-append tool, including its spoken messages and rejection plan.
     class UpdateGoogleSheetsRowAppendToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateGoogleSheetsRowAppendToolDtoMessagesItem] }, optional: true, nullable: false
       field :rejection_plan, -> { Vapi::Types::ToolRejectionPlan }, optional: true, nullable: false, api_name: "rejectionPlan"

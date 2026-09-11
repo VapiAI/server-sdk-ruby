@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Credentials for authenticating voice synthesis requests with Neuphonic.
     class CreateNeuphonicCredentialDto < Internal::Types::Model
       field :api_key, -> { String }, optional: false, nullable: false, api_name: "apiKey"
       field :name, -> { String }, optional: true, nullable: false

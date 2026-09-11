@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Returns reusable tools for the authenticated organization. Filter results by creation or update timestamps and
+      # limit the number returned.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -62,6 +65,8 @@ module Vapi
         raise error_class.new(response.body, code: code)
       end
 
+      # Creates a reusable tool that assistants can invoke during conversations.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Tools::Types::CreateToolsRequest]
       # @option request_options [String] :base_url
@@ -94,6 +99,8 @@ module Vapi
         end
       end
 
+      # Returns the tool identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -126,6 +133,8 @@ module Vapi
         end
       end
 
+      # Deletes the tool identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -158,6 +167,8 @@ module Vapi
         end
       end
 
+      # Updates the specified fields of the tool identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Tools::Types::UpdateToolsRequestBody]
       # @option request_options [String] :base_url

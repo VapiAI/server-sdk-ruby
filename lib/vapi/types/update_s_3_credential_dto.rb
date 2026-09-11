@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateS3CredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateS3CredentialDtoProvider }, optional: true, nullable: false
       field :aws_access_key_id, -> { String }, optional: true, nullable: false, api_name: "awsAccessKeyId"
       field :aws_secret_access_key, -> { String }, optional: true, nullable: false, api_name: "awsSecretAccessKey"
       field :region, -> { String }, optional: true, nullable: false

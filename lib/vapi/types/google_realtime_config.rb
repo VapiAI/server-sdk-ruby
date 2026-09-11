@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Realtime Gemini generation and speech-output settings, including sampling, repetition penalties, and voice
+    # configuration.
     class GoogleRealtimeConfig < Internal::Types::Model
       field :top_p, -> { Integer }, optional: true, nullable: false, api_name: "topP"
       field :top_k, -> { Integer }, optional: true, nullable: false, api_name: "topK"

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for Fourier denoising, including media detection, thresholds, baseline calculation, and analysis
+    # window.
     class FourierDenoisingPlan < Internal::Types::Model
       field :enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false
       field :media_detection_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "mediaDetectionEnabled"

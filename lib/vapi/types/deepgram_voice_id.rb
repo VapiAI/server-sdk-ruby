@@ -60,6 +60,13 @@ module Vapi
       AQUILA = "aquila"
       SELENA = "selena"
       JAVIER = "javier"
+      VIKTORIA = "viktoria"
+      KARA = "kara"
+      FABIAN = "fabian"
+      JULIUS = "julius"
+      LARA = "lara"
+      ELARA = "elara"
+      AURELIA = "aurelia"
     end
   end
 end

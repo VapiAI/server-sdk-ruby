@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration used to import a Telnyx phone number into Vapi with a stored credential and routing settings.
     class CreateTelnyxPhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::CreateTelnyxPhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::CreateTelnyxPhoneNumberDtoHooksItem] }, optional: true, nullable: false

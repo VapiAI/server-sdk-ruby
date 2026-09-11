@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # An assistant-authored message, including content, refusal text, tool calls, participant name, and metadata.
     class AssistantMessage < Internal::Types::Model
       field :role, -> { Vapi::Types::AssistantMessageRole }, optional: false, nullable: false
       field :content, -> { String }, optional: true, nullable: false
