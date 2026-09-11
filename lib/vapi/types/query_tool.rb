@@ -2,7 +2,9 @@
 
 module Vapi
   module Types
+    # A reusable tool that searches configured knowledge bases and returns relevant content to the assistant.
     class QueryTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::QueryToolMessagesItem] }, optional: true, nullable: false
       field :knowledge_bases, -> { Internal::Types::Array[Vapi::Types::KnowledgeBase] }, optional: true, nullable: false, api_name: "knowledgeBases"
       field :id, -> { String }, optional: false, nullable: false

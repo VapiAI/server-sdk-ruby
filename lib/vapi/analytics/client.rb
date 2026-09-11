@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Runs one or more metric queries against call or subscription data using the requested time range, groupings, and
+      # aggregate operations.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Analytics::Types::AnalyticsQueryDto]
       # @option request_options [String] :base_url

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls artifacts generated and stored for calls, including recordings, packet captures, logs, transcripts,
+    # structured outputs, scorecards, and custom storage paths.
     class ArtifactPlan < Internal::Types::Model
       field :recording_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "recordingEnabled"
       field :recording_format, -> { Vapi::Types::ArtifactPlanRecordingFormat }, optional: true, nullable: false, api_name: "recordingFormat"

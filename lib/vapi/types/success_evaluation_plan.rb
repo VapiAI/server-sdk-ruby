@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Controls post-call success evaluation, including the rubric, prompt messages, enablement, and request timeout.
     class SuccessEvaluationPlan < Internal::Types::Model
       field :rubric, -> { Vapi::Types::SuccessEvaluationPlanRubric }, optional: true, nullable: false
       field :messages, -> { Internal::Types::Array[Internal::Types::Hash[String, Object]] }, optional: true, nullable: false

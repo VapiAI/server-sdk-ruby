@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateLmntCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateLmntCredentialDtoProvider }, optional: true, nullable: false
       field :api_key, -> { String }, optional: true, nullable: false, api_name: "apiKey"
       field :name, -> { String }, optional: true, nullable: false
     end

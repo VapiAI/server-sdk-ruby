@@ -10,6 +10,8 @@ module Vapi
         @client = client
       end
 
+      # Returns the scorecard identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -42,6 +44,8 @@ module Vapi
         end
       end
 
+      # Deletes the scorecard identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -74,6 +78,8 @@ module Vapi
         end
       end
 
+      # Updates the scorecard identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::ObservabilityScorecard::Types::UpdateScorecardDto]
       # @option request_options [String] :base_url
@@ -111,6 +117,8 @@ module Vapi
         end
       end
 
+      # Returns scorecards for the authenticated organization. Filter results by ID or creation and update timestamps.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -121,6 +129,7 @@ module Vapi
       # @option params [String, nil] :id
       # @option params [Integer, nil] :page
       # @option params [Vapi::ObservabilityScorecard::Types::ScorecardControllerGetPaginatedRequestSortOrder, nil] :sort_order
+      # @option params [Vapi::ObservabilityScorecard::Types::ScorecardControllerGetPaginatedRequestSortBy, nil] :sort_by
       # @option params [Integer, nil] :limit
       # @option params [String, nil] :created_at_gt
       # @option params [String, nil] :created_at_lt
@@ -134,11 +143,12 @@ module Vapi
       # @return [Vapi::Types::ScorecardPaginatedResponse]
       def scorecard_controller_get_paginated(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
-        query_param_names = %i[id page sort_order limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
+        query_param_names = %i[id page sort_order sort_by limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
         query_params = {}
         query_params["id"] = params[:id] if params.key?(:id)
         query_params["page"] = params[:page] if params.key?(:page)
         query_params["sortOrder"] = params[:sort_order] if params.key?(:sort_order)
+        query_params["sortBy"] = params[:sort_by] if params.key?(:sort_by)
         query_params["limit"] = params[:limit] if params.key?(:limit)
         query_params["createdAtGt"] = params[:created_at_gt] if params.key?(:created_at_gt)
         query_params["createdAtLt"] = params[:created_at_lt] if params.key?(:created_at_lt)
@@ -171,6 +181,9 @@ module Vapi
         end
       end
 
+      # Creates a scorecard containing metrics, scoring conditions, and optional links to assistants whose calls should
+      # be evaluated.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Types::CreateScorecardDto]
       # @option request_options [String] :base_url

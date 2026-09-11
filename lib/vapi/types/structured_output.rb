@@ -2,11 +2,14 @@
 
 module Vapi
   module Types
+    # A saved structured-output definition containing its extraction schema, execution method, model or regular
+    # expression, linked resources, and lifecycle metadata.
     class StructuredOutput < Internal::Types::Model
       field :type, -> { Vapi::Types::StructuredOutputType }, optional: true, nullable: false
       field :regex, -> { String }, optional: true, nullable: false
       field :model, -> { Vapi::Types::StructuredOutputModel }, optional: true, nullable: false
       field :compliance_plan, -> { Vapi::Types::ComplianceOverride }, optional: true, nullable: false, api_name: "compliancePlan"
+      field :conditions, -> { Internal::Types::Array[Vapi::Types::StructuredOutputConditionsItem] }, optional: true, nullable: false
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration used to import a Vonage phone number into Vapi with a stored credential and routing settings.
     class CreateVonagePhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::CreateVonagePhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::CreateVonagePhoneNumberDtoHooksItem] }, optional: true, nullable: false

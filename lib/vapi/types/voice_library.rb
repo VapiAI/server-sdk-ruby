@@ -23,6 +23,8 @@ module Vapi
       field :is_deleted, -> { Internal::Types::Boolean }, optional: false, nullable: false, api_name: "isDeleted"
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
       field :updated_at, -> { String }, optional: false, nullable: false, api_name: "updatedAt"
+      field :is_cloned, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "isCloned"
+      field :clone_backend, -> { String }, optional: true, nullable: false, api_name: "cloneBackend"
     end
   end
 end

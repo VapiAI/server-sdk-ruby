@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to provision a Vapi-managed phone number or connect a SIP URI, with optional routing and
+    # authentication settings.
     class CreateVapiPhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::CreateVapiPhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::CreateVapiPhoneNumberDtoHooksItem] }, optional: true, nullable: false

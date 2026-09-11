@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fallback configuration for synthesizing assistant speech with Deepgram, including voice and model selection,
+    # model-improvement preferences, chunking, and caching.
     class FallbackDeepgramVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { Vapi::Types::FallbackDeepgramVoiceId }, optional: false, nullable: false, api_name: "voiceId"

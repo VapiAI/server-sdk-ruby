@@ -2,7 +2,9 @@
 
 module Vapi
   module Types
+    # A reusable tool that sends SIP `INFO`, `MESSAGE`, or `NOTIFY` requests with configured headers and body.
     class SipRequestTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::SipRequestToolMessagesItem] }, optional: true, nullable: false
       field :verb, -> { Vapi::Types::SipRequestToolVerb }, optional: false, nullable: false
       field :headers, -> { Vapi::Types::JsonSchema }, optional: true, nullable: false

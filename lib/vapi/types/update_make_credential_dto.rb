@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateMakeCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateMakeCredentialDtoProvider }, optional: true, nullable: false
       field :team_id, -> { String }, optional: true, nullable: false, api_name: "teamId"
       field :region, -> { String }, optional: true, nullable: false
       field :api_key, -> { String }, optional: true, nullable: false, api_name: "apiKey"

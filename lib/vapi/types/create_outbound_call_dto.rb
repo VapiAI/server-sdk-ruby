@@ -3,10 +3,11 @@
 module Vapi
   module Types
     class CreateOutboundCallDto < Internal::Types::Model
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
+      field :transport, -> { Vapi::Types::CreateOutboundCallDtoTransport }, optional: true, nullable: false
       field :customers, -> { Internal::Types::Array[Vapi::Types::CreateCustomerDto] }, optional: true, nullable: false
       field :name, -> { String }, optional: true, nullable: false
       field :schedule_plan, -> { Vapi::Types::SchedulePlan }, optional: true, nullable: false, api_name: "schedulePlan"
-      field :transport, -> { Internal::Types::Hash[String, Object] }, optional: true, nullable: false
       field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
       field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: true, nullable: false
       field :assistant_overrides, -> { Vapi::Types::AssistantOverrides }, optional: true, nullable: false, api_name: "assistantOverrides"

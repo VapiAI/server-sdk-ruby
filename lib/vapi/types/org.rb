@@ -4,6 +4,8 @@ module Vapi
   module Types
     class Org < Internal::Types::Model
       field :hipaa_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "hipaaEnabled"
+      field :workos_repair_pending, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "workosRepairPending"
+      field :workos_repair_queued, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "workosRepairQueued"
       field :subscription, -> { Vapi::Types::Subscription }, optional: true, nullable: false
       field :subscription_id, -> { String }, optional: true, nullable: false, api_name: "subscriptionId"
       field :id, -> { String }, optional: false, nullable: false

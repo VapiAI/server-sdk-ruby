@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to create a custom function tool that sends model-generated arguments to a server and returns
+    # the result to the assistant.
     class CreateFunctionToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::CreateFunctionToolDtoMessagesItem] }, optional: true, nullable: false
       field :async, -> { Internal::Types::Boolean }, optional: true, nullable: false

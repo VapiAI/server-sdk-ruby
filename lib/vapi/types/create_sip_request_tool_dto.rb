@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to create a tool that sends SIP `INFO`, `MESSAGE`, or `NOTIFY` requests with configured headers
+    # and body.
     class CreateSipRequestToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::CreateSipRequestToolDtoMessagesItem] }, optional: true, nullable: false
       field :verb, -> { Vapi::Types::CreateSipRequestToolDtoVerb }, optional: false, nullable: false

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Fallback configuration for transcribing speech with Azure Speech, including language and segmentation.
     class FallbackAzureSpeechTranscriber < Internal::Types::Model
       field :language, -> { Vapi::Types::FallbackAzureSpeechTranscriberLanguage }, optional: true, nullable: false
       field :segmentation_strategy, -> { Vapi::Types::FallbackAzureSpeechTranscriberSegmentationStrategy }, optional: true, nullable: false, api_name: "segmentationStrategy"
