@@ -7,5 +7,5 @@
     "rubocopVariableNumberStyle": "disabled"
   },
   "originGitCommit": "29ee1f9f3be8a07c1cecd121623206042b66aa18",
-  "sdkVersion": "0.0.0-fern-placeholder"
+  "sdkVersion": "2.0.1"
 }
