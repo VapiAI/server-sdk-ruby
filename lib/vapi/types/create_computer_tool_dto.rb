@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to create a tool that lets the model interact with a computer display through screen, pointer,
+    # and keyboard actions.
     class CreateComputerToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::CreateComputerToolDtoMessagesItem] }, optional: true, nullable: false
       field :sub_type, -> { Vapi::Types::CreateComputerToolDtoSubType }, optional: false, nullable: false, api_name: "subType"

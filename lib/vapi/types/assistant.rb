@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A saved assistant configuration returned by the Vapi API. It defines how the assistant listens, reasons, speaks,
+    # handles conversations, sends events, and produces artifacts and analysis.
     class Assistant < Internal::Types::Model
       field :transcriber, -> { Vapi::Types::AssistantTranscriber }, optional: true, nullable: false
       field :model, -> { Vapi::Types::AssistantModel }, optional: true, nullable: false
@@ -19,6 +21,7 @@ module Vapi
       field :observability_plan, -> { Vapi::Types::LangfuseObservabilityPlan }, optional: true, nullable: false, api_name: "observabilityPlan"
       field :credentials, -> { Internal::Types::Array[Vapi::Types::AssistantCredentialsItem] }, optional: true, nullable: false
       field :hooks, -> { Internal::Types::Array[Vapi::Types::AssistantHooksItem] }, optional: true, nullable: false
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :name, -> { String }, optional: true, nullable: false
       field :voicemail_message, -> { String }, optional: true, nullable: false, api_name: "voicemailMessage"
       field :end_call_message, -> { String }, optional: true, nullable: false, api_name: "endCallMessage"

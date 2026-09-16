@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateAzureCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateAzureCredentialDtoProvider }, optional: true, nullable: false
       field :service, -> { Vapi::Types::UpdateAzureCredentialDtoService }, optional: true, nullable: false
       field :region, -> { Vapi::Types::UpdateAzureCredentialDtoRegion }, optional: true, nullable: false
       field :api_key, -> { String }, optional: true, nullable: false, api_name: "apiKey"

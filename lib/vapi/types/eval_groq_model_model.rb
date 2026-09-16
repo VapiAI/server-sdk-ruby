@@ -15,7 +15,6 @@ module Vapi
       LLAMA_370_B_8192 = "llama3-70b-8192"
       GEMMA_29_B_IT = "gemma2-9b-it"
       MOONSHOTAI_KIMI_K_2_INSTRUCT_0905 = "moonshotai/kimi-k2-instruct-0905"
-      META_LLAMA_LLAMA_4_MAVERICK_17_B_128_E_INSTRUCT = "meta-llama/llama-4-maverick-17b-128e-instruct"
       META_LLAMA_LLAMA_4_SCOUT_17_B_16_E_INSTRUCT = "meta-llama/llama-4-scout-17b-16e-instruct"
       MISTRAL_SABA_24_B = "mistral-saba-24b"
       COMPOUND_BETA = "compound-beta"

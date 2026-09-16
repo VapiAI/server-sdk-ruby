@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A saved squad configuration that coordinates a group of assistants during a conversation. The first member starts
+    # the call, and member destinations control transfers between assistants.
     class Squad < Internal::Types::Model
       field :name, -> { String }, optional: true, nullable: false
       field :members, -> { Internal::Types::Array[Vapi::Types::SquadMemberDto] }, optional: false, nullable: false

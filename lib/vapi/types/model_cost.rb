@@ -2,11 +2,15 @@
 
 module Vapi
   module Types
+    # Language-model cost for a call, including model, token usage, and amount.
     class ModelCost < Internal::Types::Model
+      field :seconds, -> { Integer }, optional: true, nullable: false
+      field :usage_complete, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "usageComplete"
       field :model, -> { Internal::Types::Hash[String, Object] }, optional: false, nullable: false
       field :prompt_tokens, -> { Integer }, optional: false, nullable: false, api_name: "promptTokens"
       field :completion_tokens, -> { Integer }, optional: false, nullable: false, api_name: "completionTokens"
       field :cached_prompt_tokens, -> { Integer }, optional: true, nullable: false, api_name: "cachedPromptTokens"
+      field :reasoning_tokens, -> { Integer }, optional: true, nullable: false, api_name: "reasoningTokens"
       field :cost, -> { Integer }, optional: false, nullable: false
     end
   end

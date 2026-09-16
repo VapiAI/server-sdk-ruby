@@ -2,11 +2,22 @@
 
 module Vapi
   module Types
-    class CreateTrieveKnowledgeBaseDto < Internal::Types::Model
-      field :provider, -> { Vapi::Types::CreateTrieveKnowledgeBaseDtoProvider }, optional: false, nullable: false
-      field :name, -> { String }, optional: true, nullable: false
-      field :search_plan, -> { Vapi::Types::TrieveKnowledgeBaseSearchPlan }, optional: true, nullable: false, api_name: "searchPlan"
-      field :create_plan, -> { Vapi::Types::TrieveKnowledgeBaseImport }, optional: true, nullable: false, api_name: "createPlan"
+    module CreateTrieveKnowledgeBaseDto
+      # CreateTrieveKnowledgeBaseDto is an alias for Object
+
+      # @option str [String]
+      #
+      # @return [untyped]
+      def self.load(str)
+        ::JSON.parse(str)
+      end
+
+      # @option value [untyped]
+      #
+      # @return [String]
+      def self.dump(value)
+        ::JSON.generate(value)
+      end
     end
   end
 end

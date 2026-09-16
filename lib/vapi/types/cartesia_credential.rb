@@ -10,6 +10,7 @@ module Vapi
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
       field :updated_at, -> { String }, optional: false, nullable: false, api_name: "updatedAt"
       field :name, -> { String }, optional: true, nullable: false
+      field :api_url, -> { String }, optional: true, nullable: false, api_name: "apiUrl"
     end
   end
 end

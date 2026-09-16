@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ClientMessageUserInterrupted < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ClientMessageUserInterruptedPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ClientMessageUserInterruptedType }, optional: false, nullable: false
       field :turn_id, -> { String }, optional: true, nullable: false, api_name: "turnId"
       field :timestamp, -> { Integer }, optional: true, nullable: false
