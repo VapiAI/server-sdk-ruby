@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateTwilioCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateTwilioCredentialDtoProvider }, optional: true, nullable: false
       field :auth_token, -> { String }, optional: true, nullable: false, api_name: "authToken"
       field :api_key, -> { String }, optional: true, nullable: false, api_name: "apiKey"
       field :api_secret, -> { String }, optional: true, nullable: false, api_name: "apiSecret"

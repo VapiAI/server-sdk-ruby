@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Call performance measurements, including per-turn and average provider, endpointing, transport, and interruption
+    # metrics.
     class PerformanceMetrics < Internal::Types::Model
       field :turn_latencies, -> { Internal::Types::Array[Vapi::Types::TurnLatency] }, optional: true, nullable: false, api_name: "turnLatencies"
       field :model_latency_average, -> { Integer }, optional: true, nullable: false, api_name: "modelLatencyAverage"

@@ -2,9 +2,9 @@
 
 module Vapi
   module Types
+    # Credentials for authenticating knowledge-base requests with Trieve.
     class CreateTrieveCredentialDto < Internal::Types::Model
-      field :api_key, -> { String }, optional: false, nullable: false, api_name: "apiKey"
-      field :name, -> { String }, optional: true, nullable: false
+      field :provider, -> { Object }, optional: true, nullable: false
     end
   end
 end

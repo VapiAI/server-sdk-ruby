@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # JSON Schema definition used to describe structured data for extraction, validation, or model output.
     class JsonSchema < Internal::Types::Model
       field :type, -> { Vapi::Types::JsonSchemaType }, optional: false, nullable: false
       field :items, -> { Vapi::Types::JsonSchema }, optional: true, nullable: false

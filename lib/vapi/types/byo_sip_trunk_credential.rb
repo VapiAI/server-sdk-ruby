@@ -14,7 +14,6 @@ module Vapi
       field :outbound_leading_plus_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "outboundLeadingPlusEnabled"
       field :tech_prefix, -> { String }, optional: true, nullable: false, api_name: "techPrefix"
       field :sip_diversion_header, -> { String }, optional: true, nullable: false, api_name: "sipDiversionHeader"
-      field :sbc_configuration, -> { Vapi::Types::SbcConfiguration }, optional: true, nullable: false, api_name: "sbcConfiguration"
     end
   end
 end

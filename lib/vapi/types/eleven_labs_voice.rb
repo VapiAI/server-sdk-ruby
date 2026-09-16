@@ -2,6 +2,9 @@
 
 module Vapi
   module Types
+    # Configuration for synthesizing assistant speech with ElevenLabs, including voice and model selection, language,
+    # voice tuning, streaming, Speech Synthesis Markup Language parsing, pronunciation dictionaries, chunking, caching,
+    # and fallback settings.
     class ElevenLabsVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { Vapi::Types::ElevenLabsVoiceId }, optional: false, nullable: false, api_name: "voiceId"

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Message spoken when a tool call completes, with optional language variants, argument conditions, role, and
+    # end-call behavior.
     class ToolMessageComplete < Internal::Types::Model
       field :contents, -> { Internal::Types::Array[Vapi::Types::TextContent] }, optional: true, nullable: false
       field :role, -> { Vapi::Types::ToolMessageCompleteRole }, optional: true, nullable: false

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # An assistant evaluation target provided as a saved assistant ID or a transient assistant, with optional assistant
+    # overrides.
     class EvalRunTargetAssistant < Internal::Types::Model
       field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: true, nullable: false
       field :assistant_overrides, -> { Vapi::Types::AssistantOverrides }, optional: true, nullable: false, api_name: "assistantOverrides"

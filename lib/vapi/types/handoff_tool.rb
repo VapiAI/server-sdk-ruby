@@ -2,7 +2,9 @@
 
 module Vapi
   module Types
+    # A reusable tool that hands a conversation to another assistant, squad, or dynamically selected destination.
     class HandoffTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::HandoffToolMessagesItem] }, optional: true, nullable: false
       field :default_result, -> { String }, optional: true, nullable: false, api_name: "defaultResult"
       field :destinations, -> { Internal::Types::Array[Vapi::Types::HandoffToolDestinationsItem] }, optional: true, nullable: false

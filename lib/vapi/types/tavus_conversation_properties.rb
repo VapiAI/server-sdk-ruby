@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Tavus conversation behavior and media settings, including duration, participant timeouts, recording,
+    # transcription, background, language, and recording storage.
     class TavusConversationProperties < Internal::Types::Model
       field :max_call_duration, -> { Integer }, optional: true, nullable: false, api_name: "maxCallDuration"
       field :participant_left_timeout, -> { Integer }, optional: true, nullable: false, api_name: "participantLeftTimeout"

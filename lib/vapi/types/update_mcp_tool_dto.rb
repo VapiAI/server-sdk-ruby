@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update an MCP tool, including its server, connection metadata, exposed tool messages, and rejection
+    # plan.
     class UpdateMcpToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateMcpToolDtoMessagesItem] }, optional: true, nullable: false
       field :server, -> { Vapi::Types::Server }, optional: true, nullable: false

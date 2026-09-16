@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ServerMessageKnowledgeBaseRequest < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ServerMessageKnowledgeBaseRequestPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ServerMessageKnowledgeBaseRequestType }, optional: false, nullable: false
       field :messages, -> { Internal::Types::Array[Vapi::Types::ServerMessageKnowledgeBaseRequestMessagesItem] }, optional: true, nullable: false
       field :messages_open_ai_formatted, -> { Internal::Types::Array[Vapi::Types::OpenAiMessage] }, optional: false, nullable: false, api_name: "messagesOpenAIFormatted"
