@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls how model output is split into chunks before voice synthesis, including minimum length, punctuation
+    # boundaries, and formatting.
     class ChunkPlan < Internal::Types::Model
       field :enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false
       field :min_characters, -> { Integer }, optional: true, nullable: false, api_name: "minCharacters"

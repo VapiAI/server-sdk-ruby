@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Credentials for storing call artifacts in Cloudflare R2, including account details, bucket configuration, and
+    # upload fallback order.
     class CreateCloudflareCredentialDto < Internal::Types::Model
       field :account_id, -> { String }, optional: true, nullable: false, api_name: "accountId"
       field :api_key, -> { String }, optional: true, nullable: false, api_name: "apiKey"

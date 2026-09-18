@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to create a line-chart insight from call data using metric queries, formulas, grouping, and a
+    # stepped time range.
     class CreateLineInsightFromCallTableDto < Internal::Types::Model
       field :name, -> { String }, optional: true, nullable: false
       field :formulas, -> { Internal::Types::Array[Vapi::Types::InsightFormula] }, optional: true, nullable: false

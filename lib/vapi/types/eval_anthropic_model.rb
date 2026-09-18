@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Anthropic model configuration for an LLM judge, including its messages, generation settings, and optional extended
+    # thinking.
     class EvalAnthropicModel < Internal::Types::Model
       field :model, -> { Vapi::Types::EvalAnthropicModelModel }, optional: false, nullable: false
       field :thinking, -> { Vapi::Types::AnthropicThinkingConfig }, optional: true, nullable: false
