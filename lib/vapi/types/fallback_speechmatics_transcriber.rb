@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fallback configuration for transcribing speech with Speechmatics, including language, region, diarization,
+    # vocabulary, endpointing, and formatting.
     class FallbackSpeechmaticsTranscriber < Internal::Types::Model
       field :model, -> { Vapi::Types::FallbackSpeechmaticsTranscriberModel }, optional: true, nullable: false
       field :language, -> { Vapi::Types::FallbackSpeechmaticsTranscriberLanguage }, optional: true, nullable: false

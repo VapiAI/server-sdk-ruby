@@ -19,6 +19,7 @@ module Vapi
       CLAUDE_SONNET_4520250929 = "claude-sonnet-4-5-20250929"
       CLAUDE_SONNET_46 = "claude-sonnet-4-6"
       CLAUDE_HAIKU_4520251001 = "claude-haiku-4-5-20251001"
+      GLOBAL_ANTHROPIC_CLAUDE_HAIKU_4520251001_V_10 = "global.anthropic.claude-haiku-4-5-20251001-v1:0"
     end
   end
 end

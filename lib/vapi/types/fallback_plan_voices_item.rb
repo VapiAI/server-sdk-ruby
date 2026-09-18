@@ -24,6 +24,8 @@ module Vapi
       member -> { Vapi::Types::FallbackNeuphonicVoice }, key: "NEUPHONIC"
       member -> { Vapi::Types::FallbackSesameVoice }, key: "SESAME"
       member -> { Vapi::Types::FallbackInworldVoice }, key: "INWORLD"
+      member -> { Vapi::Types::FallbackXaiVoice }, key: "XAI"
+      member -> { Vapi::Types::FallbackMicrosoftVoice }, key: "MICROSOFT"
     end
   end
 end

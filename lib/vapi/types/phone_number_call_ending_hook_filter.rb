@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Matches the call's ended reason against configured assistant-request failure reasons before an ending hook runs.
     class PhoneNumberCallEndingHookFilter < Internal::Types::Model
       field :type, -> { Vapi::Types::PhoneNumberCallEndingHookFilterType }, optional: false, nullable: false
       field :key, -> { Vapi::Types::PhoneNumberCallEndingHookFilterKey }, optional: false, nullable: false

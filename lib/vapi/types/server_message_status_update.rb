@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ServerMessageStatusUpdate < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ServerMessageStatusUpdatePhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ServerMessageStatusUpdateType }, optional: false, nullable: false
       field :status, -> { Vapi::Types::ServerMessageStatusUpdateStatus }, optional: false, nullable: false
       field :ended_reason, -> { Vapi::Types::ServerMessageStatusUpdateEndedReason }, optional: true, nullable: false, api_name: "endedReason"

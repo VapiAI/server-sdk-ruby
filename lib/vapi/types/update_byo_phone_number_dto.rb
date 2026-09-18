@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a bring-your-own phone number, including its credential, number, routing, hooks, and server
+    # settings.
     class UpdateByoPhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::UpdateByoPhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::UpdateByoPhoneNumberDtoHooksItem] }, optional: true, nullable: false
