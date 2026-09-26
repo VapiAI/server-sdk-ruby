@@ -4,6 +4,7 @@ module Vapi
   module Types
     class UpdateOutputToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateOutputToolDtoMessagesItem] }, optional: true, nullable: false
+      field :type, -> { Vapi::Types::UpdateOutputToolDtoType }, optional: true, nullable: false
       field :rejection_plan, -> { Vapi::Types::ToolRejectionPlan }, optional: true, nullable: false, api_name: "rejectionPlan"
     end
   end

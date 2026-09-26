@@ -8,8 +8,15 @@
 ## PhoneNumbers
 ## Tools
 ## Files
+## KnowledgeBasesV2
 ## StructuredOutputs
+## SimulationPersonalities
+## SimulationScenarios
+## SimulationRuns
+## SimulationSuites
+## Simulations
 ## Insight
+## Board
 ## Eval
 ## ObservabilityScorecard
 ## ProviderResources

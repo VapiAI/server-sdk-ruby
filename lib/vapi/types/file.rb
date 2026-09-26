@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # An uploaded file record, including its processing status, storage details, extracted-text location, metadata, and
+    # lifecycle timestamps.
     class File < Internal::Types::Model
       field :object, -> { Vapi::Types::FileObject }, optional: true, nullable: false
       field :status, -> { Vapi::Types::FileStatus }, optional: true, nullable: false

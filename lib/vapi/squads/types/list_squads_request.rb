@@ -4,6 +4,7 @@ module Vapi
   module Squads
     module Types
       class ListSquadsRequest < Internal::Types::Model
+        field :id_any, -> { String }, optional: true, nullable: false, api_name: "idAny"
         field :limit, -> { Integer }, optional: true, nullable: false
         field :created_at_gt, -> { String }, optional: true, nullable: false, api_name: "createdAtGt"
         field :created_at_lt, -> { String }, optional: true, nullable: false, api_name: "createdAtLt"

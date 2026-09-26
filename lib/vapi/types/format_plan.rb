@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls text normalization before voice synthesis, including built-in formatters, number handling, and custom
+    # replacements.
     class FormatPlan < Internal::Types::Model
       field :enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false
       field :number_to_digits_cutoff, -> { Integer }, optional: true, nullable: false, api_name: "numberToDigitsCutoff"

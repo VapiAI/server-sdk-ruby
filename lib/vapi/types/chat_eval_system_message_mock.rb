@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A simulated system message in an evaluation conversation.
     class ChatEvalSystemMessageMock < Internal::Types::Model
       field :role, -> { Vapi::Types::ChatEvalSystemMessageMockRole }, optional: false, nullable: false
       field :content, -> { String }, optional: false, nullable: false

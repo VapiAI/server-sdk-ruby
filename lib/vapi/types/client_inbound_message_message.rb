@@ -9,6 +9,7 @@ module Vapi
       discriminant :type
 
       member -> { Vapi::Types::ClientInboundMessageAddMessage }, key: "ADD_MESSAGE"
+      member -> { Vapi::Types::ClientInboundMessageAppendContext }, key: "APPEND_CONTEXT"
       member -> { Vapi::Types::ClientInboundMessageControl }, key: "CONTROL"
       member -> { Vapi::Types::ClientInboundMessageSay }, key: "SAY"
       member -> { Vapi::Types::ClientInboundMessageEndCall }, key: "END_CALL"
