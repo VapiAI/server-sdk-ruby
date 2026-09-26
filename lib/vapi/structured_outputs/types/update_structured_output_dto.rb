@@ -10,6 +10,7 @@ module Vapi
         field :regex, -> { String }, optional: true, nullable: false
         field :model, -> { Vapi::StructuredOutputs::Types::UpdateStructuredOutputDtoModel }, optional: true, nullable: false
         field :compliance_plan, -> { Vapi::Types::ComplianceOverride }, optional: true, nullable: false, api_name: "compliancePlan"
+        field :conditions, -> { Internal::Types::Array[Vapi::StructuredOutputs::Types::UpdateStructuredOutputDtoConditionsItem] }, optional: true, nullable: false
         field :name, -> { String }, optional: true, nullable: false
         field :description, -> { String }, optional: true, nullable: false
         field :assistant_ids, -> { Internal::Types::Array[String] }, optional: true, nullable: false, api_name: "assistantIds"

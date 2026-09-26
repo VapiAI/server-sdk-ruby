@@ -2,10 +2,13 @@
 
 module Vapi
   module Types
+    # Configuration for generating assistant responses with Anyscale, including model, prompts, tools, knowledge-base
+    # access, and generation settings.
     class AnyscaleModel < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::OpenAiMessage] }, optional: true, nullable: false
       field :tools, -> { Internal::Types::Array[Vapi::Types::AnyscaleModelToolsItem] }, optional: true, nullable: false
       field :tool_ids, -> { Internal::Types::Array[String] }, optional: true, nullable: false, api_name: "toolIds"
+      field :tool_refs, -> { Internal::Types::Array[Vapi::Types::ToolRef] }, optional: true, nullable: false, api_name: "toolRefs"
       field :knowledge_base, -> { Vapi::Types::CreateCustomKnowledgeBaseDto }, optional: true, nullable: false, api_name: "knowledgeBase"
       field :model, -> { String }, optional: false, nullable: false
       field :temperature, -> { Integer }, optional: true, nullable: false

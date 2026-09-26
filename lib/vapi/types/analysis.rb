@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Post-call analysis results, including summary, structured data, and success evaluation outputs.
     class Analysis < Internal::Types::Model
       field :summary, -> { String }, optional: true, nullable: false
       field :structured_data, -> { Internal::Types::Hash[String, Object] }, optional: true, nullable: false, api_name: "structuredData"

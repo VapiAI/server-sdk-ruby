@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for synthesizing assistant speech with Neuphonic, including voice and model selection, language,
+    # speed, chunking, caching, and fallback settings.
     class NeuphonicVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { String }, optional: false, nullable: false, api_name: "voiceId"

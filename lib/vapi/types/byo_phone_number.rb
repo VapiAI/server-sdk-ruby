@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A phone number connected to Vapi through a bring-your-own telephony provider, including its credential, routing,
+    # hooks, server settings, and lifecycle metadata.
     class ByoPhoneNumber < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::ByoPhoneNumberFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::ByoPhoneNumberHooksItem] }, optional: true, nullable: false

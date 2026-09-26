@@ -2,7 +2,10 @@
 
 module Vapi
   module Types
+    # A reusable custom function tool that sends model-generated arguments to a configured server and returns the result
+    # to the assistant.
     class FunctionTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::FunctionToolMessagesItem] }, optional: true, nullable: false
       field :async, -> { Internal::Types::Boolean }, optional: true, nullable: false
       field :server, -> { Vapi::Types::Server }, optional: true, nullable: false

@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ServerMessagePhoneCallControl < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ServerMessagePhoneCallControlPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ServerMessagePhoneCallControlType }, optional: false, nullable: false
       field :request, -> { Vapi::Types::ServerMessagePhoneCallControlRequest }, optional: false, nullable: false
       field :destination, -> { Vapi::Types::ServerMessagePhoneCallControlDestination }, optional: true, nullable: false

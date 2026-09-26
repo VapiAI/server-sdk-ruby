@@ -2,7 +2,9 @@
 
 module Vapi
   module Types
+    # A reusable tool that executes shell commands in a configured environment.
     class BashTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::BashToolMessagesItem] }, optional: true, nullable: false
       field :sub_type, -> { Vapi::Types::BashToolSubType }, optional: false, nullable: false, api_name: "subType"
       field :server, -> { Vapi::Types::Server }, optional: true, nullable: false
