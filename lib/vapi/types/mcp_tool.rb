@@ -2,7 +2,9 @@
 
 module Vapi
   module Types
+    # A reusable tool that connects an assistant to a Model Context Protocol server and exposes its available tools.
     class McpTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::McpToolMessagesItem] }, optional: true, nullable: false
       field :server, -> { Vapi::Types::Server }, optional: true, nullable: false
       field :tool_messages, -> { Internal::Types::Array[Vapi::Types::McpToolMessages] }, optional: true, nullable: false, api_name: "toolMessages"

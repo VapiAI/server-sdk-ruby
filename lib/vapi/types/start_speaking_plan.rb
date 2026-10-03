@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls when the assistant begins speaking after customer speech, including the minimum wait, endpointing
+    # strategy, and custom endpointing rules.
     class StartSpeakingPlan < Internal::Types::Model
       field :wait_seconds, -> { Integer }, optional: true, nullable: false, api_name: "waitSeconds"
       field :smart_endpointing_enabled, -> { Vapi::Types::StartSpeakingPlanSmartEndpointingEnabled }, optional: true, nullable: false, api_name: "smartEndpointingEnabled"

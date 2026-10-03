@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Call recording locations, including stereo, video, and separated mono recording URLs.
     class Recording < Internal::Types::Model
       field :stereo_url, -> { String }, optional: true, nullable: false, api_name: "stereoUrl"
       field :video_url, -> { String }, optional: true, nullable: false, api_name: "videoUrl"

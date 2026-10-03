@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A saved eval definition containing its mock conversation, checkpoints, descriptive metadata, type, and lifecycle
+    # information.
     class Eval < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::EvalMessagesItem] }, optional: false, nullable: false
       field :id, -> { String }, optional: false, nullable: false

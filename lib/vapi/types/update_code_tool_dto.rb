@@ -4,6 +4,7 @@ module Vapi
   module Types
     class UpdateCodeToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateCodeToolDtoMessagesItem] }, optional: true, nullable: false
+      field :type, -> { Vapi::Types::UpdateCodeToolDtoType }, optional: true, nullable: false
       field :async, -> { Internal::Types::Boolean }, optional: true, nullable: false
       field :server, -> { Vapi::Types::Server }, optional: true, nullable: false
       field :code, -> { String }, optional: true, nullable: false

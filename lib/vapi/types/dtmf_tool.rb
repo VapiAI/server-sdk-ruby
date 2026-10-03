@@ -2,7 +2,9 @@
 
 module Vapi
   module Types
+    # A reusable tool that lets an assistant send DTMF keypad tones during a call.
     class DtmfTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::DtmfToolMessagesItem] }, optional: true, nullable: false
       field :sip_info_dtmf_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "sipInfoDtmfEnabled"
       field :id, -> { String }, optional: false, nullable: false

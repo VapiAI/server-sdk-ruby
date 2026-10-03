@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A workflow node where the assistant conducts a conversation using optional node-specific providers, tools, prompt,
+    # and variable extraction.
     class ConversationNode < Internal::Types::Model
       field :model, -> { Vapi::Types::ConversationNodeModel }, optional: true, nullable: false
       field :transcriber, -> { Vapi::Types::ConversationNodeTranscriber }, optional: true, nullable: false

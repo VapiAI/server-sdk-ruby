@@ -25,6 +25,7 @@ module Vapi
         member -> { Vapi::Types::PerplexityAiModel }, key: "PERPLEXITY_AI"
         member -> { Vapi::Types::TogetherAiModel }, key: "TOGETHER_AI"
         member -> { Vapi::Types::XaiModel }, key: "XAI"
+        member -> { Vapi::Types::VapiModel }, key: "VAPI"
       end
     end
   end

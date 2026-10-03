@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Fields used to update a Bash tool, including its name, environment subtype, server, messages, and rejection plan.
     class UpdateBashToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateBashToolDtoMessagesItem] }, optional: true, nullable: false
       field :sub_type, -> { Vapi::Types::UpdateBashToolDtoSubType }, optional: true, nullable: false, api_name: "subType"
