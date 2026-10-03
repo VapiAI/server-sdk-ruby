@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Display settings for a line insight, including chart name, axis labels, and optional y-axis bounds.
     class LineInsightMetadata < Internal::Types::Model
       field :x_axis_label, -> { String }, optional: true, nullable: false, api_name: "xAxisLabel"
       field :y_axis_label, -> { String }, optional: true, nullable: false, api_name: "yAxisLabel"

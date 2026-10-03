@@ -24,6 +24,8 @@ module Vapi
       MINIMAX = "minimax"
       WELLSAID = "wellsaid"
       ORPHEUS = "orpheus"
+      XAI = "xai"
+      MICROSOFT = "microsoft"
     end
   end
 end

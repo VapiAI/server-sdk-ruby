@@ -2,7 +2,9 @@
 
 module Vapi
   module Types
+    # A reusable tool that executes TypeScript code with configured credentials, environment variables, and timeout.
     class CodeTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::CodeToolMessagesItem] }, optional: true, nullable: false
       field :async, -> { Internal::Types::Boolean }, optional: true, nullable: false
       field :server, -> { Vapi::Types::Server }, optional: true, nullable: false

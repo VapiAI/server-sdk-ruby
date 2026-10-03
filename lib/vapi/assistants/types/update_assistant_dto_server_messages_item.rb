@@ -33,6 +33,7 @@ module Vapi
         SESSION_DELETED = "session.deleted"
         CALL_DELETED = "call.deleted"
         CALL_DELETE_FAILED = "call.delete.failed"
+        CALL_ARTIFACT_UPLOAD = "call.artifact.upload"
       end
     end
   end
