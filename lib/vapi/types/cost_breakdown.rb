@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Aggregated call costs and usage, including transport, transcription, model, voice, Vapi, analysis, token, and
+    # character totals.
     class CostBreakdown < Internal::Types::Model
       field :transport, -> { Integer }, optional: true, nullable: false
       field :stt, -> { Integer }, optional: true, nullable: false

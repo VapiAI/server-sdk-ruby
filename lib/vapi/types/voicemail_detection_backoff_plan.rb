@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Controls voicemail-detection retry timing, including when retries start, retry frequency, and maximum attempts.
     class VoicemailDetectionBackoffPlan < Internal::Types::Model
       field :start_at_seconds, -> { Integer }, optional: true, nullable: false, api_name: "startAtSeconds"
       field :frequency_seconds, -> { Integer }, optional: true, nullable: false, api_name: "frequencySeconds"

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Per-call or handoff overrides for an assistant's providers, messages, tools, credentials, call behavior, and
+    # server configuration.
     class AssistantOverrides < Internal::Types::Model
       field :transcriber, -> { Vapi::Types::AssistantOverridesTranscriber }, optional: true, nullable: false
       field :model, -> { Vapi::Types::AssistantOverridesModel }, optional: true, nullable: false

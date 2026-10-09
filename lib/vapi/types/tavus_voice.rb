@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for using Tavus as the assistant's voice provider, including persona, callback, context, greeting,
+    # conversation properties, chunking, caching, and fallback settings.
     class TavusVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { Vapi::Types::TavusVoiceVoiceId }, optional: false, nullable: false, api_name: "voiceId"

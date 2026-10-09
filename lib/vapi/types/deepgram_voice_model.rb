@@ -7,6 +7,7 @@ module Vapi
 
       AURA = "aura"
       AURA_2 = "aura-2"
+      FLUX = "flux"
     end
   end
 end

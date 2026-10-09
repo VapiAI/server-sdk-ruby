@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A record of an eval execution, including its target, status, results, costs, completion details, and lifecycle
+    # timestamps.
     class EvalRun < Internal::Types::Model
       field :status, -> { Vapi::Types::EvalRunStatus }, optional: false, nullable: false
       field :ended_reason, -> { Vapi::Types::EvalRunEndedReason }, optional: false, nullable: false, api_name: "endedReason"

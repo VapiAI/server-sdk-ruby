@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ServerMessageToolCalls < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ServerMessageToolCallsPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ServerMessageToolCallsType }, optional: true, nullable: false
       field :tool_with_tool_call_list, -> { Internal::Types::Array[Vapi::Types::ServerMessageToolCallsToolWithToolCallListItem] }, optional: false, nullable: false, api_name: "toolWithToolCallList"
       field :timestamp, -> { Integer }, optional: true, nullable: false

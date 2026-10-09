@@ -2,8 +2,8 @@
 
 module Vapi
   module Types
-    # This is the expected value to compare against the extracted structured output result.
-    # Type should match the structured output's schema type.
+    # The expected value the structured output is compared against. Its type should match the structured output's type,
+    # for example `true` for a boolean.
     class EvaluationPlanItemValue < Internal::Types::Model
       extend Vapi::Internal::Types::Union
 

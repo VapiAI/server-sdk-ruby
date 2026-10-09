@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Runs configured actions when a call is ending, optionally only when its filters match.
     class CallHookCallEnding < Internal::Types::Model
       field :on, -> { Vapi::Types::CallHookCallEndingOn }, optional: false, nullable: false
       field :do_, -> { Internal::Types::Array[Vapi::Types::CallHookCallEndingDoItem] }, optional: false, nullable: false, api_name: "do"

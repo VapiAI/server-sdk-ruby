@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for transcribing speech during assistant conversations with Google, including model, language, and
+    # fallback settings.
     class GoogleTranscriber < Internal::Types::Model
       field :model, -> { Vapi::Types::GoogleTranscriberModel }, optional: true, nullable: false
       field :language, -> { Vapi::Types::GoogleTranscriberLanguage }, optional: true, nullable: false

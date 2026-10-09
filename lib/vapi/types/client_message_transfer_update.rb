@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ClientMessageTransferUpdate < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ClientMessageTransferUpdatePhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ClientMessageTransferUpdateType }, optional: false, nullable: false
       field :destination, -> { Vapi::Types::ClientMessageTransferUpdateDestination }, optional: true, nullable: false
       field :timestamp, -> { Integer }, optional: true, nullable: false
