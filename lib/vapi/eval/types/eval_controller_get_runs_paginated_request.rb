@@ -4,9 +4,9 @@ module Vapi
   module Eval
     module Types
       class EvalControllerGetRunsPaginatedRequest < Internal::Types::Model
+        field :sort_by, -> { Vapi::Eval::Types::EvalControllerGetRunsPaginatedRequestSortBy }, optional: true, nullable: false, api_name: "sortBy"
+        field :search, -> { String }, optional: true, nullable: false
         field :id, -> { String }, optional: true, nullable: false
-        field :page, -> { Integer }, optional: true, nullable: false
-        field :sort_order, -> { Vapi::Eval::Types::EvalControllerGetRunsPaginatedRequestSortOrder }, optional: true, nullable: false, api_name: "sortOrder"
         field :limit, -> { Integer }, optional: true, nullable: false
         field :created_at_gt, -> { String }, optional: true, nullable: false, api_name: "createdAtGt"
         field :created_at_lt, -> { String }, optional: true, nullable: false, api_name: "createdAtLt"
@@ -16,6 +16,8 @@ module Vapi
         field :updated_at_lt, -> { String }, optional: true, nullable: false, api_name: "updatedAtLt"
         field :updated_at_ge, -> { String }, optional: true, nullable: false, api_name: "updatedAtGe"
         field :updated_at_le, -> { String }, optional: true, nullable: false, api_name: "updatedAtLe"
+        field :page, -> { Integer }, optional: true, nullable: false
+        field :sort_order, -> { Vapi::Eval::Types::EvalControllerGetRunsPaginatedRequestSortOrder }, optional: true, nullable: false, api_name: "sortOrder"
       end
     end
   end

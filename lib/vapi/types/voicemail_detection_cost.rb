@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Voicemail-detection model cost, including provider, model, multimodal token usage, and amount.
     class VoicemailDetectionCost < Internal::Types::Model
       field :model, -> { Internal::Types::Hash[String, Object] }, optional: false, nullable: false
       field :provider, -> { Vapi::Types::VoicemailDetectionCostProvider }, optional: false, nullable: false

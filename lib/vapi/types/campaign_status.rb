@@ -8,6 +8,8 @@ module Vapi
       SCHEDULED = "scheduled"
       IN_PROGRESS = "in-progress"
       ENDED = "ended"
+      CANCELLED = "cancelled"
+      ARCHIVED = "archived"
     end
   end
 end

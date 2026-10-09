@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a computer tool, including its display settings, environment subtype, server, messages, and
+    # rejection plan.
     class UpdateComputerToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateComputerToolDtoMessagesItem] }, optional: true, nullable: false
       field :sub_type, -> { Vapi::Types::UpdateComputerToolDtoSubType }, optional: true, nullable: false, api_name: "subType"

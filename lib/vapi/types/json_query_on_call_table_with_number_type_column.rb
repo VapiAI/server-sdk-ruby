@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # VapiQL JSON query that aggregates a numeric call-table column with optional call filters.
     class JsonQueryOnCallTableWithNumberTypeColumn < Internal::Types::Model
       field :type, -> { Vapi::Types::JsonQueryOnCallTableWithNumberTypeColumnType }, optional: false, nullable: false
       field :table, -> { Vapi::Types::JsonQueryOnCallTableWithNumberTypeColumnTable }, optional: false, nullable: false

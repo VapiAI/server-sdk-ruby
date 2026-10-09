@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateDeepInfraCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateDeepInfraCredentialDtoProvider }, optional: true, nullable: false
       field :api_key, -> { String }, optional: true, nullable: false, api_name: "apiKey"
       field :name, -> { String }, optional: true, nullable: false
     end

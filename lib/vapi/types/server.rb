@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for requests Vapi sends to a customer server, including URL, authentication, headers, timeout,
+    # encryption, static IP addresses, and retry behavior.
     class Server < Internal::Types::Model
       field :timeout_seconds, -> { Integer }, optional: true, nullable: false, api_name: "timeoutSeconds"
       field :credential_id, -> { String }, optional: true, nullable: false, api_name: "credentialId"

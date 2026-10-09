@@ -7,6 +7,8 @@ module Vapi
 
       DEEPSEEK_CHAT = "deepseek-chat"
       DEEPSEEK_REASONER = "deepseek-reasoner"
+      DEEPSEEK_FLASH = "deepseek-flash"
+      DEEPSEEK_FLASH_THINKING = "deepseek-flash-thinking"
     end
   end
 end

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration used to create a tool that executes shell commands in a configured environment.
     class CreateBashToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::CreateBashToolDtoMessagesItem] }, optional: true, nullable: false
       field :sub_type, -> { Vapi::Types::CreateBashToolDtoSubType }, optional: false, nullable: false, api_name: "subType"

@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateAzureOpenAiCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateAzureOpenAiCredentialDtoProvider }, optional: true, nullable: false
       field :region, -> { Vapi::Types::UpdateAzureOpenAiCredentialDtoRegion }, optional: true, nullable: false
       field :models, -> { Internal::Types::Array[Vapi::Types::UpdateAzureOpenAiCredentialDtoModelsItem] }, optional: true, nullable: false
       field :open_ai_key, -> { String }, optional: true, nullable: false, api_name: "openAIKey"
