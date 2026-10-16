@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateCloudflareCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateCloudflareCredentialDtoProvider }, optional: true, nullable: false
       field :account_id, -> { String }, optional: true, nullable: false, api_name: "accountId"
       field :api_key, -> { String }, optional: true, nullable: false, api_name: "apiKey"
       field :account_email, -> { String }, optional: true, nullable: false, api_name: "accountEmail"

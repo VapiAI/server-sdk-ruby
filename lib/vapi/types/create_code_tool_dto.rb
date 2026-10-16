@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to create a reusable tool that executes TypeScript code with configured credentials,
+    # environment variables, and timeout.
     class CreateCodeToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::CreateCodeToolDtoMessagesItem] }, optional: true, nullable: false
       field :async, -> { Internal::Types::Boolean }, optional: true, nullable: false

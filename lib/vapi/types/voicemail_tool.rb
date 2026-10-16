@@ -2,7 +2,10 @@
 
 module Vapi
   module Types
+    # A reusable voicemail-detection tool with optional beep detection for supported calls.
     class VoicemailTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
+      field :baseline_version, -> { String }, optional: true, nullable: false, api_name: "baselineVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::VoicemailToolMessagesItem] }, optional: true, nullable: false
       field :beep_detection_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "beepDetectionEnabled"
       field :id, -> { String }, optional: false, nullable: false

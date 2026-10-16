@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for synthesizing assistant speech with Hume, including model and voice selection, custom voice
+    # metadata, chunking, caching, and fallback settings.
     class HumeVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :model, -> { Vapi::Types::HumeVoiceModel }, optional: true, nullable: false

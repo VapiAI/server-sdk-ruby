@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Credentials for authenticating telephony requests with Vonage.
     class CreateVonageCredentialDto < Internal::Types::Model
       field :api_secret, -> { String }, optional: false, nullable: false, api_name: "apiSecret"
       field :api_key, -> { String }, optional: false, nullable: false, api_name: "apiKey"

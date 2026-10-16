@@ -27,6 +27,8 @@ module Vapi
         member -> { Vapi::Types::SesameVoice }, key: "SESAME"
         member -> { Vapi::Types::InworldVoice }, key: "INWORLD"
         member -> { Vapi::Types::MinimaxVoice }, key: "MINIMAX"
+        member -> { Vapi::Types::XaiVoice }, key: "XAI"
+        member -> { Vapi::Types::MicrosoftVoice }, key: "MICROSOFT"
       end
     end
   end

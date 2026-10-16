@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Routes a handoff to a saved or transient assistant, with optional context engineering, variable extraction, and
+    # assistant overrides.
     class HandoffDestinationAssistant < Internal::Types::Model
       field :type, -> { Vapi::Types::HandoffDestinationAssistantType }, optional: false, nullable: false
       field :context_engineering_plan, -> { Vapi::Types::HandoffDestinationAssistantContextEngineeringPlan }, optional: true, nullable: false, api_name: "contextEngineeringPlan"

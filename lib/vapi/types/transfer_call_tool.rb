@@ -2,7 +2,10 @@
 
 module Vapi
   module Types
+    # A reusable tool that transfers the active call to one of its configured destinations.
     class TransferCallTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
+      field :baseline_version, -> { String }, optional: true, nullable: false, api_name: "baselineVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::TransferCallToolMessagesItem] }, optional: true, nullable: false
       field :destinations, -> { Internal::Types::Array[Vapi::Types::TransferCallToolDestinationsItem] }, optional: true, nullable: false
       field :id, -> { String }, optional: false, nullable: false

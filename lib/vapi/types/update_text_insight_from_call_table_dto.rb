@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Fields used to update a text-value insight, including its queries, formula, time range, and name.
     class UpdateTextInsightFromCallTableDto < Internal::Types::Model
       field :name, -> { String }, optional: true, nullable: false
       field :formula, -> { Internal::Types::Hash[String, Object] }, optional: true, nullable: false

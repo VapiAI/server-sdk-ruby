@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls real-time listening and control for assistant calls, authentication requirements for monitor URLs, and
+    # attached monitors.
     class MonitorPlan < Internal::Types::Model
       field :listen_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "listenEnabled"
       field :listen_authentication_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "listenAuthenticationEnabled"

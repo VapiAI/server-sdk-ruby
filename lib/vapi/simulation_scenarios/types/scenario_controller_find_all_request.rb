@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+module Vapi
+  module SimulationScenarios
+    module Types
+      class ScenarioControllerFindAllRequest < Internal::Types::Model
+        field :id_any, -> { String }, optional: true, nullable: false, api_name: "idAny"
+        field :name, -> { String }, optional: true, nullable: false
+        field :page, -> { Integer }, optional: true, nullable: false
+        field :sort_order, -> { Vapi::SimulationScenarios::Types::ScenarioControllerFindAllRequestSortOrder }, optional: true, nullable: false, api_name: "sortOrder"
+        field :sort_by, -> { Vapi::SimulationScenarios::Types::ScenarioControllerFindAllRequestSortBy }, optional: true, nullable: false, api_name: "sortBy"
+        field :limit, -> { Integer }, optional: true, nullable: false
+        field :created_at_gt, -> { String }, optional: true, nullable: false, api_name: "createdAtGt"
+        field :created_at_lt, -> { String }, optional: true, nullable: false, api_name: "createdAtLt"
+        field :created_at_ge, -> { String }, optional: true, nullable: false, api_name: "createdAtGe"
+        field :created_at_le, -> { String }, optional: true, nullable: false, api_name: "createdAtLe"
+        field :updated_at_gt, -> { String }, optional: true, nullable: false, api_name: "updatedAtGt"
+        field :updated_at_lt, -> { String }, optional: true, nullable: false, api_name: "updatedAtLt"
+        field :updated_at_ge, -> { String }, optional: true, nullable: false, api_name: "updatedAtGe"
+        field :updated_at_le, -> { String }, optional: true, nullable: false, api_name: "updatedAtLe"
+      end
+    end
+  end
+end

@@ -5,6 +5,9 @@ module Vapi
     module UpdateAzureOpenAiCredentialDtoModelsItem
       extend Vapi::Internal::Types::Enum
 
+      GPT_56_LUNA_20260709 = "gpt-5.6-luna-2026-07-09"
+      GPT_56_TERRA_20260709 = "gpt-5.6-terra-2026-07-09"
+      GPT_56_SOL_20260709 = "gpt-5.6-sol-2026-07-09"
       GPT_54 = "gpt-5.4"
       GPT_54_MINI = "gpt-5.4-mini"
       GPT_54_NANO = "gpt-5.4-nano"
@@ -28,6 +31,9 @@ module Vapi
       GPT_40613 = "gpt-4-0613"
       GPT_35_TURBO_0125 = "gpt-35-turbo-0125"
       GPT_35_TURBO_1106 = "gpt-35-turbo-1106"
+      GPT_4_O = "gpt-4o"
+      GPT_41 = "gpt-4.1"
+      GPT_54_MINI_20260317 = "gpt-5.4-mini-2026-03-17"
     end
   end
 end

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for transcribing speech during assistant conversations with Speechmatics, including language,
+    # region, diarization, vocabulary, endpointing, formatting, and fallback settings.
     class SpeechmaticsTranscriber < Internal::Types::Model
       field :model, -> { Vapi::Types::SpeechmaticsTranscriberModel }, optional: true, nullable: false
       field :language, -> { Vapi::Types::SpeechmaticsTranscriberLanguage }, optional: true, nullable: false

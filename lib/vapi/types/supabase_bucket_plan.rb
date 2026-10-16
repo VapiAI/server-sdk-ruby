@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Supabase S3-compatible bucket configuration for call artifacts, including region, endpoint, access keys, bucket
+    # name, and path.
     class SupabaseBucketPlan < Internal::Types::Model
       field :region, -> { Vapi::Types::SupabaseBucketPlanRegion }, optional: false, nullable: false
       field :url, -> { String }, optional: false, nullable: false

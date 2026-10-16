@@ -12,6 +12,7 @@ module Vapi
       ELEVEN_FLASH_V_2_5 = "eleven_flash_v2_5"
       ELEVEN_MONOLINGUAL_V_1 = "eleven_monolingual_v1"
       ELEVEN_V_3 = "eleven_v3"
+      ELEVEN_V_4_TURBO = "eleven_v4_turbo"
     end
   end
 end

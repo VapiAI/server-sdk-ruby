@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Filters string-valued call fields using a list of values or an emptiness test.
     class FilterStringArrayTypeColumnOnCallTable < Internal::Types::Model
       field :column, -> { Vapi::Types::FilterStringArrayTypeColumnOnCallTableColumn }, optional: false, nullable: false
       field :operator, -> { Vapi::Types::FilterStringArrayTypeColumnOnCallTableOperator }, optional: false, nullable: false

@@ -2,11 +2,13 @@
 
 module Vapi
   module Types
+    # Configuration for transcribing speech during assistant conversations with Gladia, including language behavior,
+    # audio processing, endpointing, vocabulary, region, and fallback settings.
     class GladiaTranscriber < Internal::Types::Model
       field :model, -> { Vapi::Types::GladiaTranscriberModel }, optional: true, nullable: false
       field :language_behaviour, -> { Vapi::Types::GladiaTranscriberLanguageBehaviour }, optional: true, nullable: false, api_name: "languageBehaviour"
       field :language, -> { Vapi::Types::GladiaTranscriberLanguage }, optional: true, nullable: false
-      field :languages, -> { Vapi::Types::GladiaTranscriberLanguages }, optional: true, nullable: false
+      field :languages, -> { Internal::Types::Array[Vapi::Types::GladiaTranscriberLanguagesItem] }, optional: true, nullable: false
       field :transcription_hint, -> { String }, optional: true, nullable: false, api_name: "transcriptionHint"
       field :prosody, -> { Internal::Types::Boolean }, optional: true, nullable: false
       field :audio_enhancer, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "audioEnhancer"

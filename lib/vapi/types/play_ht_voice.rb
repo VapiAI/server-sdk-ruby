@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for synthesizing assistant speech with PlayHT, including voice and model selection, language,
+    # emotion and style guidance, chunking, caching, and fallback settings.
     class PlayHtVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { Vapi::Types::PlayHtVoiceId }, optional: false, nullable: false, api_name: "voiceId"

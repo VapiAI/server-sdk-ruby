@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls how an evaluation proceeds after judging an assistant message, including failure handling and optional
+    # message overrides.
     class AssistantMessageEvaluationContinuePlan < Internal::Types::Model
       field :exit_on_failure_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "exitOnFailureEnabled"
       field :content_override, -> { String }, optional: true, nullable: false, api_name: "contentOverride"
