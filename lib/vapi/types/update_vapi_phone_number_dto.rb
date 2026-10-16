@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a Vapi-managed phone number or SIP URI, including its authentication, routing, hooks, and
+    # server settings.
     class UpdateVapiPhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::UpdateVapiPhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::UpdateVapiPhoneNumberDtoHooksItem] }, optional: true, nullable: false

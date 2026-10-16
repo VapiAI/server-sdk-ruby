@@ -2,10 +2,14 @@
 
 module Vapi
   module Types
+    # Fallback configuration for synthesizing assistant speech with Vapi, including voice selection, speed,
+    # pronunciation dictionary, chunking, and caching.
     class FallbackVapiVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
-      field :voice_id, -> { Vapi::Types::FallbackVapiVoiceVoiceId }, optional: false, nullable: false, api_name: "voiceId"
+      field :voice_id, -> { String }, optional: false, nullable: false, api_name: "voiceId"
+      field :version, -> { Vapi::Types::FallbackVapiVoiceVersion }, optional: true, nullable: false
       field :speed, -> { Integer }, optional: true, nullable: false
+      field :language, -> { Vapi::Types::FallbackVapiVoiceLanguage }, optional: true, nullable: false
       field :pronunciation_dictionary, -> { Internal::Types::Array[Vapi::Types::VapiPronunciationDictionaryLocator] }, optional: true, nullable: false, api_name: "pronunciationDictionary"
       field :chunk_plan, -> { Vapi::Types::ChunkPlan }, optional: true, nullable: false, api_name: "chunkPlan"
     end

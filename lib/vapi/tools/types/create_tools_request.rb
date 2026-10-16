@@ -30,6 +30,7 @@ module Vapi
         member -> { Vapi::Types::CreateGoHighLevelContactGetToolDto }, key: "GOHIGHLEVEL_CONTACT_GET"
         member -> { Vapi::Types::CreateSipRequestToolDto }, key: "SIP_REQUEST"
         member -> { Vapi::Types::CreateVoicemailToolDto }, key: "VOICEMAIL"
+        member -> { Vapi::Types::CreateCodeToolDto }, key: "CODE"
       end
     end
   end

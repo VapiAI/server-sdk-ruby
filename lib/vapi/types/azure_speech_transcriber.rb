@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for transcribing speech during assistant conversations with Azure Speech, including language,
+    # segmentation, and fallback settings.
     class AzureSpeechTranscriber < Internal::Types::Model
       field :language, -> { Vapi::Types::AzureSpeechTranscriberLanguage }, optional: true, nullable: false
       field :segmentation_strategy, -> { Vapi::Types::AzureSpeechTranscriberSegmentationStrategy }, optional: true, nullable: false, api_name: "segmentationStrategy"

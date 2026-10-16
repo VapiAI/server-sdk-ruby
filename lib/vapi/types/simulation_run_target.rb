@@ -2,7 +2,7 @@
 
 module Vapi
   module Types
-    # Target to test against
+    # The assistant or squad the run was tested against.
     class SimulationRunTarget < Internal::Types::Model
       extend Vapi::Internal::Types::Union
 

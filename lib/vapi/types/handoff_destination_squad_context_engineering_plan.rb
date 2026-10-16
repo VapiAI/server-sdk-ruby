@@ -12,6 +12,7 @@ module Vapi
       member -> { Vapi::Types::ContextEngineeringPlanNone }, key: "NONE"
       member -> { Vapi::Types::ContextEngineeringPlanAll }, key: "ALL"
       member -> { Vapi::Types::ContextEngineeringPlanUserAndAssistantMessages }, key: "USER_AND_ASSISTANT_MESSAGES"
+      member -> { Vapi::Types::ContextEngineeringPlanPreviousAssistantMessages }, key: "PREVIOUS_ASSISTANT_MESSAGES"
     end
   end
 end

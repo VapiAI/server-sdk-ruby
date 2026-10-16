@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a line-chart insight, including its queries, formulas, grouping, time range, metadata, and
+    # name.
     class UpdateLineInsightFromCallTableDto < Internal::Types::Model
       field :name, -> { String }, optional: true, nullable: false
       field :formulas, -> { Internal::Types::Array[Vapi::Types::InsightFormula] }, optional: true, nullable: false

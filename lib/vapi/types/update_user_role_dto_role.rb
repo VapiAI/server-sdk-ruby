@@ -2,12 +2,11 @@
 
 module Vapi
   module Types
-    module UpdateUserRoleDtoRole
-      extend Vapi::Internal::Types::Enum
+    class UpdateUserRoleDtoRole < Internal::Types::Model
+      extend Vapi::Internal::Types::Union
 
-      ADMIN = "admin"
-      EDITOR = "editor"
-      VIEWER = "viewer"
+      member -> { Vapi::Types::UpdateUserRoleDtoRoleZero }
+      member -> { String }
     end
   end
 end

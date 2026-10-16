@@ -11,6 +11,7 @@ module Vapi
       field :slack_webhook_url, -> { String }, optional: true, nullable: false, api_name: "slackWebhookUrl"
       field :path, -> { String }, optional: true, nullable: false
       field :simulation_ids, -> { Internal::Types::Array[String] }, optional: false, nullable: false, api_name: "simulationIds"
+      field :target_assignments, -> { Internal::Types::Array[Vapi::Types::SimulationSuiteTargetAssignment] }, optional: false, nullable: false, api_name: "targetAssignments"
     end
   end
 end

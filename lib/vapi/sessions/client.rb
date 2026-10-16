@@ -26,15 +26,18 @@ module Vapi
       # @option params [Boolean, nil] :number_e_164_check_enabled
       # @option params [String, nil] :extension
       # @option params [String, nil] :assistant_overrides
+      # @option params [String, nil] :squad_overrides
       # @option params [String, nil] :number
       # @option params [String, nil] :sip_uri
       # @option params [String, nil] :email
       # @option params [String, nil] :external_id
       # @option params [String, nil] :customer_number_any
+      # @option params [String, nil] :id_any
       # @option params [String, nil] :phone_number_id
       # @option params [String, nil] :phone_number_id_any
       # @option params [Integer, nil] :page
       # @option params [Vapi::Sessions::Types::ListSessionsRequestSortOrder, nil] :sort_order
+      # @option params [Vapi::Sessions::Types::ListSessionsRequestSortBy, nil] :sort_by
       # @option params [Integer, nil] :limit
       # @option params [String, nil] :created_at_gt
       # @option params [String, nil] :created_at_lt
@@ -48,7 +51,7 @@ module Vapi
       # @return [Vapi::Types::SessionPaginatedResponse]
       def list(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
-        query_param_names = %i[id name assistant_id assistant_id_any squad_id workflow_id number_e_164_check_enabled extension assistant_overrides number sip_uri email external_id customer_number_any phone_number_id phone_number_id_any page sort_order limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
+        query_param_names = %i[id name assistant_id assistant_id_any squad_id workflow_id number_e_164_check_enabled extension assistant_overrides squad_overrides number sip_uri email external_id customer_number_any id_any phone_number_id phone_number_id_any page sort_order sort_by limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
         query_params = {}
         query_params["id"] = params[:id] if params.key?(:id)
         query_params["name"] = params[:name] if params.key?(:name)
@@ -59,15 +62,18 @@ module Vapi
         query_params["numberE164CheckEnabled"] = params[:number_e_164_check_enabled] if params.key?(:number_e_164_check_enabled)
         query_params["extension"] = params[:extension] if params.key?(:extension)
         query_params["assistantOverrides"] = params[:assistant_overrides] if params.key?(:assistant_overrides)
+        query_params["squadOverrides"] = params[:squad_overrides] if params.key?(:squad_overrides)
         query_params["number"] = params[:number] if params.key?(:number)
         query_params["sipUri"] = params[:sip_uri] if params.key?(:sip_uri)
         query_params["email"] = params[:email] if params.key?(:email)
         query_params["externalId"] = params[:external_id] if params.key?(:external_id)
         query_params["customerNumberAny"] = params[:customer_number_any] if params.key?(:customer_number_any)
+        query_params["idAny"] = params[:id_any] if params.key?(:id_any)
         query_params["phoneNumberId"] = params[:phone_number_id] if params.key?(:phone_number_id)
         query_params["phoneNumberIdAny"] = params[:phone_number_id_any] if params.key?(:phone_number_id_any)
         query_params["page"] = params[:page] if params.key?(:page)
         query_params["sortOrder"] = params[:sort_order] if params.key?(:sort_order)
+        query_params["sortBy"] = params[:sort_by] if params.key?(:sort_by)
         query_params["limit"] = params[:limit] if params.key?(:limit)
         query_params["createdAtGt"] = params[:created_at_gt] if params.key?(:created_at_gt)
         query_params["createdAtLt"] = params[:created_at_lt] if params.key?(:created_at_lt)

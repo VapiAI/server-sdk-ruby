@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration for detecting voicemail with Vapi, including detection type, maximum beep wait, and retry backoff.
     class VapiVoicemailDetectionPlan < Internal::Types::Model
       field :beep_max_await_seconds, -> { Integer }, optional: true, nullable: false, api_name: "beepMaxAwaitSeconds"
       field :provider, -> { Vapi::Types::VapiVoicemailDetectionPlanProvider }, optional: false, nullable: false

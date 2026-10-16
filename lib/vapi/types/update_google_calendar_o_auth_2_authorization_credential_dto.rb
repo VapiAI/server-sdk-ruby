@@ -3,6 +3,7 @@
 module Vapi
   module Types
     class UpdateGoogleCalendarOAuth2AuthorizationCredentialDto < Internal::Types::Model
+      field :provider, -> { Vapi::Types::UpdateGoogleCalendarOAuth2AuthorizationCredentialDtoProvider }, optional: true, nullable: false
       field :authorization_id, -> { String }, optional: true, nullable: false, api_name: "authorizationId"
       field :name, -> { String }, optional: true, nullable: false
     end

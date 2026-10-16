@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A knowledge-base configuration, including its provider, model, description, and associated files.
     class KnowledgeBase < Internal::Types::Model
       field :name, -> { String }, optional: false, nullable: false
       field :provider, -> { Vapi::Types::KnowledgeBaseProvider }, optional: false, nullable: false

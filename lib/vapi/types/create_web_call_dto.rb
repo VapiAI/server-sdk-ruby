@@ -3,6 +3,8 @@
 module Vapi
   module Types
     class CreateWebCallDto < Internal::Types::Model
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
+      field :squad_version, -> { String }, optional: true, nullable: false, api_name: "squadVersion"
       field :room_delete_on_user_leave_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "roomDeleteOnUserLeaveEnabled"
       field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
       field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: true, nullable: false

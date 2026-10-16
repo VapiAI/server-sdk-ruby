@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Google Cloud service-account key used to authenticate access to Google Cloud resources.
     class GcpKey < Internal::Types::Model
       field :type, -> { String }, optional: false, nullable: false
       field :project_id, -> { String }, optional: false, nullable: false, api_name: "projectId"

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A provider-managed pronunciation-dictionary resource mirrored in Vapi, including its provider identifiers,
+    # resource data, and lifecycle information.
     class ProviderResource < Internal::Types::Model
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"

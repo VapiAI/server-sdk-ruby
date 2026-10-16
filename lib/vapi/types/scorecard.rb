@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A saved scorecard containing its evaluation metrics, scoring conditions, assistant associations, descriptive
+    # metadata, and lifecycle information.
     class Scorecard < Internal::Types::Model
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
