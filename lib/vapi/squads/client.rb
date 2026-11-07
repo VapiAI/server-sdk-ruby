@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Returns squads for the authenticated organization. Filter results by creation or update timestamps and limit the
+      # number returned.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -17,6 +20,7 @@ module Vapi
       # @option request_options [Hash{String => Object}] :additional_query_parameters
       # @option request_options [Hash{String => Object}] :additional_body_parameters
       # @option request_options [Integer] :timeout_in_seconds
+      # @option params [String, nil] :id_any
       # @option params [Integer, nil] :limit
       # @option params [String, nil] :created_at_gt
       # @option params [String, nil] :created_at_lt
@@ -30,8 +34,9 @@ module Vapi
       # @return [Array[Vapi::Types::Squad]]
       def list(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
-        query_param_names = %i[limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
+        query_param_names = %i[id_any limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
         query_params = {}
+        query_params["idAny"] = params[:id_any] if params.key?(:id_any)
         query_params["limit"] = params[:limit] if params.key?(:limit)
         query_params["createdAtGt"] = params[:created_at_gt] if params.key?(:created_at_gt)
         query_params["createdAtLt"] = params[:created_at_lt] if params.key?(:created_at_lt)
@@ -62,6 +67,8 @@ module Vapi
         raise error_class.new(response.body, code: code)
       end
 
+      # Creates a squad that coordinates multiple assistants and their handoffs during a conversation.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Types::CreateSquadDto]
       # @option request_options [String] :base_url
@@ -94,6 +101,8 @@ module Vapi
         end
       end
 
+      # Returns the squad identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -126,6 +135,8 @@ module Vapi
         end
       end
 
+      # Deletes the squad identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -158,6 +169,8 @@ module Vapi
         end
       end
 
+      # Updates the specified fields of the squad identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Squads::Types::UpdateSquadDto]
       # @option request_options [String] :base_url

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fallback configuration for synthesizing assistant speech with Inworld, including voice and model selection,
+    # language, temperature, speaking rate, chunking, and caching.
     class FallbackInworldVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { Vapi::Types::FallbackInworldVoiceVoiceId }, optional: false, nullable: false, api_name: "voiceId"

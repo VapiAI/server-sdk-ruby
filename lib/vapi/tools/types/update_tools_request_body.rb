@@ -12,6 +12,7 @@ module Vapi
         member -> { Vapi::Types::UpdateDtmfToolDto }, key: "DTMF"
         member -> { Vapi::Types::UpdateEndCallToolDto }, key: "END_CALL"
         member -> { Vapi::Types::UpdateFunctionToolDto }, key: "FUNCTION"
+        member -> { Vapi::Types::UpdateKnowledgeBaseToolDto }, key: "KNOWLEDGE_BASE"
         member -> { Vapi::Types::UpdateTransferCallToolDto }, key: "TRANSFER_CALL"
         member -> { Vapi::Types::UpdateHandoffToolDto }, key: "HANDOFF"
         member -> { Vapi::Types::UpdateBashToolDto }, key: "BASH"
@@ -30,6 +31,7 @@ module Vapi
         member -> { Vapi::Types::UpdateGoHighLevelContactGetToolDto }, key: "GOHIGHLEVEL_CONTACT_GET"
         member -> { Vapi::Types::UpdateSipRequestToolDto }, key: "SIP_REQUEST"
         member -> { Vapi::Types::UpdateVoicemailToolDto }, key: "VOICEMAIL"
+        member -> { Vapi::Types::UpdateCodeToolDto }, key: "CODE"
       end
     end
   end

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for transcribing speech during assistant conversations with ElevenLabs, including model, language,
+    # speech thresholds, and fallback settings.
     class ElevenLabsTranscriber < Internal::Types::Model
       field :model, -> { Vapi::Types::ElevenLabsTranscriberModel }, optional: true, nullable: false
       field :language, -> { Vapi::Types::ElevenLabsTranscriberLanguage }, optional: true, nullable: false

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Metadata identifying a saved insight run and its lifecycle timestamps.
     class InsightRunResponse < Internal::Types::Model
       field :id, -> { String }, optional: false, nullable: false
       field :insight_id, -> { String }, optional: false, nullable: false, api_name: "insightId"

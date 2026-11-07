@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Credentials for Azure Speech or Blob Storage, including service, region, and optional storage bucket settings.
     class CreateAzureCredentialDto < Internal::Types::Model
       field :service, -> { Vapi::Types::CreateAzureCredentialDtoService }, optional: false, nullable: false
       field :region, -> { Vapi::Types::CreateAzureCredentialDtoRegion }, optional: true, nullable: false

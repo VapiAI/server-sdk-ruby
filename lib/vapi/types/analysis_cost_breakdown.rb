@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Analysis costs and token usage grouped by summary, structured data, success evaluation, and structured-output
+    # generation.
     class AnalysisCostBreakdown < Internal::Types::Model
       field :summary, -> { Integer }, optional: true, nullable: false
       field :summary_prompt_tokens, -> { Integer }, optional: true, nullable: false, api_name: "summaryPromptTokens"
