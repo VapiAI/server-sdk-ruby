@@ -21,6 +21,9 @@ module Vapi
         member -> { Vapi::Types::OpenAiTranscriber }, key: "OPENAI"
         member -> { Vapi::Types::CartesiaTranscriber }, key: "CARTESIA"
         member -> { Vapi::Types::SonioxTranscriber }, key: "SONIOX"
+        member -> { Vapi::Types::XaiTranscriber }, key: "XAI"
+        member -> { Vapi::Types::Reson8Transcriber }, key: "RESON_8"
+        member -> { Vapi::Types::VapiTranscriber }, key: "VAPI"
       end
     end
   end

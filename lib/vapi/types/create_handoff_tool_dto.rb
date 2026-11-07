@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to create a tool that hands a conversation to another assistant, squad, or dynamically selected
+    # destination.
     class CreateHandoffToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::CreateHandoffToolDtoMessagesItem] }, optional: true, nullable: false
       field :default_result, -> { String }, optional: true, nullable: false, api_name: "defaultResult"

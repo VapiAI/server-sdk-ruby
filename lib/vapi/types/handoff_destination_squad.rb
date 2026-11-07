@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Routes a handoff to a saved or transient squad, with optional entry assistant, context engineering, variable
+    # extraction, and overrides.
     class HandoffDestinationSquad < Internal::Types::Model
       field :context_engineering_plan, -> { Vapi::Types::HandoffDestinationSquadContextEngineeringPlan }, optional: true, nullable: false, api_name: "contextEngineeringPlan"
       field :squad_id, -> { String }, optional: true, nullable: false, api_name: "squadId"

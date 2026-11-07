@@ -13,7 +13,7 @@ module Vapi
       field :status, -> { Vapi::Types::SessionStatus }, optional: true, nullable: false
       field :expiration_seconds, -> { Integer }, optional: true, nullable: false, api_name: "expirationSeconds"
       field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
-      field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: true, nullable: false
+      field :assistant, -> { Vapi::Types::TransientAssistantDto }, optional: true, nullable: false
       field :assistant_overrides, -> { Vapi::Types::AssistantOverrides }, optional: true, nullable: false, api_name: "assistantOverrides"
       field :squad_id, -> { String }, optional: true, nullable: false, api_name: "squadId"
       field :squad, -> { Vapi::Types::CreateSquadDto }, optional: true, nullable: false

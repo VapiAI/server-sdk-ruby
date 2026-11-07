@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fallback configuration for synthesizing assistant speech with WellSaid, including voice and model selection,
+    # Speech Synthesis Markup Language support, voice libraries, chunking, and caching.
     class FallbackWellSaidVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { String }, optional: false, nullable: false, api_name: "voiceId"

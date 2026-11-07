@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # OpenAI-compatible custom model configuration for an LLM judge, including its endpoint, headers, messages, and
+    # generation settings.
     class EvalCustomModel < Internal::Types::Model
       field :url, -> { String }, optional: false, nullable: false
       field :headers, -> { Internal::Types::Hash[String, Object] }, optional: true, nullable: false

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Credentials for authenticating telephony requests with Twilio using an account SID and either an auth token or API
+    # key credentials.
     class CreateTwilioCredentialDto < Internal::Types::Model
       field :auth_token, -> { String }, optional: true, nullable: false, api_name: "authToken"
       field :api_key, -> { String }, optional: true, nullable: false, api_name: "apiKey"

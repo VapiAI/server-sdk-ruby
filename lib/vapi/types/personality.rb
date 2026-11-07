@@ -8,7 +8,7 @@ module Vapi
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
       field :updated_at, -> { String }, optional: false, nullable: false, api_name: "updatedAt"
       field :name, -> { String }, optional: false, nullable: false
-      field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: false, nullable: false
+      field :assistant, -> { Vapi::Types::TransientAssistantDto }, optional: false, nullable: false
       field :path, -> { String }, optional: true, nullable: false
     end
   end

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A Telnyx phone number connected to Vapi, including its credential, routing, hooks, server settings, and lifecycle
+    # metadata.
     class TelnyxPhoneNumber < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::TelnyxPhoneNumberFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::TelnyxPhoneNumberHooksItem] }, optional: true, nullable: false

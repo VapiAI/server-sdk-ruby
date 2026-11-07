@@ -2,7 +2,10 @@
 
 module Vapi
   module Types
+    # A reusable tool that adds calendar events to a connected GoHighLevel account.
     class GoHighLevelCalendarEventCreateTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
+      field :baseline_version, -> { String }, optional: true, nullable: false, api_name: "baselineVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::GoHighLevelCalendarEventCreateToolMessagesItem] }, optional: true, nullable: false
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
