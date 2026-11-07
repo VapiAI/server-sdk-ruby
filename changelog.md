@@ -1,3 +1,17 @@
+## [3.0.0] - 2026-11-07
+### Breaking Changes
+- **`UpdateAssistantDtoVoice`** — the `TAVUS` (`TavusVoice`) member has been removed; replace any Tavus voice usage with an alternative voice type.
+- **`UpdateAssistantDtoCredentialsItem`** — the `TRIEVE` (`CreateTrieveCredentialDto`) member has been replaced by `RESON_8` (`CreateReson8CredentialDto`); update any code referencing the Trieve credential key.
+- **`CreateCallDto#assistant`**, **`CreateChatDto#assistant`**, **`OpenAiResponsesRequest#assistant`** — field type changed from `CreateAssistantDto` to `TransientAssistantDto`; update any code constructing these objects directly.
+
+### Added
+- **Simulation platform** — five new clients (`SimulationPersonalitiesClient`, `SimulationScenariosClient`, `SimulationRunsClient`, `SimulationSuitesClient`, `SimulationsClient`) with full CRUD and onboarding-generation operations for building and running AI agent simulations.
+- **Assistant and tool versioning** — `AssistantDraft`, `AssistantVersion`, `ToolDraft`, and `ToolVersion` types with supporting DTOs and paginated responses enable draft/publish workflows.
+- **Traffic allocations and guardrails** — `TrafficAllocationsClient`, `GuardrailRulesClient`, and `GuardrailPacksClient` support A/B traffic splitting and content guardrail management.
+- **New transcriber and voice providers** — `XaiTranscriber`, `Reson8Transcriber`, `VapiTranscriber`, `MicrosoftVoice`, `XaiVoice`, and their fallback variants are now available across assistant, workflow, and fallback configurations.
+- **New platform capabilities** — `KnowledgeBasesV2Client`, `BoardClient`, `CallHealthDashboard` analytics DTOs, `CampaignSummary` with v2 campaign APIs, `TransientAssistantDto`, `CallTransport` union, and `S3CompatibleStorageCredential`/`MicrosoftCredential` are all now available.
+- See full changelog for all changes
+
 ## 2.0.0 - 2026-06-24
 ### Breaking Changes
 * **`Vapi::Types::CartesiaExperimentalControlsSpeedZero`** has been renamed to **`Vapi::Types::CartesiaSpeedControlZero`**. Update any references to use the new name.
