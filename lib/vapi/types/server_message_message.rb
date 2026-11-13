@@ -41,6 +41,8 @@ module Vapi
       member -> { Vapi::Types::ServerMessageSessionDeleted }
       member -> { Vapi::Types::ServerMessageCallDeleted }
       member -> { Vapi::Types::ServerMessageCallDeleteFailed }
+      member -> { Vapi::Types::ServerMessageCallArtifactUpload }
+      member -> { Vapi::Types::ServerMessageCampaignPredial }
     end
   end
 end

@@ -22,11 +22,12 @@ module Vapi
       member -> { Vapi::Types::WellSaidVoice }, key: "WELLSAID"
       member -> { Vapi::Types::RimeAiVoice }, key: "RIME_AI"
       member -> { Vapi::Types::SmallestAiVoice }, key: "SMALLEST_AI"
-      member -> { Vapi::Types::TavusVoice }, key: "TAVUS"
       member -> { Vapi::Types::VapiVoice }, key: "VAPI"
       member -> { Vapi::Types::SesameVoice }, key: "SESAME"
       member -> { Vapi::Types::InworldVoice }, key: "INWORLD"
       member -> { Vapi::Types::MinimaxVoice }, key: "MINIMAX"
+      member -> { Vapi::Types::XaiVoice }, key: "XAI"
+      member -> { Vapi::Types::MicrosoftVoice }, key: "MICROSOFT"
     end
   end
 end

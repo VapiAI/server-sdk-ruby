@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration used to create a voicemail-detection tool with optional beep detection for supported calls.
     class CreateVoicemailToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::CreateVoicemailToolDtoMessagesItem] }, optional: true, nullable: false
       field :beep_detection_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "beepDetectionEnabled"

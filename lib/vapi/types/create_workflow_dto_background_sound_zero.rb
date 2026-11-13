@@ -7,6 +7,10 @@ module Vapi
 
       OFF = "off"
       OFFICE = "office"
+      WHITE_NOISE = "white-noise"
+      CITY = "city"
+      CROWD = "crowd"
+      FARM = "farm"
     end
   end
 end

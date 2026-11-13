@@ -1,3 +1,17 @@
+## [3.0.0] - 2026-11-13
+### Breaking Changes
+- **`UpdateAssistantDtoVoice`** — `TavusVoice` (key `"TAVUS"`) has been removed from the voice union; replace any construction or pattern-matching on this variant.
+- **`UpdateAssistantDtoCredentialsItem`** — `CreateTrieveCredentialDto` (key `"TRIEVE"`) has been replaced by `CreateReson8CredentialDto` (key `"RESON_8"`); update all references to use the new type and key.
+- **`CreateCallDto#assistant`**, **`CreateChatDto#assistant`**, **`OpenAiResponsesRequest#assistant`** — the `assistant` field type changed from `CreateAssistantDto` to `TransientAssistantDto`; update any code constructing these objects directly.
+
+### Added
+- **Simulation platform** — new `Vapi::Simulations`, `Vapi::SimulationSuites`, `Vapi::SimulationScenarios`, `Vapi::SimulationRuns`, and `Vapi::SimulationPersonalities` clients with full CRUD, onboarding, and AI-suggestion workflows.
+- **`Vapi::Board::Client`** and **`Vapi::TrafficAllocations::Client`** — new top-level clients for managing reporting boards and A/B traffic splits across assistant versions, including per-version call metrics.
+- **`Vapi::KnowledgeBasesV2::Client`** — new client for the KnowledgeBase V2 API with CRUD and file attach/detach/retry operations; `KnowledgeBaseV2`, `KnowledgeBaseTool`, and related types introduced.
+- **New transcriber and voice providers** — `XaiTranscriber`, `Reson8Transcriber`, `VapiTranscriber`, `MicrosoftVoice`, `FallbackMicrosoftVoice`, `FallbackXaiTranscriber`, `FallbackReson8Transcriber`, and `FallbackXaiVoice` added across all relevant unions.
+- **Assistant and tool versioning** — `AssistantDraft`, `AssistantVersion`, `ToolDraft`, `ToolVersion`, `ToolRef`, and supporting paginated/conflict response types added for versioned management of assistants and tools.
+- See full changelog for all changes
+
 ## 2.0.0 - 2026-06-24
 ### Breaking Changes
 * **`Vapi::Types::CartesiaExperimentalControlsSpeedZero`** has been renamed to **`Vapi::Types::CartesiaSpeedControlZero`**. Update any references to use the new name.

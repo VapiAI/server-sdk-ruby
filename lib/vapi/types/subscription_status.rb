@@ -7,6 +7,7 @@ module Vapi
 
       ACTIVE = "active"
       FROZEN = "frozen"
+      BLOCKED = "blocked"
     end
   end
 end

@@ -2,10 +2,13 @@
 
 module Vapi
   module Types
+    # VapiQL JSON query that counts or calculates the percentage of matching events using optional typed event-data
+    # filters.
     class JsonQueryOnEventsTable < Internal::Types::Model
       field :type, -> { Vapi::Types::JsonQueryOnEventsTableType }, optional: false, nullable: false
       field :table, -> { Vapi::Types::JsonQueryOnEventsTableTable }, optional: false, nullable: false
       field :on, -> { Vapi::Types::JsonQueryOnEventsTableOn }, optional: false, nullable: false
+      field :column, -> { String }, optional: true, nullable: false
       field :operation, -> { Vapi::Types::JsonQueryOnEventsTableOperation }, optional: false, nullable: false
       field :filters, -> { Internal::Types::Array[Vapi::Types::JsonQueryOnEventsTableFiltersItem] }, optional: true, nullable: false
       field :name, -> { String }, optional: true, nullable: false

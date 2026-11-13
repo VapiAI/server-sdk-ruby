@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Fields used to update a GoHighLevel contact-retrieval tool, including its spoken messages and rejection plan.
     class UpdateGoHighLevelContactGetToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateGoHighLevelContactGetToolDtoMessagesItem] }, optional: true, nullable: false
       field :rejection_plan, -> { Vapi::Types::ToolRejectionPlan }, optional: true, nullable: false, api_name: "rejectionPlan"

@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Returns assistants for the authenticated organization. Filter results by creation or update timestamps and limit
+      # the number returned.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -62,6 +65,9 @@ module Vapi
         raise error_class.new(response.body, code: code)
       end
 
+      # Creates a reusable assistant configuration containing the model, voice, transcriber, tools, prompts, and call
+      # behavior.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Types::CreateAssistantDto]
       # @option request_options [String] :base_url
@@ -94,6 +100,8 @@ module Vapi
         end
       end
 
+      # Returns the assistant identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -126,6 +134,8 @@ module Vapi
         end
       end
 
+      # Deletes the assistant identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -158,6 +168,8 @@ module Vapi
         end
       end
 
+      # Updates the specified fields of the assistant identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Assistants::Types::UpdateAssistantDto]
       # @option request_options [String] :base_url

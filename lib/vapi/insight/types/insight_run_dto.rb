@@ -7,6 +7,7 @@ module Vapi
         field :id, -> { String }, optional: false, nullable: false
         field :format_plan, -> { Vapi::Types::InsightRunFormatPlan }, optional: true, nullable: false, api_name: "formatPlan"
         field :time_range_override, -> { Vapi::Types::InsightTimeRangeWithStep }, optional: true, nullable: false, api_name: "timeRangeOverride"
+        field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
       end
     end
   end

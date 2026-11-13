@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A named analytics query against call or subscription data, including grouping, time range, and aggregation
+    # operations.
     class AnalyticsQuery < Internal::Types::Model
       field :table, -> { Vapi::Types::AnalyticsQueryTable }, optional: false, nullable: false
       field :group_by, -> { Internal::Types::Array[Vapi::Types::AnalyticsQueryGroupByItem] }, optional: true, nullable: false, api_name: "groupBy"
