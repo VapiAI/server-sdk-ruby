@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a Twilio phone number, including its account credentials, SMS configuration, routing, hooks,
+    # and server settings.
     class UpdateTwilioPhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::UpdateTwilioPhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::UpdateTwilioPhoneNumberDtoHooksItem] }, optional: true, nullable: false

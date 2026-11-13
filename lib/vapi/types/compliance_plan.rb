@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Controls HIPAA and PCI requirements, transcript security filtering, and recording-consent handling for assistant
+    # calls.
     class CompliancePlan < Internal::Types::Model
       field :hipaa_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "hipaaEnabled"
       field :pci_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "pciEnabled"

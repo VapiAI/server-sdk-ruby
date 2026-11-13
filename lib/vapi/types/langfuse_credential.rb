@@ -7,6 +7,7 @@ module Vapi
       field :public_key, -> { String }, optional: false, nullable: false, api_name: "publicKey"
       field :api_key, -> { String }, optional: false, nullable: false, api_name: "apiKey"
       field :api_url, -> { String }, optional: false, nullable: false, api_name: "apiUrl"
+      field :server_version, -> { String }, optional: true, nullable: false, api_name: "serverVersion"
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"

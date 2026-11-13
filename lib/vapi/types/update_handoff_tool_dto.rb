@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a handoff tool, including its destinations, function definition, default result, messages,
+    # and rejection plan.
     class UpdateHandoffToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateHandoffToolDtoMessagesItem] }, optional: true, nullable: false
       field :default_result, -> { String }, optional: true, nullable: false, api_name: "defaultResult"

@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ServerMessageSpeechUpdate < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ServerMessageSpeechUpdatePhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ServerMessageSpeechUpdateType }, optional: false, nullable: false
       field :status, -> { Vapi::Types::ServerMessageSpeechUpdateStatus }, optional: false, nullable: false
       field :role, -> { Vapi::Types::ServerMessageSpeechUpdateRole }, optional: false, nullable: false

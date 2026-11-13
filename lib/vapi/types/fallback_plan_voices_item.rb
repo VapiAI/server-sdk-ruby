@@ -20,10 +20,11 @@ module Vapi
       member -> { Vapi::Types::FallbackWellSaidVoice }, key: "WELLSAID"
       member -> { Vapi::Types::FallbackRimeAiVoice }, key: "RIME_AI"
       member -> { Vapi::Types::FallbackSmallestAiVoice }, key: "SMALLEST_AI"
-      member -> { Vapi::Types::FallbackTavusVoice }, key: "TAVUS"
       member -> { Vapi::Types::FallbackNeuphonicVoice }, key: "NEUPHONIC"
       member -> { Vapi::Types::FallbackSesameVoice }, key: "SESAME"
       member -> { Vapi::Types::FallbackInworldVoice }, key: "INWORLD"
+      member -> { Vapi::Types::FallbackXaiVoice }, key: "XAI"
+      member -> { Vapi::Types::FallbackMicrosoftVoice }, key: "MICROSOFT"
     end
   end
 end

@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Configuration passed to Twilio for assistant calls, including ring timeout and Twilio recording behavior.
     class TransportConfigurationTwilio < Internal::Types::Model
       field :provider, -> { Vapi::Types::TransportConfigurationTwilioProvider }, optional: false, nullable: false
       field :timeout, -> { Integer }, optional: true, nullable: false

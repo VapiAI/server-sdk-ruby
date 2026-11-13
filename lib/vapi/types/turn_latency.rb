@@ -2,7 +2,9 @@
 
 module Vapi
   module Types
+    # Model, voice, transcription, endpointing, and total latency measurements for a conversation turn.
     class TurnLatency < Internal::Types::Model
+      field :unmeasured, -> { Internal::Types::Array[Vapi::Types::TurnLatencyUnmeasuredItem] }, optional: true, nullable: false
       field :model_latency, -> { Integer }, optional: true, nullable: false, api_name: "modelLatency"
       field :voice_latency, -> { Integer }, optional: true, nullable: false, api_name: "voiceLatency"
       field :transcriber_latency, -> { Integer }, optional: true, nullable: false, api_name: "transcriberLatency"

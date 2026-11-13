@@ -32,6 +32,7 @@ module Vapi
       MS = "ms"
       NL = "nl"
       NO = "no"
+      OR = "or"
       PA = "pa"
       PL = "pl"
       PT = "pt"
@@ -45,6 +46,7 @@ module Vapi
       TL = "tl"
       TR = "tr"
       UK = "uk"
+      UR = "ur"
       VI = "vi"
       ZH = "zh"
     end

@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Returns eval definitions for the authenticated organization. Filter results by ID or creation and update
+      # timestamps.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -20,6 +23,7 @@ module Vapi
       # @option params [String, nil] :id
       # @option params [Integer, nil] :page
       # @option params [Vapi::Eval::Types::EvalControllerGetPaginatedRequestSortOrder, nil] :sort_order
+      # @option params [Vapi::Eval::Types::EvalControllerGetPaginatedRequestSortBy, nil] :sort_by
       # @option params [Integer, nil] :limit
       # @option params [String, nil] :created_at_gt
       # @option params [String, nil] :created_at_lt
@@ -33,11 +37,12 @@ module Vapi
       # @return [Vapi::Types::EvalPaginatedResponse]
       def eval_controller_get_paginated(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
-        query_param_names = %i[id page sort_order limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
+        query_param_names = %i[id page sort_order sort_by limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
         query_params = {}
         query_params["id"] = params[:id] if params.key?(:id)
         query_params["page"] = params[:page] if params.key?(:page)
         query_params["sortOrder"] = params[:sort_order] if params.key?(:sort_order)
+        query_params["sortBy"] = params[:sort_by] if params.key?(:sort_by)
         query_params["limit"] = params[:limit] if params.key?(:limit)
         query_params["createdAtGt"] = params[:created_at_gt] if params.key?(:created_at_gt)
         query_params["createdAtLt"] = params[:created_at_lt] if params.key?(:created_at_lt)
@@ -70,6 +75,9 @@ module Vapi
         end
       end
 
+      # Creates a reusable eval that defines a mock conversation and checkpoints for evaluating assistant responses and
+      # tool calls.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Types::CreateEvalDto]
       # @option request_options [String] :base_url
@@ -102,6 +110,8 @@ module Vapi
         end
       end
 
+      # Returns the eval definition identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -134,6 +144,8 @@ module Vapi
         end
       end
 
+      # Deletes the eval definition identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -166,6 +178,8 @@ module Vapi
         end
       end
 
+      # Updates the eval definition identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Eval::Types::UpdateEvalDto]
       # @option request_options [String] :base_url
@@ -203,6 +217,8 @@ module Vapi
         end
       end
 
+      # Returns the eval run identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -235,6 +251,8 @@ module Vapi
         end
       end
 
+      # Deletes the eval run identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -267,6 +285,8 @@ module Vapi
         end
       end
 
+      # Returns eval runs for the authenticated organization. Filter results by ID or creation and update timestamps.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -274,9 +294,9 @@ module Vapi
       # @option request_options [Hash{String => Object}] :additional_query_parameters
       # @option request_options [Hash{String => Object}] :additional_body_parameters
       # @option request_options [Integer] :timeout_in_seconds
+      # @option params [Vapi::Eval::Types::EvalControllerGetRunsPaginatedRequestSortBy, nil] :sort_by
+      # @option params [String, nil] :search
       # @option params [String, nil] :id
-      # @option params [Integer, nil] :page
-      # @option params [Vapi::Eval::Types::EvalControllerGetRunsPaginatedRequestSortOrder, nil] :sort_order
       # @option params [Integer, nil] :limit
       # @option params [String, nil] :created_at_gt
       # @option params [String, nil] :created_at_lt
@@ -286,15 +306,17 @@ module Vapi
       # @option params [String, nil] :updated_at_lt
       # @option params [String, nil] :updated_at_ge
       # @option params [String, nil] :updated_at_le
+      # @option params [Integer, nil] :page
+      # @option params [Vapi::Eval::Types::EvalControllerGetRunsPaginatedRequestSortOrder, nil] :sort_order
       #
       # @return [Vapi::Types::EvalRunPaginatedResponse]
       def eval_controller_get_runs_paginated(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
-        query_param_names = %i[id page sort_order limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le]
+        query_param_names = %i[sort_by search id limit created_at_gt created_at_lt created_at_ge created_at_le updated_at_gt updated_at_lt updated_at_ge updated_at_le page sort_order]
         query_params = {}
+        query_params["sortBy"] = params[:sort_by] if params.key?(:sort_by)
+        query_params["search"] = params[:search] if params.key?(:search)
         query_params["id"] = params[:id] if params.key?(:id)
-        query_params["page"] = params[:page] if params.key?(:page)
-        query_params["sortOrder"] = params[:sort_order] if params.key?(:sort_order)
         query_params["limit"] = params[:limit] if params.key?(:limit)
         query_params["createdAtGt"] = params[:created_at_gt] if params.key?(:created_at_gt)
         query_params["createdAtLt"] = params[:created_at_lt] if params.key?(:created_at_lt)
@@ -304,6 +326,8 @@ module Vapi
         query_params["updatedAtLt"] = params[:updated_at_lt] if params.key?(:updated_at_lt)
         query_params["updatedAtGe"] = params[:updated_at_ge] if params.key?(:updated_at_ge)
         query_params["updatedAtLe"] = params[:updated_at_le] if params.key?(:updated_at_le)
+        query_params["page"] = params[:page] if params.key?(:page)
+        query_params["sortOrder"] = params[:sort_order] if params.key?(:sort_order)
         params.except(*query_param_names)
 
         request = Vapi::Internal::JSON::Request.new(
@@ -327,6 +351,9 @@ module Vapi
         end
       end
 
+      # Runs a saved or transient eval against an assistant or squad and creates an eval-run record containing the
+      # results.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Eval::Types::CreateEvalRunDto]
       # @option request_options [String] :base_url

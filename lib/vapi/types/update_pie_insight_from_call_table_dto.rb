@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Fields used to update a pie-chart insight, including its queries, formulas, grouping, time range, and name.
     class UpdatePieInsightFromCallTableDto < Internal::Types::Model
       field :name, -> { String }, optional: true, nullable: false
       field :formulas, -> { Internal::Types::Array[Vapi::Types::InsightFormula] }, optional: true, nullable: false
