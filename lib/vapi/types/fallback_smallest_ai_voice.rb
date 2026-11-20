@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fallback configuration for synthesizing assistant speech with Smallest AI, including voice and model selection,
+    # speed, chunking, and caching.
     class FallbackSmallestAiVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { Vapi::Types::FallbackSmallestAiVoiceId }, optional: false, nullable: false, api_name: "voiceId"

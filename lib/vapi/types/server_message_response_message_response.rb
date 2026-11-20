@@ -16,6 +16,7 @@ module Vapi
       member -> { Vapi::Types::ServerMessageResponseTransferDestinationRequest }
       member -> { Vapi::Types::ServerMessageResponseVoiceRequest }
       member -> { Vapi::Types::ServerMessageResponseCallEndpointingRequest }
+      member -> { Vapi::Types::ServerMessageResponseCampaignPredial }
     end
   end
 end

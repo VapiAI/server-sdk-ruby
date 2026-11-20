@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Credentials for authenticating Vapi integrations with Make, including team, region, and API key.
     class CreateMakeCredentialDto < Internal::Types::Model
       field :team_id, -> { String }, optional: false, nullable: false, api_name: "teamId"
       field :region, -> { String }, optional: false, nullable: false

@@ -2,9 +2,11 @@
 
 module Vapi
   module Types
+    # Fallback configuration for transcribing speech with ElevenLabs, including model, language, and speech thresholds.
     class FallbackElevenLabsTranscriber < Internal::Types::Model
       field :model, -> { Vapi::Types::FallbackElevenLabsTranscriberModel }, optional: true, nullable: false
       field :language, -> { Vapi::Types::FallbackElevenLabsTranscriberLanguage }, optional: true, nullable: false
+      field :keyterms, -> { Internal::Types::Array[String] }, optional: true, nullable: false
       field :silence_threshold_seconds, -> { Integer }, optional: true, nullable: false, api_name: "silenceThresholdSeconds"
       field :confidence_threshold, -> { Integer }, optional: true, nullable: false, api_name: "confidenceThreshold"
       field :min_speech_duration_ms, -> { Integer }, optional: true, nullable: false, api_name: "minSpeechDurationMs"

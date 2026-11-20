@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # Cartesia voice controls for speed and emotion.
     class CartesiaExperimentalControls < Internal::Types::Model
       field :speed, -> { Vapi::Types::CartesiaSpeedControl }, optional: true, nullable: false
       field :emotion, -> { Vapi::Types::CartesiaExperimentalControlsEmotion }, optional: true, nullable: false

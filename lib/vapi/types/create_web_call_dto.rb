@@ -3,9 +3,12 @@
 module Vapi
   module Types
     class CreateWebCallDto < Internal::Types::Model
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
+      field :squad_version, -> { String }, optional: true, nullable: false, api_name: "squadVersion"
       field :room_delete_on_user_leave_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "roomDeleteOnUserLeaveEnabled"
+      field :video_recording_start_mode, -> { Vapi::Types::CreateWebCallDtoVideoRecordingStartMode }, optional: true, nullable: false, api_name: "videoRecordingStartMode"
       field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
-      field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: true, nullable: false
+      field :assistant, -> { Vapi::Types::TransientAssistantDto }, optional: true, nullable: false
       field :assistant_overrides, -> { Vapi::Types::AssistantOverrides }, optional: true, nullable: false, api_name: "assistantOverrides"
       field :squad_id, -> { String }, optional: true, nullable: false, api_name: "squadId"
       field :squad, -> { Vapi::Types::CreateSquadDto }, optional: true, nullable: false

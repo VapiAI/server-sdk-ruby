@@ -19,6 +19,8 @@ module Vapi
       member -> { Vapi::Types::FallbackOpenAiTranscriber }, key: "OPENAI"
       member -> { Vapi::Types::FallbackCartesiaTranscriber }, key: "CARTESIA"
       member -> { Vapi::Types::FallbackSonioxTranscriber }, key: "SONIOX"
+      member -> { Vapi::Types::FallbackXaiTranscriber }, key: "XAI"
+      member -> { Vapi::Types::FallbackReson8Transcriber }, key: "RESON_8"
     end
   end
 end
