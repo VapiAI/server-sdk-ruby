@@ -5,6 +5,9 @@ module Vapi
     class StructuredOutputEvaluationResult < Internal::Types::Model
       field :structured_output_id, -> { String }, optional: false, nullable: false, api_name: "structuredOutputId"
       field :name, -> { String }, optional: false, nullable: false
+      field :path, -> { String }, optional: true, nullable: false
+      field :description, -> { String }, optional: true, nullable: false
+      field :schema, -> { Vapi::Types::JsonSchema }, optional: true, nullable: false
       field :extracted_value, -> { Vapi::Types::StructuredOutputEvaluationResultExtractedValue }, optional: false, nullable: true, api_name: "extractedValue"
       field :expected_value, -> { Vapi::Types::StructuredOutputEvaluationResultExpectedValue }, optional: false, nullable: false, api_name: "expectedValue"
       field :comparator, -> { Vapi::Types::StructuredOutputEvaluationResultComparator }, optional: false, nullable: false

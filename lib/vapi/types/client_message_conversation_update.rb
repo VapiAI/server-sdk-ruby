@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ClientMessageConversationUpdate < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ClientMessageConversationUpdatePhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ClientMessageConversationUpdateType }, optional: false, nullable: false
       field :messages, -> { Internal::Types::Array[Vapi::Types::ClientMessageConversationUpdateMessagesItem] }, optional: true, nullable: false
       field :messages_open_ai_formatted, -> { Internal::Types::Array[Vapi::Types::OpenAiMessage] }, optional: false, nullable: false, api_name: "messagesOpenAIFormatted"

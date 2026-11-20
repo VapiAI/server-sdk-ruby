@@ -13,6 +13,7 @@ module Vapi
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
       field :updated_at, -> { String }, optional: false, nullable: false, api_name: "updatedAt"
       field :item_counts, -> { Vapi::Types::SimulationRunItemCounts }, optional: true, nullable: false, api_name: "itemCounts"
+      field :include_target_structured_outputs, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "includeTargetStructuredOutputs"
       field :simulations, -> { Internal::Types::Array[Vapi::Types::SimulationRunSimulationsItem] }, optional: false, nullable: false
       field :target, -> { Vapi::Types::SimulationRunTarget }, optional: false, nullable: false
       field :iterations, -> { Integer }, optional: true, nullable: false

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration used to connect a bring-your-own phone number to Vapi with a stored telephony credential and routing
+    # settings.
     class CreateByoPhoneNumberDto < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::CreateByoPhoneNumberDtoFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::CreateByoPhoneNumberDtoHooksItem] }, optional: true, nullable: false

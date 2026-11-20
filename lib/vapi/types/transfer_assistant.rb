@@ -12,6 +12,8 @@ module Vapi
       field :start_speaking_plan, -> { Vapi::Types::StartSpeakingPlan }, optional: true, nullable: false, api_name: "startSpeakingPlan"
       field :first_message_mode, -> { Vapi::Types::TransferAssistantFirstMessageMode }, optional: true, nullable: false, api_name: "firstMessageMode"
       field :max_duration_seconds, -> { Integer }, optional: true, nullable: false, api_name: "maxDurationSeconds"
+      field :assistant_hooks_inherit_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "assistantHooksInheritEnabled"
+      field :hooks, -> { Internal::Types::Array[Vapi::Types::TransferAssistantHooksItem] }, optional: true, nullable: false
       field :background_speech_denoising_plan, -> { Vapi::Types::BackgroundSpeechDenoisingPlan }, optional: true, nullable: false, api_name: "backgroundSpeechDenoisingPlan"
       field :silence_timeout_seconds, -> { Integer }, optional: true, nullable: false, api_name: "silenceTimeoutSeconds"
     end

@@ -2,7 +2,10 @@
 
 module Vapi
   module Types
+    # A reusable tool that adds contacts to a connected GoHighLevel account.
     class GoHighLevelContactCreateTool < Internal::Types::Model
+      field :latest_version, -> { String }, optional: true, nullable: false, api_name: "latestVersion"
+      field :baseline_version, -> { String }, optional: true, nullable: false, api_name: "baselineVersion"
       field :messages, -> { Internal::Types::Array[Vapi::Types::GoHighLevelContactCreateToolMessagesItem] }, optional: true, nullable: false
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"

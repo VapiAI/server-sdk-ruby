@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Credentials for authenticating assistant model requests with Azure OpenAI, including region, endpoint, and
+    # available models.
     class CreateAzureOpenAiCredentialDto < Internal::Types::Model
       field :region, -> { Vapi::Types::CreateAzureOpenAiCredentialDtoRegion }, optional: false, nullable: false
       field :models, -> { Internal::Types::Array[Vapi::Types::CreateAzureOpenAiCredentialDtoModelsItem] }, optional: false, nullable: false

@@ -1,3 +1,19 @@
+## [3.0.0] - 2026-11-20
+### Breaking Changes
+- **`assistant` field** — type changed from `CreateAssistantDto` to `TransientAssistantDto` in `CreateCallDto`, `CreateChatDto`, and `OpenAiResponsesRequest`; update any code constructing these objects to pass a `TransientAssistantDto` instance instead.
+
+### Added
+- **Simulation clients** — new `Vapi::Simulations`, `Vapi::SimulationPersonalities`, `Vapi::SimulationScenarios`, `Vapi::SimulationRuns`, and `Vapi::SimulationSuites` clients for end-to-end simulation and onboarding workflows.
+- **`Vapi::Board::Client`** and **`Vapi::TrafficAllocations::Client`** — new top-level clients for managing reporting boards and assistant traffic-allocation history.
+- **`Vapi::KnowledgeBasesV2::Client`** — new client for v2 knowledge-base CRUD with file attach, detach, and retry support.
+- **Call artifact download methods** — seven new download methods on `Vapi::Calls::Client` for mono/stereo/video recordings, customer/assistant recordings, PCAP, and call logs.
+- **`TransientAssistantDto`** and **`CallTransport`** — new types for fully inline assistant configuration and typed call-transport specification across providers (Vapi WebSocket, Vonage, Twilio, Vapi SIP, Telnyx, Daily).
+- **Assistant versioning and drafts** — new `AssistantVersion`, `AssistantDraft`, `LegacyAssistantVersion`, `ToolVersion`, `ToolDraft`, and `TrafficAllocation` types with full CRUD and conflict-response support.
+- **New voice and transcriber providers** — `MicrosoftVoice`, `XaiTranscriber`, `Reson8Transcriber`, and `VapiTranscriber` added across assistant, workflow, and conversation-node union types.
+- **`sort_by` and filter parameters** — new `sort_by`, `id_any`, `search`, and `purpose` query parameters added to paginated list endpoints across Chats, Eval, Insight, Campaigns, PhoneNumbers, ProviderResources, Squads, and StructuredOutputs clients.
+- **New enum values** — background sounds (`white-noise`, `city`, `crowd`, `farm`), Azure regions (`switzerlandnorth`, `switzerlandwest`), GPT-5.6/4.1 model variants, 40+ new `CallEndedReason` values, and `CALL_ARTIFACT_UPLOAD` server message event added across relevant enums.
+- See full changelog for all changes
+
 ## 2.0.0 - 2026-06-24
 ### Breaking Changes
 * **`Vapi::Types::CartesiaExperimentalControlsSpeedZero`** has been renamed to **`Vapi::Types::CartesiaSpeedControlZero`**. Update any references to use the new name.

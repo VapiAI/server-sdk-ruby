@@ -55,6 +55,13 @@ module Vapi
       MASONRY = "masonry"
       ALBION = "albion"
       PARAPET = "parapet"
+      CLEMENTINE = "clementine"
+      WALNUT = "walnut"
+      EYRE = "eyre"
+      BANCROFT = "bancroft"
+      HESSE = "hesse"
+      BEATTY = "beatty"
+      GODFREY = "godfrey"
     end
   end
 end

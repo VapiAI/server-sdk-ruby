@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Configuration for synthesizing assistant speech with Azure, including voice selection, speed, chunking, caching,
+    # and fallback settings.
     class AzureVoice < Internal::Types::Model
       field :caching_enabled, -> { Internal::Types::Boolean }, optional: true, nullable: false, api_name: "cachingEnabled"
       field :voice_id, -> { Vapi::Types::AzureVoiceId }, optional: false, nullable: false, api_name: "voiceId"

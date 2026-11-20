@@ -13,6 +13,7 @@ module Vapi
       field :hooks, -> { Internal::Types::Array[Vapi::Types::ScenarioHooksItem] }, optional: true, nullable: false
       field :target_overrides, -> { Vapi::Types::AssistantOverrides }, optional: true, nullable: false, api_name: "targetOverrides"
       field :tool_mocks, -> { Internal::Types::Array[Vapi::Types::ScenarioToolMock] }, optional: true, nullable: false, api_name: "toolMocks"
+      field :latency_expectations, -> { Internal::Types::Array[Vapi::Types::LatencyExpectation] }, optional: true, nullable: false, api_name: "latencyExpectations"
       field :path, -> { String }, optional: true, nullable: false
     end
   end

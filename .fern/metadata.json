@@ -1,11 +1,11 @@
 {
-  "cliVersion": "5.51.2",
+  "cliVersion": "5.226.2",
   "generatorName": "fernapi/fern-ruby-sdk",
   "generatorVersion": "1.1.13",
   "generatorConfig": {
     "clientClassName": "Vapi",
     "rubocopVariableNumberStyle": "disabled"
   },
-  "originGitCommit": "5a015aa01196915bea6110904c69d5804f457ff5",
-  "sdkVersion": "2.0.0"
+  "originGitCommit": "c2488de9549215ba91a19ece9581eab602779d8e",
+  "sdkVersion": "3.0.0"
 }

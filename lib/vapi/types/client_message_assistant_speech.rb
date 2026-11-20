@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ClientMessageAssistantSpeech < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ClientMessageAssistantSpeechPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ClientMessageAssistantSpeechType }, optional: false, nullable: false
       field :text, -> { String }, optional: false, nullable: false
       field :turn, -> { Integer }, optional: true, nullable: false

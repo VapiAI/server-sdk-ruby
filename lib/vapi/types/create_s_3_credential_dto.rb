@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Credentials for storing call artifacts in Amazon S3, including access keys, region, bucket, path prefix, and
+    # upload fallback order.
     class CreateS3CredentialDto < Internal::Types::Model
       field :aws_access_key_id, -> { String }, optional: false, nullable: false, api_name: "awsAccessKeyId"
       field :aws_secret_access_key, -> { String }, optional: false, nullable: false, api_name: "awsSecretAccessKey"

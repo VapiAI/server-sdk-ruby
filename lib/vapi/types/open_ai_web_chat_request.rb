@@ -4,7 +4,7 @@ module Vapi
   module Types
     class OpenAiWebChatRequest < Internal::Types::Model
       field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
-      field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: true, nullable: false
+      field :assistant, -> { Vapi::Types::TransientAssistantDto }, optional: true, nullable: false
       field :session_id, -> { String }, optional: true, nullable: false, api_name: "sessionId"
       field :session_expiration_seconds, -> { Integer }, optional: true, nullable: false, api_name: "sessionExpirationSeconds"
       field :assistant_overrides, -> { Vapi::Types::ChatAssistantOverrides }, optional: true, nullable: false, api_name: "assistantOverrides"

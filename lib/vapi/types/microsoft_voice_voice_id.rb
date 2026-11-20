@@ -1,0 +1,56 @@
+# frozen_string_literal: true
+
+module Vapi
+  module Types
+    module MicrosoftVoiceVoiceId
+      extend Vapi::Internal::Types::Enum
+
+      DE_DE_KLAUS_MAI_VOICE_2 = "de-DE-Klaus:MAI-Voice-2"
+      DE_DE_MIA_MAI_VOICE_2 = "de-DE-Mia:MAI-Voice-2"
+      EN_AU_LISA_MAI_VOICE_2 = "en-AU-Lisa:MAI-Voice-2"
+      EN_US_ETHAN_MAI_VOICE_2 = "en-US-Ethan:MAI-Voice-2"
+      EN_US_GRANT_MAI_VOICE_2 = "en-US-Grant:MAI-Voice-2"
+      EN_US_HARPER_MAI_VOICE_2 = "en-US-Harper:MAI-Voice-2"
+      EN_US_IRIS_MAI_VOICE_2 = "en-US-Iris:MAI-Voice-2"
+      EN_US_JASPER_MAI_VOICE_2 = "en-US-Jasper:MAI-Voice-2"
+      EN_US_OLIVIA_MAI_VOICE_2 = "en-US-Olivia:MAI-Voice-2"
+      ES_ES_MARTA_MAI_VOICE_2 = "es-ES-Marta:MAI-Voice-2"
+      ES_MX_ALEJO_MAI_VOICE_2 = "es-MX-Alejo:MAI-Voice-2"
+      ES_MX_VALERIA_MAI_VOICE_2 = "es-MX-Valeria:MAI-Voice-2"
+      FR_FR_MARC_MAI_VOICE_2 = "fr-FR-Marc:MAI-Voice-2"
+      FR_FR_SOLEIL_MAI_VOICE_2 = "fr-FR-Soleil:MAI-Voice-2"
+      HI_IN_ARJUN_MAI_VOICE_2 = "hi-IN-Arjun:MAI-Voice-2"
+      HI_IN_DHRUV_MAI_VOICE_2 = "hi-IN-Dhruv:MAI-Voice-2"
+      HI_IN_KAVYA_MAI_VOICE_2 = "hi-IN-Kavya:MAI-Voice-2"
+      HI_IN_PRIYA_MAI_VOICE_2 = "hi-IN-Priya:MAI-Voice-2"
+      HU_HU_BENCE_MAI_VOICE_2 = "hu-HU-Bence:MAI-Voice-2"
+      HU_HU_LEVENTE_MAI_VOICE_2 = "hu-HU-Levente:MAI-Voice-2"
+      HU_HU_LILLA_MAI_VOICE_2 = "hu-HU-Lilla:MAI-Voice-2"
+      HU_HU_REKA_MAI_VOICE_2 = "hu-HU-Réka:MAI-Voice-2"
+      IT_IT_LUCA_MAI_VOICE_2 = "it-IT-Luca:MAI-Voice-2"
+      IT_IT_ROSA_MAI_VOICE_2 = "it-IT-Rosa:MAI-Voice-2"
+      KO_KR_HANA_MAI_VOICE_2 = "ko-KR-Hana:MAI-Voice-2"
+      KO_KR_JUNHO_MAI_VOICE_2 = "ko-KR-Junho:MAI-Voice-2"
+      NL_NL_FLEUR_MAI_VOICE_2 = "nl-NL-Fleur:MAI-Voice-2"
+      NL_NL_SANDER_MAI_VOICE_2 = "nl-NL-Sander:MAI-Voice-2"
+      PT_BR_CAIO_MAI_VOICE_2 = "pt-BR-Caio:MAI-Voice-2"
+      PT_BR_LUANA_MAI_VOICE_2 = "pt-BR-Luana:MAI-Voice-2"
+      PT_BR_PEDRO_MAI_VOICE_2 = "pt-BR-Pedro:MAI-Voice-2"
+      PT_BR_RAFAEL_MAI_VOICE_2 = "pt-BR-Rafael:MAI-Voice-2"
+      PT_PT_RUI_MAI_VOICE_2 = "pt-PT-Rui:MAI-Voice-2"
+      RO_RO_ANDREI_MAI_VOICE_2 = "ro-RO-Andrei:MAI-Voice-2"
+      RO_RO_ELENA_MAI_VOICE_2 = "ro-RO-Elena:MAI-Voice-2"
+      RO_RO_IOANA_MAI_VOICE_2 = "ro-RO-Ioana:MAI-Voice-2"
+      RO_RO_RADU_MAI_VOICE_2 = "ro-RO-Radu:MAI-Voice-2"
+      RU_RU_LEV_MAI_VOICE_2 = "ru-RU-Lev:MAI-Voice-2"
+      RU_RU_MASHA_MAI_VOICE_2 = "ru-RU-Masha:MAI-Voice-2"
+      TH_TH_KRIT_MAI_VOICE_2 = "th-TH-Krit:MAI-Voice-2"
+      TH_TH_NATTAPONG_MAI_VOICE_2 = "th-TH-Nattapong:MAI-Voice-2"
+      TR_TR_AYDIN_MAI_VOICE_2 = "tr-TR-Aydin:MAI-Voice-2"
+      TR_TR_ELIF_MAI_VOICE_2 = "tr-TR-Elif:MAI-Voice-2"
+      ZH_CN_BO_MAI_VOICE_2 = "zh-CN-Bo:MAI-Voice-2"
+      ZH_CN_LAN_MAI_VOICE_2 = "zh-CN-Lan:MAI-Voice-2"
+      ZH_CN_MEI_MAI_VOICE_2 = "zh-CN-Mei:MAI-Voice-2"
+    end
+  end
+end

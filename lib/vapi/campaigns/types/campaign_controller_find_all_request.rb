@@ -8,6 +8,7 @@ module Vapi
         field :status, -> { Vapi::Campaigns::Types::CampaignControllerFindAllRequestStatus }, optional: true, nullable: false
         field :page, -> { Integer }, optional: true, nullable: false
         field :sort_order, -> { Vapi::Campaigns::Types::CampaignControllerFindAllRequestSortOrder }, optional: true, nullable: false, api_name: "sortOrder"
+        field :sort_by, -> { Vapi::Campaigns::Types::CampaignControllerFindAllRequestSortBy }, optional: true, nullable: false, api_name: "sortBy"
         field :limit, -> { Integer }, optional: true, nullable: false
         field :created_at_gt, -> { String }, optional: true, nullable: false, api_name: "createdAtGt"
         field :created_at_lt, -> { String }, optional: true, nullable: false, api_name: "createdAtLt"

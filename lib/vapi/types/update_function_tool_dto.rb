@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a custom function tool, including its function definition, server, parameters, messages, and
+    # execution behavior.
     class UpdateFunctionToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateFunctionToolDtoMessagesItem] }, optional: true, nullable: false
       field :async, -> { Internal::Types::Boolean }, optional: true, nullable: false

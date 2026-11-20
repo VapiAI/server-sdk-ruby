@@ -7,6 +7,7 @@ module Vapi
 
       GPT_4_O_TRANSCRIBE = "gpt-4o-transcribe"
       GPT_4_O_MINI_TRANSCRIBE = "gpt-4o-mini-transcribe"
+      GPT_TRANSCRIBE = "gpt-transcribe"
     end
   end
 end

@@ -8,6 +8,7 @@ module Vapi
       member -> { Vapi::Types::JsonQueryOnCallTableWithStringTypeColumn }
       member -> { Vapi::Types::JsonQueryOnCallTableWithNumberTypeColumn }
       member -> { Vapi::Types::JsonQueryOnCallTableWithStructuredOutputColumn }
+      member -> { Vapi::Types::JsonQueryOnEventsTable }
     end
   end
 end
