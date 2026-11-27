@@ -7,6 +7,8 @@ module Vapi
 
       UNIVERSAL_STREAMING_ENGLISH = "universal-streaming-english"
       UNIVERSAL_STREAMING_MULTILINGUAL = "universal-streaming-multilingual"
+      UNIVERSAL_35_PRO = "universal-3-5-pro"
+      UNIVERSAL_36_PRO = "universal-3-6-pro"
     end
   end
 end

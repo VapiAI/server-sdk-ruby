@@ -8,6 +8,7 @@ module Vapi
       SCRIBE_V_1 = "scribe_v1"
       SCRIBE_V_2 = "scribe_v2"
       SCRIBE_V_2_REALTIME = "scribe_v2_realtime"
+      SCRIBE_V_3_LIVE = "scribe_v3_live"
     end
   end
 end

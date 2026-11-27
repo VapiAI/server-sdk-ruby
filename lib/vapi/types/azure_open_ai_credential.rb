@@ -13,6 +13,7 @@ module Vapi
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
       field :updated_at, -> { String }, optional: false, nullable: false, api_name: "updatedAt"
       field :name, -> { String }, optional: true, nullable: false
+      field :deployments, -> { Internal::Types::Array[Vapi::Types::AzureOpenAiDeployment] }, optional: true, nullable: false
       field :open_ai_endpoint, -> { String }, optional: false, nullable: false, api_name: "openAIEndpoint"
     end
   end

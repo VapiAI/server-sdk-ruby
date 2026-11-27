@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A tool-result message associated with a specific tool call.
     class ToolMessage < Internal::Types::Model
       field :role, -> { Vapi::Types::ToolMessageRole }, optional: false, nullable: false
       field :content, -> { String }, optional: false, nullable: false

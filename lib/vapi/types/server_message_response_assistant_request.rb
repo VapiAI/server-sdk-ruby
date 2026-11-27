@@ -5,7 +5,7 @@ module Vapi
     class ServerMessageResponseAssistantRequest < Internal::Types::Model
       field :destination, -> { Vapi::Types::ServerMessageResponseAssistantRequestDestination }, optional: true, nullable: false
       field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
-      field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: true, nullable: false
+      field :assistant, -> { Vapi::Types::TransientAssistantDto }, optional: true, nullable: false
       field :assistant_overrides, -> { Vapi::Types::AssistantOverrides }, optional: true, nullable: false, api_name: "assistantOverrides"
       field :squad_id, -> { String }, optional: true, nullable: false, api_name: "squadId"
       field :squad, -> { Vapi::Types::CreateSquadDto }, optional: true, nullable: false
