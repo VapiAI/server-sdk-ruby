@@ -7,6 +7,7 @@ module Vapi
       field :concurrency_limit, -> { Integer }, optional: false, nullable: false, api_name: "concurrencyLimit"
       field :active_simulations, -> { Integer }, optional: false, nullable: false, api_name: "activeSimulations"
       field :available_to_start, -> { Integer }, optional: false, nullable: false, api_name: "availableToStart"
+      field :chat_concurrency_limit, -> { Integer }, optional: false, nullable: false, api_name: "chatConcurrencyLimit"
       field :created_at, -> { String }, optional: false, nullable: true, api_name: "createdAt"
       field :updated_at, -> { String }, optional: false, nullable: true, api_name: "updatedAt"
       field :is_default, -> { Internal::Types::Boolean }, optional: false, nullable: false, api_name: "isDefault"

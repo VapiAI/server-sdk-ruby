@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Cloudflare R2 bucket configuration for call-artifact storage, including access keys, base URL, bucket name, and
+    # path.
     class CloudflareR2BucketPlan < Internal::Types::Model
       field :access_key_id, -> { String }, optional: true, nullable: false, api_name: "accessKeyId"
       field :secret_access_key, -> { String }, optional: true, nullable: false, api_name: "secretAccessKey"

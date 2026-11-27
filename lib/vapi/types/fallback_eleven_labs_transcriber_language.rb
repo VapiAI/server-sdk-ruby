@@ -190,6 +190,7 @@ module Vapi
       ZA = "za"
       ZH = "zh"
       ZU = "zu"
+      MULTI = "multi"
     end
   end
 end

@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A Vapi-managed phone number or SIP URI, including its authentication, routing, hooks, server settings, and
+    # lifecycle metadata.
     class VapiPhoneNumber < Internal::Types::Model
       field :fallback_destination, -> { Vapi::Types::VapiPhoneNumberFallbackDestination }, optional: true, nullable: false, api_name: "fallbackDestination"
       field :hooks, -> { Internal::Types::Array[Vapi::Types::VapiPhoneNumberHooksItem] }, optional: true, nullable: false

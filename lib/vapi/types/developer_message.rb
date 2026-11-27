@@ -2,6 +2,7 @@
 
 module Vapi
   module Types
+    # A developer-authored instruction message supplied to the language model.
     class DeveloperMessage < Internal::Types::Model
       field :role, -> { Vapi::Types::DeveloperMessageRole }, optional: false, nullable: false
       field :content, -> { String }, optional: false, nullable: false

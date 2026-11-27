@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # A call record returned by Vapi. It contains the configuration and resources used for the call, its lifecycle
+    # status and timestamps, conversation messages, artifacts, analysis, and costs.
     class Call < Internal::Types::Model
       field :type, -> { Vapi::Types::CallType }, optional: true, nullable: false
       field :costs, -> { Internal::Types::Array[Vapi::Types::CallCostsItem] }, optional: true, nullable: false
@@ -12,6 +14,10 @@ module Vapi
       field :ended_reason, -> { Vapi::Types::CallEndedReason }, optional: true, nullable: false, api_name: "endedReason"
       field :ended_message, -> { String }, optional: true, nullable: false, api_name: "endedMessage"
       field :destination, -> { Vapi::Types::CallDestination }, optional: true, nullable: false
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
+      field :squad_version, -> { String }, optional: true, nullable: false, api_name: "squadVersion"
+      field :transport, -> { Vapi::Types::CallTransport }, optional: true, nullable: false
+      field :phone_number, -> { Vapi::Types::TransientTwilioPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"
@@ -28,7 +34,7 @@ module Vapi
       field :phone_call_provider_id, -> { String }, optional: true, nullable: false, api_name: "phoneCallProviderId"
       field :campaign_id, -> { String }, optional: true, nullable: false, api_name: "campaignId"
       field :assistant_id, -> { String }, optional: true, nullable: false, api_name: "assistantId"
-      field :assistant, -> { Vapi::Types::CreateAssistantDto }, optional: true, nullable: false
+      field :assistant, -> { Vapi::Types::TransientAssistantDto }, optional: true, nullable: false
       field :assistant_overrides, -> { Vapi::Types::AssistantOverrides }, optional: true, nullable: false, api_name: "assistantOverrides"
       field :squad_id, -> { String }, optional: true, nullable: false, api_name: "squadId"
       field :squad, -> { Vapi::Types::CreateSquadDto }, optional: true, nullable: false
@@ -37,13 +43,10 @@ module Vapi
       field :workflow, -> { Vapi::Types::CreateWorkflowDto }, optional: true, nullable: false
       field :workflow_overrides, -> { Vapi::Types::WorkflowOverrides }, optional: true, nullable: false, api_name: "workflowOverrides"
       field :phone_number_id, -> { String }, optional: true, nullable: false, api_name: "phoneNumberId"
-      field :phone_number, -> { Vapi::Types::ImportTwilioPhoneNumberDto }, optional: true, nullable: false, api_name: "phoneNumber"
       field :customer_id, -> { String }, optional: true, nullable: false, api_name: "customerId"
       field :customer, -> { Vapi::Types::CreateCustomerDto }, optional: true, nullable: false
       field :name, -> { String }, optional: true, nullable: false
       field :schedule_plan, -> { Vapi::Types::SchedulePlan }, optional: true, nullable: false, api_name: "schedulePlan"
-      field :transport, -> { Internal::Types::Hash[String, Object] }, optional: true, nullable: false
-      field :subscription_limits, -> { Vapi::Types::SubscriptionLimits }, optional: true, nullable: false, api_name: "subscriptionLimits"
     end
   end
 end

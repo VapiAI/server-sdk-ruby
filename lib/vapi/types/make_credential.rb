@@ -5,8 +5,8 @@ module Vapi
     class MakeCredential < Internal::Types::Model
       field :provider, -> { Vapi::Types::MakeCredentialProvider }, optional: false, nullable: false
       field :team_id, -> { String }, optional: false, nullable: false, api_name: "teamId"
-      field :region, -> { String }, optional: false, nullable: false
       field :api_key, -> { String }, optional: false, nullable: false, api_name: "apiKey"
+      field :region, -> { String }, optional: false, nullable: false
       field :id, -> { String }, optional: false, nullable: false
       field :org_id, -> { String }, optional: false, nullable: false, api_name: "orgId"
       field :created_at, -> { String }, optional: false, nullable: false, api_name: "createdAt"

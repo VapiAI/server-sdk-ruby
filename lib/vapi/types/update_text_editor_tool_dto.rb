@@ -2,6 +2,8 @@
 
 module Vapi
   module Types
+    # Fields used to update a text-editor tool, including its name, environment subtype, server, messages, and rejection
+    # plan.
     class UpdateTextEditorToolDto < Internal::Types::Model
       field :messages, -> { Internal::Types::Array[Vapi::Types::UpdateTextEditorToolDtoMessagesItem] }, optional: true, nullable: false
       field :sub_type, -> { Vapi::Types::UpdateTextEditorToolDtoSubType }, optional: true, nullable: false, api_name: "subType"

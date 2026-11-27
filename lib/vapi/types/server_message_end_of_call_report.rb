@@ -4,6 +4,7 @@ module Vapi
   module Types
     class ServerMessageEndOfCallReport < Internal::Types::Model
       field :phone_number, -> { Vapi::Types::ServerMessageEndOfCallReportPhoneNumber }, optional: true, nullable: false, api_name: "phoneNumber"
+      field :assistant_version, -> { String }, optional: true, nullable: false, api_name: "assistantVersion"
       field :type, -> { Vapi::Types::ServerMessageEndOfCallReportType }, optional: false, nullable: false
       field :ended_reason, -> { Vapi::Types::ServerMessageEndOfCallReportEndedReason }, optional: false, nullable: false, api_name: "endedReason"
       field :cost, -> { Integer }, optional: true, nullable: false

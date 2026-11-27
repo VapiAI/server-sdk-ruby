@@ -10,6 +10,9 @@ module Vapi
         @client = client
       end
 
+      # Returns assistants for the authenticated organization. Filter results by creation or update timestamps and limit
+      # the number returned.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -62,6 +65,9 @@ module Vapi
         raise error_class.new(response.body, code: code)
       end
 
+      # Creates a reusable assistant configuration containing the model, voice, transcriber, tools, prompts, and call
+      # behavior.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Types::CreateAssistantDto]
       # @option request_options [String] :base_url
@@ -70,7 +76,7 @@ module Vapi
       # @option request_options [Hash{String => Object}] :additional_body_parameters
       # @option request_options [Integer] :timeout_in_seconds
       #
-      # @return [Vapi::Types::Assistant]
+      # @return [Vapi::Types::AssistantSaveResponse]
       def create(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
         request = Vapi::Internal::JSON::Request.new(
@@ -87,13 +93,15 @@ module Vapi
         end
         code = response.code.to_i
         if code.between?(200, 299)
-          Vapi::Types::Assistant.load(response.body)
+          Vapi::Types::AssistantSaveResponse.load(response.body)
         else
           error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
           raise error_class.new(response.body, code: code)
         end
       end
 
+      # Returns the assistant identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -126,6 +134,8 @@ module Vapi
         end
       end
 
+      # Deletes the assistant identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Hash]
       # @option request_options [String] :base_url
@@ -158,6 +168,8 @@ module Vapi
         end
       end
 
+      # Updates the specified fields of the assistant identified by its ID.
+      #
       # @param request_options [Hash]
       # @param params [Vapi::Assistants::Types::UpdateAssistantDto]
       # @option request_options [String] :base_url
@@ -167,7 +179,7 @@ module Vapi
       # @option request_options [Integer] :timeout_in_seconds
       # @option params [String] :id
       #
-      # @return [Vapi::Types::Assistant]
+      # @return [Vapi::Types::AssistantSaveResponse]
       def update(request_options: {}, **params)
         params = Vapi::Internal::Types::Utils.normalize_keys(params)
         request_data = Vapi::Assistants::Types::UpdateAssistantDto.new(params).to_h
@@ -188,7 +200,7 @@ module Vapi
         end
         code = response.code.to_i
         if code.between?(200, 299)
-          Vapi::Types::Assistant.load(response.body)
+          Vapi::Types::AssistantSaveResponse.load(response.body)
         else
           error_class = Vapi::Errors::ResponseError.subclass_for_code(code)
           raise error_class.new(response.body, code: code)

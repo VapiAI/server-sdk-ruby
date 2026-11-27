@@ -2,8 +2,9 @@
 
 module Vapi
   module Types
+    # Per-call or handoff overrides for an assistant's providers, messages, tools, credentials, call behavior, and
+    # server configuration.
     class AssistantOverrides < Internal::Types::Model
-      field :transcriber, -> { Vapi::Types::AssistantOverridesTranscriber }, optional: true, nullable: false
       field :model, -> { Vapi::Types::AssistantOverridesModel }, optional: true, nullable: false
       field :voice, -> { Vapi::Types::AssistantOverridesVoice }, optional: true, nullable: false
       field :first_message, -> { String }, optional: true, nullable: false, api_name: "firstMessage"
@@ -19,6 +20,7 @@ module Vapi
       field :observability_plan, -> { Vapi::Types::LangfuseObservabilityPlan }, optional: true, nullable: false, api_name: "observabilityPlan"
       field :credentials, -> { Internal::Types::Array[Vapi::Types::AssistantOverridesCredentialsItem] }, optional: true, nullable: false
       field :hooks, -> { Internal::Types::Array[Vapi::Types::AssistantOverridesHooksItem] }, optional: true, nullable: false
+      field :transcriber, -> { Vapi::Types::AssistantOverridesTranscriber }, optional: true, nullable: false
       field :tools_append, -> { Internal::Types::Array[Vapi::Types::AssistantOverridesToolsAppendItem] }, optional: true, nullable: false, api_name: "tools:append"
       field :variable_values, -> { Internal::Types::Hash[String, Object] }, optional: true, nullable: false, api_name: "variableValues"
       field :name, -> { String }, optional: true, nullable: false
